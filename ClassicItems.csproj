@@ -5,11 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="CIAssets" />
+    <None Remove="ClassicItems_Assets" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="CIAssets" />
+    <EmbeddedResource Include="classicitems_assets" />
   </ItemGroup>
 
   <ItemGroup>

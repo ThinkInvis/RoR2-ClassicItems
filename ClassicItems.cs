@@ -69,7 +69,7 @@ namespace ThinkInvisible.ClassicItems {
             Debug.LogWarning("ClassicItems: running test build with debug enabled! If you're seeing this after downloading the mod from Thunderstore, please panic.");
             #endif
             Debug.Log("ClassicItems: loading assets...");
-            using(var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("ClassicItems.CIAssets")) {
+            using(var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("ClassicItems.classicitems_assets")) {
                 var bundle = AssetBundle.LoadFromStream(stream);
                 var provider = new AssetBundleResourcesProvider("@ClassicItems", bundle);
                 ResourcesAPI.AddProvider(provider);
