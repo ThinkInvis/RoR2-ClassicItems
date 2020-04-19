@@ -54,6 +54,10 @@ For nostalgic purposes only. Here Be Dragons who hoard balance issues, because t
 
 ## Changelog
 
+**1.0.1**
+- Fixed Snake Eyes giving health instead of crit chance.
+- Updated this document to correct nested list formatting.
+
 **1.0.0**
 
 - Initial version. Adds the following items to the game: Bitter Root, Headstompers, Life Savings, Snake Eyes, Mysterious Vial, 56 Leaf Clover, Boxing Gloves, Rusty Jetpack, Smart Shopper, Beating Embryo, Photon Jetpack, Captain's Brooch.
