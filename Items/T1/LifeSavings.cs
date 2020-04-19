@@ -49,12 +49,12 @@ namespace ThinkInvisible.ClassicItems
         }
 
         private void On_SECDestroy(On.RoR2.SceneExitController.orig_OnDestroy orig, SceneExitController self) {
-            holdIt = true;
+            holdIt = false;
             orig(self);
         }
 
         private void On_SECBegin(On.RoR2.SceneExitController.orig_Begin orig, SceneExitController self) {
-            holdIt = false;
+            holdIt = true;
             orig(self);
         }
 
