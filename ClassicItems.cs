@@ -31,7 +31,11 @@ namespace ThinkInvisible.ClassicItems {
     [BepInDependency(R2API.R2API.PluginGUID)]
     [R2APISubmoduleDependency(nameof(ItemAPI), nameof(AssetPlus), nameof(ResourcesAPI), nameof(PlayerAPI))]
     public class ClassicItemsPlugin:BaseUnityPlugin {
-        public const string ModVer = "1.0.2";
+        public const string ModVer =
+            #if DEBUG
+                "0."
+            #endif
+            + "1.0.3";
         public const string ModName = "ClassicItems";
         public const string ModGuid = "com.ThinkInvisible.ClassicItems";
 
@@ -61,6 +65,9 @@ namespace ThinkInvisible.ClassicItems {
         public static bool gCoolYourJets {get;private set;}
 
         public ClassicItemsPlugin() {
+            #if DEBUG
+            Debug.LogWarning("ClassicItems: running test build with debug enabled! If you're seeing this after downloading the mod from Thunderstore, please panic.");
+            #endif
             Debug.Log("ClassicItems: loading assets...");
             using(var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("ClassicItems.CIAssets")) {
                 var bundle = AssetBundle.LoadFromStream(stream);
