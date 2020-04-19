@@ -20,13 +20,13 @@ For nostalgic purposes only. Here Be Dragons who hoard balance issues, because t
 - Smart Shopper: Enemies drop more gold.
 #### Tier 3
 - Beating Embryo: Equipment has a 30% chance to deal double the effect.
-  - Doubles *duration* on: Ocular HUD, Jade Elephant.
-  - Doubles *range* on: Primordial Cube.
-  - Doubles *count* on: The Back-up, Captain's Brooch, Sawmerang, Royal Capacitor.
-  - Doubles *fire rate and count* on: Disposable Missile Launcher.
-  - Doubles *damage* on: Preon Accumulator.
-  - Doubles *burst heal* on: Foreign Fruit, Gnarled Woodsprite.
-  - Doubles *speed and damage* on: Volcanic Egg.
+    - Doubles *duration* on: Ocular HUD, Jade Elephant.
+    - Doubles *range* on: Primordial Cube.
+    - Doubles *count* on: The Back-up, Captain's Brooch, Sawmerang, Royal Capacitor.
+    - Doubles *fire rate and count* on: Disposable Missile Launcher.
+    - Doubles *damage* on: Preon Accumulator.
+    - Doubles *burst heal* on: Foreign Fruit, Gnarled Woodsprite.
+    - Doubles *speed and damage* on: Volcanic Egg.
 - Photon Jetpack: No hands.
 #### Equipment
 - Captain's Brooch: One man's wreckage is another man's treasure.
@@ -36,7 +36,7 @@ For nostalgic purposes only. Here Be Dragons who hoard balance issues, because t
 - More config options for various aspects of item effects (how much regen a Mysterious Vial provides, which equipments Beating Embryo effects...).
 - Descriptions in the logbook match config values.
 - Some vanilla tweaks, also with config options:
-  - Disables the H3AD5T V2 stomp move, which is normally triggered by holding jump in midair; this is replaced by the Headstompers item.
+    - Disables the H3AD5T V2 stomp move, which is normally triggered by holding jump in midair; this is replaced by the Headstompers item.
 
 ## Issues/TODO
 
