@@ -33,9 +33,9 @@ namespace ThinkInvisible.ClassicItems {
     public class ClassicItemsPlugin:BaseUnityPlugin {
         public const string ModVer =
             #if DEBUG
-                "0."
+                "0." +
             #endif
-            + "1.0.3";
+            "1.0.3";
         public const string ModName = "ClassicItems";
         public const string ModGuid = "com.ThinkInvisible.ClassicItems";
 
