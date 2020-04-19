@@ -62,7 +62,7 @@ namespace ThinkInvisible.ClassicItems
                 canStack = true,
                 isDebuff = false,
                 name = "SnakeEyes",
-                iconPath = "@ClassicItems:Assets/Import/icons/" + iconPathName
+                iconPath = "@ClassicItems:Assets/ClassicItems/icons/" + iconPathName
             });
             snakeEyesBuff = R2API.ItemAPI.Add(snakeEyesBuffDef);
 

@@ -72,7 +72,7 @@ namespace ThinkInvisible.ClassicItems
                 canStack = true,
                 isDebuff = false,
                 name = "PhotonFuel",
-                iconPath = "@ClassicItems:Assets/Import/icons/" + iconPathName
+                iconPath = "@ClassicItems:Assets/ClassicItems/icons/" + iconPathName
             });
             photonFuelBuff = R2API.ItemAPI.Add(PhotonJetpackBuff);
 

@@ -70,8 +70,8 @@ namespace ThinkInvisible.ClassicItems
 
             if(itemIsEquipment) {
                 regDefEqp = new EquipmentDef {
-                    pickupModelPath = "@ClassicItems:Assets/Import/models/" + modelPathName,
-                    pickupIconPath = "@ClassicItems:Assets/Import/icons/" + iconPathName,
+                    pickupModelPath = "@ClassicItems:Assets/ClassicItems/models/" + modelPathName,
+                    pickupIconPath = "@ClassicItems:Assets/ClassicItems/icons/" + iconPathName,
                     nameToken = itemName,
                     pickupToken = itemShortText,
                     descriptionToken = itemLongText,
@@ -85,8 +85,8 @@ namespace ThinkInvisible.ClassicItems
             } else {
                 regDef = new ItemDef {
                     tier = itemTier,
-                    pickupModelPath = "@ClassicItems:Assets/Import/models/" + modelPathName,
-                    pickupIconPath = "@ClassicItems:Assets/Import/icons/" + iconPathName,
+                    pickupModelPath = "@ClassicItems:Assets/ClassicItems/models/" + modelPathName,
+                    pickupIconPath = "@ClassicItems:Assets/ClassicItems/icons/" + iconPathName,
                     nameToken = itemName,
                     pickupToken = itemShortText,
                     descriptionToken = itemLongText,
