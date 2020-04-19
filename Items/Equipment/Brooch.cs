@@ -58,6 +58,7 @@ namespace ThinkInvisible.ClassicItems
 
                 var chestPrefab = UnityEngine.Object.Instantiate(Resources.Load<InteractableSpawnCard>("SpawnCards/InteractableSpawnCard/iscChest1"));
                 chestPrefab.directorCreditCost = 0;
+                chestPrefab.skipSpawnWhenSacrificeArtifactEnabled = false;
                 var chestSpawnRes = chestPrefab.DoSpawn(trans.position, trans.rotation, new DirectorSpawnRequest(chestPrefab, null, BroochRNG));
                 var chestSpawn = chestSpawnRes.spawnedInstance;
 
