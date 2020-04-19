@@ -138,22 +138,19 @@ namespace ThinkInvisible.ClassicItems
 
 
             int locOrigCrit = -1;
-            ILFound = c.TryGotoNext(MoveType.After,
+            ILFound = c.TryGotoNext(
+                x=>x.MatchLdarg(0),
                 x=>x.MatchLdloc(out locOrigCrit),
-                x=>x.OpCode == OpCodes.Ldloc_S,
-                x=>x.MatchConvR4(),
-                x=>x.OpCode == OpCodes.Ldc_R4,
-                x=>x.MatchMul(),
-                x=>x.MatchAdd(),
-                x=>x.MatchStloc(locOrigCrit));
+                x=>x.MatchCallOrCallvirt<CharacterBody>("set_crit"));
 
             if(ILFound) {
-                c.Index--;
+                c.Emit(OpCodes.Ldloc, locOrigCrit);
                 c.Emit(OpCodes.Ldloc, locItemCount);
                 c.Emit(OpCodes.Ldarg_0);
                 c.EmitDelegate<Func<float,int,CharacterBody,float>>((crit, icnt, body) => {
                     return crit + icnt * critAdd * body.GetBuffCount(snakeEyesBuff);
                 });
+                c.Emit(OpCodes.Stloc, locOrigCrit);
             } else {
                 ilFailed = true;
                 Debug.LogError("ClassicItems: failed to apply Snake Eyes IL patch (crit modifier), falling back to event hook");
