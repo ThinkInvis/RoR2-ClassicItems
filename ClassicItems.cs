@@ -31,7 +31,7 @@ namespace ThinkInvisible.ClassicItems {
     [BepInDependency(R2API.R2API.PluginGUID)]
     [R2APISubmoduleDependency(nameof(ItemAPI), nameof(AssetPlus), nameof(ResourcesAPI), nameof(PlayerAPI))]
     public class ClassicItemsPlugin:BaseUnityPlugin {
-        public const string ModVer = "1.0.1";
+        public const string ModVer = "1.0.2";
         public const string ModName = "ClassicItems";
         public const string ModGuid = "com.ThinkInvisible.ClassicItems";
 

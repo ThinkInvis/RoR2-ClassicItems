@@ -54,7 +54,13 @@ For nostalgic purposes only. Here Be Dragons who hoard balance issues, because t
 
 ## Changelog
 
+**1.0.2**
+
+- Fixed Life Savings blocking teleporter completion and not working after Stage 1.
+- Fixed Captain's Brooch not triggering with Artifact of Sacrifice enabled.
+
 **1.0.1**
+
 - Fixed Snake Eyes giving health instead of crit chance.
 - Updated this document to correct nested list formatting.
 
