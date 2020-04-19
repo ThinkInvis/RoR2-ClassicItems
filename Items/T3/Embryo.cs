@@ -40,7 +40,6 @@ namespace ThinkInvisible.ClassicItems
             cfgSubEnable = new Dictionary<EquipmentIndex,ConfigEntry<bool>>();
             Dictionary<EquipmentIndex,bool> _subEnable = new Dictionary<EquipmentIndex, bool>();
             
-            Debug.Log("Emb 1");
             foreach(EquipmentIndex ind in (EquipmentIndex[]) Enum.GetValues(typeof(EquipmentIndex))) {
                 if(ind == EquipmentIndex.AffixBlue || ind == EquipmentIndex.AffixGold || ind == EquipmentIndex.AffixHaunted || ind == EquipmentIndex.AffixPoison || ind == EquipmentIndex.AffixRed || ind == EquipmentIndex.AffixWhite || ind == EquipmentIndex.AffixYellow
                     || ind == EquipmentIndex.BurnNearby || ind == EquipmentIndex.Cleanse || ind == EquipmentIndex.CrippleWard || ind == EquipmentIndex.LunarPotion || ind == EquipmentIndex.SoulCorruptor || ind == EquipmentIndex.Tonic
@@ -56,7 +55,6 @@ namespace ThinkInvisible.ClassicItems
                 "If false, Beating Embryo will not affect " + ind.ToString() + ".")));
                 _subEnable.Add(ind, cfgSubEnable[ind].Value);
             }
-            Debug.Log("Emb 2");
             subEnable = new ReadOnlyDictionary<EquipmentIndex,bool>(_subEnable);
 
             cfgSubEnableModded = cfl.Bind<bool>(new ConfigDefinition("Items." + itemCodeName, "SubEnableModded"), false, new ConfigDescription(
