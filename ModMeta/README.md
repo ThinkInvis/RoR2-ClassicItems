@@ -54,6 +54,10 @@ For nostalgic purposes only. Here Be Dragons who hoard balance issues, because t
 
 ## Changelog
 
+**1.0.3**
+
+- Fixed incompatibility with BrokenMagnet (and with any other mod that includes an AssetBundle with an internal name of "exampleitemmod")
+
 **1.0.2**
 
 - Fixed Life Savings blocking teleporter completion and not working after Stage 1.
