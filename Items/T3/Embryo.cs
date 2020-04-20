@@ -69,10 +69,10 @@ namespace ThinkInvisible.ClassicItems
         protected override void SetupAttributesInner() {
             modelPathName = "embryocard.prefab";
             iconPathName = "embryo_icon.png";
-            itemName = "Beating Embryo";
-            itemShortText = "Equipment has a 30% chance to deal double the effect.";
-            itemLongText = "Upon activating an equipment, adds a <style=cIsUtility>" + pct(cfgProcChance.Value, 0, 1) + "</style> <style=cStack>(+" + pct(cfgProcChance.Value, 0, 1) + " per stack)</style> chance to <style=cIsUtility>double its effects somehow</style>.";
-            itemLoreText = "A relic of times long past (ClassicItems mod)";
+            RegLang("Beating Embryo",
+            	"Equipment has a 30% chance to deal double the effect.",
+            	"Upon activating an equipment, adds a <style=cIsUtility>" + pct(cfgProcChance.Value, 0, 1) + "</style> <style=cStack>(+" + pct(cfgProcChance.Value, 0, 1) + " per stack)</style> chance to <style=cIsUtility>double its effects somehow</style>.",
+            	"A relic of times long past (ClassicItems mod)");
             _itemTags = new[]{ItemTag.EquipmentRelated};
             itemTier = ItemTier.Tier3;
         }

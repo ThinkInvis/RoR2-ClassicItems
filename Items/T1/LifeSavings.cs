@@ -33,10 +33,10 @@ namespace ThinkInvisible.ClassicItems
         protected override void SetupAttributesInner() {
             modelPathName = "savingscard.prefab";
             iconPathName = "lifesavings_icon.png";
-            itemName = "Life Savings";
-            itemShortText = "Earn gold over time.";
-            itemLongText = "Generates <style=cIsUtility>$" + gainPerSec + "</style> <style=cStack>(+$" + gainPerSec + " per stack)</style> every second.";
-            itemLoreText = "A relic of times long past (ClassicItems mod)";
+            RegLang("Life Savings",
+            	"Earn gold over time.",
+            	"Generates <style=cIsUtility>$" + gainPerSec + "</style> <style=cStack>(+$" + gainPerSec + " per stack)</style> every second.",
+            	"A relic of times long past (ClassicItems mod)");
             _itemTags = new[]{ItemTag.Utility};
             itemTier = ItemTier.Tier1;
         }

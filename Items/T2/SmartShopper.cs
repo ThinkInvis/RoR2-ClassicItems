@@ -25,10 +25,10 @@ namespace ThinkInvisible.ClassicItems
         protected override void SetupAttributesInner() {
             modelPathName = "shoppercard.prefab";
             iconPathName = "smartshopper_icon.png";
-            itemName = "Smart Shopper";
-            itemShortText = "Enemies drop extra gold.";
-            itemLongText = "Gain <style=cIsUtility>+" + pct(moneyMult) + "</style> <style=cStack>(+" + pct(moneyMult) + " per stack, linear)</style> <style=cIsUtility>money</style> from <style=cIsDamage>killing enemies</style>.";
-            itemLoreText = "A relic of times long past (ClassicItems mod)";
+            RegLang("Smart Shopper",
+            	"Enemies drop extra gold.",
+            	"Gain <style=cIsUtility>+" + pct(moneyMult) + "</style> <style=cStack>(+" + pct(moneyMult) + " per stack, linear)</style> <style=cIsUtility>money</style> from <style=cIsDamage>killing enemies</style>.",
+            	"A relic of times long past (ClassicItems mod)");
             _itemTags = new[]{ItemTag.Utility};
             itemTier = ItemTier.Tier2;
         }

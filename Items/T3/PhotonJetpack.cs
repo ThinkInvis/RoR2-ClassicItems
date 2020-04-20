@@ -58,10 +58,10 @@ namespace ThinkInvisible.ClassicItems
         protected override void SetupAttributesInner() {
             modelPathName = "photonjetpackcard.prefab";
             iconPathName = "photonjetpack_icon.png";
-            itemName = "Photon Jetpack";
-            itemShortText = "No hands.";
-            itemLongText = "Grants <style=cIsUtility>" + baseFuel.ToString("N1") + " second" + nplur(baseFuel, 1) + "</style> <style=cStack>(+" + stackFuel.ToString("N1") +" s per stack)</style> of <style=cIsUtility>flight</style> at <style=cIsUtility>" + gravMod.ToString("N1") + "g</style> <style=cStack>(+" + fallBoost.ToString("N1") + "g while falling)</style>, usable once you have no double jumps remaining. Fuel <style=cIsUtility>recharges</style> at <style=cIsUtility>" + pct(cfgRecharge.Value) + " speed</style> after a <style=cIsUtility>delay</style> of <style=cIsUtility>" + rchDelay.ToString("N0") + " second" + nplur(rchDelay) + "</style>.";
-            itemLoreText = "A relic of times long past (ClassicItems mod)";
+            RegLang("Photon Jetpack",
+            	"No hands.",
+            	"Grants <style=cIsUtility>" + baseFuel.ToString("N1") + " second" + nplur(baseFuel, 1) + "</style> <style=cStack>(+" + stackFuel.ToString("N1") +" s per stack)</style> of <style=cIsUtility>flight</style> at <style=cIsUtility>" + gravMod.ToString("N1") + "g</style> <style=cStack>(+" + fallBoost.ToString("N1") + "g while falling)</style>, usable once you have no double jumps remaining. Fuel <style=cIsUtility>recharges</style> at <style=cIsUtility>" + pct(cfgRecharge.Value) + " speed</style> after a <style=cIsUtility>delay</style> of <style=cIsUtility>" + rchDelay.ToString("N0") + " second" + nplur(rchDelay) + "</style>.",
+            	"A relic of times long past (ClassicItems mod)");
             _itemTags = new[]{ItemTag.Utility};
             itemTier = ItemTier.Tier3;
         }

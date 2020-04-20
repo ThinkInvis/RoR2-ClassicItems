@@ -41,10 +41,10 @@ namespace ThinkInvisible.ClassicItems
         protected override void SetupAttributesInner() {
             modelPathName = "bitterrootcard.prefab";
             iconPathName = "bitterroot_icon.png";
-            itemName = "Bitter Root";
-            itemShortText = "Gain " + pct(healthMult) + " max hp.";
-            itemLongText = "Increases <style=cIsHealing>health</style> by <style=cIsHealing>" + pct(healthMult) + "</style> <style=cStack>(+" +pct(healthMult)+ " per stack, linear)</style>, up to a <style=cIsHealing>maximum</style> of <style=cIsHealing>+"+pct(healthCap)+"</style>.";
-            itemLoreText = "A relic of times long past (ClassicItems mod)";
+            RegLang("Bitter Root",
+            	"Gain " + pct(healthMult) + " max hp.",
+            	"Increases <style=cIsHealing>health</style> by <style=cIsHealing>" + pct(healthMult) + "</style> <style=cStack>(+" +pct(healthMult)+ " per stack, linear)</style>, up to a <style=cIsHealing>maximum</style> of <style=cIsHealing>+"+pct(healthCap)+"</style>.",
+            	"A relic of times long past (ClassicItems mod)");
             _itemTags = new[]{ItemTag.Healing};
             itemTier = ItemTier.Tier1;
         }

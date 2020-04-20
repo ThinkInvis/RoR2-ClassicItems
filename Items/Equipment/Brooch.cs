@@ -39,12 +39,13 @@ namespace ThinkInvisible.ClassicItems
 
             modelPathName = "broochcard.prefab";
             iconPathName = "captainsbrooch_icon.png";
-            itemName = "Captain's Brooch";
-            itemShortText = "One man's wreckage is another man's treasure.";
-            itemLongText = "Call down a basic item chest, with an opening cost equivalent to one from " + extraStages.ToString("N0") + " level(s) and " + extraTime.ToString("N0") + " second(s) in the future.";
-            itemLoreText = "A relic of times long past (ClassicItems mod)";
             itemEnigmable = true;
             itemCooldown = 135;
+
+            RegLang("Captain's Brooch",
+                "One man's wreckage is another man's treasure.",
+                "Call down a basic item chest, with an opening cost equivalent to one from " + extraStages.ToString("N0") + " level(s) and " + extraTime.ToString("N0") + " second(s) in the future.",
+                "A relic of times long past (ClassicItems mod)");
         }
 
         protected override void SetupBehaviorInner() {

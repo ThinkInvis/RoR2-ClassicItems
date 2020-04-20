@@ -34,10 +34,10 @@ namespace ThinkInvisible.ClassicItems
         protected override void SetupAttributesInner() {
             modelPathName = "vialcard.prefab";
             iconPathName = "mysteriousvial_icon.png";
-            itemName = "Mysterious Vial";
-            itemShortText = "Increased health regeneration.";
-            itemLongText = "Increases <style=cIsHealing>health regen by +" + addRegen.ToString("N1") + "/sec</style> <style=cStack>(+" + addRegen.ToString("N1") + "/sec per stack)</style>.";
-            itemLoreText = "A relic of times long past (ClassicItems mod)";
+            RegLang("Mysterious Vial",
+            	"Increased health regeneration.",
+            	"Increases <style=cIsHealing>health regen by +" + addRegen.ToString("N1") + "/sec</style> <style=cStack>(+" + addRegen.ToString("N1") + "/sec per stack)</style>.",
+            	"A relic of times long past (ClassicItems mod)");
             _itemTags = new[]{ItemTag.Healing};
             itemTier = ItemTier.Tier1;
         }

@@ -48,10 +48,10 @@ namespace ThinkInvisible.ClassicItems
         protected override void SetupAttributesInner() {
             modelPathName = "snakeeyescard.prefab";
             iconPathName = "snakeeyes_icon.png";
-            itemName = "Snake Eyes";
-            itemShortText = "Gain increased crit chance on failing a shrine. Removed on succeeding a shrine.";
-            itemLongText = "Increases <style=cIsDamage>crit chance</style> by <style=cIsDamage>" + pct(critAdd, 0, 1) + "</style> <style=cStack>(+" + pct(critAdd, 0, 1) + " per stack, linear)</style> for up to <style=cIsUtility>" + stackCap + "</style> consecutive <style=cIsUtility>chance shrine failures</style>. <style=cIsDamage>Resets to 0</style> on any <style=cIsUtility>chance shrine success</style>.";
-            itemLoreText = "A relic of times long past (ClassicItems mod)";
+            RegLang("Snake Eyes",
+            	"Gain increased crit chance on failing a shrine. Removed on succeeding a shrine.",
+            	"Increases <style=cIsDamage>crit chance</style> by <style=cIsDamage>" + pct(critAdd, 0, 1) + "</style> <style=cStack>(+" + pct(critAdd, 0, 1) + " per stack, linear)</style> for up to <style=cIsUtility>" + stackCap + "</style> consecutive <style=cIsUtility>chance shrine failures</style>. <style=cIsDamage>Resets to 0</style> on any <style=cIsUtility>chance shrine success</style>.",
+            	"A relic of times long past (ClassicItems mod)");
             _itemTags = new[]{ItemTag.Damage};
             itemTier = ItemTier.Tier1;
         }

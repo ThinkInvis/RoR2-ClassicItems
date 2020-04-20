@@ -95,10 +95,10 @@ namespace ThinkInvisible.ClassicItems
         protected override void SetupAttributesInner() {
             modelPathName = "clovercard.prefab";
             iconPathName = "clover_icon.png";
-            itemName = "56 Leaf Clover";
-            itemShortText = "Elite mobs have a chance to drop items.";
-            itemLongText = "Elites have a <style=cIsUtility>" + pct(baseChance, 1, 1) + " chance</style> <style=cStack>(+" + pct(stackChance, 1, 1) + " per stack COMBINED FOR ALL PLAYERS, up to " + pct(capChance, 1, 1) + ")</style> to <style=cIsUtility>drop items</style> when <style=cIsDamage>killed</style>. <style=cStack>(Further stacks increase uncommon/rare chance up to " +pct(capUnc,2,1) +" and "+pct(capRare,3,1)+", respectively.)</style>";
-            itemLoreText = "A relic of times long past (ClassicItems mod)";
+            RegLang("56 Leaf Clover",
+            	"Elite mobs have a chance to drop items.",
+            	"Elites have a <style=cIsUtility>" + pct(baseChance, 1, 1) + " chance</style> <style=cStack>(+" + pct(stackChance, 1, 1) + " per stack COMBINED FOR ALL PLAYERS, up to " + pct(capChance, 1, 1) + ")</style> to <style=cIsUtility>drop items</style> when <style=cIsDamage>killed</style>. <style=cStack>(Further stacks increase uncommon/rare chance up to " +pct(capUnc,2,1) +" and "+pct(capRare,3,1)+", respectively.)</style>",
+            	"A relic of times long past (ClassicItems mod)");
             _itemTags = new[]{ItemTag.Utility};
             itemTier = ItemTier.Tier2;
         }

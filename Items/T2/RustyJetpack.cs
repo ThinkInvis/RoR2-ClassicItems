@@ -42,10 +42,10 @@ namespace ThinkInvisible.ClassicItems
         protected override void SetupAttributesInner() {
             modelPathName = "rustyjetpackcard.prefab";
             iconPathName = "rustyjetpack_icon.png";
-            itemName = "Rusty Jetpack";
-            itemShortText = "Increase jump height and reduce gravity.";
-            itemLongText = "<style=cIsUtility>Reduces gravity</style> by <style=cIsUtility>" + pct(gravMod) + "</style> while <style=cIsUtility>holding jump</style>. Increases <style=cIsUtility>jump power</style> by <style=cIsUtility>" + pct(jumpMult) + "</style> <style=cStack>(+" + pct(jumpMult)  + " per stack, linear)</style>.";
-            itemLoreText = "A relic of times long past (ClassicItems mod)";
+            RegLang("Rusty Jetpack",
+            	"Increase jump height and reduce gravity.",
+            	"<style=cIsUtility>Reduces gravity</style> by <style=cIsUtility>" + pct(gravMod) + "</style> while <style=cIsUtility>holding jump</style>. Increases <style=cIsUtility>jump power</style> by <style=cIsUtility>" + pct(jumpMult) + "</style> <style=cStack>(+" + pct(jumpMult)  + " per stack, linear)</style>.",
+            	"A relic of times long past (ClassicItems mod)");
             _itemTags = new[]{ItemTag.Utility};
             itemTier = ItemTier.Tier2;
         }

@@ -35,10 +35,10 @@ namespace ThinkInvisible.ClassicItems
         protected override void SetupAttributesInner() {
             modelPathName = "boxingglovescard.prefab";
             iconPathName = "boxinggloves_icon.png";
-            itemName = "Boxing Gloves";
-            itemShortText = "Hitting enemies have a " + pct(procChance,0,1) + " chance to knock them back.";
-            itemLongText = "<style=cIsUtility>" + pct(procChance,0,1) + "</style> <style=cStack>(+"+pct(procChance,0,1)+" per stack, mult.)</style> chance to <style=cIsUtility>knock back</style> an enemy <style=cIsDamage>based on attack damage</style>.";
-            itemLoreText = "A relic of times long past (ClassicItems mod)";
+            RegLang("Boxing Gloves",
+            	"Hitting enemies have a " + pct(procChance,0,1) + " chance to knock them back.",
+            	"<style=cIsUtility>" + pct(procChance,0,1) + "</style> <style=cStack>(+"+pct(procChance,0,1)+" per stack, mult.)</style> chance to <style=cIsUtility>knock back</style> an enemy <style=cIsDamage>based on attack damage</style>.",
+            	"A relic of times long past (ClassicItems mod)");
             _itemTags = new[]{ItemTag.Utility};
             itemTier = ItemTier.Tier2;
         }

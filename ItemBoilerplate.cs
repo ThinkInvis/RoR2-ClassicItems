@@ -16,10 +16,6 @@ namespace ThinkInvisible.ClassicItems
 
         public string modelPathName {get; protected set;}
         public string iconPathName {get; protected set;}
-        public string itemName {get; protected set;}
-        public string itemShortText {get; protected set;}
-        public string itemLongText {get; protected set;}
-        public string itemLoreText {get; protected set;}
 
         protected ItemTag[] _itemTags;
         public ReadOnlyCollection<ItemTag> itemTags {get; private set;}
@@ -66,16 +62,21 @@ namespace ThinkInvisible.ClassicItems
             }
             attributesDone = true;
 
+            var gNameToken = "CLASSICITEMS_" + itemCodeName.ToUpper() + "_NAME";
+            var gPickupToken = "CLASSICITEMS_" + itemCodeName.ToUpper() + "_PICKUP";
+            var gDescriptionToken = "CLASSICITEMS_" + itemCodeName.ToUpper() + "_DESC";
+            var gLoreToken = "CLASSICITEMS_" + itemCodeName.ToUpper() + "_LORE";
+
             SetupAttributesInner();
 
             if(itemIsEquipment) {
                 regDefEqp = new EquipmentDef {
                     pickupModelPath = "@ClassicItems:Assets/ClassicItems/models/" + modelPathName,
                     pickupIconPath = "@ClassicItems:Assets/ClassicItems/icons/" + iconPathName,
-                    nameToken = itemName,
-                    pickupToken = itemShortText,
-                    descriptionToken = itemLongText,
-                    loreToken = itemLoreText,
+                    nameToken = gNameToken,
+                    pickupToken = gPickupToken,
+                    descriptionToken = gDescriptionToken,
+                    loreToken = gLoreToken,
                     cooldown = itemCooldown,
                     enigmaCompatible = itemEnigmable,
                     canDrop = true
@@ -87,17 +88,38 @@ namespace ThinkInvisible.ClassicItems
                     tier = itemTier,
                     pickupModelPath = "@ClassicItems:Assets/ClassicItems/models/" + modelPathName,
                     pickupIconPath = "@ClassicItems:Assets/ClassicItems/icons/" + iconPathName,
-                    nameToken = itemName,
-                    pickupToken = itemShortText,
-                    descriptionToken = itemLongText,
-                    loreToken = itemLoreText,
+                    nameToken = gNameToken,
+                    pickupToken = gPickupToken,
+                    descriptionToken = gDescriptionToken,
+                    loreToken = gLoreToken,
                     tags = _itemTags
                 };
+
                 itemTags = Array.AsReadOnly(_itemTags);
                 regItem = new CustomItem(regDef, new ItemDisplayRuleDict(null));
                 regIndex = ItemAPI.Add(regItem);
             }
         }
+
+        public void RegLang(string name, string pickup, string desc, string lore, string langid = null) {
+            var gNameToken = "CLASSICITEMS_" + itemCodeName.ToUpper() + "_NAME";
+            var gPickupToken = "CLASSICITEMS_" + itemCodeName.ToUpper() + "_PICKUP";
+            var gDescriptionToken = "CLASSICITEMS_" + itemCodeName.ToUpper() + "_DESC";
+            var gLoreToken = "CLASSICITEMS_" + itemCodeName.ToUpper() + "_LORE";
+
+            if(langid == null) {
+                R2API.AssetPlus.Languages.AddToken(gNameToken, name);
+                R2API.AssetPlus.Languages.AddToken(gPickupToken, pickup);
+                R2API.AssetPlus.Languages.AddToken(gDescriptionToken, desc);
+                R2API.AssetPlus.Languages.AddToken(gLoreToken, lore);
+            } else {
+                R2API.AssetPlus.Languages.AddToken(gNameToken, name, langid);
+                R2API.AssetPlus.Languages.AddToken(gPickupToken, pickup, langid);
+                R2API.AssetPlus.Languages.AddToken(gDescriptionToken, desc, langid);
+                R2API.AssetPlus.Languages.AddToken(gLoreToken, lore, langid);
+            }
+        }
+
         public void SetupBehavior() {
             if(behaviorDone) {
                 Debug.LogError("ClassicItems: something tried to setup behavior for an item twice");
