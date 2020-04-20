@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
+using R2API.Utils;
+using System.Collections;
 
 namespace ThinkInvisible.ClassicItems
 {
@@ -63,6 +63,28 @@ namespace ThinkInvisible.ClassicItems
                     throw new ArgumentOutOfRangeException("tier", tier, "spawnItemFromBody: Item tier must be between 0 and 5 inclusive");
             }
             PickupDropletController.CreatePickupDroplet(spawnList[Run.instance.spawnRng.RangeInt(0,spawnList.Count)], src.transform.position, new Vector3(UnityEngine.Random.Range(-5.0f, 5.0f), 20f, UnityEngine.Random.Range(-5.0f, 5.0f)));
+        }
+
+        public static bool RemoveOccupiedNode(this DirectorCore self, RoR2.Navigation.NodeGraph nodeGraph, RoR2.Navigation.NodeGraph.NodeIndex nodeIndex) {
+            var ocnf = self.GetType().GetFieldCached("occupiedNodes");
+            Array ocn = (Array)ocnf.GetValue(self);
+            Array ocnNew = (Array)Activator.CreateInstance(ClassicItemsPlugin.nodeRefTypeArr, ocn.Length - 1);
+            IEnumerable ocne = ocn as IEnumerable;
+            int i = 0;
+            foreach(object o in ocne) {
+                var scanInd = o.GetFieldValue<RoR2.Navigation.NodeGraph.NodeIndex>("nodeIndex");
+                var scanGraph = o.GetFieldValue<RoR2.Navigation.NodeGraph>("nodeGraph");
+                if(object.Equals(scanGraph, nodeGraph) && scanInd.Equals(nodeIndex))
+                    continue;
+                else if(i == ocn.Length - 1) {
+                    Debug.LogWarning("ClassicItems: RemoveOccupiedNode was passed an already-removed or otherwise nonexistent node");
+                    return false;
+                }
+                ocnNew.SetValue(o, i);
+                i++;
+            }
+            ocnf.SetValue(self, ocnNew);
+            return true;
         }
     }
 }

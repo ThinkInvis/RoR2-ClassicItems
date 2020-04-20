@@ -10,6 +10,7 @@ using System.Reflection;
 using UnityEngine;
 using BepInEx.Configuration;
 using Mono.Cecil.Cil;
+using System;
 
 //TODO:
 // Add missing documentation in... a whole lotta places... whoops.
@@ -61,6 +62,7 @@ namespace ThinkInvisible.ClassicItems {
         
         private static ConfigEntry<bool> gCfgHSV2NoStomp;
         private static ConfigEntry<bool> gCfgCoolYourJets;
+
         public static bool gHSV2NoStomp {get;private set;}
         public static bool gCoolYourJets {get;private set;}
 
@@ -126,8 +128,16 @@ namespace ThinkInvisible.ClassicItems {
             }
         }
         #endif
+        
+        internal static Type nodeRefType;
+        internal static Type nodeRefTypeArr;
 
         public void Awake() {
+            Debug.Log("ClassicItems: performing plugin setup...");
+
+            nodeRefType = typeof(DirectorCore).GetNestedTypes(System.Reflection.BindingFlags.NonPublic).First(t=>t.Name == "NodeReference");
+            nodeRefTypeArr = nodeRefType.MakeArrayType();
+
             Debug.Log("ClassicItems: tweaking vanilla stuff...");
 
             //Remove the H3AD-5T V2 state transition from idle to stomp, as Headstompers has similar functionality

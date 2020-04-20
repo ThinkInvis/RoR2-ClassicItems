@@ -1,7 +1,11 @@
 ﻿using BepInEx.Configuration;
 using RoR2;
+using R2API;
 using System;
 using UnityEngine;
+using static ThinkInvisible.ClassicItems.MiscUtil;
+using MonoMod.Cil;
+using Mono.Cecil.Cil;
 
 namespace ThinkInvisible.ClassicItems
 {
@@ -9,29 +13,30 @@ namespace ThinkInvisible.ClassicItems
     {
         public override string itemCodeName{get;} = "Brooch";
 
-        private ConfigEntry<float> cfgExtraTime;
-        private ConfigEntry<int> cfgExtraStages;
+        private ConfigEntry<float> cfgExtraCost;
         private ConfigEntry<bool> cfgSafeMode;
+        private ConfigEntry<bool> cfgFallbackSpawn;
 
-        public float extraTime {get;private set;}
-        public int extraStages {get;private set;}
+        public float extraCost {get;private set;}
         public bool safeMode {get;private set;}
+        public bool doFallbackSpawn {get;private set;}
 
         private Xoroshiro128Plus BroochRNG;
 
-        protected override void SetupConfigInner(ConfigFile cfl) {
-            cfgExtraTime = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "ExtraTime"), 120f, new ConfigDescription(
-                "Run time to add to the difficulty cost multiplier of chests spawned by Captain's Brooch.",
-                new AcceptableValueRange<float>(0f, float.MaxValue)));
-            cfgExtraStages = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "ExtraStages"), 1, new ConfigDescription(
-                "Passed stages to add to the difficulty cost multiplier of chests spawned by Captain's Brooch.",
-                new AcceptableValueRange<int>(0, int.MaxValue)));
-            cfgSafeMode = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "SafeMode"), false, new ConfigDescription(
-                "If true, chests spawned by Captain's Brooch will immediately appear at the player's position instead of falling nearby."));
+        protected static InteractableSpawnCard broochPrefab;
 
-            extraTime = cfgExtraTime.Value;
-            extraStages = cfgExtraStages.Value;
+        protected override void SetupConfigInner(ConfigFile cfl) {
+            cfgExtraCost = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "ExtraCost"), 0.5f, new ConfigDescription(
+                "Multiplier for additional cost of chests spawned by Captain's Brooch.",
+                new AcceptableValueRange<float>(0f, float.MaxValue)));
+            cfgSafeMode = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "SafeMode"), false, new ConfigDescription(
+                "If true, chests spawned by Captain's Brooch will immediately appear at the target position instead of falling nearby, and will not be destroyed after purchase."));
+            cfgFallbackSpawn = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "FallbackSpawn"), false, new ConfigDescription(
+                "If true, Captain's Brooch will spawn chests directly at the player's position if it can't find a suitable spot nearby. If false, it will fail to spawn the chest and refrain from using an equipment charge."));
+
+            extraCost = cfgExtraCost.Value;
             safeMode = cfgSafeMode.Value;
+            doFallbackSpawn = cfgFallbackSpawn.Value;
         }
         
         protected override void SetupAttributesInner() {
@@ -44,45 +49,121 @@ namespace ThinkInvisible.ClassicItems
 
             RegLang("Captain's Brooch",
                 "One man's wreckage is another man's treasure.",
-                "Call down a basic item chest, with an opening cost equivalent to one from " + extraStages.ToString("N0") + " level(s) and " + extraTime.ToString("N0") + " second(s) in the future.",
+                "Calls down a <style=cIsUtility>low-tier item chest</style> which <style=cIsUtility>costs " + pct(extraCost) + " more than usual</style>.",
                 "A relic of times long past (ClassicItems mod)");
         }
 
+
+        private bool ILFailed = false;
+
         protected override void SetupBehaviorInner() {
+            IL.RoR2.DirectorCore.TrySpawnObject += IL_DCTrySpawnObject;
+            if(ILFailed) safeMode = true;
+
             BroochRNG = new Xoroshiro128Plus(0UL);
+
+            broochPrefab = UnityEngine.Object.Instantiate(Resources.Load<InteractableSpawnCard>("SpawnCards/InteractableSpawnCard/iscChest1"));
+            broochPrefab.directorCreditCost = 0;
+            broochPrefab.sendOverNetwork = true;
+            broochPrefab.skipSpawnWhenSacrificeArtifactEnabled = false;
+            broochPrefab.prefab = PrefabAPI.InstantiateClone(broochPrefab.prefab,"chestBrooch");
+
+            if(!safeMode) broochPrefab.prefab.AddComponent<CaptainsBroochDroppod>();
+
+            var pInt = broochPrefab.prefab.GetComponent<PurchaseInteraction>();
+
+            pInt.cost = Mathf.CeilToInt(pInt.cost * (1f + extraCost));
+            pInt.automaticallyScaleCostWithDifficulty = true;
+            
+            if(!safeMode) On.RoR2.ChestBehavior.Open += On_CBOpen;
             On.RoR2.EquipmentSlot.PerformEquipmentAction += On_ESPerformEquipmentAction;
         }
 
-        private bool On_ESPerformEquipmentAction(On.RoR2.EquipmentSlot.orig_PerformEquipmentAction orig, EquipmentSlot slot, EquipmentIndex eqpid) {
-            if(slot.characterBody && eqpid == regIndexEqp) {
-                var trans = slot.characterBody.transform;
+        private void IL_DCTrySpawnObject(ILContext il) {
+            ILCursor c = new ILCursor(il);
 
-                var chestPrefab = UnityEngine.Object.Instantiate(Resources.Load<InteractableSpawnCard>("SpawnCards/InteractableSpawnCard/iscChest1"));
-                chestPrefab.directorCreditCost = 0;
-                chestPrefab.skipSpawnWhenSacrificeArtifactEnabled = false;
-                var chestSpawnRes = chestPrefab.DoSpawn(trans.position, trans.rotation, new DirectorSpawnRequest(chestPrefab, null, BroochRNG));
-                var chestSpawn = chestSpawnRes.spawnedInstance;
+            
+            ILLabel[] swarr = new ILLabel[]{};
+            int instind = -1;
 
-                var oldCost = chestSpawn.GetComponent<PurchaseInteraction>().cost;
-                int newCost = (int)(oldCost * Mathf.Pow(Run.instance.difficultyCoefficient + MiscUtil.getDifficultyCoeffIncreaseAfter(extraTime, extraStages), 1.25f));
-                chestSpawn.GetComponent<PurchaseInteraction>().cost = newCost;
-                chestSpawn.GetComponent<PurchaseInteraction>().Networkcost = newCost;
-
-                if(!safeMode)
-                    chestSpawn.AddComponent<CaptainsBroochDroppod>();
-
-                return true;
+            bool ILFound = c.TryGotoNext(
+                x=>x.MatchSwitch(out swarr))
+            && c.TryGotoNext(
+                x=>x.MatchLdfld<SpawnCard.SpawnResult>("spawnedInstance")
+                && x.Offset > swarr[(int)DirectorPlacementRule.PlacementMode.Approximate].Target.Offset
+                && x.Offset < swarr[(int)DirectorPlacementRule.PlacementMode.Approximate+1].Target.Offset,
+                x=>x.MatchStloc(out instind)
+                )
+            && c.TryGotoNext(
+                x=>x.MatchCallOrCallvirt<DirectorCore>("AddOccupiedNode")
+                && x.Offset < swarr[(int)DirectorPlacementRule.PlacementMode.Approximate+1].Target.Offset);
+            if(ILFound) {
+                c.Emit(OpCodes.Dup);
+                c.Emit(OpCodes.Ldloc, instind);
+                c.EmitDelegate<Action<RoR2.Navigation.NodeGraph.NodeIndex, GameObject>>((ind,res)=>{
+                    var cpt = res.GetComponent<CaptainsBroochDroppod>();
+                    if(cpt) cpt.mapNode = ind;
+                });
             }
-            return orig(slot, eqpid);
         }
 
-        public class CaptainsBroochDroppod:MonoBehaviour {
+        private void On_CBOpen(On.RoR2.ChestBehavior.orig_Open orig, ChestBehavior self) {
+            orig(self);
+            var dot = self.GetComponentInParent<CaptainsBroochDroppod>();
+            if(dot) dot.Unlaunch();
+        }
+
+        private void Evt_BroochChestSpawnServer(SpawnCard.SpawnResult spawnres) {
+            if(!safeMode && spawnres.success)
+                spawnres.spawnedInstance.GetComponent<CaptainsBroochDroppod>().Launch();
+        }
+
+        private bool On_ESPerformEquipmentAction(On.RoR2.EquipmentSlot.orig_PerformEquipmentAction orig, EquipmentSlot slot, EquipmentIndex eqpid) {
+            if(eqpid == regIndexEqp) {
+                if(!slot.characterBody) return false;
+                var trans = slot.characterBody.transform;
+
+                var dsr = new DirectorSpawnRequest(broochPrefab, new DirectorPlacementRule {
+                    maxDistance = 25f,
+                    minDistance = 5f,
+                    placementMode = DirectorPlacementRule.PlacementMode.Approximate,
+                    position = trans.position,
+                    preventOverhead = true
+                }, BroochRNG);
+
+                dsr.onSpawnedServer += Evt_BroochChestSpawnServer;
+
+                var spawnobj = DirectorCore.instance.TrySpawnObject(dsr);
+                //broochPrefab.DoSpawn(trans.position, trans.rotation, dsr);
+                if(spawnobj == null) {
+                    if(doFallbackSpawn) {
+                        Debug.LogWarning("Captain's Brooch: spawn failed, using fallback position. This may be caused by too many objects nearby/no suitable ground.");
+                        var dsrFallback = new DirectorSpawnRequest(broochPrefab, new DirectorPlacementRule {
+                            placementMode = DirectorPlacementRule.PlacementMode.Direct,
+                            position = trans.position
+                        }, BroochRNG);
+                        dsrFallback.onSpawnedServer += Evt_BroochChestSpawnServer;
+                        broochPrefab.DoSpawn(trans.position, trans.rotation, dsrFallback);
+                        return true;
+                    } else {
+                        Debug.LogWarning("Captain's Brooch: spawn failed, not triggering equipment. This may be caused by too many objects nearby/no suitable ground.");
+                        return false;
+                    }
+                } else return true;
+            } else return orig(slot, eqpid);
+        }
+
+        protected class CaptainsBroochDroppod:MonoBehaviour {
             Vector3 destination;
             Vector3 source;
             float droptimer = 2f;
             ShakeEmitter shkm;
-            public void Awake() {
-                shkm = this.transform.gameObject.AddComponent<ShakeEmitter>();
+            int launchState = 0;
+
+            public RoR2.Navigation.NodeGraph.NodeIndex mapNode;
+
+            public void Launch() {
+                shkm = this.gameObject.AddComponent<ShakeEmitter>();
 				shkm.wave = new Wave {
 					amplitude = 0.25f,
 					frequency = 180f,
@@ -94,41 +175,62 @@ namespace ThinkInvisible.ClassicItems
 
                 var originalPos = this.gameObject.transform.position;
 
-                this.gameObject.transform.position += Vector3.up * 2000f;
+                this.gameObject.transform.position += Vector3.up * 1000f;
                 source = this.gameObject.transform.position;
-                Vector3 rndir = new Vector3(
-                    UnityEngine.Random.Range(-0.005f,0.005f),
-                    -1f,
-                    UnityEngine.Random.Range(-0.005f,0.005f)
-                    ).normalized;
-                RaycastHit[] allHitInf = Physics.RaycastAll(this.gameObject.transform.position, rndir, 4000f);
-                float closestHit = -1;
-                foreach(RaycastHit h in allHitInf) {
-                    if(h.collider?.gameObject?.layer == 11) {
-                        var newdest = h.point + Vector3.down * 0.6f;
-                        var hitDist = Math.Abs(newdest.y - originalPos.y);
-                        if(closestHit == -1 || hitDist < closestHit) {
-                            destination = newdest;
-                            closestHit = hitDist;
-                        }
-                    }
-                }
-                if(destination == null) destination = originalPos;
+                var rth = UnityEngine.Random.Range(0,Mathf.PI*2);
+                var rmag = UnityEngine.Random.Range(0,100f);
+                source += new Vector3(
+                    Mathf.Cos(rth)*rmag,
+                    0,
+                    Mathf.Sin(rth)*rmag);
+
+                destination = originalPos;
+                launchState = 1;
+            }
+
+            public void Unlaunch() {
+                launchState = 3;
             }
             
-            public void Update() {
-                droptimer -= Time.fixedDeltaTime;
-                this.gameObject.transform.position = Vector3.Lerp(source, destination, 1f-Math.Max(droptimer/2f, 0f));
-                if(droptimer <= 0f) {
-					EffectManager.SpawnEffect(Resources.Load<GameObject>("Prefabs/Effects/ImpactEffects/PodGroundImpact"), new EffectData
-					{
-						origin = this.gameObject.transform.position,
-						rotation = this.gameObject.transform.rotation,
-                        scale = 0.25f
-					}, true);
-			        Util.PlaySound("Play_UI_podImpact", this.gameObject);
-                    Destroy(shkm);
-                    Destroy(this);
+            private void FixedUpdate() {
+                if(launchState == 1) {
+                    droptimer -= Time.fixedDeltaTime;
+                    this.gameObject.transform.position = Vector3.Lerp(source, destination, 1f-Math.Max(droptimer/2f, 0f));
+                    if(droptimer <= 0f) {
+                        EffectManager.SpawnEffect(Resources.Load<GameObject>("Prefabs/Effects/ImpactEffects/PodGroundImpact"), new EffectData
+					    {
+						    origin = this.gameObject.transform.position,
+						    rotation = this.gameObject.transform.rotation,
+                            scale = 0.25f
+					    }, true);
+                        Util.PlaySound("Play_UI_podImpact", this.gameObject);
+                        shkm.enabled = false;
+                        launchState = 2;
+                        droptimer = 0f;
+                    }
+                } else if(launchState == 3) {
+                    droptimer += Time.fixedDeltaTime;
+                    if(droptimer >= 5f) {
+                        EffectManager.SpawnEffect(Resources.Load<GameObject>("Prefabs/Effects/ImpactEffects/PodGroundImpact"), new EffectData
+					    {
+						    origin = this.gameObject.transform.position,
+						    rotation = this.gameObject.transform.rotation,
+                            scale = 0.25f
+					    }, true);
+                        Util.PlaySound("Play_UI_podImpact", this.gameObject);
+                        shkm.enabled = true;
+                        droptimer = 2f;
+                        launchState = 4;
+                    }
+                } else if(launchState == 4) {
+                    droptimer -= Time.fixedDeltaTime;
+                    this.gameObject.transform.position = Vector3.Lerp(destination, source, 1f-Math.Max(droptimer/2f, 0f));
+                    if(droptimer <= 0f) {
+                        DirectorCore.instance.RemoveOccupiedNode(
+                            SceneInfo.instance.GetNodeGraph(broochPrefab.nodeGraphType),
+                            mapNode);
+                        Destroy(this.gameObject);
+                    }
                 }
             }
         }
