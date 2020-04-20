@@ -80,7 +80,7 @@ namespace ThinkInvisible.ClassicItems
                     enigmaCompatible = itemEnigmable,
                     canDrop = true
                 };
-                regEqp = new CustomEquipment(regDefEqp, new ItemDisplayRule[0]);
+                regEqp = new CustomEquipment(regDefEqp, new ItemDisplayRuleDict(null));
                 regIndexEqp = ItemAPI.Add(regEqp);
             } else {
                 regDef = new ItemDef {
@@ -94,11 +94,10 @@ namespace ThinkInvisible.ClassicItems
                     tags = _itemTags
                 };
                 itemTags = Array.AsReadOnly(_itemTags);
-                regItem = new CustomItem(regDef, new ItemDisplayRule[0]);
+                regItem = new CustomItem(regDef, new ItemDisplayRuleDict(null));
                 regIndex = ItemAPI.Add(regItem);
             }
         }
-
         public void SetupBehavior() {
             if(behaviorDone) {
                 Debug.LogError("ClassicItems: something tried to setup behavior for an item twice");
