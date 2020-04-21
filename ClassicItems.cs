@@ -31,7 +31,7 @@ namespace ThinkInvisible.ClassicItems {
     [BepInPlugin(ModGuid, ModName, ModVer)]
     [BepInDependency(R2API.R2API.PluginGUID)]
     [BepInDependency("com.funkfrog_sipondo.sharesuite",BepInDependency.DependencyFlags.SoftDependency)]
-    [R2APISubmoduleDependency(nameof(ItemAPI), nameof(AssetPlus), nameof(ResourcesAPI), nameof(PlayerAPI))]
+    [R2APISubmoduleDependency(nameof(ItemAPI), nameof(AssetPlus), nameof(ResourcesAPI), nameof(PlayerAPI), nameof(PrefabAPI))]
     public class ClassicItemsPlugin:BaseUnityPlugin {
         public const string ModVer =
             #if DEBUG
