@@ -61,7 +61,8 @@ namespace ThinkInvisible.ClassicItems
             LifeSavingsComponent cpt = self.GetComponent<LifeSavingsComponent>();
             if(self.inventory && self.master && cpt) {
                 int icnt = GetCount(self);
-                cpt.moneyBuffer += Time.fixedDeltaTime * gainPerSec * ((icnt < invertCount)?(1f/(float)(invertCount-icnt+1)):(icnt-invertCount+1));
+                if(icnt > 0)
+                    cpt.moneyBuffer += Time.fixedDeltaTime * gainPerSec * ((icnt < invertCount)?(1f/(float)(invertCount-icnt+1)):(icnt-invertCount+1));
                 //Disable during teleport animation, but keep tracking time so it stacks up after teleport is complete
                 //Accumulator is emptied into actual money variable whenever a tick passes and it has enough for a change in integer value
                 if(cpt.moneyBuffer >= 1.0f && !holdIt){
