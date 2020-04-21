@@ -192,10 +192,10 @@ namespace ThinkInvisible.ClassicItems
 
             var originalPos = this.gameObject.transform.position;
 
-            this.gameObject.transform.position += Vector3.up * 100f;
+            this.gameObject.transform.position += Vector3.up * 2000f;
             source = this.gameObject.transform.position;
             var rth = UnityEngine.Random.Range(0,Mathf.PI*2);
-            var rmag = UnityEngine.Random.Range(0,10f);
+            var rmag = UnityEngine.Random.Range(0,150f);
             source += new Vector3(
                 Mathf.Cos(rth)*rmag,
                 0,
