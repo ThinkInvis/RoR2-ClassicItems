@@ -53,6 +53,11 @@ For nostalgic purposes only. Here Be Dragons who hoard balance issues, because t
 
 ## Changelog
 
+**2.1.0**
+
+- Finished incomplete IL failure fallback for Captain's Brooch, which should no longer potentially cause errors if another mod interferes with its IL patch.
+- Added inverse behavior at low stacks to Life Savings: default config options now provide (per second, by stack count): $1/3, $1/2, $1, $2, $3....
+
 **2.0.1**
 
 - Fixed item disables in config not being checked.
