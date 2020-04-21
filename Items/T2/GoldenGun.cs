@@ -15,11 +15,11 @@ namespace ThinkInvisible.ClassicItems
         public override string itemCodeName{get;} = "GoldenGun";
 
         private ConfigEntry<float> cfgDamageBoost;
-        private ConfigEntry<uint> cfgGoldAmt;
+        private ConfigEntry<int> cfgGoldAmt;
         private ConfigEntry<float> cfgGoldReduc;
 
         public float damageBoost {get;private set;}
-        public uint goldAmt {get;private set;}
+        public int goldAmt {get;private set;}
         public float goldReduc {get;private set;}
 
         private bool ilFailed = false;
@@ -28,9 +28,9 @@ namespace ThinkInvisible.ClassicItems
             cfgDamageBoost = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "DamageBoost"), 0.4f, new ConfigDescription(
                 "Maximum multiplier to add to player damage.",
                 new AcceptableValueRange<float>(0f,float.MaxValue)));
-            cfgGoldAmt = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "GoldAmt"), 700u, new ConfigDescription(
+            cfgGoldAmt = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "GoldAmt"), 700, new ConfigDescription(
                 "Gold required for maximum damage. Scales with difficulty level.",
-                new AcceptableValueRange<uint>(0,uint.MaxValue)));
+                new AcceptableValueRange<int>(0,int.MaxValue)));
             cfgGoldReduc = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "GoldReduc"), 0.5f, new ConfigDescription(
                 "Inverse-exponential multiplier for reduced GoldAmt per stack.",
                 new AcceptableValueRange<float>(0f,0.999f)));
@@ -45,7 +45,7 @@ namespace ThinkInvisible.ClassicItems
             iconPathName = "goldengun_icon.png";
             RegLang("Golden Gun",
             	"More gold, more damage.",
-            	"Deal <style=cIsDamage>bonus damage</style> based on your <style=cIsUtility>money</style>, up to <style=cIsDamage>40% damage</style> at <style=cIsUtility>$700</style> <style=cStack>(-50% per stack)</style>.",
+            	"Deal <style=cIsDamage>bonus damage</style> based on your <style=cIsUtility>money</style>, up to <style=cIsDamage>40% damage</style> at <style=cIsUtility>$700</style> <style=cStack>(cost increases with difficulty, -50% per stack)</style>.",
             	"A relic of times long past (ClassicItems mod)");
             _itemTags = new[]{ItemTag.Utility};
             itemTier = ItemTier.Tier2;
@@ -88,7 +88,7 @@ namespace ThinkInvisible.ClassicItems
                 c.Emit(OpCodes.Ldloc, locDmg);
                 c.EmitDelegate<Func<CharacterMaster,float,float>>((chrm, origdmg) => {
                     var icnt = GetCount(chrm.inventory);
-                    var moneyCoef = chrm.money / (goldAmt * Mathf.Pow(goldReduc, icnt - 1));
+                    var moneyCoef = chrm.money / (Run.instance.GetDifficultyScaledCost(goldAmt) * Mathf.Pow(goldReduc, icnt - 1));
                     if(icnt == 0) return origdmg;
                     return origdmg * (1 + Mathf.Lerp(0,damageBoost,moneyCoef));
                 });
