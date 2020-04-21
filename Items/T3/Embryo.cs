@@ -44,7 +44,7 @@ namespace ThinkInvisible.ClassicItems
                 if(ind == EquipmentIndex.AffixBlue || ind == EquipmentIndex.AffixGold || ind == EquipmentIndex.AffixHaunted || ind == EquipmentIndex.AffixPoison || ind == EquipmentIndex.AffixRed || ind == EquipmentIndex.AffixWhite || ind == EquipmentIndex.AffixYellow
                     || ind == EquipmentIndex.BurnNearby || ind == EquipmentIndex.CrippleWard || ind == EquipmentIndex.LunarPotion || ind == EquipmentIndex.SoulCorruptor || ind == EquipmentIndex.Tonic
                     || ind == EquipmentIndex.GhostGun || ind == EquipmentIndex.OrbitalLaser || ind == EquipmentIndex.SoulJar
-                    || ind == EquipmentIndex.GoldGat || ind == EquipmentIndex.Gateway || ind == EquipmentIndex.Recycle || ind == EquipmentIndex.Scanner
+                    || ind == EquipmentIndex.Gateway || ind == EquipmentIndex.Recycle || ind == EquipmentIndex.Scanner
                     || ind == EquipmentIndex.Count || ind == EquipmentIndex.Enigma || ind == EquipmentIndex.None || ind == EquipmentIndex.QuestVolatileBattery
                     #if !DEBUG
                     || ind == EquipmentIndex.Jetpack
@@ -77,12 +77,19 @@ namespace ThinkInvisible.ClassicItems
             itemTier = ItemTier.Tier3;
         }
 
+        private bool ILFailed = false;
+
         protected override void SetupBehaviorInner() {
             On.RoR2.CharacterBody.OnInventoryChanged += On_CBOnInventoryChanged;
             On.RoR2.EquipmentSlot.PerformEquipmentAction += On_ESPerformEquipmentAction;
 
             IL.RoR2.EquipmentSlot.PerformEquipmentAction += IL_ESPerformEquipmentAction;
             IL.RoR2.EquipmentSlot.FixedUpdate += IL_ESFixedUpdate;
+
+            if(subEnable[EquipmentIndex.GoldGat]) {
+                IL.EntityStates.GoldGat.GoldGatFire.FireBullet += IL_EntGGFFireBullet;
+                if(ILFailed) IL.EntityStates.GoldGat.GoldGatFire.FireBullet -= IL_EntGGFFireBullet;
+            }
         }
 
         private void On_CBOnInventoryChanged(On.RoR2.CharacterBody.orig_OnInventoryChanged orig, CharacterBody self) {            
@@ -440,6 +447,34 @@ namespace ThinkInvisible.ClassicItems
                 } else {
                     Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: BFG (FixedUpdate)");
                 }
+            }
+        }
+
+        private void IL_EntGGFFireBullet(ILContext il) {
+            ILCursor c = new ILCursor(il);
+            
+            //Insert a check for Embryo procs at the top of the function
+            bool boost = false;
+            c.Emit(OpCodes.Ldarg_0);
+            c.EmitDelegate<Action<EntityStates.GoldGat.GoldGatFire>>((ggf)=>{
+                var n = ggf.GetFieldValue<NetworkedBodyAttachment>("networkedBodyAttachment");
+                boost = Util.CheckRoll(GetCount(n?.attachedBodyObject?.GetComponent<CharacterBody>())*cfgProcChance.Value);
+            });
+
+            bool ILFound;
+
+            //Find: loading of a value into GoldGatFire.fireFrequency
+            ILFound = c.TryGotoNext(
+                x=>x.MatchStfld<EntityStates.GoldGat.GoldGatFire>("fireFrequency"));
+
+            if(ILFound) {
+                //Double the original fire frequency for boosted shots
+                c.EmitDelegate<Func<float,float>>((origFreq) => {
+                    return boost ? origFreq*2 : origFreq;
+                });
+            } else {
+                Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: GoldGat (FireBullet); target instructions not found");
+                ILFailed = true;
             }
         }
     }
