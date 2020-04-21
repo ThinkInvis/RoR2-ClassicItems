@@ -100,8 +100,9 @@ namespace ThinkInvisible.ClassicItems {
             MILL.ForEach(x=>{
                 x.SetupConfig(cfgFile);
             });
-            
 
+            MILL.RemoveAll(x=>x.itemEnabled==false);
+            
             Debug.Log("ClassicItems: registering item attributes...");
             MILL.ForEach(x=>{
                 x.SetupAttributes();
