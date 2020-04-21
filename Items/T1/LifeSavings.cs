@@ -67,7 +67,10 @@ namespace ThinkInvisible.ClassicItems
                 //Disable during teleport animation, but keep tracking time so it stacks up after teleport is complete
                 //Accumulator is emptied into actual money variable whenever a tick passes and it has enough for a change in integer value
                 if(cpt.moneyBuffer >= 1.0f && !holdIt){
-                    self.master.GiveMoney((uint)Math.Floor(cpt.moneyBuffer));
+                    if(BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.funkfrog_sipondo.sharesuite") && Compat_ShareSuite.MoneySharing())
+                        Compat_ShareSuite.GiveMoney((uint)Math.Floor(cpt.moneyBuffer));
+                    else
+                        self.master.GiveMoney((uint)Math.Floor(cpt.moneyBuffer));
                     cpt.moneyBuffer %= 1.0f;
                 }
             }

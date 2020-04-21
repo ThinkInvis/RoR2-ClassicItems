@@ -37,6 +37,9 @@
       <HintPath>..\REF\BepInEx\plugins\R2API\R2API.dll</HintPath>
       <Private>false</Private>
     </Reference>
+    <Reference Include="ShareSuite">
+      <HintPath>lib\ShareSuite.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.TextMeshPro">
       <HintPath>..\REF\Managed\Unity.TextMeshPro.dll</HintPath>
       <Private>false</Private>
