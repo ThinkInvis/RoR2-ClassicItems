@@ -10,24 +10,23 @@ namespace ThinkInvisible.ClassicItems
         public override string itemCodeName{get;} = "LifeSavings";
 
         private ConfigEntry<float> cfgGainPerSec;
-        //private ConfigEntry<int> cfgInvertCount;
+        private ConfigEntry<int> cfgInvertCount;
 
         public float gainPerSec {get;private set;}
-        //public int invertCount {get;private set;}
+        public int invertCount {get;private set;}
 
         public bool holdIt {get; private set;} = false; //https://www.youtube.com/watch?v=vDMwDT6BhhE
 
         protected override void SetupConfigInner(ConfigFile cfl) {
-            cfgGainPerSec = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "GainPerSec"), 0.5f, new ConfigDescription(
-                //"Money to add to players per second per Life Savings stack (without taking into account InvertCount). Must be positive.",
-                "Money to add to players per second per Life Savings stack. Must be positive.",
+            cfgGainPerSec = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "GainPerSec"), 1f, new ConfigDescription(
+                "Money to add to players per second per Life Savings stack (without taking into account InvertCount).",
                 new AcceptableValueRange<float>(0f,float.MaxValue)));
-            /*cfgInvertCount = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "InvertCount"), 3, new ConfigDescription(
-                "With <InvertCount stacks, money per second will be equal to GainPerSec/(InvertCount - stacks + 1). With >=InvertCount stacks, money per second will be equal to GainPerSec*(stacks - InvertCount). Must be positive.",
-                new AcceptableValueRange<int>(0,int.MaxValue)));*/
+            cfgInvertCount = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "InvertCount"), 3, new ConfigDescription(
+                "With <InvertCount stacks, number of stacks affects time per interval instead of multiplying money gained.",
+                new AcceptableValueRange<int>(0,int.MaxValue)));
 
             gainPerSec = cfgGainPerSec.Value;
-            //invertCount = cfgInvertCount.Value;
+            invertCount = cfgInvertCount.Value;
         }
 
         protected override void SetupAttributesInner() {
@@ -62,8 +61,7 @@ namespace ThinkInvisible.ClassicItems
             LifeSavingsComponent cpt = self.GetComponent<LifeSavingsComponent>();
             if(self.inventory && self.master && cpt) {
                 int icnt = GetCount(self);
-                //cpt.moneyBuffer += Time.fixedDeltaTime * gainPerSec * ((icnt < invertCount)?(1f/(invertCount-icnt+1)):(icnt-invertCount));
-                cpt.moneyBuffer += Time.fixedDeltaTime * gainPerSec * icnt;
+                cpt.moneyBuffer += Time.fixedDeltaTime * gainPerSec * ((icnt < invertCount)?(1f/(float)(invertCount-icnt+1)):(icnt-invertCount+1));
                 //Disable during teleport animation, but keep tracking time so it stacks up after teleport is complete
                 //Accumulator is emptied into actual money variable whenever a tick passes and it has enough for a change in integer value
                 if(cpt.moneyBuffer >= 1.0f && !holdIt){
