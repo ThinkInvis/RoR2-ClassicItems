@@ -169,14 +169,25 @@ namespace ThinkInvisible.ClassicItems
                 boost = Util.CheckRoll(GetCount(slot.characterBody)*cfgProcChance.Value);
                 cpt = slot.characterBody?.GetComponent<EmbryoComponent>();
             });
-                
+            
             bool ILFound;
 
+            ILLabel[] swarr = new ILLabel[]{};
+            //Load switch case locations
+            ILFound = c.TryGotoNext(
+                x=>x.MatchSwitch(out swarr));
+            if(!ILFound) {
+                Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch (ALL EQUIPMENTS): couldn't find switch!");
+                return;
+            }
 
             //CommandMissile: double number of missiles fired in the same timespan
-            if(subEnable[EquipmentIndex.CommandMissile]) {
+            if((int)EquipmentIndex.CommandMissile >= swarr.Length)
+                Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: CommandMissile (PerformEquipmentAction); not in switch");
+            else if(subEnable[EquipmentIndex.CommandMissile]) {
                 //Find: default missile increment (+= (int)12)
                 int origMissiles = 12;
+                c.GotoLabel(swarr[(int)EquipmentIndex.CommandMissile]);
                 ILFound = c.TryGotoNext(
                     x=>x.MatchLdfld<EquipmentSlot>("remainingMissiles"),
                     x=>x.MatchLdcI4(out origMissiles),
@@ -192,64 +203,16 @@ namespace ThinkInvisible.ClassicItems
                         return (sbyte)(boost ? origMissiles*2 : origMissiles);
                     });
                 } else {
-                    Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: CommandMissile (PerformEquipmentAction)");
+                    Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: CommandMissile (PerformEquipmentAction); target instructions not found");
                 }
             }
 
-
-            //Fruit: simple retrigger, patch as backup:
-            /*c.GotoNext(
-                x=>x.MatchLdstr("Prefabs/Effects/FruitHealEffect")
-                );
-            c.GotoNext(
-                x=>x.MatchLdcR4(0.5f)
-                );
-            c.Remove();
-            c.Emit(OpCodes.Ldloc_S, (byte)47);
-            c.EmitDelegate<Func<bool,float>>((boost)=>{
-                return boost ? 1.0f : 0.5f;
-            });*/
-
-
-            //Meteor: lunar, no effect (for now). double number of meteors spawned in the same timespan
-            /*if(cfgSubEnableMeteor.Value) {
-                //Find: string "Prefabs/NetworkedObjects/MeteorStorm"
-                //Then: dup (ref to MeteorStormController)
-                ILFound = c.TryGotoNext(
-                    x=>x.MatchLdstr("Prefabs/NetworkedObjects/MeteorStorm"),
-                    x=>x.MatchDup()
-                    );
-                    
-                if(ILFound) {
-                    //Advance cursor to the found dup
-                    c.GotoNext(
-                        x=>x.MatchDup()
-                        );
-                    //Insert a custom function to check for Embryo proc (needs insertion of another Dup (MeteorStormController))
-                    //If proc happens, halves wave time and doubles wave count of the MeteorStormController
-                    //TO-CHECK: does this speed buff stick around and apply to *all* MeteorStormControllers? happened to FireBallDash before
-                    c.Emit(OpCodes.Dup);
-                    c.Emit(OpCodes.Ldloc_S, (byte)47);
-                    c.EmitDelegate<Action<MeteorStormController, bool>>((obj, boost)=>{
-                        if(boost) {
-                            obj.waveMinInterval /= 2;
-                            obj.waveMaxInterval /= 2;
-                            obj.waveCount *= 2;
-                        }
-                    });
-                } else {
-                    Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: Meteor");
-                }
-            }*/
-
-
-            //SoulJar: no defined behavior, NYI?
-
-            //Enigma: no defined behavior, unused?
-
             //Blackhole: double yoink radius
-            if(subEnable[EquipmentIndex.Blackhole]) {
+            if((int)EquipmentIndex.CommandMissile >= swarr.Length)
+                Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: Blackhole; not in switch");
+            else if(subEnable[EquipmentIndex.Blackhole]) {
                 //Find: string "Prefabs/Projectiles/GravSphere", ldloc 15 (Vector3 position)
+                c.GotoLabel(swarr[(int)EquipmentIndex.Blackhole]);
                 ILFound = c.TryGotoNext(MoveType.After,
                     x=>x.MatchLdstr("Prefabs/Projectiles/GravSphere"),
                     x=>x.MatchCallOrCallvirt<Resources>("Load"));
@@ -263,18 +226,17 @@ namespace ThinkInvisible.ClassicItems
                         return newobj;
                     });
                 } else {
-                    Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: Blackhole");
+                    Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: Blackhole; target instructions not found");
                 }
             }
 
-
-            //GhostGun: Reaper's Remorse according to wiki; doesn't seem to appear ingame, NYI?
-
-
             //CritOnUse: double duration
-            if(subEnable[EquipmentIndex.CritOnUse]) {
+            if((int)EquipmentIndex.CritOnUse >= swarr.Length)
+                Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: CritOnUse; not in switch");
+            else if(subEnable[EquipmentIndex.CritOnUse]) {
                 //Find: AddTimedBuff(BuffIndex.FullCrit, 8f)
                 float origBuffTime = 8f;
+                c.GotoLabel(swarr[(int)EquipmentIndex.CritOnUse]);
                 ILFound = c.TryGotoNext(
                     x=>x.MatchLdcI4((int)BuffIndex.FullCrit),
                     x=>x.MatchLdcR4(out origBuffTime),
@@ -290,43 +252,16 @@ namespace ThinkInvisible.ClassicItems
                         return boost ? origBuffTime*2 : origBuffTime;
                     });
                 } else {
-                    Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: CritOnUse");
+                    Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: CritOnUse; target instructions not found");
                 }
             }
 
-            //DroneBackup: simple retrigger, patch as backup:
-            /*c.GotoNext(x=>x.MatchLdcI4(4));
-            c.Remove();
-            c.Emit(OpCodes.Ldloc_S, (byte)47);
-            c.EmitDelegate<Func<bool, int>>((boost) => {
-                return boost ? 8 : 4;
-                });*/
-
-
-            //OrbitalLaser: no name according to wiki; NYI? Found an IL patch anyways but left disabled
-            /*c.GotoNext(
-                x=>x.MatchLdstr("Prefabs/NetworkedObjects/OrbitalLaser")
-                );
-            c.GotoNext(
-                x=>x.MatchDup()
-                );
-            c.Index++;
-            c.Emit(OpCodes.Ldloc_S, (byte)47);
-            c.EmitDelegate<Func<GameObject,bool,GameObject>>((obj,boost)=>{
-                if(boost) {
-                    var cmp = obj.GetComponent<OrbitalLaserController>();
-                    cmp.damageCoefficientFinal *= 2;
-                    cmp.damageCoefficientInitial *= 2;
-                    var oldCoef = cmp.procCoefficient;
-                    cmp.procCoefficient = 1 - (1 - oldCoef) * (1 - oldCoef);
-                }
-                return obj;
-            });*/
-
-
             //BFG: double impact damage
-            if(subEnable[EquipmentIndex.BFG]) {
+            if((int)EquipmentIndex.BFG >= swarr.Length)
+                Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: BFG; not in switch");
+            else if(subEnable[EquipmentIndex.BFG]) {
                 //Find: loading of (int)2 into EquipmentSlot.bfgChargeTimer
+                c.GotoLabel(swarr[(int)EquipmentIndex.BFG]);
                 ILFound = c.TryGotoNext(MoveType.After,
                     x=>x.OpCode == OpCodes.Ldc_R4,
                     x=>x.MatchStfld<EquipmentSlot>("bfgChargeTimer"));
@@ -338,7 +273,7 @@ namespace ThinkInvisible.ClassicItems
                         if(boost && cpt) cpt.boostedBFGs++;
                     });
                 } else {
-                    Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: BFG (PerformEquipmentAction)");
+                    Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: BFG (PerformEquipmentAction); target instructions not found");
                 }
             }
 
@@ -369,54 +304,13 @@ namespace ThinkInvisible.ClassicItems
             }
             #endif
 
-            //Lightning: simple retrigger
-
-            //PassiveHealing: simple retrigger
-
-            //BurnNearby: lunar, no effect
-
-            //SoulCorruptor: no name according to wiki; NYI?
-
-            //Scanner: no useful effect
-
-            //CrippleWard: lunar, no effect
-
-
-            //Gateway: TODO speed boost, may not be possible
-            /*c.GotoNext(
-                x=>x.MatchLdarg(0),
-                x=>x.MatchCall<EquipmentSlot>("FireGateway")
-                );
-            c.Emit(OpCodes.Ldloc_S, (byte)47);
-            c.Emit(OpCodes.Ldarg_0);
-            c.EmitDelegate<Action<EquipmentSlot, bool>>((slot, boost) => {
-                if(boost && slot.characterBody) {
-                    cPl.VSet(slot.characterBody, "boostGateway", true);
-                }
-            });*/
-
-
-            //Tonic: lunar, no effect
-
-            //QuestVolatileBattery: special, no effect
-
-
-            //Cleanse: double projectile-erase radius
-            //broken! who knows why??
-            /*c.GotoNext(x=>x.MatchLdstr("Prefabs/Effects/CleanseEffect"));
-            c.GotoNext(x=>x.MatchLdcR4(6f));
-
-            c.Remove();
-            c.Emit(OpCodes.Ldloc_S, (byte)47);
-            c.EmitDelegate<Func<bool,float>>((boost)=>{
-                return boost?12f:6f;
-            });
-            */
-
             //FireBallDash: double speed and damage
-            if(subEnable[EquipmentIndex.FireBallDash]) {
+            if((int)EquipmentIndex.FireBallDash >= swarr.Length)
+                Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: FireBallDash; not in switch");
+            else if(subEnable[EquipmentIndex.FireBallDash]) {
                 //Find: string "Prefabs/NetworkedObjects/FireballVehicle"
                 //Then find: instantiation of the prefab
+                c.GotoLabel(swarr[(int)EquipmentIndex.FireBallDash]);
                 ILFound = c.TryGotoNext(
                     x=>x.MatchLdstr("Prefabs/NetworkedObjects/FireballVehicle"))
                 && c.TryGotoNext(
@@ -437,14 +331,17 @@ namespace ThinkInvisible.ClassicItems
                         }
                     });
                 } else {
-                    Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: FireBallDash");
+                    Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: FireBallDash; target instructions not found");
                 }
             }
 
             //GainArmor: double duration
-            if(subEnable[EquipmentIndex.GainArmor]) {
+            if((int)EquipmentIndex.GainArmor >= swarr.Length)
+                Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: GainArmor; not in switch");
+            else if(subEnable[EquipmentIndex.GainArmor]) {
                 //Find: AddTimedBuff(BuffIndex.ElephantArmorBoost, 5f)
                 float origBuffTime = 5f;
+                c.GotoLabel(swarr[(int)EquipmentIndex.GainArmor]);
                 ILFound = c.TryGotoNext(
                     x=>x.MatchLdcI4((int)BuffIndex.ElephantArmorBoost),
                     x=>x.MatchLdcR4(out origBuffTime),
@@ -461,7 +358,7 @@ namespace ThinkInvisible.ClassicItems
                         return boost?2*origBuffTime:origBuffTime;
                     });
                 } else {
-                    Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: GainArmor");
+                    Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: GainArmor; target instructions not found");
                 }
             }
         }
