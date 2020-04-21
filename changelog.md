@@ -2,10 +2,11 @@
 
 **2.1.0** (UPCOMING)
 
-Commits: 4257d252ce5340f564b4b76b023ea5314f4483a9, 186184d64c73456663350566177007bfc58286f3
+Commits: 4257d252ce5340f564b4b76b023ea5314f4483a9, 186184d64c73456663350566177007bfc58286f3, 5d334c6339ceeb25c3c33d3bc18be4db4f705f47
 
 - Finished incomplete IL failure fallback for Captain's Brooch, which should no longer potentially cause errors if another mod interferes with its IL patch.
 - Added inverse behavior at low stacks to Life Savings: default config options now provide (per second, by stack count): $1/3, $1/2, $1, $2, $3....
+- Updated libraries for RoR2 patch #4892828
 
 **2.0.1**
 
