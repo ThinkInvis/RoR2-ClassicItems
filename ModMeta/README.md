@@ -52,7 +52,9 @@ For nostalgic purposes only. Here Be Dragons who hoard balance issues, because t
 
 ## Changelog
 
-**2.1.0**
+The 5 latest updates are listed below. For a full changelog, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/changelog.md
+
+**2.1.0** (UPCOMING)
 
 - Finished incomplete IL failure fallback for Captain's Brooch, which should no longer potentially cause errors if another mod interferes with its IL patch.
 - Added inverse behavior at low stacks to Life Savings: default config options now provide (per second, by stack count): $1/3, $1/2, $1, $2, $3....
@@ -75,12 +77,3 @@ For nostalgic purposes only. Here Be Dragons who hoard balance issues, because t
 
 - Fixed Life Savings blocking teleporter completion and not working after Stage 1.
 - Fixed Captain's Brooch not triggering with Artifact of Sacrifice enabled.
-
-**1.0.1**
-
-- Fixed Snake Eyes giving health instead of crit chance.
-- Updated this document to correct nested list formatting.
-
-**1.0.0**
-
-- Initial version. Adds the following items to the game: Bitter Root, Headstompers, Life Savings, Snake Eyes, Mysterious Vial, 56 Leaf Clover, Boxing Gloves, Rusty Jetpack, Smart Shopper, Beating Embryo, Photon Jetpack, Captain's Brooch.
