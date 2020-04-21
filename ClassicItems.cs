@@ -37,7 +37,7 @@ namespace ThinkInvisible.ClassicItems {
             #if DEBUG
                 "0." +
             #endif
-            "1.0.3";
+            "2.0.0";
         public const string ModName = "ClassicItems";
         public const string ModGuid = "com.ThinkInvisible.ClassicItems";
 

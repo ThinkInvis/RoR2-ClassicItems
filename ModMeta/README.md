@@ -48,11 +48,16 @@ For nostalgic purposes only. Here Be Dragons who hoard balance issues, because t
 - Beating Embryo has no effect on some equipments: Blast Shower (nonfunctional), Eccentric Vase (NYI), Milky Chrysalis (nonfunctional), Radar Scanner (NYI), The Crowdfunder (NYI), Recycler (NYI).
 - Beating Embryo does not update the visual effects on some other equipments despite mechanical effects being properly doubled (e.g. Ocular HUD model deactivates too early).
 - Beating Embryo has no effect on Lunar equipments. This is a design decision, but disabled-by-default effects are planned.
-- (May be fixed, MP-untested) In multiplayer, Captain's Brooch chests may *display* a cost of $25 to non-host players. They will still cost the right amount if purchase is attempted.
-- Captain's Brooch drop point targeting is a little wonky and may put your loot up on a cliff once in a while.
+- Captain's Brooch looks worse for multiplayer clients (choppy drop animation, no sound).
 - See the GitHub repo for more!
 
 ## Changelog
+
+**2.0.0**
+
+- Life Savings will now work if the ShareSuite mod is installed.
+- Captain's Brooch should now display the correct cost to clients in multiplayer, and has much better ground targeting!
+- Started using language tokens instead of direct string loading. May fix an unconfirmed issue with logbook entries resetting on mod uninstall; will definitely reset existing logbook entries for CI items, as their internal names have changed.
 
 **1.0.3**
 
