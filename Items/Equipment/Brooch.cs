@@ -104,6 +104,9 @@ namespace ThinkInvisible.ClassicItems
                     var cpt = res.GetComponent<CaptainsBroochDroppod>();
                     if(cpt) cpt.mapNode = ind;
                 });
+            } else {
+                Debug.LogError("ClassicItems: failed to apply Captain's Brooch IL patch. SafeMode will be enabled (no animations, no opened chest cleanup).");
+                ILFailed = true;
             }
         }
 
