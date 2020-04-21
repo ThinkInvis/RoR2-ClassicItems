@@ -67,7 +67,7 @@ namespace ThinkInvisible.ClassicItems
         }
 
         protected override void SetupBehaviorInner() {
-            var PhotonJetpackBuff = new R2API.CustomBuff("PhotonFuel", new RoR2.BuffDef {
+            var PhotonJetpackBuff = new R2API.CustomBuff("PhotonFuel", new BuffDef {
                 buffColor = Color.cyan,
                 canStack = true,
                 isDebuff = false,

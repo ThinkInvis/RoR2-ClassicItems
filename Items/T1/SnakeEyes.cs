@@ -57,7 +57,7 @@ namespace ThinkInvisible.ClassicItems
         }
 
         protected override void SetupBehaviorInner() {
-            var snakeEyesBuffDef = new R2API.CustomBuff("SnakeEyes", new RoR2.BuffDef {
+            var snakeEyesBuffDef = new R2API.CustomBuff("SnakeEyes", new BuffDef {
                 buffColor = Color.red,
                 canStack = true,
                 isDebuff = false,
@@ -81,7 +81,7 @@ namespace ThinkInvisible.ClassicItems
         private void Evt_SCBOnShrineChancePurchaseGlobal(bool failed, Interactor tgt) {
             if(affectAll) {
                 aliveList().ForEach(x=>{
-                    RoR2.CharacterBody tgtBody = x.GetBody();
+                    CharacterBody tgtBody = x.GetBody();
                     if(GetCount(tgtBody) < 1) return;
                     if(failed)
                         if(tgtBody.GetBuffCount(snakeEyesBuff) < stackCap) tgtBody.AddBuff(snakeEyesBuff);
@@ -118,15 +118,15 @@ namespace ThinkInvisible.ClassicItems
             bool ILFound;
                     
             ILFound = c.TryGotoNext(MoveType.After,
-                x=>x.MatchCallOrCallvirt<RoR2.CharacterBody>("get_inventory"),
+                x=>x.MatchCallOrCallvirt<CharacterBody>("get_inventory"),
                 x=>x.MatchCallOrCallvirt<UnityEngine.Object>("op_Implicit"),
                 x=>x.OpCode==OpCodes.Brfalse);
 
             if(ILFound) {
                 c.Emit(OpCodes.Ldarg_0);
-                c.Emit(OpCodes.Call,typeof(RoR2.CharacterBody).GetMethod("get_inventory"));
+                c.Emit(OpCodes.Call,typeof(CharacterBody).GetMethod("get_inventory"));
                 c.Emit(OpCodes.Ldc_I4, (int)regIndex);
-                c.Emit(OpCodes.Callvirt,typeof(RoR2.Inventory).GetMethod("GetItemCount"));
+                c.Emit(OpCodes.Callvirt,typeof(Inventory).GetMethod("GetItemCount"));
                 c.Emit(OpCodes.Stloc, locItemCount);
             } else {
                 ilFailed = true;

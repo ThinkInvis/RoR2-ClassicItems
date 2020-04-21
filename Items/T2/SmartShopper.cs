@@ -37,7 +37,7 @@ namespace ThinkInvisible.ClassicItems
             On.RoR2.DeathRewards.OnKilledServer += On_DROnKilledServer;
         }
 
-        private void On_DROnKilledServer(On.RoR2.DeathRewards.orig_OnKilledServer orig, RoR2.DeathRewards self, RoR2.DamageReport rep) {
+        private void On_DROnKilledServer(On.RoR2.DeathRewards.orig_OnKilledServer orig, DeathRewards self, DamageReport rep) {
             int icnt = GetCount(rep.attackerBody);
             self.goldReward = (uint)Mathf.FloorToInt(self.goldReward * (1f + icnt * moneyMult));
             orig(self,rep);

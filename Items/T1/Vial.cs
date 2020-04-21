@@ -72,15 +72,15 @@ namespace ThinkInvisible.ClassicItems
             bool ILFound;
                     
             ILFound = c.TryGotoNext(MoveType.After,
-                x=>x.MatchCallOrCallvirt<RoR2.CharacterBody>("get_inventory"),
+                x=>x.MatchCallOrCallvirt<CharacterBody>("get_inventory"),
                 x=>x.MatchCallOrCallvirt<UnityEngine.Object>("op_Implicit"),
                 x=>x.OpCode==OpCodes.Brfalse);
 
             if(ILFound) {
                 c.Emit(OpCodes.Ldarg_0);
-                c.Emit(OpCodes.Call,typeof(RoR2.CharacterBody).GetMethod("get_inventory"));
+                c.Emit(OpCodes.Call,typeof(CharacterBody).GetMethod("get_inventory"));
                 c.Emit(OpCodes.Ldc_I4, (int)regIndex);
-                c.Emit(OpCodes.Callvirt,typeof(RoR2.Inventory).GetMethod("GetItemCount"));
+                c.Emit(OpCodes.Callvirt,typeof(Inventory).GetMethod("GetItemCount"));
                 c.Emit(OpCodes.Stloc, locItemCount);
             } else {
                 ilFailed = true;

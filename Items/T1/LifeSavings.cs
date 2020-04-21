@@ -57,7 +57,7 @@ namespace ThinkInvisible.ClassicItems
             orig(self);
         }
 
-        private void On_CBFixedUpdate(On.RoR2.CharacterBody.orig_FixedUpdate orig, RoR2.CharacterBody self) {
+        private void On_CBFixedUpdate(On.RoR2.CharacterBody.orig_FixedUpdate orig, CharacterBody self) {
             LifeSavingsComponent cpt = self.GetComponent<LifeSavingsComponent>();
             if(self.inventory && self.master && cpt) {
                 int icnt = GetCount(self);
@@ -76,7 +76,7 @@ namespace ThinkInvisible.ClassicItems
             orig(self);
         }
 
-        private void On_CBOnInventoryChanged(On.RoR2.CharacterBody.orig_OnInventoryChanged orig, RoR2.CharacterBody self) {
+        private void On_CBOnInventoryChanged(On.RoR2.CharacterBody.orig_OnInventoryChanged orig, CharacterBody self) {
             orig(self);
             var cpt = self.GetComponent<LifeSavingsComponent>();
             if(!cpt) cpt = self.gameObject.AddComponent<LifeSavingsComponent>();
