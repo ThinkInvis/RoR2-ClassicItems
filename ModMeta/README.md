@@ -53,6 +53,10 @@ For nostalgic purposes only. Here Be Dragons who hoard balance issues, because t
 
 ## Changelog
 
+**2.0.1**
+
+- Fixed item disables in config not being checked.
+
 **2.0.0**
 
 - Life Savings will now work if the ShareSuite mod is installed.
