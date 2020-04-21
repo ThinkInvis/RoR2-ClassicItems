@@ -186,19 +186,17 @@ namespace ThinkInvisible.ClassicItems
                 Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: CommandMissile (PerformEquipmentAction); not in switch");
             else if(subEnable[EquipmentIndex.CommandMissile]) {
                 //Find: default missile increment (+= (int)12)
-                int origMissiles = 12;
                 c.GotoLabel(swarr[(int)EquipmentIndex.CommandMissile]);
                 ILFound = c.TryGotoNext(
                     x=>x.MatchLdfld<EquipmentSlot>("remainingMissiles"),
-                    x=>x.MatchLdcI4(out origMissiles),
+                    x=>x.OpCode == OpCodes.Ldc_R4,
                     x=>x.MatchAdd());
 
                 if(ILFound) {
-                    c.Index++;
+                    c.Index+=2;
                     //Replace original increment number with a custom function to check for Embryo proc
                     //If proc happens, doubles number of missiles added and marks the total number of missiles added as boosted; otherwise returns original
-                    c.Remove();
-                    c.EmitDelegate<Func<int>>(()=>{
+                    c.EmitDelegate<Func<int,int>>((int origMissiles)=>{
                         if(boost && cpt) cpt.boostedMissiles += origMissiles*2;
                         return (sbyte)(boost ? origMissiles*2 : origMissiles);
                     });
@@ -235,20 +233,18 @@ namespace ThinkInvisible.ClassicItems
                 Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: CritOnUse; not in switch");
             else if(subEnable[EquipmentIndex.CritOnUse]) {
                 //Find: AddTimedBuff(BuffIndex.FullCrit, 8f)
-                float origBuffTime = 8f;
                 c.GotoLabel(swarr[(int)EquipmentIndex.CritOnUse]);
                 ILFound = c.TryGotoNext(
                     x=>x.MatchLdcI4((int)BuffIndex.FullCrit),
-                    x=>x.MatchLdcR4(out origBuffTime),
+                    x=>x.OpCode == OpCodes.Ldc_R4,
                     x=>x.MatchCallOrCallvirt<CharacterBody>("AddTimedBuff"));
                     
                 if(ILFound) {
                     //Advance cursor to the found ldcR4 (time argument of AddTimedBuff)
-                    c.Index++;
+                    c.Index+=2;
                     //Replace original buff time with a custom function to check for Embryo proc
                     //If proc happens, doubles the buff time; otherwise returns original
-                    c.Remove();
-                    c.EmitDelegate<Func<float>>(() => {
+                    c.EmitDelegate<Func<float,float>>((origBuffTime) => {
                         return boost ? origBuffTime*2 : origBuffTime;
                     });
                 } else {
@@ -340,21 +336,19 @@ namespace ThinkInvisible.ClassicItems
                 Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: GainArmor; not in switch");
             else if(subEnable[EquipmentIndex.GainArmor]) {
                 //Find: AddTimedBuff(BuffIndex.ElephantArmorBoost, 5f)
-                float origBuffTime = 5f;
                 c.GotoLabel(swarr[(int)EquipmentIndex.GainArmor]);
                 ILFound = c.TryGotoNext(
                     x=>x.MatchLdcI4((int)BuffIndex.ElephantArmorBoost),
-                    x=>x.MatchLdcR4(out origBuffTime),
+                    x=>x.OpCode == OpCodes.Ldc_R4,
                     x=>x.MatchCallvirt<CharacterBody>("AddTimedBuff"));
 
                 if(ILFound) {
                     //Advance cursor to the found ldcR4 (time argument of AddTimedBuff)
-                    c.Index++;
+                    c.Index+=2;
 
                     //Replace original buff time (5f) with a custom function to check for Embryo proc
                     //If proc happens, doubles the buff time to 10f; otherwise returns original
-                    c.Remove();
-                    c.EmitDelegate<Func<float>>(()=>{
+                    c.EmitDelegate<Func<float,float>>((origBuffTime)=>{
                         return boost?2*origBuffTime:origBuffTime;
                     });
                 } else {
@@ -400,16 +394,15 @@ namespace ThinkInvisible.ClassicItems
 
             if(subEnable[EquipmentIndex.CommandMissile]) {
                 //Find: loading of 0.125f into EquipmentSlot.missileTimer
-                float origCooldown = 0.125f;
                 ILFound = c.TryGotoNext(
-                    x=>x.MatchLdcR4(out origCooldown),
+                    x=>x.OpCode == OpCodes.Ldc_R4,
                     x=>x.MatchStfld<EquipmentSlot>("missileTimer"));
 
                 if(ILFound) {
                     //Replace original missile cooldown (0.125f) with a custom function to check for Embryo-boosted missiles
                     //If boosts exist, halves the missile cooldown to 0.0625f and deducts a boost from CPD; otherwise returns original
-                    c.Remove();
-                    c.EmitDelegate<Func<float>>(() => {
+                    c.Index++;
+                    c.EmitDelegate<Func<float,float>>((origCooldown) => {
                         if(cpt && cpt.boostedMissiles > 0) {
                             cpt.boostedMissiles --;
                             return origCooldown/2;
@@ -424,22 +417,20 @@ namespace ThinkInvisible.ClassicItems
             if(subEnable[EquipmentIndex.BFG]) {
                 //Find: string "Prefabs/Projectiles/BeamSphere"
                 //Then find: CharacterBody.get_damage * 2f (damage argument of FireProjectile)
-                float origDamage = 2f;
                 ILFound = c.TryGotoNext(
                     x=>x.MatchLdstr("Prefabs/Projectiles/BeamSphere"))
                 && c.TryGotoNext(
                     x=>x.MatchCallvirt<CharacterBody>("get_damage"),
-                    x=>x.MatchLdcR4(out origDamage),
+                    x=>x.OpCode == OpCodes.Ldc_R4,
                     x=>x.MatchMul());
 
                 if(ILFound) {
                     //Advance cursor to found ldcR4
-                    c.Index++;
+                    c.Index+=2;
                         
                     //Replace original FireProjectile damage coefficient (2f) with a custom function to check for Embryo-boosted BFG shots
                     //If boosts exist, doubles the damage coefficient to 4f and deducts a boost from CPD; otherwise returns original
-                    c.Remove();
-                    c.EmitDelegate<Func<float>>(()=>{
+                    c.EmitDelegate<Func<float,float>>((origDamage)=>{
                         if(cpt && cpt.boostedBFGs > 0) {
                             cpt.boostedBFGs --;
                             return origDamage*2f;
