@@ -58,7 +58,8 @@ The 5 latest updates are listed below. For a full changelog, see: https://github
 
 - Finished incomplete IL failure fallback for Captain's Brooch, which should no longer potentially cause errors if another mod interferes with its IL patch.
 - Added inverse behavior at low stacks to Life Savings: default config options now provide (per second, by stack count): $1/3, $1/2, $1, $2, $3....
-- Updated libraries for RoR2 patch #4892828
+- Beating Embryo IL patches are now slightly more stable.
+- Updated libraries for RoR2 patch 4892828
 
 **2.0.1**
 
