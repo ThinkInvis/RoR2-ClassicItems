@@ -43,7 +43,6 @@ For nostalgic purposes only. Here Be Dragons who hoard balance issues, because t
 - More items are on the way! There's a lot to work with.
 - Item models are bigger than they should be, and are also just placeholder cards. The style's growing on me, but actual models may happen someday.
 - Engineer turrets aren't affected by some items when they could/should be (e.g. Life Savings, Snake Eyes?); may also add a config option to blacklist any CI item from working on turrets.
-- Life Savings doesn't match the inverse behavior at low stacks that the RoR1 version had.
 - Stats are set close to RoR1's whenever possible. May eventually set up a config preset which balances items a little more carefully with respect to RoR2's existing content.
 - Beating Embryo has no effect on some equipments: Blast Shower (nonfunctional), Eccentric Vase (NYI), Milky Chrysalis (nonfunctional), Radar Scanner (NYI), The Crowdfunder (NYI), Recycler (NYI).
 - Beating Embryo does not update the visual effects on some other equipments despite mechanical effects being properly doubled (e.g. Ocular HUD model deactivates too early).
