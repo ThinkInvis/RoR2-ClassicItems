@@ -68,6 +68,10 @@ namespace ThinkInvisible.ClassicItems
         public static bool RemoveOccupiedNode(this DirectorCore self, RoR2.Navigation.NodeGraph nodeGraph, RoR2.Navigation.NodeGraph.NodeIndex nodeIndex) {
             var ocnf = self.GetType().GetFieldCached("occupiedNodes");
             Array ocn = (Array)ocnf.GetValue(self);
+            if(ocn.Length == 0) {
+                Debug.LogWarning("ClassicItems: RemoveOccupiedNode has no nodes to remove");
+                return false;
+            }
             Array ocnNew = (Array)Activator.CreateInstance(ClassicItemsPlugin.nodeRefTypeArr, ocn.Length - 1);
             IEnumerable ocne = ocn as IEnumerable;
             int i = 0;
