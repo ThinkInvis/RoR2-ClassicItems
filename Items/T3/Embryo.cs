@@ -189,7 +189,7 @@ namespace ThinkInvisible.ClassicItems
                 c.GotoLabel(swarr[(int)EquipmentIndex.CommandMissile]);
                 ILFound = c.TryGotoNext(
                     x=>x.MatchLdfld<EquipmentSlot>("remainingMissiles"),
-                    x=>x.OpCode == OpCodes.Ldc_R4,
+                    x=>x.OpCode == OpCodes.Ldc_I4_S,
                     x=>x.MatchAdd());
 
                 if(ILFound) {
