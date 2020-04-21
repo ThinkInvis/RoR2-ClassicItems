@@ -42,7 +42,7 @@ namespace ThinkInvisible.ClassicItems
             
             foreach(EquipmentIndex ind in (EquipmentIndex[]) Enum.GetValues(typeof(EquipmentIndex))) {
                 if(ind == EquipmentIndex.AffixBlue || ind == EquipmentIndex.AffixGold || ind == EquipmentIndex.AffixHaunted || ind == EquipmentIndex.AffixPoison || ind == EquipmentIndex.AffixRed || ind == EquipmentIndex.AffixWhite || ind == EquipmentIndex.AffixYellow
-                    || ind == EquipmentIndex.BurnNearby || ind == EquipmentIndex.Cleanse || ind == EquipmentIndex.CrippleWard || ind == EquipmentIndex.LunarPotion || ind == EquipmentIndex.SoulCorruptor || ind == EquipmentIndex.Tonic
+                    || ind == EquipmentIndex.BurnNearby || ind == EquipmentIndex.CrippleWard || ind == EquipmentIndex.LunarPotion || ind == EquipmentIndex.SoulCorruptor || ind == EquipmentIndex.Tonic
                     || ind == EquipmentIndex.GhostGun || ind == EquipmentIndex.OrbitalLaser || ind == EquipmentIndex.SoulJar
                     || ind == EquipmentIndex.GoldGat || ind == EquipmentIndex.Gateway || ind == EquipmentIndex.Recycle || ind == EquipmentIndex.Scanner
                     || ind == EquipmentIndex.Count || ind == EquipmentIndex.Enigma || ind == EquipmentIndex.None || ind == EquipmentIndex.QuestVolatileBattery
@@ -359,6 +359,30 @@ namespace ThinkInvisible.ClassicItems
                     });
                 } else {
                     Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: GainArmor; target instructions not found");
+                }
+            }
+
+            //Cleanse: double projectile delete radius
+            if((int)EquipmentIndex.Cleanse >= swarr.Length)
+                Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: Cleanse; not in switch");
+            else if(subEnable[EquipmentIndex.Cleanse]) {
+                //Find: num3 = 6f; num4 = num3 * num3;
+                float origRadius = 6f;
+                c.GotoLabel(swarr[(int)EquipmentIndex.Cleanse]);
+                ILFound = c.TryGotoNext(
+                    x=>x.MatchCallOrCallvirt<SetStateOnHurt>("Cleanse"),
+                    x=>x.MatchLdcR4(out origRadius),
+                    x=>x.MatchDup(),
+                    x=>x.MatchMul(),
+                    x=>x.OpCode == OpCodes.Stloc_S);
+
+                if(ILFound) {
+                    c.Index+=2;
+                    c.EmitDelegate<Func<float,float>>((ofl)=>{
+                        return boost?2*ofl:ofl;
+                    });
+                } else {
+                    Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: Cleanse; target instructions not found");
                 }
             }
         }
