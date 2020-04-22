@@ -45,7 +45,6 @@ namespace ThinkInvisible.ClassicItems
 
             modelPathName = "broochcard.prefab";
             iconPathName = "captainsbrooch_icon.png";
-            itemEnigmable = true;
             itemCooldown = 135;
 
             RegLang("Captain's Brooch",

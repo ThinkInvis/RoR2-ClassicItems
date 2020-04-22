@@ -9,7 +9,7 @@ namespace ThinkInvisible.ClassicItems
 {
     public abstract class ItemBoilerplate
     {
-        public bool itemIsEquipment {get; protected set;}
+        public bool itemIsEquipment {get; protected set;} = false;
         public bool itemEnabled {get; private set;}
 
         private ConfigEntry<bool> cfgEnable;
@@ -22,7 +22,7 @@ namespace ThinkInvisible.ClassicItems
         public ItemTier itemTier {get; protected set;}
 
         public int itemCooldown {get; protected set;}
-        public bool itemEnigmable {get; protected set;}
+        public bool itemEnigmable {get; protected set;} = true;
             
         public bool configDone {get; private set;} = false;
         public bool attributesDone {get; private set;} = false;
