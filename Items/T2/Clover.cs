@@ -2,6 +2,7 @@
 using System;
 using BepInEx.Configuration;
 using static ThinkInvisible.ClassicItems.MiscUtil;
+using System.Collections.Generic;
 
 namespace ThinkInvisible.ClassicItems
 {
@@ -42,6 +43,8 @@ namespace ThinkInvisible.ClassicItems
         public bool globalStack {get;private set;}
 
         protected override void SetupConfigInner(ConfigFile cfl) {
+            itemAIBDefault = true;
+
             cfgBaseChance = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "BaseChance"), 4f, new ConfigDescription(
                 "Percent chance for a Clover drop to happen at first stack -- as such, multiplicative with Rare/Uncommon chances.",
                 new AcceptableValueRange<float>(0f,100f)));
@@ -99,7 +102,7 @@ namespace ThinkInvisible.ClassicItems
             	"Elite mobs have a chance to drop items.",
             	"Elites have a <style=cIsUtility>" + pct(baseChance, 1, 1) + " chance</style> <style=cStack>(+" + pct(stackChance, 1, 1) + " per stack COMBINED FOR ALL PLAYERS, up to " + pct(capChance, 1, 1) + ")</style> to <style=cIsUtility>drop items</style> when <style=cIsDamage>killed</style>. <style=cStack>(Further stacks increase uncommon/rare chance up to " +pct(capUnc,2,1) +" and "+pct(capRare,3,1)+", respectively.)</style>",
             	"A relic of times long past (ClassicItems mod)");
-            _itemTags = new[]{ItemTag.Utility};
+            _itemTags = new List<ItemTag>{ItemTag.Utility};
             itemTier = ItemTier.Tier2;
         }
 

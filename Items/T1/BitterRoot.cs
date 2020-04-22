@@ -6,6 +6,7 @@ using System;
 using UnityEngine;
 using BepInEx.Configuration;
 using static ThinkInvisible.ClassicItems.MiscUtil;
+using System.Collections.Generic;
 
 namespace ThinkInvisible.ClassicItems
 {
@@ -45,7 +46,7 @@ namespace ThinkInvisible.ClassicItems
             	"Gain " + pct(healthMult) + " max hp.",
             	"Increases <style=cIsHealing>health</style> by <style=cIsHealing>" + pct(healthMult) + "</style> <style=cStack>(+" +pct(healthMult)+ " per stack, linear)</style>, up to a <style=cIsHealing>maximum</style> of <style=cIsHealing>+"+pct(healthCap)+"</style>.",
             	"A relic of times long past (ClassicItems mod)");
-            _itemTags = new[]{ItemTag.Healing};
+            _itemTags = new List<ItemTag>{ItemTag.Healing};
             itemTier = ItemTier.Tier1;
         }
 

@@ -7,6 +7,7 @@ using static ThinkInvisible.ClassicItems.ClassicItemsPlugin.MasterItemList;
 using MonoMod.Cil;
 using Mono.Cecil.Cil;
 using System;
+using System.Collections.Generic;
 
 namespace ThinkInvisible.ClassicItems
 {
@@ -39,7 +40,7 @@ namespace ThinkInvisible.ClassicItems
             	"Hitting enemies have a " + pct(procChance,0,1) + " chance to knock them back.",
             	"<style=cIsUtility>" + pct(procChance,0,1) + "</style> <style=cStack>(+"+pct(procChance,0,1)+" per stack, mult.)</style> chance to <style=cIsUtility>knock back</style> an enemy <style=cIsDamage>based on attack damage</style>.",
             	"A relic of times long past (ClassicItems mod)");
-            _itemTags = new[]{ItemTag.Utility};
+            _itemTags = new List<ItemTag>{ItemTag.Utility};
             itemTier = ItemTier.Tier2;
         }
 

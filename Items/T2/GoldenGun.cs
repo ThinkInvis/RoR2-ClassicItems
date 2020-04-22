@@ -7,6 +7,7 @@ using static ThinkInvisible.ClassicItems.ClassicItemsPlugin.MasterItemList;
 using MonoMod.Cil;
 using Mono.Cecil.Cil;
 using System;
+using System.Collections.Generic;
 
 namespace ThinkInvisible.ClassicItems
 {
@@ -25,6 +26,8 @@ namespace ThinkInvisible.ClassicItems
         private bool ilFailed = false;
 
         protected override void SetupConfigInner(ConfigFile cfl) {
+            itemAIBDefault = true;
+
             cfgDamageBoost = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "DamageBoost"), 0.4f, new ConfigDescription(
                 "Maximum multiplier to add to player damage.",
                 new AcceptableValueRange<float>(0f,float.MaxValue)));
@@ -47,7 +50,7 @@ namespace ThinkInvisible.ClassicItems
             	"More gold, more damage.",
             	"Deal <style=cIsDamage>bonus damage</style> based on your <style=cIsUtility>money</style>, up to <style=cIsDamage>40% damage</style> at <style=cIsUtility>$700</style> <style=cStack>(cost increases with difficulty, -50% per stack)</style>.",
             	"A relic of times long past (ClassicItems mod)");
-            _itemTags = new[]{ItemTag.Utility};
+            _itemTags = new List<ItemTag>{ItemTag.Utility};
             itemTier = ItemTier.Tier2;
         }
 

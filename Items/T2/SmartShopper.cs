@@ -3,6 +3,7 @@ using RoR2;
 using System;
 using UnityEngine;
 using static ThinkInvisible.ClassicItems.MiscUtil;
+using System.Collections.Generic;
 
 namespace ThinkInvisible.ClassicItems
 {
@@ -15,6 +16,8 @@ namespace ThinkInvisible.ClassicItems
         public float moneyMult {get;private set;}
 
         protected override void SetupConfigInner(ConfigFile cfl) {
+            itemAIBDefault = true;
+
             cfgMult = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "Mult"), 0.25f, new ConfigDescription(
                 "Linear multiplier for money-on-kill increase per stack of Smart Shopper.",
                 new AcceptableValueRange<float>(0f,float.MaxValue)));
@@ -29,7 +32,7 @@ namespace ThinkInvisible.ClassicItems
             	"Enemies drop extra gold.",
             	"Gain <style=cIsUtility>+" + pct(moneyMult) + "</style> <style=cStack>(+" + pct(moneyMult) + " per stack, linear)</style> <style=cIsUtility>money</style> from <style=cIsDamage>killing enemies</style>.",
             	"A relic of times long past (ClassicItems mod)");
-            _itemTags = new[]{ItemTag.Utility};
+            _itemTags = new List<ItemTag>{ItemTag.Utility};
             itemTier = ItemTier.Tier2;
         }
 

@@ -5,6 +5,7 @@ using MonoMod.Cil;
 using Mono.Cecil.Cil;
 using UnityEngine;
 using System;
+using System.Collections.Generic;
 
 namespace ThinkInvisible.ClassicItems
 {
@@ -38,7 +39,7 @@ namespace ThinkInvisible.ClassicItems
             	"Increased health regeneration.",
             	"Increases <style=cIsHealing>health regen by +" + addRegen.ToString("N1") + "/sec</style> <style=cStack>(+" + addRegen.ToString("N1") + "/sec per stack)</style>.",
             	"A relic of times long past (ClassicItems mod)");
-            _itemTags = new[]{ItemTag.Healing};
+            _itemTags = new List<ItemTag>{ItemTag.Healing};
             itemTier = ItemTier.Tier1;
         }
 

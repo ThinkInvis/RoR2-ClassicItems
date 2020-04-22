@@ -2,6 +2,7 @@
 using System;
 using UnityEngine;
 using BepInEx.Configuration;
+using System.Collections.Generic;
 
 namespace ThinkInvisible.ClassicItems
 {
@@ -18,6 +19,8 @@ namespace ThinkInvisible.ClassicItems
         public bool holdIt {get; private set;} = false; //https://www.youtube.com/watch?v=vDMwDT6BhhE
 
         protected override void SetupConfigInner(ConfigFile cfl) {
+            itemAIBDefault = true;
+
             cfgGainPerSec = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "GainPerSec"), 1f, new ConfigDescription(
                 "Money to add to players per second per Life Savings stack (without taking into account InvertCount).",
                 new AcceptableValueRange<float>(0f,float.MaxValue)));
@@ -36,7 +39,7 @@ namespace ThinkInvisible.ClassicItems
             	"Earn gold over time.",
             	"Generates <style=cIsUtility>$" + gainPerSec + "</style> <style=cStack>(+$" + gainPerSec + " per stack)</style> every second.",
             	"A relic of times long past (ClassicItems mod)");
-            _itemTags = new[]{ItemTag.Utility};
+            _itemTags = new List<ItemTag>{ItemTag.Utility};
             itemTier = ItemTier.Tier1;
         }
 

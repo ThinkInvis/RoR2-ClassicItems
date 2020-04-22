@@ -6,6 +6,7 @@ using static ThinkInvisible.ClassicItems.MiscUtil;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using System;
+using System.Collections.Generic;
 
 namespace ThinkInvisible.ClassicItems
 {
@@ -52,7 +53,7 @@ namespace ThinkInvisible.ClassicItems
             	"Gain increased crit chance on failing a shrine. Removed on succeeding a shrine.",
             	"Increases <style=cIsDamage>crit chance</style> by <style=cIsDamage>" + pct(critAdd, 0, 1) + "</style> <style=cStack>(+" + pct(critAdd, 0, 1) + " per stack, linear)</style> for up to <style=cIsUtility>" + stackCap + "</style> consecutive <style=cIsUtility>chance shrine failures</style>. <style=cIsDamage>Resets to 0</style> on any <style=cIsUtility>chance shrine success</style>.",
             	"A relic of times long past (ClassicItems mod)");
-            _itemTags = new[]{ItemTag.Damage};
+            _itemTags = new List<ItemTag>{ItemTag.Damage};
             itemTier = ItemTier.Tier1;
         }
 

@@ -2,6 +2,7 @@
 using R2API;
 using RoR2;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using UnityEngine;
 
@@ -10,14 +11,18 @@ namespace ThinkInvisible.ClassicItems
     public abstract class ItemBoilerplate
     {
         public bool itemIsEquipment {get; protected set;} = false;
+        public bool itemAIBDefault {get;protected set;} = false;
+
         public bool itemEnabled {get; private set;}
+        public bool itemAIB {get;private set;}
 
         private ConfigEntry<bool> cfgEnable;
+        private ConfigEntry<bool> cfgAIB;
 
         public string modelPathName {get; protected set;}
         public string iconPathName {get; protected set;}
 
-        protected ItemTag[] _itemTags;
+        protected List<ItemTag> _itemTags;
         public ReadOnlyCollection<ItemTag> itemTags {get; private set;}
         public ItemTier itemTier {get; protected set;}
 
@@ -40,17 +45,29 @@ namespace ThinkInvisible.ClassicItems
 
         protected abstract void SetupConfigInner(ConfigFile cfl);
 
+        public ItemBoilerplate() {
+             if(itemIsEquipment) _itemTags = new List<ItemTag>();
+        }
+
         public void SetupConfig(ConfigFile cfl) {
             if(configDone) {
                 Debug.LogError("ClassicItems: something tried to setup config for an item twice");
                 return;
             }
             configDone = true;
+
+            SetupConfigInner(cfl);
                 
             cfgEnable = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "Enable"), true, new ConfigDescription(
             "If false, the item will not appear ingame, nor will any relevant IL patches or hooks be added."));
             itemEnabled = cfgEnable.Value;
-            SetupConfigInner(cfl);
+
+            if(!itemIsEquipment) {
+                cfgAIB = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "AIBlacklist"), itemAIBDefault, new ConfigDescription(
+                "If true, the item will not be given to enemies by Evolution nor in the arena map, and it will not be found by Scavengers."));
+                itemAIB = cfgAIB.Value;
+            }
+
         }
         
         protected abstract void SetupAttributesInner();
@@ -84,6 +101,8 @@ namespace ThinkInvisible.ClassicItems
                 regEqp = new CustomEquipment(regDefEqp, new ItemDisplayRuleDict(null));
                 regIndexEqp = ItemAPI.Add(regEqp);
             } else {
+                if(itemAIB) _itemTags.Add(ItemTag.AIBlacklist);
+                var iarr = _itemTags.ToArray();
                 regDef = new ItemDef {
                     tier = itemTier,
                     pickupModelPath = "@ClassicItems:Assets/ClassicItems/models/" + modelPathName,
@@ -92,10 +111,10 @@ namespace ThinkInvisible.ClassicItems
                     pickupToken = gPickupToken,
                     descriptionToken = gDescriptionToken,
                     loreToken = gLoreToken,
-                    tags = _itemTags
+                    tags = iarr
                 };
 
-                itemTags = Array.AsReadOnly(_itemTags);
+                itemTags = Array.AsReadOnly(iarr);
                 regItem = new CustomItem(regDef, new ItemDisplayRuleDict(null));
                 regIndex = ItemAPI.Add(regItem);
             }
