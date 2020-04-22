@@ -172,7 +172,7 @@ namespace ThinkInvisible.ClassicItems
         public RoR2.Navigation.NodeGraph.NodeIndex mapNode;
 
         [ClientRpc]
-        public void RpcLaunch() {
+        private void RpcLaunch() {
             shkm = this.gameObject.AddComponent<ShakeEmitter>();
 			shkm.wave = new Wave {
 				amplitude = 0.25f,
@@ -206,7 +206,7 @@ namespace ThinkInvisible.ClassicItems
         }
         
         [ClientRpc]
-        public void RpcUnlaunch() {
+        private void RpcUnlaunch() {
             launchState = 3;
         }
 
@@ -216,35 +216,43 @@ namespace ThinkInvisible.ClassicItems
             launchState = 3;
         }
 
+        [ClientRpc]
+        public void RpcLanded() {
+            EffectManager.SpawnEffect(Resources.Load<GameObject>("Prefabs/Effects/ImpactEffects/PodGroundImpact"), new EffectData {
+				origin = this.gameObject.transform.position,
+				rotation = this.gameObject.transform.rotation,
+                scale = 0.25f
+			}, true);
+            Util.PlaySound("Play_UI_podImpact", this.gameObject);
+            shkm.enabled = false;
+        }
+
+        [ClientRpc]
+        public void RpcUnlanded() {
+            EffectManager.SpawnEffect(Resources.Load<GameObject>("Prefabs/Effects/ImpactEffects/PodGroundImpact"), new EffectData {
+				origin = this.gameObject.transform.position,
+				rotation = this.gameObject.transform.rotation,
+                scale = 0.25f
+			}, true);
+            Util.PlaySound("Play_UI_podImpact", this.gameObject);
+            shkm.enabled = true;
+        }
+
         private void FixedUpdate() {
             if(launchState == 1) {
                 droptimer -= Time.fixedDeltaTime;
                 this.gameObject.transform.position = Vector3.Lerp(source, destination, 1f-Math.Max(droptimer/2f, 0f));
                 if(droptimer <= 0f) {
-                    if(!NetworkServer.active) {
-                        EffectManager.SpawnEffect(Resources.Load<GameObject>("Prefabs/Effects/ImpactEffects/PodGroundImpact"), new EffectData {
-						    origin = this.gameObject.transform.position,
-						    rotation = this.gameObject.transform.rotation,
-                            scale = 0.25f
-					    }, true);
-                        Util.PlaySound("Play_UI_podImpact", this.gameObject);
-                        shkm.enabled = false;
-                    }
+                    if(NetworkServer.active)
+                        RpcLanded();
                     launchState = 2;
                     droptimer = 0f;
                 }
             } else if(launchState == 3) {
                 droptimer += Time.fixedDeltaTime;
                 if(droptimer >= 5f) {
-                    if(!NetworkServer.active) {
-                        EffectManager.SpawnEffect(Resources.Load<GameObject>("Prefabs/Effects/ImpactEffects/PodGroundImpact"), new EffectData {
-						    origin = this.gameObject.transform.position,
-						    rotation = this.gameObject.transform.rotation,
-                            scale = 0.25f
-					    }, true);
-                        Util.PlaySound("Play_UI_podImpact", this.gameObject);
-                        shkm.enabled = true;
-                    }
+                    if(NetworkServer.active)
+                        RpcUnlanded();
                     droptimer = 2f;
                     launchState = 4;
                 }
