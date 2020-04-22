@@ -4,6 +4,7 @@ using System;
 using UnityEngine;
 using static ThinkInvisible.ClassicItems.MiscUtil;
 using System.Collections.Generic;
+using R2API.Utils;
 
 namespace ThinkInvisible.ClassicItems
 {
@@ -53,19 +54,21 @@ namespace ThinkInvisible.ClassicItems
         }
 
         protected override void SetupBehaviorInner() {
-            On.RoR2.GlobalEventManager.OnCharacterHitGround += On_GEMOnCharacterHitGround;
+            On.RoR2.CharacterMotor.OnHitGround += On_CMOnHitGround;
         }
 
-        private void On_GEMOnCharacterHitGround(On.RoR2.GlobalEventManager.orig_OnCharacterHitGround orig, GlobalEventManager self, CharacterBody body, Vector3 vel) {
-            if(Math.Abs(vel.y) > velThreshold && GetCount(body) > 0) {
+        private void On_CMOnHitGround(On.RoR2.CharacterMotor.orig_OnHitGround orig, CharacterMotor self, CharacterMotor.HitGroundInfo ghi) {
+            CharacterBody body = self.GetFieldValue<CharacterBody>("body");
+            if(!body) {orig(self,ghi);return;}
+            if(GetCount(body) > 0 && Math.Abs(ghi.velocity.y) > velThreshold) {
                 float scalefac = Mathf.Lerp(0f, baseDamage + (GetCount(body) - 1f) * stackDamage,
-                    Mathf.InverseLerp(velThreshold, velMax+velThreshold, Math.Abs(vel.y)));
+                    Mathf.InverseLerp(velThreshold, velMax+velThreshold, Math.Abs(ghi.velocity.y)));
                 //most properties borrowed from H3AD-5T v2
 				BlastAttack blastAttack = new BlastAttack {
                     attacker = body.gameObject,
 					inflictor = body.gameObject,
 					teamIndex = TeamComponent.GetObjectTeam(body.gameObject),
-					position = body.footPosition,
+					position = ghi.position,
 					procCoefficient = 0.5f,
 					radius = 10f,
 					baseForce = 2000f,
@@ -77,12 +80,12 @@ namespace ThinkInvisible.ClassicItems
                 };
 				blastAttack.Fire();
 				EffectData effectData = new EffectData {
-					origin = body.footPosition,
+					origin = ghi.position,
 					scale = 10f
                 };
 				EffectManager.SpawnEffect(Resources.Load<GameObject>("Prefabs/Effects/ImpactEffects/BootShockwave"), effectData, true);
             }
-            orig(self,body,vel);
+            orig(self,ghi);
         }
     }
 }
