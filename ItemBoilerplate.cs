@@ -1,5 +1,6 @@
 ﻿using BepInEx.Configuration;
 using R2API;
+using R2API.Utils;
 using RoR2;
 using System;
 using System.Collections.Generic;
@@ -164,6 +165,18 @@ namespace ThinkInvisible.ClassicItems
                 return 0;
             }
             return body?.inventory?.GetItemCount(regIndex) ?? 0;
+        }
+
+        public int GetCountOnDeploys(CharacterMaster master) {
+            if(master == null) return 0;
+            var dplist = master.GetFieldValue<List<DeployableInfo>>("deployablesList");
+            if(dplist == null) return 0;
+            int count = 0;
+            foreach(DeployableInfo d in dplist) {
+                Debug.Log(d.deployable.name);
+                count += GetCount(d.deployable.gameObject.GetComponent<Inventory>());
+            }
+            return count;
         }
 
         public bool HasEqp(Inventory inv, bool inMain = true, bool inAlt = false) {
