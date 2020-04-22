@@ -1,6 +1,5 @@
 ﻿using BepInEx.Configuration;
 using RoR2;
-using System;
 using UnityEngine;
 using static ThinkInvisible.ClassicItems.MiscUtil;
 using System.Collections.Generic;

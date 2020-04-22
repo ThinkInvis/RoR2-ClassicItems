@@ -1,12 +1,7 @@
-﻿using R2API.Utils;
-using RoR2;
+﻿using RoR2;
 using UnityEngine;
 using BepInEx.Configuration;
 using static ThinkInvisible.ClassicItems.MiscUtil;
-using static ThinkInvisible.ClassicItems.ClassicItemsPlugin.MasterItemList;
-using MonoMod.Cil;
-using Mono.Cecil.Cil;
-using System;
 using System.Collections.Generic;
 
 namespace ThinkInvisible.ClassicItems
