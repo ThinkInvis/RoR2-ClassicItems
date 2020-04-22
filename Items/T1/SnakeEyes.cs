@@ -109,7 +109,7 @@ namespace ThinkInvisible.ClassicItems
         private void IL_CBRecalcStats(ILContext il) {
             var c = new ILCursor(il);
             //Add another local variable to store Snake Eyes itemcount
-            c.IL.Body.Variables.Add(new VariableDefinition(c.IL.Body.Method.Module.TypeSystem.Boolean));
+            c.IL.Body.Variables.Add(new VariableDefinition(c.IL.Body.Method.Module.TypeSystem.Int32));
             int locItemCount = c.IL.Body.Variables.Count-1;
             c.Emit(OpCodes.Ldc_I4_0);
             c.Emit(OpCodes.Stloc, locItemCount);
