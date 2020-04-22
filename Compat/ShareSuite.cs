@@ -14,5 +14,13 @@ namespace ThinkInvisible.ClassicItems {
                 return true;
             return false;
         }
+
+        private static bool? _enabled;
+        internal static bool enabled {
+            get {
+                if(_enabled == null) _enabled = BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.funkfrog_sipondo.sharesuite");
+                return (bool)_enabled;
+            }
+        }
     }
 }
