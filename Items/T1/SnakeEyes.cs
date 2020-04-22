@@ -88,7 +88,6 @@ namespace ThinkInvisible.ClassicItems
                         if(tgtBody.GetBuffCount(snakeEyesBuff) < stackCap) tgtBody.AddBuff(snakeEyesBuff);
                     else
                         Reflection.InvokeMethod(tgtBody, "SetBuffCount", snakeEyesBuff, 0);
-                    tgtBody.RecalculateStats();
                 });
             } else {
                 CharacterBody tgtBody = tgt.GetComponentInParent<CharacterBody>();
@@ -97,7 +96,6 @@ namespace ThinkInvisible.ClassicItems
                     if(tgtBody.GetBuffCount(snakeEyesBuff) < stackCap) tgtBody.AddBuff(snakeEyesBuff);
                 else
                     Reflection.InvokeMethod(tgtBody, "SetBuffCount", snakeEyesBuff, 0);
-                tgtBody.RecalculateStats();
             }
         }
 
