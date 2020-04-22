@@ -237,6 +237,7 @@ namespace ThinkInvisible.ClassicItems
             shkm.enabled = true;
         }
 
+        #pragma warning disable IDE0051
         private void FixedUpdate() {
             if(launchState == 1) {
                 droptimer -= Time.fixedDeltaTime;

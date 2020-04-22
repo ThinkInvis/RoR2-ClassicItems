@@ -96,9 +96,7 @@ namespace ThinkInvisible.ClassicItems
             orig(self);
 
             var cpt = self.GetComponent<EmbryoComponent>();
-            if(!cpt) {
-                cpt = self.gameObject.AddComponent<EmbryoComponent>();
-            }
+            if(!cpt) self.gameObject.AddComponent<EmbryoComponent>();
         }
 
         private bool On_ESPerformEquipmentAction(On.RoR2.EquipmentSlot.orig_PerformEquipmentAction orig, EquipmentSlot slot, EquipmentIndex ind) {
