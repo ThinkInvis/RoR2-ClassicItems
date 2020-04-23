@@ -6,6 +6,14 @@ Adds some items from Risk of Rain 1 which RoR2 thought it was too good for.
 
 For nostalgic purposes only. Here Be Dragons who hoard balance issues, because the numbers are closer to RoR1's than 2's... and, y'know, Brooch+Clover. Will absolutely lead to silly, broken runs, unless you feel like changing the config up -- most aspects of each item are configurable!
 
+
+
+### WARNING: MAKE SURE YOUR CONFIG FILE MATCHES THE HOST'S IN MULTIPLAYER!
+
+By extension, the other clients' configs need to match too. This mod has some settings that are too difficult to change after the game has launched, so it will not automatically sync config with servers.
+
+
+
 ### Current Additions
 #### Tier 1
 - Bitter Root: Gain 8% max hp.
