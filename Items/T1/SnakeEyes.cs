@@ -17,11 +17,13 @@ namespace ThinkInvisible.ClassicItems
         private ConfigEntry<float> cfgAdd;
         private ConfigEntry<int> cfgCap;
         private ConfigEntry<bool> cfgAffectAll;
+        private ConfigEntry<bool> cfgInclDeploys;
         private ConfigEntry<bool> cfgUseIL;
 
         public float critAdd {get;private set;}
         public int stackCap {get;private set;}
         public bool affectAll {get;private set;}
+        public bool inclDeploys {get;private set;}
         public bool useIL {get;private set;}
 
         public BuffIndex snakeEyesBuff {get;private set;}
@@ -37,12 +39,15 @@ namespace ThinkInvisible.ClassicItems
                 new AcceptableValueRange<int>(1,int.MaxValue)));
             cfgAffectAll = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "AffectAll"), true, new ConfigDescription(
                 "If true, any chance shrine activation will trigger Snake Eyes on all living players (matches behavior from RoR1). If false, only the purchaser will be affected."));
+            cfgInclDeploys = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "InclDeploys"), true, new ConfigDescription(
+                "If true, deployables (e.g. Engineer turrets) with Snake Eyes will gain/lose buff stacks whenever their master does. If false, Snake Eyes will not work on deployables at all."));
             cfgUseIL = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "UseIL"), true, new ConfigDescription(
                 "Set to false to change Snake Eyes' effect from an IL patch to an event hook, which may help if experiencing compatibility issues with another mod. This will change how Snake Eyes interacts with other effects."));
 
             critAdd = cfgAdd.Value;
             stackCap = cfgCap.Value;
             affectAll = cfgAffectAll.Value;
+            inclDeploys = cfgInclDeploys.Value;
             useIL = cfgUseIL.Value;
         }
         
@@ -79,23 +84,38 @@ namespace ThinkInvisible.ClassicItems
             ShrineChanceBehavior.onShrineChancePurchaseGlobal += Evt_SCBOnShrineChancePurchaseGlobal;
         }
 
+        private void cbApplyBuff(bool failed, CharacterBody tgtBody) {
+            if(tgtBody == null) return;
+            if(failed) {
+                if(GetCount(tgtBody) > 0 && tgtBody.GetBuffCount(snakeEyesBuff) < stackCap) tgtBody.AddBuff(snakeEyesBuff);
+                if(!inclDeploys) return;
+                var dplist = tgtBody.master?.GetFieldValue<List<DeployableInfo>>("deployablesList");
+                if(dplist != null) foreach(DeployableInfo d in dplist) {
+                    var dplBody = d.deployable.gameObject.GetComponent<CharacterMaster>()?.GetBody();
+                    if(dplBody && GetCount(dplBody) > 0 && dplBody.GetBuffCount(snakeEyesBuff) < stackCap) {
+                        dplBody.AddBuff(snakeEyesBuff);
+                    }
+                }
+            } else {
+                Reflection.InvokeMethod(tgtBody, "SetBuffCount", snakeEyesBuff, 0);
+                if(!inclDeploys) return;
+                var dplist = tgtBody.master?.GetFieldValue<List<DeployableInfo>>("deployablesList");
+                if(dplist != null) foreach(DeployableInfo d in dplist) {
+                    var dplBody = d.deployable.gameObject.GetComponent<CharacterMaster>().GetBody();
+                    if(dplBody) {
+                        Reflection.InvokeMethod(dplBody, "SetBuffCount", snakeEyesBuff, 0);
+                    }
+                }
+            }
+        }
+
         private void Evt_SCBOnShrineChancePurchaseGlobal(bool failed, Interactor tgt) {
             if(affectAll) {
                 aliveList().ForEach(x=>{
-                    CharacterBody tgtBody = x.GetBody();
-                    if(GetCount(tgtBody) < 1) return;
-                    if(failed)
-                        if(tgtBody.GetBuffCount(snakeEyesBuff) < stackCap) tgtBody.AddBuff(snakeEyesBuff);
-                    else
-                        Reflection.InvokeMethod(tgtBody, "SetBuffCount", snakeEyesBuff, 0);
+                    cbApplyBuff(failed, x.GetBody());
                 });
             } else {
-                CharacterBody tgtBody = tgt.GetComponentInParent<CharacterBody>();
-                if(GetCount(tgtBody) < 1) return;
-                if(failed)
-                    if(tgtBody.GetBuffCount(snakeEyesBuff) < stackCap) tgtBody.AddBuff(snakeEyesBuff);
-                else
-                    Reflection.InvokeMethod(tgtBody, "SetBuffCount", snakeEyesBuff, 0);
+                cbApplyBuff(failed, tgt.GetComponent<CharacterBody>());
             }
         }
 
