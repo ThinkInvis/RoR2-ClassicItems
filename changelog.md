@@ -1,5 +1,14 @@
 ﻿# ClassicItems Changelog
 
+**2.2.0**
+
+Commits: 7af7622245f39d2bf0aa74c66ad18a9e83ea1515, e1658029596fc64eb715f40554c0f9f34698de32, 96ac28834133e6b4a1c48b022adfc28c477a9d67, e27621e5b1f527ce231f2fc2184bb950eb2678ac, e729049a1148bd4626823f09c0d2e787a493e66e, 3905b8ebbe6bea92e197c43238149c966208f7ac, ef177c5f7ce95a65e74c535c099eeaa597fce34a, 41406ef96a528f267b460d5b579aeef144bc2247, 3d09724b02986511dcf0d05b56ce4f9e0d8184f3, fa3ffb2e107ca65ff4070d0dc998078554075385, 9254fc39f7ced185cb356e3fd45d2fc67e214e61
+
+- All items can now be added to the AI blacklist from config. By default, this is enabled for: Life Savings, 56 Leaf Clover, Golden Gun, Rusty Jetpack, Smart Shopper, Photon Jetpack.
+- Headstompers and Life Savings are now networked properly and should no longer act wonky if you're not the host.
+- Life Savings (disabled by default), Snake Eyes, and Golden Gun can now work on deployables (e.g. Engineer turrets).
+- Several other small internal bugfixes and optimizations.
+
 **2.1.0**
 
 Commits: 4257d252ce5340f564b4b76b023ea5314f4483a9, 186184d64c73456663350566177007bfc58286f3, 5d334c6339ceeb25c3c33d3bc18be4db4f705f47, 9b1c85fb82063cc1685518dbeb908ec51475b4b2, 1b083be1d0d696b1ea71671bcc1aaaf1623a60bc, 7616cb703bac738cba228f8cfaaec2eba07a1fcc, bed8e9fec414688a8898b8b3a40b23fcca3f4ab1, 06612c023a1204a577725155ba9959e482f82c3c, 7b2f65a07f1d3c9d4933cb08022f733e2436f952, 57fd052271841907f5c1e5b591f4e344f82e618c, 4cf5efa93a230255ddee7d30289a57e86f48b236, 63f3fbc61ab3d1e2a1d752f4b76ee99a1fdad705, 8ccb20d2fa9e19d38a86073187216827d9e0386c, 6bf51c38420a093d87e0e478543e25c7c5618869, 8e4e7062478c653b725a7d9338b0879292d63713, c879fa0b77e6ed696afb1052b607371928de7101, c156a4703b6ddbe523800e545bc3e1f2dee06dca

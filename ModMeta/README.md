@@ -51,7 +51,6 @@ By extension, the other clients' configs need to match too. This mod has some se
 
 - More items are on the way! There's a lot to work with.
 - Item models are bigger than they should be, and are also just placeholder cards. The style's growing on me, but actual models may happen someday.
-- Engineer turrets aren't affected by some items when they could/should be (e.g. Life Savings, Snake Eyes?); may also add a config option to blacklist any CI item from working on turrets.
 - Stats are set close to RoR1's whenever possible. May eventually set up a config preset which balances items a little more carefully with respect to RoR2's existing content.
 - Beating Embryo has no effect on some equipments: Eccentric Vase (NYI), Milky Chrysalis (nonfunctional), Radar Scanner (NYI), Recycler (NYI).
 - Beating Embryo does not update the visual effects on some other equipments despite mechanical effects being properly doubled (e.g. Ocular HUD model deactivates too early).
@@ -61,6 +60,13 @@ By extension, the other clients' configs need to match too. This mod has some se
 ## Changelog
 
 The 5 latest updates are listed below. For a full changelog, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/changelog.md
+
+**2.2.0**
+
+- All items can now be added to the AI blacklist from config. By default, this is enabled for: Life Savings, 56 Leaf Clover, Golden Gun, Rusty Jetpack, Smart Shopper, Photon Jetpack.
+- Headstompers and Life Savings are now networked properly and should no longer act wonky if you're not the host.
+- Life Savings (disabled by default), Snake Eyes, and Golden Gun can now work on deployables (e.g. Engineer turrets).
+- Several other small internal bugfixes and optimizations.
 
 **2.1.0**
 
@@ -86,8 +92,3 @@ The 5 latest updates are listed below. For a full changelog, see: https://github
 **1.0.3**
 
 - Fixed incompatibility with BrokenMagnet (and with any other mod that includes an AssetBundle with an internal name of "exampleitemmod")
-
-**1.0.2**
-
-- Fixed Life Savings blocking teleporter completion and not working after Stage 1.
-- Fixed Captain's Brooch not triggering with Artifact of Sacrifice enabled.
