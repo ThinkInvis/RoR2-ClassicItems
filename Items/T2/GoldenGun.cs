@@ -15,10 +15,12 @@ namespace ThinkInvisible.ClassicItems
         private ConfigEntry<float> cfgDamageBoost;
         private ConfigEntry<int> cfgGoldAmt;
         private ConfigEntry<float> cfgGoldReduc;
+        private ConfigEntry<bool> cfgInclDeploys;
 
         public float damageBoost {get;private set;}
         public int goldAmt {get;private set;}
         public float goldReduc {get;private set;}
+        public bool inclDeploys {get;private set;}
 
         private bool ilFailed = false;
 
@@ -34,10 +36,13 @@ namespace ThinkInvisible.ClassicItems
             cfgGoldReduc = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "GoldReduc"), 0.5f, new ConfigDescription(
                 "Inverse-exponential multiplier for reduced GoldAmt per stack.",
                 new AcceptableValueRange<float>(0f,0.999f)));
+            cfgInclDeploys = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "InclDeploys"), true, new ConfigDescription(
+                "If true, deployables (e.g. Engineer turrets) with Golden Gun will benefit from their master's money."));
 
             damageBoost = cfgDamageBoost.Value;
             goldAmt = cfgGoldAmt.Value;
             goldReduc = cfgGoldReduc.Value;
+            inclDeploys = cfgInclDeploys.Value;
         }
         
         protected override void SetupAttributesInner() {
@@ -88,8 +93,13 @@ namespace ThinkInvisible.ClassicItems
                 c.Emit(OpCodes.Ldloc, locDmg);
                 c.EmitDelegate<Func<CharacterMaster,float,float>>((chrm, origdmg) => {
                     var icnt = GetCount(chrm.inventory);
-                    var moneyCoef = chrm.money / (Run.instance.GetDifficultyScaledCost(goldAmt) * Mathf.Pow(goldReduc, icnt - 1));
                     if(icnt == 0) return origdmg;
+                    var moneyFac = chrm.money;
+                    if(inclDeploys) {
+                        var dplc = chrm.GetComponent<Deployable>();
+                        if(dplc) moneyFac += dplc.ownerMaster.money;
+                    }
+                    var moneyCoef = moneyFac / (Run.instance.GetDifficultyScaledCost(goldAmt) * Mathf.Pow(goldReduc, icnt - 1));
                     return origdmg * (1 + Mathf.Lerp(0,damageBoost,moneyCoef));
                 });
                 c.Emit(OpCodes.Stloc, locDmg);
