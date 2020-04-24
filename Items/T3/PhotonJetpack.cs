@@ -83,9 +83,11 @@ namespace ThinkInvisible.ClassicItems
         }
 
         private void On_CBFixedUpdate(On.RoR2.CharacterBody.orig_FixedUpdate orig, CharacterBody self) {
+            orig(self);
+
             var cpt = self.GetComponent<PhotonJetpackComponent>();
 
-            if(!self.characterMotor || !cpt || cpt.fuelCap == 0) {orig(self);return;}
+            if(!self.characterMotor || !cpt || cpt.fuelCap == 0) return;
 
             uint oldstate = cpt.flyState;
 
@@ -130,7 +132,6 @@ namespace ThinkInvisible.ClassicItems
             int currFuelStacks = self.GetBuffCount(photonFuelBuff);
             if(tgtFuelStacks != currFuelStacks)
                 Reflection.InvokeMethod(self, "SetBuffCount", photonFuelBuff, tgtFuelStacks);
-            orig(self);
         }
 
         private void On_CBInventoryChanged(On.RoR2.CharacterBody.orig_OnInventoryChanged orig, CharacterBody self) {

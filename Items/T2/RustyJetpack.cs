@@ -65,15 +65,13 @@ namespace ThinkInvisible.ClassicItems
         }
 
         private void On_CBFixedUpdate(On.RoR2.CharacterBody.orig_FixedUpdate orig, CharacterBody self) {
-            if(!self.characterMotor) {orig(self);return;}
+            orig(self);
+            if(!self.characterMotor) return;
             if(GetCount(self) > 0 && self.inputBank.jump.down && (
                     !photonJetpack.itemEnabled
                     || !ClassicItemsPlugin.gCoolYourJets
-                    || (self.GetComponent<PhotonJetpackComponent>()?.fuel ?? 0f) <= 0f
-                ))
+                    || (self.GetComponent<PhotonJetpackComponent>()?.fuel ?? 0f) <= 0f))
                 self.characterMotor.velocity.y -= Time.fixedDeltaTime * Physics.gravity.y * gravMod;
-
-            orig(self);
         }
 
         private void On_CBRecalcStats(On.RoR2.CharacterBody.orig_RecalculateStats orig, CharacterBody self) {

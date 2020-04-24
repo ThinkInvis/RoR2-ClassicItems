@@ -58,8 +58,9 @@ namespace ThinkInvisible.ClassicItems
         }
 
         private void On_CMOnHitGround(On.RoR2.CharacterMotor.orig_OnHitGround orig, CharacterMotor self, CharacterMotor.HitGroundInfo ghi) {
+            orig(self,ghi);
             CharacterBody body = self.GetFieldValue<CharacterBody>("body");
-            if(!body) {orig(self,ghi);return;}
+            if(!body) return;
             if(GetCount(body) > 0 && Math.Abs(ghi.velocity.y) > velThreshold) {
                 float scalefac = Mathf.Lerp(0f, baseDamage + (GetCount(body) - 1f) * stackDamage,
                     Mathf.InverseLerp(velThreshold, velMax+velThreshold, Math.Abs(ghi.velocity.y)));
@@ -85,7 +86,6 @@ namespace ThinkInvisible.ClassicItems
                 };
 				EffectManager.SpawnEffect(Resources.Load<GameObject>("Prefabs/Effects/ImpactEffects/BootShockwave"), effectData, true);
             }
-            orig(self,ghi);
         }
     }
 }

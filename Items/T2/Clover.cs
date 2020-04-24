@@ -111,10 +111,11 @@ namespace ThinkInvisible.ClassicItems
         }
 
         private void On_DROnKilledServer(On.RoR2.DeathRewards.orig_OnKilledServer orig, DeathRewards self, DamageReport damageReport) {
-            if(damageReport == null) {orig(self,damageReport);return;}
+            orig(self, damageReport);
+
+            if(damageReport == null) return;
             CharacterBody victimBody = damageReport.victimBody;
-            if(victimBody == null || victimBody.teamComponent.teamIndex != TeamIndex.Monster) {orig(self,damageReport);return;}
-            if(!victimBody.isElite) {orig(self,damageReport);return;}
+            if(victimBody == null || victimBody.teamComponent.teamIndex != TeamIndex.Monster || !victimBody.isElite) return;
             int numberOfClovers = 0;
             if(globalStack)
                 foreach(CharacterMaster chrm in aliveList()) {
@@ -123,7 +124,7 @@ namespace ThinkInvisible.ClassicItems
             else
                 numberOfClovers += damageReport.attackerMaster?.inventory?.GetItemCount(regIndex) ?? 0;
 
-            if(numberOfClovers == 0) {orig(self,damageReport);return;}
+            if(numberOfClovers == 0) return;
 
             float rareChance = Math.Min(baseRare + numberOfClovers * stackRare, capRare);
             float uncommonChance = Math.Min(baseUnc + numberOfClovers * stackUnc, capUnc);
@@ -145,7 +146,6 @@ namespace ThinkInvisible.ClassicItems
                 spawnItemFromBody(victimBody, tier);
             }
 
-            orig(self, damageReport);
         }
     }
 }
