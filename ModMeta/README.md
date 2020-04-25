@@ -16,19 +16,19 @@ By extension, the other clients' configs need to match too. This mod has some se
 
 ### Current Additions
 #### Tier 1
-- Bitter Root: Gain 8% max hp.
-- Headstompers: Hurt enemies by falling.
-- Life Savings: Gain gold over time.
-- Snake Eyes: Gain increased crit chance on failing a shrine. Removed on succeeding a shrine.
-- Mysterious Vial: Increased health regeneration.
+- Bitter Root: "Gain 8% max hp."
+- Headstompers: "Hurt enemies by falling."
+- Life Savings: "Gain gold over time."
+- Snake Eyes: "Gain increased crit chance on failing a shrine. Removed on succeeding a shrine."
+- Mysterious Vial: "Increased health regeneration."
 #### Tier 2
-- 56 Leaf Clover: Elite mobs have a chance to drop items.
-- Boxing Gloves: Hitting enemies have a 6% chance to knock them back.
-- Golden Gun: More gold, more damage.
-- Rusty Jetpack: Increase jump height and reduce gravity.
-- Smart Shopper: Enemies drop more gold.
+- 56 Leaf Clover: "Elite mobs have a chance to drop items."
+- Boxing Gloves: "Hitting enemies have a 6% chance to knock them back."
+- Golden Gun: "More gold, more damage."
+- Rusty Jetpack: "Increase jump height and reduce gravity."
+- Smart Shopper: "Enemies drop more gold."
 #### Tier 3
-- Beating Embryo: Equipment has a 30% chance to deal double the effect.
+- Beating Embryo: "Equipment has a 30% chance to deal double the effect."
     - Doubles *duration* on: Ocular HUD, Jade Elephant.
     - Doubles *range* on: Primordial Cube, Blast Shower, Skeleton Key.
     - Doubles *count* on: The Back-up, Captain's Brooch, Sawmerang, Royal Capacitor, Lost Doll.
@@ -38,12 +38,17 @@ By extension, the other clients' configs need to match too. This mod has some se
     - Doubles *burst heal* on: Foreign Fruit, Gnarled Woodsprite.
     - Doubles *speed and damage* on: Volcanic Egg.
     - *Lunar* equipment will not work with Beating Embryo by default.
-- Photon Jetpack: No hands.
+- Photon Jetpack: "No hands."
+    - Provides flight while holding jump, using limited recharging fuel.
+    - Diff. from RoR1: only provides flight after using all double jumps.
 #### Equipment
-- Captain's Brooch: One man's wreckage is another man's treasure.
-- Skeleton Key: Open all chests in view.
+- Captain's Brooch: "One man's wreckage is another man's treasure."
+    - Calls down an expensive first-tier item chest.
+- Skeleton Key: "Open all chests in view."
+    - Diff. from RoR1: limited to a 50-meter radius instead of line-of-sight.
 #### Lunar Equipment
-- Lost Doll: Harm yourself to instantly kill an enemy.
+- Lost Doll: "Harm yourself to instantly kill an enemy."
+    - Takes 25% of your current health to damage the closest enemy for 500% of your maximum health.
 
 ### Other Features
 - Every item added by Classic Items can be individually disabled in the mod's config file.
