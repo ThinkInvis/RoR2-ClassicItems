@@ -31,8 +31,7 @@ namespace ThinkInvisible.ClassicItems
 
             modelPathName = "skeletonkeycard.prefab";
             iconPathName = "skeletonkey_icon.png";
-            itemEnigmable = true;
-            itemCooldown = 90;
+            eqpCooldown = 90;
 
             RegLang("Skeleton Key",
                 "Open all nearby chests.",

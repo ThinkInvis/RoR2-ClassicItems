@@ -27,8 +27,9 @@ namespace ThinkInvisible.ClassicItems
         public ReadOnlyCollection<ItemTag> itemTags {get; private set;}
         public ItemTier itemTier {get; protected set;}
 
-        public int itemCooldown {get; protected set;}
-        public bool itemEnigmable {get; protected set;} = true;
+        public int eqpCooldown {get; protected set;}
+        public bool eqpEnigmable {get; protected set;} = true;
+        public bool eqpIsLunar {get; protected set;} = false;
             
         public bool configDone {get; private set;} = false;
         public bool attributesDone {get; private set;} = false;
@@ -95,8 +96,9 @@ namespace ThinkInvisible.ClassicItems
                     pickupToken = gPickupToken,
                     descriptionToken = gDescriptionToken,
                     loreToken = gLoreToken,
-                    cooldown = itemCooldown,
-                    enigmaCompatible = itemEnigmable,
+                    cooldown = eqpCooldown,
+                    enigmaCompatible = eqpEnigmable,
+                    isLunar = eqpIsLunar,
                     canDrop = true
                 };
                 regEqp = new CustomEquipment(regDefEqp, new ItemDisplayRuleDict(null));

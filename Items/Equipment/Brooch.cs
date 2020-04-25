@@ -45,7 +45,7 @@ namespace ThinkInvisible.ClassicItems
 
             modelPathName = "broochcard.prefab";
             iconPathName = "captainsbrooch_icon.png";
-            itemCooldown = 135;
+            eqpCooldown = 135;
 
             RegLang("Captain's Brooch",
                 "One man's wreckage is another man's treasure.",
