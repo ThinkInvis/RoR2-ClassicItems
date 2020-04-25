@@ -63,14 +63,14 @@ namespace ThinkInvisible.ClassicItems
         }
 
         protected override void SetupBehaviorInner() {
-            var snakeEyesBuffDef = new R2API.CustomBuff("SnakeEyes", new BuffDef {
+            var snakeEyesBuffDef = new R2API.CustomBuff(new BuffDef {
                 buffColor = Color.red,
                 canStack = true,
                 isDebuff = false,
                 name = "SnakeEyes",
                 iconPath = "@ClassicItems:Assets/ClassicItems/icons/" + iconPathName
             });
-            snakeEyesBuff = R2API.ItemAPI.Add(snakeEyesBuffDef);
+            snakeEyesBuff = R2API.BuffAPI.Add(snakeEyesBuffDef);
 
             if(useIL) {
                 IL.RoR2.CharacterBody.RecalculateStats += IL_CBRecalcStats;

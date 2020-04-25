@@ -69,14 +69,14 @@ namespace ThinkInvisible.ClassicItems
         }
 
         protected override void SetupBehaviorInner() {
-            var PhotonJetpackBuff = new R2API.CustomBuff("PhotonFuel", new BuffDef {
+            var PhotonJetpackBuff = new R2API.CustomBuff(new BuffDef {
                 buffColor = Color.cyan,
                 canStack = true,
                 isDebuff = false,
                 name = "PhotonFuel",
                 iconPath = "@ClassicItems:Assets/ClassicItems/icons/" + iconPathName
             });
-            photonFuelBuff = R2API.ItemAPI.Add(PhotonJetpackBuff);
+            photonFuelBuff = R2API.BuffAPI.Add(PhotonJetpackBuff);
 
             On.RoR2.CharacterBody.OnInventoryChanged += On_CBInventoryChanged;
             On.RoR2.CharacterBody.FixedUpdate += On_CBFixedUpdate;
