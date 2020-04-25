@@ -24,6 +24,7 @@ namespace ThinkInvisible.ClassicItems
 
         private ConfigEntry<bool> cfgSubEnableBrooch;
         private ConfigEntry<bool> cfgSubEnableSkelKey;
+        private ConfigEntry<bool> cfgSubEnableLostDoll;
 
         public float procChance {get;private set;}
 
@@ -33,6 +34,7 @@ namespace ThinkInvisible.ClassicItems
 
         public bool subEnableBrooch {get;private set;}
         public bool subEnableSkelKey {get;private set;}
+        public bool subEnableLostDoll {get;private set;}
 
 
         protected override void SetupConfigInner(ConfigFile cfl) {
@@ -72,6 +74,10 @@ namespace ThinkInvisible.ClassicItems
             cfgSubEnableSkelKey = cfl.Bind<bool>(new ConfigDefinition("Items." + itemCodeName, "SubEnableSkelKey"), true, new ConfigDescription(
                 "If false, Beating Embryo will not affect Skeleton Key (added by CustomItems)."));
             subEnableSkelKey = cfgSubEnableSkelKey.Value;
+
+            cfgSubEnableLostDoll = cfl.Bind<bool>(new ConfigDefinition("Items." + itemCodeName, "SubEnableLostDoll"), false, new ConfigDescription(
+                "If false, Beating Embryo will not affect LUNAR Lost Doll (added by CustomItems)."));
+            subEnableLostDoll = cfgSubEnableLostDoll.Value;
         }
         
         protected override void SetupAttributesInner() {

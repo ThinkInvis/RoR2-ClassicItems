@@ -53,6 +53,7 @@ namespace ThinkInvisible.ClassicItems {
             public static readonly GoldenGun goldenGun = new GoldenGun();
             public static readonly Headstompers headstompers = new Headstompers();
             public static readonly LifeSavings lifeSavings = new LifeSavings();
+            public static readonly LostDoll lostDoll = new LostDoll();
             public static readonly PhotonJetpack photonJetpack = new PhotonJetpack();
             public static readonly RustyJetpack rustyJetpack = new RustyJetpack();
             public static readonly SkeletonKey skeletonKey = new SkeletonKey();
