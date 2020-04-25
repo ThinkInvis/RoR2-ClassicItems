@@ -58,7 +58,7 @@ namespace ThinkInvisible.ClassicItems
 				    var cptChest = ent.GetComponent<ChestBehavior>();
                     if(!cptChest) continue;
                     var cptPurch = ent.GetComponent<PurchaseInteraction>();
-                    if(cptPurch && cptPurch.costType == CostTypeIndex.Money) {
+                    if(cptPurch && cptPurch.available && cptPurch.costType == CostTypeIndex.Money) {
                         cptPurch.SetAvailable(false);
                         cptChest.Open();
                         foundAny = true;
