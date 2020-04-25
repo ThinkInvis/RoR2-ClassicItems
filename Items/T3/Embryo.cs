@@ -39,7 +39,7 @@ namespace ThinkInvisible.ClassicItems
 
         protected override void SetupConfigInner(ConfigFile cfl) {
             cfgProcChance = cfl.Bind<float>(new ConfigDefinition("Items." + itemCodeName, "ProcChance"), 30f, new ConfigDescription(
-                "Percent chance of triggering an equipment twice. Stacks additively. Must be in the range [0, 100].",
+                "Percent chance of triggering an equipment twice. Stacks additively.",
                 new AcceptableValueRange<float>(0f,100f)));
             procChance = cfgProcChance.Value;
 
