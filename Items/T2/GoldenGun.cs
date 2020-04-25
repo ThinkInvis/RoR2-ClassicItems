@@ -5,6 +5,7 @@ using MonoMod.Cil;
 using Mono.Cecil.Cil;
 using System;
 using System.Collections.Generic;
+using R2API.Utils;
 
 namespace ThinkInvisible.ClassicItems
 {
@@ -23,6 +24,8 @@ namespace ThinkInvisible.ClassicItems
         public bool inclDeploys {get;private set;}
 
         private bool ilFailed = false;
+        
+        public BuffIndex goldenGunBuff {get;private set;}
 
         protected override void SetupConfigInner(ConfigFile cfl) {
             itemAIBDefault = true;
@@ -57,8 +60,56 @@ namespace ThinkInvisible.ClassicItems
         }
 
         protected override void SetupBehaviorInner() {
+            var goldenGunBuffDef = new R2API.CustomBuff(new BuffDef {
+                buffColor = new Color(0.85f, 0.8f, 0.3f),
+                canStack = true,
+                isDebuff = false,
+                name = "GoldenGun",
+                iconPath = "@ClassicItems:Assets/ClassicItems/icons/" + iconPathName
+            });
+            goldenGunBuff = R2API.BuffAPI.Add(goldenGunBuffDef);
+
             IL.RoR2.HealthComponent.TakeDamage += IL_CBTakeDamage;
             if(ilFailed) IL.RoR2.HealthComponent.TakeDamage -= IL_CBTakeDamage;
+            else {
+                On.RoR2.CharacterBody.FixedUpdate += On_CBFixedUpdate;
+                On.RoR2.CharacterBody.OnInventoryChanged += On_CBInventoryChanged;
+            }
+        }
+
+        int cachedIcnt = 0;
+        private void On_CBInventoryChanged(On.RoR2.CharacterBody.orig_OnInventoryChanged orig, CharacterBody self) {
+            orig(self);
+            var newIcnt = GetCount(self);
+            if(cachedIcnt != newIcnt) {
+                cachedIcnt = newIcnt;
+                updateGGBuff(self);
+            }
+        }
+
+        uint cachedMoney = 0;
+        float cachedDiff = 0;
+        private void On_CBFixedUpdate(On.RoR2.CharacterBody.orig_FixedUpdate orig, CharacterBody self) {
+            orig(self);
+            if(!self.master) return;
+            var newMoney = self.master.money;
+            if(inclDeploys) {
+                var dplc = self.GetComponent<Deployable>();
+                if(dplc) newMoney += dplc.ownerMaster.money;
+            }
+            if(self.master && (cachedMoney != newMoney || cachedDiff != Run.instance.difficultyCoefficient)) {
+                cachedMoney = newMoney;
+                cachedDiff = Run.instance.difficultyCoefficient;
+                updateGGBuff(self);
+            }
+        }
+
+        void updateGGBuff(CharacterBody cb) {
+            int tgtBuffStacks = (cachedIcnt<1) ? 0 : Mathf.Clamp(Mathf.FloorToInt(cachedMoney / (Run.instance.GetDifficultyScaledCost(goldAmt) * Mathf.Pow(goldReduc, cachedIcnt - 1)) * 100f), 0, 100);
+                
+            int currBuffStacks = cb.GetBuffCount(goldenGunBuff);
+            if(tgtBuffStacks != currBuffStacks)
+                Reflection.InvokeMethod(cb, "SetBuffCount", goldenGunBuff, tgtBuffStacks);
         }
 
         private void IL_CBTakeDamage(ILContext il) {
