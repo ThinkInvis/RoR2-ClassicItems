@@ -61,7 +61,7 @@ namespace ThinkInvisible.ClassicItems
                 "If false, Beating Embryo will not affect equipment added by other mods. If true, these items will be triggered twice when Beating Embryo procs, which may not work with some items."));
             subEnableModded = cfgSubEnableModded.Value;
 
-            cfgSubEnableBrooch = cfl.Bind<bool>(new ConfigDefinition("Items." + itemCodeName, "SubEnableSaw"), true, new ConfigDescription(
+            cfgSubEnableBrooch = cfl.Bind<bool>(new ConfigDefinition("Items." + itemCodeName, "SubEnableBrooch"), true, new ConfigDescription(
                 "If false, Beating Embryo will not affect Captain's Brooch (added by CustomItems)."));
             subEnableBrooch = cfgSubEnableBrooch.Value;
         }
