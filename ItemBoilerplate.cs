@@ -161,6 +161,13 @@ namespace ThinkInvisible.ClassicItems
             }
             return inv?.GetItemCount(regIndex) ?? 0;
         }
+        public int GetCount(CharacterMaster chrm) {
+            if(itemIsEquipment) {
+                Debug.LogError("ClassicItems: something tried to call GetCount for an equipment item");
+                return 0;
+            }
+            return chrm?.inventory?.GetItemCount(regIndex) ?? 0;
+        }
         public int GetCount(CharacterBody body) {
             if(itemIsEquipment) {
                 Debug.LogError("ClassicItems: something tried to call GetCount for an equipment item");

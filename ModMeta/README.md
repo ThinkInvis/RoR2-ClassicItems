@@ -41,6 +41,7 @@ By extension, the other clients' configs need to match too. This mod has some se
 - Photon Jetpack: "No hands."
     - Provides flight while holding jump, using limited recharging fuel.
     - Diff. from RoR1: only provides flight after using all double jumps.
+- Telescopic Sight: "Chance to instantly kill an enemy."
 #### Equipment
 - Captain's Brooch: "One man's wreckage is another man's treasure."
     - Calls down an expensive first-tier item chest.
