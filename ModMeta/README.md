@@ -30,15 +30,20 @@ By extension, the other clients' configs need to match too. This mod has some se
 #### Tier 3
 - Beating Embryo: Equipment has a 30% chance to deal double the effect.
     - Doubles *duration* on: Ocular HUD, Jade Elephant.
-    - Doubles *range* on: Primordial Cube.
-    - Doubles *count* on: The Back-up, Captain's Brooch, Sawmerang, Royal Capacitor.
+    - Doubles *range* on: Primordial Cube, Blast Shower, Skeleton Key.
+    - Doubles *count* on: The Back-up, Captain's Brooch, Sawmerang, Royal Capacitor, Lost Doll.
     - Doubles *fire rate and count* on: Disposable Missile Launcher.
+    - Doubles *fire rate* on: The Crowdfunder.
     - Doubles *damage* on: Preon Accumulator.
     - Doubles *burst heal* on: Foreign Fruit, Gnarled Woodsprite.
     - Doubles *speed and damage* on: Volcanic Egg.
+    - *Lunar* equipment will not work with Beating Embryo by default.
 - Photon Jetpack: No hands.
 #### Equipment
 - Captain's Brooch: One man's wreckage is another man's treasure.
+- Skeleton Key: Open all chests in view.
+#### Lunar Equipment
+- Lost Doll: Harm yourself to instantly kill an enemy.
 
 ### Other Features
 - Every item added by Classic Items can be individually disabled in the mod's config file.
