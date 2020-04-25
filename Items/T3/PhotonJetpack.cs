@@ -1,9 +1,9 @@
 ﻿using R2API.Utils;
 using RoR2;
-using System;
 using UnityEngine;
 using BepInEx.Configuration;
 using static ThinkInvisible.ClassicItems.MiscUtil;
+using System.Collections.Generic;
 
 namespace ThinkInvisible.ClassicItems
 {
@@ -56,18 +56,20 @@ namespace ThinkInvisible.ClassicItems
         }
         
         protected override void SetupAttributesInner() {
+            itemAIBDefault = true;
+
             modelPathName = "photonjetpackcard.prefab";
             iconPathName = "photonjetpack_icon.png";
             RegLang("Photon Jetpack",
             	"No hands.",
             	"Grants <style=cIsUtility>" + baseFuel.ToString("N1") + " second" + nplur(baseFuel, 1) + "</style> <style=cStack>(+" + stackFuel.ToString("N1") +" s per stack)</style> of <style=cIsUtility>flight</style> at <style=cIsUtility>" + gravMod.ToString("N1") + "g</style> <style=cStack>(+" + fallBoost.ToString("N1") + "g while falling)</style>, usable once you have no double jumps remaining. Fuel <style=cIsUtility>recharges</style> at <style=cIsUtility>" + pct(cfgRecharge.Value) + " speed</style> after a <style=cIsUtility>delay</style> of <style=cIsUtility>" + rchDelay.ToString("N0") + " second" + nplur(rchDelay) + "</style>.",
             	"A relic of times long past (ClassicItems mod)");
-            _itemTags = new[]{ItemTag.Utility};
+            _itemTags = new List<ItemTag>{ItemTag.Utility};
             itemTier = ItemTier.Tier3;
         }
 
         protected override void SetupBehaviorInner() {
-            var PhotonJetpackBuff = new R2API.CustomBuff("PhotonFuel", new RoR2.BuffDef {
+            var PhotonJetpackBuff = new R2API.CustomBuff("PhotonFuel", new BuffDef {
                 buffColor = Color.cyan,
                 canStack = true,
                 isDebuff = false,
@@ -81,9 +83,11 @@ namespace ThinkInvisible.ClassicItems
         }
 
         private void On_CBFixedUpdate(On.RoR2.CharacterBody.orig_FixedUpdate orig, CharacterBody self) {
+            orig(self);
+
             var cpt = self.GetComponent<PhotonJetpackComponent>();
 
-            if(!self.characterMotor || !cpt || cpt.fuelCap == 0) {orig(self);return;}
+            if(!self.characterMotor || !cpt || cpt.fuelCap == 0) return;
 
             uint oldstate = cpt.flyState;
 
@@ -128,7 +132,6 @@ namespace ThinkInvisible.ClassicItems
             int currFuelStacks = self.GetBuffCount(photonFuelBuff);
             if(tgtFuelStacks != currFuelStacks)
                 Reflection.InvokeMethod(self, "SetBuffCount", photonFuelBuff, tgtFuelStacks);
-            orig(self);
         }
 
         private void On_CBInventoryChanged(On.RoR2.CharacterBody.orig_OnInventoryChanged orig, CharacterBody self) {

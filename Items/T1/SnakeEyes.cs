@@ -6,6 +6,7 @@ using static ThinkInvisible.ClassicItems.MiscUtil;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using System;
+using System.Collections.Generic;
 
 namespace ThinkInvisible.ClassicItems
 {
@@ -16,11 +17,13 @@ namespace ThinkInvisible.ClassicItems
         private ConfigEntry<float> cfgAdd;
         private ConfigEntry<int> cfgCap;
         private ConfigEntry<bool> cfgAffectAll;
+        private ConfigEntry<bool> cfgInclDeploys;
         private ConfigEntry<bool> cfgUseIL;
 
         public float critAdd {get;private set;}
         public int stackCap {get;private set;}
         public bool affectAll {get;private set;}
+        public bool inclDeploys {get;private set;}
         public bool useIL {get;private set;}
 
         public BuffIndex snakeEyesBuff {get;private set;}
@@ -36,12 +39,15 @@ namespace ThinkInvisible.ClassicItems
                 new AcceptableValueRange<int>(1,int.MaxValue)));
             cfgAffectAll = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "AffectAll"), true, new ConfigDescription(
                 "If true, any chance shrine activation will trigger Snake Eyes on all living players (matches behavior from RoR1). If false, only the purchaser will be affected."));
+            cfgInclDeploys = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "InclDeploys"), true, new ConfigDescription(
+                "If true, deployables (e.g. Engineer turrets) with Snake Eyes will gain/lose buff stacks whenever their master does. If false, Snake Eyes will not work on deployables at all."));
             cfgUseIL = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "UseIL"), true, new ConfigDescription(
                 "Set to false to change Snake Eyes' effect from an IL patch to an event hook, which may help if experiencing compatibility issues with another mod. This will change how Snake Eyes interacts with other effects."));
 
             critAdd = cfgAdd.Value;
             stackCap = cfgCap.Value;
             affectAll = cfgAffectAll.Value;
+            inclDeploys = cfgInclDeploys.Value;
             useIL = cfgUseIL.Value;
         }
         
@@ -52,12 +58,12 @@ namespace ThinkInvisible.ClassicItems
             	"Gain increased crit chance on failing a shrine. Removed on succeeding a shrine.",
             	"Increases <style=cIsDamage>crit chance</style> by <style=cIsDamage>" + pct(critAdd, 0, 1) + "</style> <style=cStack>(+" + pct(critAdd, 0, 1) + " per stack, linear)</style> for up to <style=cIsUtility>" + stackCap + "</style> consecutive <style=cIsUtility>chance shrine failures</style>. <style=cIsDamage>Resets to 0</style> on any <style=cIsUtility>chance shrine success</style>.",
             	"A relic of times long past (ClassicItems mod)");
-            _itemTags = new[]{ItemTag.Damage};
+            _itemTags = new List<ItemTag>{ItemTag.Damage};
             itemTier = ItemTier.Tier1;
         }
 
         protected override void SetupBehaviorInner() {
-            var snakeEyesBuffDef = new R2API.CustomBuff("SnakeEyes", new RoR2.BuffDef {
+            var snakeEyesBuffDef = new R2API.CustomBuff("SnakeEyes", new BuffDef {
                 buffColor = Color.red,
                 canStack = true,
                 isDebuff = false,
@@ -78,25 +84,38 @@ namespace ThinkInvisible.ClassicItems
             ShrineChanceBehavior.onShrineChancePurchaseGlobal += Evt_SCBOnShrineChancePurchaseGlobal;
         }
 
+        private void cbApplyBuff(bool failed, CharacterBody tgtBody) {
+            if(tgtBody == null) return;
+            if(failed) {
+                if(GetCount(tgtBody) > 0 && tgtBody.GetBuffCount(snakeEyesBuff) < stackCap) tgtBody.AddBuff(snakeEyesBuff);
+                if(!inclDeploys) return;
+                var dplist = tgtBody.master?.GetFieldValue<List<DeployableInfo>>("deployablesList");
+                if(dplist != null) foreach(DeployableInfo d in dplist) {
+                    var dplBody = d.deployable.gameObject.GetComponent<CharacterMaster>()?.GetBody();
+                    if(dplBody && GetCount(dplBody) > 0 && dplBody.GetBuffCount(snakeEyesBuff) < stackCap) {
+                        dplBody.AddBuff(snakeEyesBuff);
+                    }
+                }
+            } else {
+                Reflection.InvokeMethod(tgtBody, "SetBuffCount", snakeEyesBuff, 0);
+                if(!inclDeploys) return;
+                var dplist = tgtBody.master?.GetFieldValue<List<DeployableInfo>>("deployablesList");
+                if(dplist != null) foreach(DeployableInfo d in dplist) {
+                    var dplBody = d.deployable.gameObject.GetComponent<CharacterMaster>().GetBody();
+                    if(dplBody) {
+                        Reflection.InvokeMethod(dplBody, "SetBuffCount", snakeEyesBuff, 0);
+                    }
+                }
+            }
+        }
+
         private void Evt_SCBOnShrineChancePurchaseGlobal(bool failed, Interactor tgt) {
             if(affectAll) {
                 aliveList().ForEach(x=>{
-                    RoR2.CharacterBody tgtBody = x.GetBody();
-                    if(GetCount(tgtBody) < 1) return;
-                    if(failed)
-                        if(tgtBody.GetBuffCount(snakeEyesBuff) < stackCap) tgtBody.AddBuff(snakeEyesBuff);
-                    else
-                        Reflection.InvokeMethod(tgtBody, "SetBuffCount", snakeEyesBuff, 0);
-                    tgtBody.RecalculateStats();
+                    cbApplyBuff(failed, x.GetBody());
                 });
             } else {
-                CharacterBody tgtBody = tgt.GetComponentInParent<CharacterBody>();
-                if(GetCount(tgtBody) < 1) return;
-                if(failed)
-                    if(tgtBody.GetBuffCount(snakeEyesBuff) < stackCap) tgtBody.AddBuff(snakeEyesBuff);
-                else
-                    Reflection.InvokeMethod(tgtBody, "SetBuffCount", snakeEyesBuff, 0);
-                tgtBody.RecalculateStats();
+                cbApplyBuff(failed, tgt.GetComponent<CharacterBody>());
             }
         }
 
@@ -110,7 +129,7 @@ namespace ThinkInvisible.ClassicItems
         private void IL_CBRecalcStats(ILContext il) {
             var c = new ILCursor(il);
             //Add another local variable to store Snake Eyes itemcount
-            c.IL.Body.Variables.Add(new VariableDefinition(c.IL.Body.Method.Module.TypeSystem.Boolean));
+            c.IL.Body.Variables.Add(new VariableDefinition(c.IL.Body.Method.Module.TypeSystem.Int32));
             int locItemCount = c.IL.Body.Variables.Count-1;
             c.Emit(OpCodes.Ldc_I4_0);
             c.Emit(OpCodes.Stloc, locItemCount);
@@ -118,15 +137,15 @@ namespace ThinkInvisible.ClassicItems
             bool ILFound;
                     
             ILFound = c.TryGotoNext(MoveType.After,
-                x=>x.MatchCallOrCallvirt<RoR2.CharacterBody>("get_inventory"),
+                x=>x.MatchCallOrCallvirt<CharacterBody>("get_inventory"),
                 x=>x.MatchCallOrCallvirt<UnityEngine.Object>("op_Implicit"),
                 x=>x.OpCode==OpCodes.Brfalse);
 
             if(ILFound) {
                 c.Emit(OpCodes.Ldarg_0);
-                c.Emit(OpCodes.Call,typeof(RoR2.CharacterBody).GetMethod("get_inventory"));
+                c.Emit(OpCodes.Call,typeof(CharacterBody).GetMethod("get_inventory"));
                 c.Emit(OpCodes.Ldc_I4, (int)regIndex);
-                c.Emit(OpCodes.Callvirt,typeof(RoR2.Inventory).GetMethod("GetItemCount"));
+                c.Emit(OpCodes.Callvirt,typeof(Inventory).GetMethod("GetItemCount"));
                 c.Emit(OpCodes.Stloc, locItemCount);
             } else {
                 ilFailed = true;

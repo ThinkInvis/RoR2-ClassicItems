@@ -73,7 +73,7 @@ namespace ThinkInvisible.ClassicItems
             	"Equipment has a 30% chance to deal double the effect.",
             	"Upon activating an equipment, adds a <style=cIsUtility>" + pct(cfgProcChance.Value, 0, 1) + "</style> <style=cStack>(+" + pct(cfgProcChance.Value, 0, 1) + " per stack)</style> chance to <style=cIsUtility>double its effects somehow</style>.",
             	"A relic of times long past (ClassicItems mod)");
-            _itemTags = new[]{ItemTag.EquipmentRelated};
+            _itemTags = new List<ItemTag>{ItemTag.EquipmentRelated};
             itemTier = ItemTier.Tier3;
         }
 
@@ -96,9 +96,7 @@ namespace ThinkInvisible.ClassicItems
             orig(self);
 
             var cpt = self.GetComponent<EmbryoComponent>();
-            if(!cpt) {
-                cpt = self.gameObject.AddComponent<EmbryoComponent>();
-            }
+            if(!cpt) self.gameObject.AddComponent<EmbryoComponent>();
         }
 
         private bool On_ESPerformEquipmentAction(On.RoR2.EquipmentSlot.orig_PerformEquipmentAction orig, EquipmentSlot slot, EquipmentIndex ind) {

@@ -5,6 +5,7 @@ using MonoMod.Cil;
 using Mono.Cecil.Cil;
 using UnityEngine;
 using System;
+using System.Collections.Generic;
 
 namespace ThinkInvisible.ClassicItems
 {
@@ -38,7 +39,7 @@ namespace ThinkInvisible.ClassicItems
             	"Increased health regeneration.",
             	"Increases <style=cIsHealing>health regen by +" + addRegen.ToString("N1") + "/sec</style> <style=cStack>(+" + addRegen.ToString("N1") + "/sec per stack)</style>.",
             	"A relic of times long past (ClassicItems mod)");
-            _itemTags = new[]{ItemTag.Healing};
+            _itemTags = new List<ItemTag>{ItemTag.Healing};
             itemTier = ItemTier.Tier1;
         }
 
@@ -72,15 +73,15 @@ namespace ThinkInvisible.ClassicItems
             bool ILFound;
                     
             ILFound = c.TryGotoNext(MoveType.After,
-                x=>x.MatchCallOrCallvirt<RoR2.CharacterBody>("get_inventory"),
+                x=>x.MatchCallOrCallvirt<CharacterBody>("get_inventory"),
                 x=>x.MatchCallOrCallvirt<UnityEngine.Object>("op_Implicit"),
                 x=>x.OpCode==OpCodes.Brfalse);
 
             if(ILFound) {
                 c.Emit(OpCodes.Ldarg_0);
-                c.Emit(OpCodes.Call,typeof(RoR2.CharacterBody).GetMethod("get_inventory"));
+                c.Emit(OpCodes.Call,typeof(CharacterBody).GetMethod("get_inventory"));
                 c.Emit(OpCodes.Ldc_I4, (int)regIndex);
-                c.Emit(OpCodes.Callvirt,typeof(RoR2.Inventory).GetMethod("GetItemCount"));
+                c.Emit(OpCodes.Callvirt,typeof(Inventory).GetMethod("GetItemCount"));
                 c.Emit(OpCodes.Stloc, locItemCount);
             } else {
                 ilFailed = true;

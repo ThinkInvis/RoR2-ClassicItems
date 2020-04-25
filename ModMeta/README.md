@@ -6,6 +6,14 @@ Adds some items from Risk of Rain 1 which RoR2 thought it was too good for.
 
 For nostalgic purposes only. Here Be Dragons who hoard balance issues, because the numbers are closer to RoR1's than 2's... and, y'know, Brooch+Clover. Will absolutely lead to silly, broken runs, unless you feel like changing the config up -- most aspects of each item are configurable!
 
+
+
+### WARNING: MAKE SURE YOUR CONFIG FILE MATCHES THE HOST'S IN MULTIPLAYER!
+
+By extension, the other clients' configs need to match too. This mod has some settings that are too difficult to change after the game has launched, so it will not automatically sync config with servers.
+
+
+
 ### Current Additions
 #### Tier 1
 - Bitter Root: Gain 8% max hp.
@@ -16,6 +24,7 @@ For nostalgic purposes only. Here Be Dragons who hoard balance issues, because t
 #### Tier 2
 - 56 Leaf Clover: Elite mobs have a chance to drop items.
 - Boxing Gloves: Hitting enemies have a 6% chance to knock them back.
+- Golden Gun: More gold, more damage.
 - Rusty Jetpack: Increase jump height and reduce gravity.
 - Smart Shopper: Enemies drop more gold.
 #### Tier 3
@@ -42,24 +51,33 @@ For nostalgic purposes only. Here Be Dragons who hoard balance issues, because t
 
 - More items are on the way! There's a lot to work with.
 - Item models are bigger than they should be, and are also just placeholder cards. The style's growing on me, but actual models may happen someday.
-- Engineer turrets aren't affected by some items when they could/should be (e.g. Life Savings, Snake Eyes?); may also add a config option to blacklist any CI item from working on turrets.
 - Stats are set close to RoR1's whenever possible. May eventually set up a config preset which balances items a little more carefully with respect to RoR2's existing content.
-- Beating Embryo has no effect on some equipments: Blast Shower (nonfunctional), Eccentric Vase (NYI), Milky Chrysalis (nonfunctional), Radar Scanner (NYI), The Crowdfunder (NYI), Recycler (NYI).
+- Beating Embryo has no effect on some equipments: Eccentric Vase (NYI), Milky Chrysalis (nonfunctional), Radar Scanner (NYI), Recycler (NYI).
 - Beating Embryo does not update the visual effects on some other equipments despite mechanical effects being properly doubled (e.g. Ocular HUD model deactivates too early).
 - Beating Embryo has no effect on Lunar equipments. This is a design decision, but disabled-by-default effects are planned.
-- Captain's Brooch looks worse for multiplayer clients (choppy drop animation, no sound).
 - See the GitHub repo for more!
 
 ## Changelog
 
 The 5 latest updates are listed below. For a full changelog, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/changelog.md
 
-**2.1.0** (UPCOMING)
+**2.2.0**
 
-- Finished incomplete IL failure fallback for Captain's Brooch, which should no longer potentially cause errors if another mod interferes with its IL patch.
-- Added inverse behavior at low stacks to Life Savings: default config options now provide (per second, by stack count): $1/3, $1/2, $1, $2, $3....
+- All items can now be added to the AI blacklist from config. By default, this is enabled for: Life Savings, 56 Leaf Clover, Golden Gun, Rusty Jetpack, Smart Shopper, Photon Jetpack.
+- Headstompers and Life Savings are now networked properly and should no longer act wonky if you're not the host.
+- Life Savings (disabled by default), Snake Eyes, and Golden Gun can now work on deployables (e.g. Engineer turrets).
+- Several other small internal bugfixes and optimizations.
+
+**2.1.0**
+
+- ADDED ITEM: Golden Gun!
+- Beating Embryo now works on Blast Shower and The Crowdfunder.
 - Beating Embryo IL patches are now slightly more stable.
-- Updated libraries for RoR2 patch 4892828
+- Captain's Brooch is now networked and should animate smoothly and play sound for non-host players.
+- Added a missing SubmoduleDependency which could cause Captain's Brooch to break if no other mod loaded the Submodule.
+- Finished incomplete IL failure fallback for Captain's Brooch, which should no longer potentially cause errors if another mod interferes with its IL patch.
+- Added inverse behavior at low stacks to Life Savings. Default config options now provide (per second, by stack count): $1/3, $1/2, $1, $2, $3....
+- Updated libraries for RoR2 patch #4892828.
 
 **2.0.1**
 
@@ -74,8 +92,3 @@ The 5 latest updates are listed below. For a full changelog, see: https://github
 **1.0.3**
 
 - Fixed incompatibility with BrokenMagnet (and with any other mod that includes an AssetBundle with an internal name of "exampleitemmod")
-
-**1.0.2**
-
-- Fixed Life Savings blocking teleporter completion and not working after Stage 1.
-- Fixed Captain's Brooch not triggering with Artifact of Sacrifice enabled.

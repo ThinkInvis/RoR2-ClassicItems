@@ -7,6 +7,7 @@ using static ThinkInvisible.ClassicItems.ClassicItemsPlugin.MasterItemList;
 using MonoMod.Cil;
 using Mono.Cecil.Cil;
 using System;
+using System.Collections.Generic;
 
 namespace ThinkInvisible.ClassicItems
 {
@@ -46,7 +47,7 @@ namespace ThinkInvisible.ClassicItems
             	"Increase jump height and reduce gravity.",
             	"<style=cIsUtility>Reduces gravity</style> by <style=cIsUtility>" + pct(gravMod) + "</style> while <style=cIsUtility>holding jump</style>. Increases <style=cIsUtility>jump power</style> by <style=cIsUtility>" + pct(jumpMult) + "</style> <style=cStack>(+" + pct(jumpMult)  + " per stack, linear)</style>.",
             	"A relic of times long past (ClassicItems mod)");
-            _itemTags = new[]{ItemTag.Utility};
+            _itemTags = new List<ItemTag>{ItemTag.Utility};
             itemTier = ItemTier.Tier2;
         }
 
@@ -64,15 +65,13 @@ namespace ThinkInvisible.ClassicItems
         }
 
         private void On_CBFixedUpdate(On.RoR2.CharacterBody.orig_FixedUpdate orig, CharacterBody self) {
-            if(!self.characterMotor) {orig(self);return;}
+            orig(self);
+            if(!self.characterMotor) return;
             if(GetCount(self) > 0 && self.inputBank.jump.down && (
                     !photonJetpack.itemEnabled
                     || !ClassicItemsPlugin.gCoolYourJets
-                    || (self.GetComponent<PhotonJetpackComponent>()?.fuel ?? 0f) <= 0f
-                ))
+                    || (self.GetComponent<PhotonJetpackComponent>()?.fuel ?? 0f) <= 0f))
                 self.characterMotor.velocity.y -= Time.fixedDeltaTime * Physics.gravity.y * gravMod;
-
-            orig(self);
         }
 
         private void On_CBRecalcStats(On.RoR2.CharacterBody.orig_RecalculateStats orig, CharacterBody self) {

@@ -2,6 +2,10 @@
 using System;
 using UnityEngine;
 using BepInEx.Configuration;
+using System.Collections.Generic;
+using UnityEngine.Networking;
+using static ThinkInvisible.ClassicItems.ClassicItemsPlugin.MasterItemList;
+using R2API.Utils;
 
 namespace ThinkInvisible.ClassicItems
 {
@@ -11,22 +15,27 @@ namespace ThinkInvisible.ClassicItems
 
         private ConfigEntry<float> cfgGainPerSec;
         private ConfigEntry<int> cfgInvertCount;
+        private ConfigEntry<bool> cfgInclDeploys;
 
         public float gainPerSec {get;private set;}
         public int invertCount {get;private set;}
-
-        public bool holdIt {get; private set;} = false; //https://www.youtube.com/watch?v=vDMwDT6BhhE
+        public bool inclDeploys {get;private set;}
 
         protected override void SetupConfigInner(ConfigFile cfl) {
+            itemAIBDefault = true;
+
             cfgGainPerSec = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "GainPerSec"), 1f, new ConfigDescription(
                 "Money to add to players per second per Life Savings stack (without taking into account InvertCount).",
                 new AcceptableValueRange<float>(0f,float.MaxValue)));
             cfgInvertCount = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "InvertCount"), 3, new ConfigDescription(
                 "With <InvertCount stacks, number of stacks affects time per interval instead of multiplying money gained.",
                 new AcceptableValueRange<int>(0,int.MaxValue)));
+            cfgInclDeploys = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "InclDeploys"), false, new ConfigDescription(
+                "If true, Life Savings stacks on deployables (e.g. Engineer turrets) will send money to their master."));
 
             gainPerSec = cfgGainPerSec.Value;
             invertCount = cfgInvertCount.Value;
+            inclDeploys = cfgInclDeploys.Value;
         }
 
         protected override void SetupAttributesInner() {
@@ -36,55 +45,86 @@ namespace ThinkInvisible.ClassicItems
             	"Earn gold over time.",
             	"Generates <style=cIsUtility>$" + gainPerSec + "</style> <style=cStack>(+$" + gainPerSec + " per stack)</style> every second.",
             	"A relic of times long past (ClassicItems mod)");
-            _itemTags = new[]{ItemTag.Utility};
+            _itemTags = new List<ItemTag>{ItemTag.Utility};
             itemTier = ItemTier.Tier1;
         }
 
         protected override void SetupBehaviorInner() {
             On.RoR2.CharacterBody.OnInventoryChanged += On_CBOnInventoryChanged;
-            On.RoR2.CharacterBody.FixedUpdate += On_CBFixedUpdate;
             On.RoR2.SceneExitController.Begin += On_SECBegin;
-            On.RoR2.SceneExitController.OnDestroy += On_SECDestroy;
+            On.EntityStates.SpawnTeleporterState.OnExit += On_EntSTSOnExit;
+            On.RoR2.CharacterMaster.AddDeployable += On_CMAddDeployable;
+            On.RoR2.CharacterMaster.RemoveDeployable += On_CMRemoveDeployable;
         }
-
-        private void On_SECDestroy(On.RoR2.SceneExitController.orig_OnDestroy orig, SceneExitController self) {
-            holdIt = false;
+        private void On_EntSTSOnExit(On.EntityStates.SpawnTeleporterState.orig_OnExit orig, EntityStates.SpawnTeleporterState self) {
             orig(self);
+            if(!NetworkServer.active) return;
+            var cpt = self.outer.commonComponents.characterBody.GetComponent<LifeSavingsComponent>();
+            if(cpt) cpt.holdIt = false;
         }
 
         private void On_SECBegin(On.RoR2.SceneExitController.orig_Begin orig, SceneExitController self) {
-            holdIt = true;
             orig(self);
-        }
-
-        private void On_CBFixedUpdate(On.RoR2.CharacterBody.orig_FixedUpdate orig, RoR2.CharacterBody self) {
-            LifeSavingsComponent cpt = self.GetComponent<LifeSavingsComponent>();
-            if(self.inventory && self.master && cpt) {
-                int icnt = GetCount(self);
-                if(icnt > 0)
-                    cpt.moneyBuffer += Time.fixedDeltaTime * gainPerSec * ((icnt < invertCount)?(1f/(float)(invertCount-icnt+1)):(icnt-invertCount+1));
-                //Disable during teleport animation, but keep tracking time so it stacks up after teleport is complete
-                //Accumulator is emptied into actual money variable whenever a tick passes and it has enough for a change in integer value
-                if(cpt.moneyBuffer >= 1.0f && !holdIt){
-                    if(BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.funkfrog_sipondo.sharesuite") && Compat_ShareSuite.MoneySharing())
-                        Compat_ShareSuite.GiveMoney((uint)Math.Floor(cpt.moneyBuffer));
-                    else
-                        self.master.GiveMoney((uint)Math.Floor(cpt.moneyBuffer));
-                    cpt.moneyBuffer %= 1.0f;
-                }
+            if(!NetworkServer.active) return;
+            foreach(NetworkUser networkUser in NetworkUser.readOnlyInstancesList) {
+				if(networkUser.master.hasBody) {
+                    var cpt = networkUser.master.GetBody().GetComponent<LifeSavingsComponent>();
+                    if(cpt) cpt.holdIt = true;
+				}
             }
-            orig(self);
         }
 
-        private void On_CBOnInventoryChanged(On.RoR2.CharacterBody.orig_OnInventoryChanged orig, RoR2.CharacterBody self) {
+        private void On_CBOnInventoryChanged(On.RoR2.CharacterBody.orig_OnInventoryChanged orig, CharacterBody self) {
             orig(self);
             var cpt = self.GetComponent<LifeSavingsComponent>();
             if(!cpt) cpt = self.gameObject.AddComponent<LifeSavingsComponent>();
+            if(NetworkServer.active) cpt.ServerUpdateIcnt();
+        }
+
+        private void On_CMAddDeployable(On.RoR2.CharacterMaster.orig_AddDeployable orig, CharacterMaster self, Deployable dpl, DeployableSlot dpls) {
+            orig(self, dpl, dpls);
+            if(inclDeploys && self.hasBody) {
+                self.GetBody().GetComponent<LifeSavingsComponent>()?.ServerUpdateIcnt();
+            }
+        }
+        private void On_CMRemoveDeployable(On.RoR2.CharacterMaster.orig_RemoveDeployable orig, CharacterMaster self, Deployable dpl) {
+            orig(self, dpl);
+            if(inclDeploys && self.hasBody) {
+                self.GetBody().GetComponent<LifeSavingsComponent>()?.ServerUpdateIcnt();
+            }
         }
     }
         
-    public class LifeSavingsComponent : MonoBehaviour
-    {
-        public float moneyBuffer = 0f;
+    public class LifeSavingsComponent : NetworkBehaviour {
+        private float moneyBuffer = 0f;
+        [SyncVar]
+        public bool holdIt = true; //https://www.youtube.com/watch?v=vDMwDT6BhhE
+        [SyncVar]
+        public int icnt = 0;
+
+        [Server]
+        public void ServerUpdateIcnt() {
+            var body = this.gameObject.GetComponent<CharacterBody>();
+            icnt = lifeSavings.GetCount(body);
+            if(lifeSavings.inclDeploys && body.master) icnt += lifeSavings.GetCountOnDeploys(body.master);
+        }
+
+        #pragma warning disable IDE0051
+        private void FixedUpdate() {
+            var body = this.gameObject.GetComponent<CharacterBody>();
+            if(body.inventory && body.master) {
+                if(icnt > 0)
+                    moneyBuffer += Time.fixedDeltaTime * lifeSavings.gainPerSec * ((icnt < lifeSavings.invertCount)?(1f/(float)(lifeSavings.invertCount-icnt+1)):(icnt-lifeSavings.invertCount+1));
+                //Disable during pre-teleport money drain so it doesn't softlock
+                //Accumulator is emptied into actual money variable whenever a tick passes and it has enough for a change in integer value
+                if(moneyBuffer >= 1.0f && !holdIt){
+                    if(Compat_ShareSuite.enabled && Compat_ShareSuite.MoneySharing())
+                        Compat_ShareSuite.GiveMoney((uint)Math.Floor(moneyBuffer));
+                    else
+                        body.master.GiveMoney((uint)Math.Floor(moneyBuffer));
+                    moneyBuffer %= 1.0f;
+                }
+            }
+        }
     }
 }

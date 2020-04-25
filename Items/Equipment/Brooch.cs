@@ -6,6 +6,7 @@ using UnityEngine;
 using static ThinkInvisible.ClassicItems.MiscUtil;
 using MonoMod.Cil;
 using Mono.Cecil.Cil;
+using UnityEngine.Networking;
 
 namespace ThinkInvisible.ClassicItems
 {
@@ -23,7 +24,7 @@ namespace ThinkInvisible.ClassicItems
 
         private Xoroshiro128Plus BroochRNG;
 
-        protected static InteractableSpawnCard broochPrefab;
+        internal static InteractableSpawnCard broochPrefab;
 
         protected override void SetupConfigInner(ConfigFile cfl) {
             cfgExtraCost = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "ExtraCost"), 0.5f, new ConfigDescription(
@@ -44,7 +45,6 @@ namespace ThinkInvisible.ClassicItems
 
             modelPathName = "broochcard.prefab";
             iconPathName = "captainsbrooch_icon.png";
-            itemEnigmable = true;
             itemCooldown = 135;
 
             RegLang("Captain's Brooch",
@@ -113,12 +113,12 @@ namespace ThinkInvisible.ClassicItems
         private void On_CBOpen(On.RoR2.ChestBehavior.orig_Open orig, ChestBehavior self) {
             orig(self);
             var dot = self.GetComponentInParent<CaptainsBroochDroppod>();
-            if(dot) dot.Unlaunch();
+            if(dot) dot.ServerUnlaunch();
         }
 
         private void Evt_BroochChestSpawnServer(SpawnCard.SpawnResult spawnres) {
             if(!safeMode && spawnres.success)
-                spawnres.spawnedInstance.GetComponent<CaptainsBroochDroppod>().Launch();
+                spawnres.spawnedInstance.GetComponent<CaptainsBroochDroppod>().ServerLaunch();
         }
 
         private bool On_ESPerformEquipmentAction(On.RoR2.EquipmentSlot.orig_PerformEquipmentAction orig, EquipmentSlot slot, EquipmentIndex eqpid) {
@@ -155,85 +155,116 @@ namespace ThinkInvisible.ClassicItems
                 } else return true;
             } else return orig(slot, eqpid);
         }
+    }
+    internal class CaptainsBroochDroppod:NetworkBehaviour {
+        ShakeEmitter shkm;
 
-        protected class CaptainsBroochDroppod:MonoBehaviour {
-            Vector3 destination;
-            Vector3 source;
-            float droptimer = 2f;
-            ShakeEmitter shkm;
-            int launchState = 0;
+        [SyncVar]
+        int launchState = 0;
+        [SyncVar]
+        float droptimer = 2f;
+        [SyncVar]
+        Vector3 destination;
+        [SyncVar]
+        Vector3 source;
 
-            public RoR2.Navigation.NodeGraph.NodeIndex mapNode;
+        public RoR2.Navigation.NodeGraph.NodeIndex mapNode;
 
-            public void Launch() {
-                shkm = this.gameObject.AddComponent<ShakeEmitter>();
-				shkm.wave = new Wave {
-					amplitude = 0.25f,
-					frequency = 180f,
-					cycleOffset = 0f
-				};
-				shkm.duration = 0.45f;
-				shkm.radius = 100f;
-				shkm.amplitudeTimeDecay = false;
+        [ClientRpc]
+        private void RpcLaunch() {
+            shkm = this.gameObject.AddComponent<ShakeEmitter>();
+			shkm.wave = new Wave {
+				amplitude = 0.25f,
+				frequency = 180f,
+				cycleOffset = 0f
+			};
+			shkm.duration = 0.45f;
+			shkm.radius = 100f;
+			shkm.amplitudeTimeDecay = false;
 
-                var originalPos = this.gameObject.transform.position;
+            launchState = 1;
+        }
 
-                this.gameObject.transform.position += Vector3.up * 1000f;
-                source = this.gameObject.transform.position;
-                var rth = UnityEngine.Random.Range(0,Mathf.PI*2);
-                var rmag = UnityEngine.Random.Range(0,100f);
-                source += new Vector3(
-                    Mathf.Cos(rth)*rmag,
-                    0,
-                    Mathf.Sin(rth)*rmag);
+        [Server]
+        public void ServerLaunch() {
+            RpcLaunch();
 
-                destination = originalPos;
-                launchState = 1;
-            }
+            var originalPos = this.gameObject.transform.position;
 
-            public void Unlaunch() {
-                launchState = 3;
-            }
-            
-            private void FixedUpdate() {
-                if(launchState == 1) {
-                    droptimer -= Time.fixedDeltaTime;
-                    this.gameObject.transform.position = Vector3.Lerp(source, destination, 1f-Math.Max(droptimer/2f, 0f));
-                    if(droptimer <= 0f) {
-                        EffectManager.SpawnEffect(Resources.Load<GameObject>("Prefabs/Effects/ImpactEffects/PodGroundImpact"), new EffectData
-					    {
-						    origin = this.gameObject.transform.position,
-						    rotation = this.gameObject.transform.rotation,
-                            scale = 0.25f
-					    }, true);
-                        Util.PlaySound("Play_UI_podImpact", this.gameObject);
-                        shkm.enabled = false;
-                        launchState = 2;
-                        droptimer = 0f;
-                    }
-                } else if(launchState == 3) {
-                    droptimer += Time.fixedDeltaTime;
-                    if(droptimer >= 5f) {
-                        EffectManager.SpawnEffect(Resources.Load<GameObject>("Prefabs/Effects/ImpactEffects/PodGroundImpact"), new EffectData
-					    {
-						    origin = this.gameObject.transform.position,
-						    rotation = this.gameObject.transform.rotation,
-                            scale = 0.25f
-					    }, true);
-                        Util.PlaySound("Play_UI_podImpact", this.gameObject);
-                        shkm.enabled = true;
-                        droptimer = 2f;
-                        launchState = 4;
-                    }
-                } else if(launchState == 4) {
-                    droptimer -= Time.fixedDeltaTime;
-                    this.gameObject.transform.position = Vector3.Lerp(destination, source, 1f-Math.Max(droptimer/2f, 0f));
-                    if(droptimer <= 0f) {
+            this.gameObject.transform.position += Vector3.up * 2000f;
+            source = this.gameObject.transform.position;
+            var rth = UnityEngine.Random.Range(0,Mathf.PI*2);
+            var rmag = UnityEngine.Random.Range(0,150f);
+            source += new Vector3(
+                Mathf.Cos(rth)*rmag,
+                0,
+                Mathf.Sin(rth)*rmag);
+
+            destination = originalPos;
+            launchState = 1;
+        }
+        
+        [ClientRpc]
+        private void RpcUnlaunch() {
+            launchState = 3;
+        }
+
+        [Server]
+        public void ServerUnlaunch() {
+            RpcUnlaunch();
+            launchState = 3;
+        }
+
+        [ClientRpc]
+        public void RpcLanded() {
+            EffectManager.SpawnEffect(Resources.Load<GameObject>("Prefabs/Effects/ImpactEffects/PodGroundImpact"), new EffectData {
+				origin = this.gameObject.transform.position,
+				rotation = this.gameObject.transform.rotation,
+                scale = 0.25f
+			}, true);
+            Util.PlaySound("Play_UI_podImpact", this.gameObject);
+            shkm.enabled = false;
+        }
+
+        [ClientRpc]
+        public void RpcUnlanded() {
+            EffectManager.SpawnEffect(Resources.Load<GameObject>("Prefabs/Effects/ImpactEffects/PodGroundImpact"), new EffectData {
+				origin = this.gameObject.transform.position,
+				rotation = this.gameObject.transform.rotation,
+                scale = 0.25f
+			}, true);
+            Util.PlaySound("Play_UI_podImpact", this.gameObject);
+            shkm.enabled = true;
+        }
+
+        #pragma warning disable IDE0051
+        private void FixedUpdate() {
+            if(launchState == 1) {
+                droptimer -= Time.fixedDeltaTime;
+                this.gameObject.transform.position = Vector3.Lerp(source, destination, 1f-Math.Max(droptimer/2f, 0f));
+                if(droptimer <= 0f) {
+                    if(NetworkServer.active)
+                        RpcLanded();
+                    launchState = 2;
+                    droptimer = 0f;
+                }
+            } else if(launchState == 3) {
+                droptimer += Time.fixedDeltaTime;
+                if(droptimer >= 5f) {
+                    if(NetworkServer.active)
+                        RpcUnlanded();
+                    droptimer = 2f;
+                    launchState = 4;
+                }
+            } else if(launchState == 4) {
+                droptimer -= Time.fixedDeltaTime;
+                this.gameObject.transform.position = Vector3.Lerp(destination, source, 1f-Math.Max(droptimer/2f, 0f));
+                if(droptimer <= 0f) {
+                    if(NetworkServer.active)
                         DirectorCore.instance.RemoveOccupiedNode(
-                            SceneInfo.instance.GetNodeGraph(broochPrefab.nodeGraphType),
+                            SceneInfo.instance.GetNodeGraph(Brooch.broochPrefab.nodeGraphType),
                             mapNode);
-                        Destroy(this.gameObject);
-                    }
+                    Destroy(this.gameObject);
                 }
             }
         }
