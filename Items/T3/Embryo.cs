@@ -78,7 +78,7 @@ namespace ThinkInvisible.ClassicItems
             iconPathName = "embryo_icon.png";
             RegLang("Beating Embryo",
             	"Equipment has a 30% chance to deal double the effect.",
-            	"Upon activating an equipment, adds a <style=cIsUtility>" + pct(cfgProcChance.Value, 0, 1) + "</style> <style=cStack>(+" + pct(cfgProcChance.Value, 0, 1) + " per stack)</style> chance to <style=cIsUtility>double its effects somehow</style>.",
+            	"Upon activating an equipment, adds a <style=cIsUtility>" + pct(procChance, 0, 1) + "</style> <style=cStack>(+" + pct(procChance, 0, 1) + " per stack)</style> chance to <style=cIsUtility>double its effects somehow</style>.",
             	"A relic of times long past (ClassicItems mod)");
             _itemTags = new List<ItemTag>{ItemTag.EquipmentRelated};
             itemTier = ItemTier.Tier3;
@@ -108,7 +108,7 @@ namespace ThinkInvisible.ClassicItems
 
         private bool On_ESPerformEquipmentAction(On.RoR2.EquipmentSlot.orig_PerformEquipmentAction orig, EquipmentSlot slot, EquipmentIndex ind) {
             var retv = orig(slot, ind);
-            if(retv && slot.characterBody && Util.CheckRoll(GetCount(slot.characterBody)*cfgProcChance.Value)) {
+            if(retv && slot.characterBody && Util.CheckRoll(GetCount(slot.characterBody)*procChance)) {
                 if(subEnableBrooch && brooch.itemEnabled && ind == brooch.regIndexEqp) {orig(slot, ind); return true;}
                 if(subEnableSkelKey && skeletonKey.itemEnabled && ind == skeletonKey.regIndexEqp) {return true;}
                 switch(ind) {
@@ -179,7 +179,7 @@ namespace ThinkInvisible.ClassicItems
             EmbryoComponent cpt = null;
             c.Emit(OpCodes.Ldarg_0);
             c.EmitDelegate<Action<EquipmentSlot>>((slot)=>{
-                boost = Util.CheckRoll(GetCount(slot.characterBody)*cfgProcChance.Value);
+                boost = Util.CheckRoll(GetCount(slot.characterBody)*procChance);
                 cpt = slot.characterBody?.GetComponent<EmbryoComponent>();
             });
             
@@ -464,7 +464,7 @@ namespace ThinkInvisible.ClassicItems
             c.Emit(OpCodes.Ldarg_0);
             c.EmitDelegate<Action<EntityStates.GoldGat.GoldGatFire>>((ggf)=>{
                 var n = ggf.GetFieldValue<NetworkedBodyAttachment>("networkedBodyAttachment");
-                boost = Util.CheckRoll(GetCount(n?.attachedBodyObject?.GetComponent<CharacterBody>())*cfgProcChance.Value);
+                boost = Util.CheckRoll(GetCount(n?.attachedBodyObject?.GetComponent<CharacterBody>())*procChance);
             });
 
             bool ILFound;
