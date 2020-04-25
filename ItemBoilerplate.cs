@@ -128,15 +128,15 @@ namespace ThinkInvisible.ClassicItems
             var gLoreToken = "CLASSICITEMS_" + itemCodeName.ToUpper() + "_LORE";
 
             if(langid == null) {
-                R2API.AssetPlus.Languages.AddToken(gNameToken, name);
-                R2API.AssetPlus.Languages.AddToken(gPickupToken, pickup);
-                R2API.AssetPlus.Languages.AddToken(gDescriptionToken, desc);
-                R2API.AssetPlus.Languages.AddToken(gLoreToken, lore);
+                LanguageAPI.Add(gNameToken, name);
+                LanguageAPI.Add(gPickupToken, pickup);
+                LanguageAPI.Add(gDescriptionToken, desc);
+                LanguageAPI.Add(gLoreToken, lore);
             } else {
-                R2API.AssetPlus.Languages.AddToken(gNameToken, name, langid);
-                R2API.AssetPlus.Languages.AddToken(gPickupToken, pickup, langid);
-                R2API.AssetPlus.Languages.AddToken(gDescriptionToken, desc, langid);
-                R2API.AssetPlus.Languages.AddToken(gLoreToken, lore, langid);
+                LanguageAPI.Add(gNameToken, name, langid);
+                LanguageAPI.Add(gPickupToken, pickup, langid);
+                LanguageAPI.Add(gDescriptionToken, desc, langid);
+                LanguageAPI.Add(gLoreToken, lore, langid);
             }
         }
 
