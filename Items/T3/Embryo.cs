@@ -39,6 +39,7 @@ namespace ThinkInvisible.ClassicItems
             cfgProcChance = cfl.Bind<float>(new ConfigDefinition("Items." + itemCodeName, "ProcChance"), 30f, new ConfigDescription(
                 "Percent chance of triggering an equipment twice. Stacks additively. Must be in the range [0, 100].",
                 new AcceptableValueRange<float>(0f,100f)));
+            procChance = cfgProcChance.Value;
 
             cfgSubEnable = new Dictionary<EquipmentIndex,ConfigEntry<bool>>();
             Dictionary<EquipmentIndex,bool> _subEnable = new Dictionary<EquipmentIndex, bool>();
