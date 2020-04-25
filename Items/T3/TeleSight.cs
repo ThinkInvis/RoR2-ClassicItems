@@ -41,6 +41,7 @@ namespace ThinkInvisible.ClassicItems
         }
         
         protected override void SetupAttributesInner() {
+            itemAIBDefault = true;
             modelPathName = "telesightcard.prefab";
             iconPathName = "telesight_icon.png";
             RegLang("Telescopic Sight",
