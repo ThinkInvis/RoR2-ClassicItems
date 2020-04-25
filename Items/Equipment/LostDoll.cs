@@ -54,48 +54,49 @@ namespace ThinkInvisible.ClassicItems
                 var tpos = slot.characterBody.transform.position;
 			    ReadOnlyCollection<TeamComponent> teamMembers = TeamComponent.GetTeamMembers(TeamIndex.Monster);
 			    float lowestDist = float.MaxValue;
-			    CharacterBody result = null;
+			    HurtBox result = null;
                 float secondLowestDist = float.MaxValue;
-                CharacterBody result2 = null;
+                HurtBox result2 = null;
                 foreach(TeamComponent tcpt in teamMembers) {
-                    if(!tcpt.body || !tcpt.body.isActiveAndEnabled) continue;
+                    if(!tcpt.body || !tcpt.body.isActiveAndEnabled || !tcpt.body.mainHurtBox) continue;
 				    float currDist = Vector3.SqrMagnitude(tcpt.transform.position - tpos);
 				    if(currDist < lowestDist) {
+                        secondLowestDist = lowestDist;
+                        result2 = result;
+
 					    lowestDist = currDist;
-					    result = tcpt.body;
+					    result = tcpt.body.mainHurtBox;
 				    }
                     if(currDist < secondLowestDist && currDist > lowestDist) {
                         secondLowestDist = currDist;
-                        result2 = tcpt.body;
+                        result2 = tcpt.body.mainHurtBox;
                     }
 			    }
                 var myHcpt = slot.characterBody?.healthComponent ?? null;
-                var theirHbox = result?.mainHurtBox;
-                var theirHbox2 = result2?.mainHurtBox;
                 bool didHit = false;
                 if(myHcpt) {
-                    if(theirHbox) {
+                    if(result) {
                         OrbManager.instance.AddOrb(new LostDollOrb {
                             attacker = slot.characterBody.gameObject,
                             damageColorIndex = DamageColorIndex.Default,
                             damageValue = myHcpt.fullCombinedHealth * damageGiven,
                             isCrit = false,
                             origin = slot.characterBody.corePosition,
-                            target = theirHbox,
+                            target = result,
                             procCoefficient = 0f,
                             procChainMask = default(ProcChainMask),
                             scale = 10f
                         });
                         didHit = true;
                     }
-                    if(theirHbox2 && (!didHit || (embryo.subEnableLostDoll && Util.CheckRoll(embryo.GetCount(slot.characterBody)*embryo.procChance)))) {
+                    if(result2 && embryo.subEnableLostDoll && Util.CheckRoll(embryo.GetCount(slot.characterBody)*embryo.procChance)) {
                         OrbManager.instance.AddOrb(new LostDollOrb {
                             attacker = slot.characterBody.gameObject,
                             damageColorIndex = DamageColorIndex.Default,
                             damageValue = myHcpt.fullCombinedHealth * damageGiven,
                             isCrit = false,
                             origin = slot.characterBody.corePosition,
-                            target = theirHbox2,
+                            target = result2,
                             procCoefficient = 0f,
                             procChainMask = default(ProcChainMask),
                             scale = 10f
