@@ -102,6 +102,7 @@ namespace ThinkInvisible.ClassicItems
         private bool On_ESPerformEquipmentAction(On.RoR2.EquipmentSlot.orig_PerformEquipmentAction orig, EquipmentSlot slot, EquipmentIndex ind) {
             var retv = orig(slot, ind);
             if(retv && slot.characterBody && Util.CheckRoll(GetCount(slot.characterBody)*cfgProcChance.Value)) {
+                if(subEnableBrooch && brooch.itemEnabled && ind == brooch.regIndexEqp) {orig(slot, ind); return true;}
                 switch(ind) {
                     case EquipmentIndex.Fruit:
                         if(subEnable[EquipmentIndex.Fruit]) 
@@ -153,7 +154,6 @@ namespace ThinkInvisible.ClassicItems
                             orig(slot, ind);
                         break;
                 }
-                if(subEnableBrooch && brooch.itemEnabled && ind == brooch.regIndexEqp) orig(slot, ind);
             }
             return retv;
         }
