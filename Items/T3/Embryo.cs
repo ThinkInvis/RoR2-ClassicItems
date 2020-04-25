@@ -61,7 +61,7 @@ namespace ThinkInvisible.ClassicItems
                 "If false, Beating Embryo will not affect equipment added by other mods. If true, these items will be triggered twice when Beating Embryo procs, which may not work with some items."));
             subEnableModded = cfgSubEnableModded.Value;
 
-            cfgSubEnableBrooch = cfl.Bind<bool>(new ConfigDefinition("Items." + itemCodeName, "SubEnableSaw"), true, new ConfigDescription(
+            cfgSubEnableBrooch = cfl.Bind<bool>(new ConfigDefinition("Items." + itemCodeName, "SubEnableBrooch"), true, new ConfigDescription(
                 "If false, Beating Embryo will not affect Captain's Brooch (added by CustomItems)."));
             subEnableBrooch = cfgSubEnableBrooch.Value;
         }
@@ -102,6 +102,7 @@ namespace ThinkInvisible.ClassicItems
         private bool On_ESPerformEquipmentAction(On.RoR2.EquipmentSlot.orig_PerformEquipmentAction orig, EquipmentSlot slot, EquipmentIndex ind) {
             var retv = orig(slot, ind);
             if(retv && slot.characterBody && Util.CheckRoll(GetCount(slot.characterBody)*cfgProcChance.Value)) {
+                if(subEnableBrooch && brooch.itemEnabled && ind == brooch.regIndexEqp) {orig(slot, ind); return true;}
                 switch(ind) {
                     case EquipmentIndex.Fruit:
                         if(subEnable[EquipmentIndex.Fruit]) 
@@ -153,7 +154,6 @@ namespace ThinkInvisible.ClassicItems
                             orig(slot, ind);
                         break;
                 }
-                if(subEnableBrooch && brooch.itemEnabled && ind == brooch.regIndexEqp) orig(slot, ind);
             }
             return retv;
         }
