@@ -19,7 +19,7 @@ namespace ThinkInvisible.ClassicItems
         public float radius {get;private set;}
 
         protected override void SetupConfigInner(ConfigFile cfl) {
-            cfgRadius = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "Radius"), 25f, new ConfigDescription(
+            cfgRadius = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "Radius"), 50f, new ConfigDescription(
                 "Radius around the user to search for chests to open when using Skeleton Key.",
                 new AcceptableValueRange<float>(0f, float.MaxValue)));
 
