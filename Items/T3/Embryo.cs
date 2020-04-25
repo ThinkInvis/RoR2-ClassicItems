@@ -23,13 +23,16 @@ namespace ThinkInvisible.ClassicItems
         private ConfigEntry<bool> cfgSubEnableModded;
 
         private ConfigEntry<bool> cfgSubEnableBrooch;
+        private ConfigEntry<bool> cfgSubEnableSkelKey;
 
         public float procChance {get;private set;}
 
         public ReadOnlyDictionary<EquipmentIndex,bool> subEnable {get;private set;}
 
         public bool subEnableModded {get;private set;}
+
         public bool subEnableBrooch {get;private set;}
+        public bool subEnableSkelKey {get;private set;}
 
 
         protected override void SetupConfigInner(ConfigFile cfl) {
@@ -64,6 +67,10 @@ namespace ThinkInvisible.ClassicItems
             cfgSubEnableBrooch = cfl.Bind<bool>(new ConfigDefinition("Items." + itemCodeName, "SubEnableBrooch"), true, new ConfigDescription(
                 "If false, Beating Embryo will not affect Captain's Brooch (added by CustomItems)."));
             subEnableBrooch = cfgSubEnableBrooch.Value;
+
+            cfgSubEnableSkelKey = cfl.Bind<bool>(new ConfigDefinition("Items." + itemCodeName, "SubEnableSkelKey"), true, new ConfigDescription(
+                "If false, Beating Embryo will not affect Skeleton Key (added by CustomItems)."));
+            subEnableSkelKey = cfgSubEnableSkelKey.Value;
         }
         
         protected override void SetupAttributesInner() {
@@ -103,6 +110,7 @@ namespace ThinkInvisible.ClassicItems
             var retv = orig(slot, ind);
             if(retv && slot.characterBody && Util.CheckRoll(GetCount(slot.characterBody)*cfgProcChance.Value)) {
                 if(subEnableBrooch && brooch.itemEnabled && ind == brooch.regIndexEqp) {orig(slot, ind); return true;}
+                if(subEnableSkelKey && skeletonKey.itemEnabled && ind == skeletonKey.regIndexEqp) {return true;}
                 switch(ind) {
                     case EquipmentIndex.Fruit:
                         if(subEnable[EquipmentIndex.Fruit]) 
