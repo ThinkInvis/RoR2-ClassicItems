@@ -16,6 +16,7 @@ By extension, the other clients' configs need to match too. This mod has some se
 
 ### Current Additions
 #### Tier 1
+- Barbed Wire: "Hurt nearby enemies."
 - Bitter Root: "Gain 8% max hp."
 - Headstompers: "Hurt enemies by falling."
 - Life Savings: "Gain gold over time."
@@ -65,12 +66,20 @@ By extension, the other clients' configs need to match too. This mod has some se
 - Stats are set close to RoR1's whenever possible. May eventually set up a config preset which balances items a little more carefully with respect to RoR2's existing content.
 - Beating Embryo has no effect on some equipments: Eccentric Vase (NYI), Milky Chrysalis (nonfunctional), Radar Scanner (NYI), Recycler (NYI).
 - Beating Embryo does not update the visual effects on some other equipments despite mechanical effects being properly doubled (e.g. Ocular HUD model deactivates too early).
-- Beating Embryo has no effect on Lunar equipments. This is a design decision, but disabled-by-default effects are planned.
+- Beating Embryo has no effect on Lunar equipments (other than Lost Doll). This is a design decision, but disabled-by-default effects are planned.
 - See the GitHub repo for more!
 
 ## Changelog
 
 The 5 latest updates are listed below. For a full changelog, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/changelog.md
+
+**2.3.0**
+
+- ADDED ITEMS: Skeleton Key, Lost Doll, Telescopic Sight, Barbed Wire!
+- Golden Gun now applies a percentile buff displaying damage boost given as a fraction of maximum.
+- Fixed Beating Embryo having a duplicate config named SubEnableSaw instead of one named SubEnableBrooch.
+- Made some event hooks more stable in case of failure (original event is called first where possible).
+- Updated R2API dependency to v2.4.21. ClassicItems now uses the BuffAPI and LanguageAPI submodules.
 
 **2.2.0**
 
@@ -99,7 +108,3 @@ The 5 latest updates are listed below. For a full changelog, see: https://github
 - Life Savings will now work if the ShareSuite mod is installed.
 - Captain's Brooch should now display the correct cost to clients in multiplayer, and has much better ground targeting!
 - Started using language tokens instead of direct string loading. May fix an unconfirmed issue with logbook entries resetting on mod uninstall; will definitely reset existing logbook entries for CI items, as their internal names have changed.
-
-**1.0.3**
-
-- Fixed incompatibility with BrokenMagnet (and with any other mod that includes an AssetBundle with an internal name of "exampleitemmod")
