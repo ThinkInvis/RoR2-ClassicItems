@@ -69,6 +69,7 @@ namespace ThinkInvisible.ClassicItems
 			bwPrefabPrefab.AddComponent<MeshFilter>().mesh = mshPrefab.GetComponentInChildren<MeshFilter>().mesh;
 			bwPrefabPrefab.AddComponent<MeshRenderer>().material = UnityEngine.Object.Instantiate(mshPrefab.GetComponentInChildren<MeshRenderer>().material);
 			bwPrefabPrefab.GetComponent<MeshRenderer>().material.SetVector("_TintColor",new Vector4(1f,0f,0f,0.5f));
+			bwPrefabPrefab.AddComponent<NetworkedBodyAttachment>();
 			var bw = bwPrefabPrefab.AddComponent<BarbedWard>();
 			bw.rangeIndicator = bwPrefabPrefab.GetComponent<MeshRenderer>().transform;
 			bw.interval = 1f;
@@ -89,10 +90,10 @@ namespace ThinkInvisible.ClassicItems
 				}
 			} else {
 				if(!cpt) {
-					cpt = UnityEngine.Object.Instantiate(barbedWardPrefab, self.transform);
+					cpt = UnityEngine.Object.Instantiate(barbedWardPrefab);
 					cpt.GetComponent<TeamFilter>().teamIndex = self.teamComponent.teamIndex;
 					cpt.GetComponent<BarbedWard>().owner = self.gameObject;
-					NetworkServer.Spawn(cpt);
+					cpt.GetComponent<NetworkedBodyAttachment>().AttachToGameObjectAndSpawn(self.gameObject);
 				}
 				cpt.GetComponent<BarbedWard>().netRadius = baseRadius + (icnt-1) * stackRadius;
 				cpt.GetComponent<BarbedWard>().netDamage = (baseDmg + (icnt-1) * stackDmg) * self.damage;
