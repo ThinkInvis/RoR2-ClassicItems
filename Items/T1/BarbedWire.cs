@@ -18,12 +18,14 @@ namespace ThinkInvisible.ClassicItems
         private ConfigEntry<float> cfgBaseDmg;
         private ConfigEntry<float> cfgStackDmg;
         private ConfigEntry<bool> cfgOneOnly;
+		private ConfigEntry<bool> cfgInclDeploys;
 
         public float baseRadius {get; private set;}
         public float stackRadius {get; private set;}
         public float baseDmg {get; private set;}
         public float stackDmg {get; private set;}
 		public bool oneOnly {get; private set;}
+        public bool inclDeploys {get;private set;}
 
 		internal static GameObject barbedWardPrefab;
 
@@ -42,12 +44,16 @@ namespace ThinkInvisible.ClassicItems
                 new AcceptableValueRange<float>(0f, float.MaxValue)));
 			cfgOneOnly = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "OneOnly"), true, new ConfigDescription(
                 "If true, Barbed Wire only affects one target at most. If false, Barbed Wire affects every target in range."));
+			cfgInclDeploys = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "InclDeploys"), true, new ConfigDescription(
+                "If true, deployables (e.g. Engineer turrets) with Barbed Wire will benefit from their master's damage. Deployables usually have 0 damage stat by default, and will not otherwise be able to use Barbed Wire."));
+
 
             baseRadius = cfgBaseRadius.Value;
             stackRadius = cfgStackRadius.Value;
             baseDmg = cfgBaseDmg.Value;
             stackDmg = cfgStackDmg.Value;
 			oneOnly = cfgOneOnly.Value;
+			inclDeploys = cfgInclDeploys.Value;
         }
         
         protected override void SetupAttributesInner() {
@@ -69,7 +75,7 @@ namespace ThinkInvisible.ClassicItems
 			bwPrefabPrefab.AddComponent<MeshFilter>().mesh = mshPrefab.GetComponentInChildren<MeshFilter>().mesh;
 			bwPrefabPrefab.AddComponent<MeshRenderer>().material = UnityEngine.Object.Instantiate(mshPrefab.GetComponentInChildren<MeshRenderer>().material);
 			bwPrefabPrefab.GetComponent<MeshRenderer>().material.SetVector("_TintColor",new Vector4(1f,0f,0f,0.5f));
-			bwPrefabPrefab.AddComponent<NetworkedBodyAttachment>();
+			bwPrefabPrefab.AddComponent<NetworkedBodyAttachment>().forceHostAuthority = true;
 			var bw = bwPrefabPrefab.AddComponent<BarbedWard>();
 			bw.rangeIndicator = bwPrefabPrefab.GetComponent<MeshRenderer>().transform;
 			bw.interval = 1f;
@@ -77,28 +83,44 @@ namespace ThinkInvisible.ClassicItems
 			UnityEngine.Object.Destroy(bwPrefabPrefab);
 			
             On.RoR2.CharacterBody.OnInventoryChanged += On_CBOnInventoryChanged;
+			if(inclDeploys)
+				On.RoR2.CharacterMaster.AddDeployable += On_CMAddDeployable;
         }
+
+		//AddDeployable fires after OnInventoryChanged while creating a turret, so Deployable.ownerMaster won't be set in OIC
+		private void On_CMAddDeployable(On.RoR2.CharacterMaster.orig_AddDeployable orig, CharacterMaster self, Deployable depl, DeployableSlot slot) {
+			orig(self, depl, slot);
+
+			var body = depl.GetComponent<CharacterMaster>()?.GetBody();
+			if(body) updateBarbedWard(body);
+		}
 
         private void On_CBOnInventoryChanged(On.RoR2.CharacterBody.orig_OnInventoryChanged orig, CharacterBody self) {
 			orig(self);
-			if(!NetworkServer.active) return;
-            var cpt = self.GetComponentInChildren<BarbedWard>()?.gameObject;
-			var icnt = GetCount(self);
-			if(icnt == 0) {
-				if(cpt) {
-					UnityEngine.Object.Destroy(cpt);
-				}
+
+			if(!NetworkServer.active || (!inclDeploys && self.master?.GetComponent<Deployable>())) return;
+			updateBarbedWard(self);
+        }
+
+		private void updateBarbedWard(CharacterBody body) {
+            var cpt = body.GetComponentInChildren<BarbedWard>()?.gameObject;
+
+			var icnt = GetCount(body);
+			var idmg = body.damage;
+			if(inclDeploys) idmg += body.master?.GetComponent<Deployable>()?.ownerMaster?.GetBody()?.damage ?? 0;
+			if(icnt == 0 || idmg == 0) {
+				if(cpt) UnityEngine.Object.Destroy(cpt);
 			} else {
 				if(!cpt) {
 					cpt = UnityEngine.Object.Instantiate(barbedWardPrefab);
-					cpt.GetComponent<TeamFilter>().teamIndex = self.teamComponent.teamIndex;
-					cpt.GetComponent<BarbedWard>().owner = self.gameObject;
-					cpt.GetComponent<NetworkedBodyAttachment>().AttachToGameObjectAndSpawn(self.gameObject);
+					cpt.GetComponent<TeamFilter>().teamIndex = body.teamComponent.teamIndex;
+					cpt.GetComponent<BarbedWard>().owner = body.gameObject;
+					cpt.GetComponent<NetworkedBodyAttachment>().AttachToGameObjectAndSpawn(body.gameObject);
 				}
 				cpt.GetComponent<BarbedWard>().netRadius = baseRadius + (icnt-1) * stackRadius;
-				cpt.GetComponent<BarbedWard>().netDamage = (baseDmg + (icnt-1) * stackDmg) * self.damage;
+				cpt.GetComponent<BarbedWard>().netDamage = (baseDmg + (icnt-1) * stackDmg) * idmg;
 			}
-        }
+		}
     }
 
 	[RequireComponent(typeof(TeamFilter))]
