@@ -77,35 +77,36 @@ namespace ThinkInvisible.ClassicItems
             }
         }
 
-        int cachedIcnt = 0;
         private void On_CBInventoryChanged(On.RoR2.CharacterBody.orig_OnInventoryChanged orig, CharacterBody self) {
             orig(self);
+            var cpt = self.GetComponent<GoldenGunComponent>();
+            if(!cpt) cpt = self.gameObject.AddComponent<GoldenGunComponent>();
             var newIcnt = GetCount(self);
-            if(cachedIcnt != newIcnt) {
-                cachedIcnt = newIcnt;
+            if(cpt.cachedIcnt != newIcnt) {
+                cpt.cachedIcnt = newIcnt;
                 updateGGBuff(self);
             }
         }
 
-        uint cachedMoney = 0;
-        float cachedDiff = 0;
         private void On_CBFixedUpdate(On.RoR2.CharacterBody.orig_FixedUpdate orig, CharacterBody self) {
             orig(self);
-            if(!self.master) return;
-            var newMoney = self.master.money;
+            var cpt = self.GetComponent<GoldenGunComponent>();
+            if(!cpt) return;
+            var newMoney = self.master?.money ?? 0;
             if(inclDeploys) {
                 var dplc = self.GetComponent<Deployable>();
-                if(dplc) newMoney += dplc.ownerMaster.money;
+                if(dplc) newMoney += dplc.ownerMaster?.money ?? 0;
             }
-            if(self.master && (cachedMoney != newMoney || cachedDiff != Run.instance.difficultyCoefficient)) {
-                cachedMoney = newMoney;
-                cachedDiff = Run.instance.difficultyCoefficient;
+            if(cpt.cachedMoney != newMoney || cpt.cachedDiff != Run.instance.difficultyCoefficient) {
+                cpt.cachedMoney = newMoney;
+                cpt.cachedDiff = Run.instance.difficultyCoefficient;
                 updateGGBuff(self);
             }
         }
 
         void updateGGBuff(CharacterBody cb) {
-            int tgtBuffStacks = (cachedIcnt<1) ? 0 : Mathf.Clamp(Mathf.FloorToInt(cachedMoney / (Run.instance.GetDifficultyScaledCost(goldAmt) * Mathf.Pow(goldReduc, cachedIcnt - 1)) * 100f), 0, 100);
+            var cpt = cb.GetComponent<GoldenGunComponent>();
+            int tgtBuffStacks = (cpt.cachedIcnt<1) ? 0 : Mathf.Clamp(Mathf.FloorToInt(cpt.cachedMoney / (Run.instance.GetDifficultyScaledCost(goldAmt) * Mathf.Pow(goldReduc, cpt.cachedIcnt - 1)) * 100f), 0, 100);
                 
             int currBuffStacks = cb.GetBuffCount(goldenGunBuff);
             if(tgtBuffStacks != currBuffStacks)
@@ -160,5 +161,11 @@ namespace ThinkInvisible.ClassicItems
                 return;
             }
         }
+    }
+
+    public class GoldenGunComponent : MonoBehaviour {
+        public uint cachedMoney = 0u;
+        public int cachedIcnt = 0;
+        public float cachedDiff = 0f;
     }
 }
