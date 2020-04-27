@@ -50,9 +50,9 @@ namespace ThinkInvisible.ClassicItems
         
         private bool On_ESPerformEquipmentAction(On.RoR2.EquipmentSlot.orig_PerformEquipmentAction orig, EquipmentSlot slot, EquipmentIndex eqpid) {
             if(eqpid == regIndexEqp) {
-                if(!slot.characterBody) return false;
+                if(!slot.characterBody || !slot.characterBody.teamComponent) return false;
                 var tpos = slot.characterBody.transform.position;
-			    ReadOnlyCollection<TeamComponent> teamMembers = TeamComponent.GetTeamMembers(TeamIndex.Monster);
+			    ReadOnlyCollection<TeamComponent> teamMembers = TeamComponent.GetTeamMembers((TeamIndex.Player | TeamIndex.Neutral | TeamIndex.Monster) & ~slot.characterBody.teamComponent.teamIndex);
 			    float lowestDist = float.MaxValue;
 			    HurtBox result = null;
                 float secondLowestDist = float.MaxValue;
