@@ -154,7 +154,7 @@ namespace ThinkInvisible.ClassicItems
 		}
 
 		private void Update() {
-			float num = Mathf.SmoothDamp(rangeIndicator.localScale.x, radius, ref rangeIndicatorScaleVelocity, 0.2f);
+			float num = Mathf.SmoothDamp(rangeIndicator.localScale.x, radius*2f, ref rangeIndicatorScaleVelocity, 0.2f);
 			rangeIndicator.localScale = new Vector3(num, num, num);
 		}
 
