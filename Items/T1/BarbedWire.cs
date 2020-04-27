@@ -181,7 +181,6 @@ namespace ThinkInvisible.ClassicItems
 			float sqrad = radius * radius;
 			foreach(TeamComponent tcpt in teamMembers) {
 				if ((tcpt.transform.position - transform.position).sqrMagnitude <= sqrad) {
-					Debug.Log("target within rad at " + (tcpt.transform.position - transform.position).magnitude + " /sqr " + (tcpt.transform.position - transform.position).sqrMagnitude);
 					if (tcpt.body && tcpt.body.mainHurtBox && tcpt.body.isActiveAndEnabled && damage > 0f) {
 						OrbManager.instance.AddOrb(new LightningOrb {
 							attacker = owner,
