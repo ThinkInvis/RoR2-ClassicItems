@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using UnityEngine.Networking;
 using System.Collections.ObjectModel;
 using R2API;
+using RoR2.Orbs;
 
 namespace ThinkInvisible.ClassicItems
 {
@@ -180,19 +181,21 @@ namespace ThinkInvisible.ClassicItems
 			float sqrad = radius * radius;
 			foreach(TeamComponent tcpt in teamMembers) {
 				if ((tcpt.transform.position - transform.position).sqrMagnitude <= sqrad) {
-					HealthComponent component = tcpt.GetComponent<HealthComponent>();
-					if (component && damage > 0f) {
-						component.TakeDamage(new DamageInfo {
+					Debug.Log("target within rad at " + (tcpt.transform.position - transform.position).magnitude + " /sqr " + (tcpt.transform.position - transform.position).sqrMagnitude);
+					if (tcpt.body && tcpt.body.mainHurtBox && tcpt.body.isActiveAndEnabled && damage > 0f) {
+						OrbManager.instance.AddOrb(new LightningOrb {
 							attacker = owner,
-							crit = false,
-							procChainMask = default(ProcChainMask),
-							damage = damage,
+							bouncesRemaining = 0,
 							damageColorIndex = DamageColorIndex.Bleed,
 							damageType = DamageType.AOE,
-							force = Vector3.zero,
-							position = tcpt.transform.position,
+							damageValue = damage,
+							isCrit = false,
+							lightningType = LightningOrb.LightningType.RazorWire,
+							origin = transform.position,
+							procChainMask = default(ProcChainMask),
 							procCoefficient = 1f,
-							inflictor = gameObject
+							target = tcpt.body.mainHurtBox,
+							teamIndex = teamFilter.teamIndex,
 						});
 						if(barbedWire.oneOnly) break;
 					}
