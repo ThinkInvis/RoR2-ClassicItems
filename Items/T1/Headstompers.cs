@@ -77,7 +77,8 @@ namespace ThinkInvisible.ClassicItems
 					baseDamage = body.damage * scalefac,
 					falloffModel = BlastAttack.FalloffModel.SweetSpot,
 					crit = Util.CheckRoll(body.crit, body.master),
-					damageColorIndex = DamageColorIndex.Item
+					damageColorIndex = DamageColorIndex.Item,
+                    attackerFiltering = AttackerFiltering.NeverHit
                 };
 				blastAttack.Fire();
 				EffectData effectData = new EffectData {
