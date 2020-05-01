@@ -44,6 +44,7 @@ namespace ThinkInvisible.ClassicItems {
         private bool On_ESPerformEquipmentAction(On.RoR2.EquipmentSlot.orig_PerformEquipmentAction orig, EquipmentSlot slot, EquipmentIndex eqpid) {
             if(eqpid == regIndexEqp) {
                 if(!slot.characterBody) return false;
+                if(SceneCatalog.mostRecentSceneDef.baseSceneName == "bazaar") return false;
                 var sphpos = slot.characterBody.transform.position;
                 var sphrad = radius;
                 if(embryo.subEnableSkelKey && Util.CheckRoll(embryo.GetCount(slot.characterBody)*embryo.procChance)) sphrad *= 2;
