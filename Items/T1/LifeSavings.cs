@@ -16,10 +16,12 @@ namespace ThinkInvisible.ClassicItems
         private ConfigEntry<float> cfgGainPerSec;
         private ConfigEntry<int> cfgInvertCount;
         private ConfigEntry<bool> cfgInclDeploys;
+        private ConfigEntry<bool> cfgIgnoreTimestop;
 
         public float gainPerSec {get;private set;}
         public int invertCount {get;private set;}
         public bool inclDeploys {get;private set;}
+        public bool ignoreTimestop {get;private set;}
 
         protected override void SetupConfigInner(ConfigFile cfl) {
             itemAIBDefault = true;
@@ -32,10 +34,13 @@ namespace ThinkInvisible.ClassicItems
                 new AcceptableValueRange<int>(0,int.MaxValue)));
             cfgInclDeploys = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "InclDeploys"), false, new ConfigDescription(
                 "If true, Life Savings stacks on deployables (e.g. Engineer turrets) will send money to their master."));
+            cfgIgnoreTimestop = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "IgnoreTimestop"), false, new ConfigDescription(
+                "If true, Life Savings will continue to work in areas where the run timer is paused (e.g. bazaar)."));
 
             gainPerSec = cfgGainPerSec.Value;
             invertCount = cfgInvertCount.Value;
             inclDeploys = cfgInclDeploys.Value;
+            ignoreTimestop = cfgIgnoreTimestop.Value;
         }
 
         protected override void SetupAttributesInner() {
@@ -117,7 +122,7 @@ namespace ThinkInvisible.ClassicItems
                     moneyBuffer += Time.fixedDeltaTime * lifeSavings.gainPerSec * ((icnt < lifeSavings.invertCount)?(1f/(float)(lifeSavings.invertCount-icnt+1)):(icnt-lifeSavings.invertCount+1));
                 //Disable during pre-teleport money drain so it doesn't softlock
                 //Accumulator is emptied into actual money variable whenever a tick passes and it has enough for a change in integer value
-                if(moneyBuffer >= 1.0f && !holdIt){
+                if(moneyBuffer >= 1.0f && !holdIt && (lifeSavings.ignoreTimestop || !Run.instance.isRunStopwatchPaused)){
                     if(Compat_ShareSuite.enabled && Compat_ShareSuite.MoneySharing())
                         Compat_ShareSuite.GiveMoney((uint)Math.Floor(moneyBuffer));
                     else
