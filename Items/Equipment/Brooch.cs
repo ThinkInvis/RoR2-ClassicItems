@@ -8,11 +8,9 @@ using MonoMod.Cil;
 using Mono.Cecil.Cil;
 using UnityEngine.Networking;
 
-namespace ThinkInvisible.ClassicItems
-{
-    public class Brooch : ItemBoilerplate
-    {
-        public override string itemCodeName{get;} = "Brooch";
+namespace ThinkInvisible.ClassicItems {
+    public class Brooch : ItemBoilerplate {
+        public override string itemCodeName {get;} = "Brooch";
 
         private ConfigEntry<float> cfgExtraCost;
         private ConfigEntry<bool> cfgSafeMode;

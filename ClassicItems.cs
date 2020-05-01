@@ -43,8 +43,7 @@ namespace ThinkInvisible.ClassicItems {
 
         private static ConfigFile cfgFile;
         
-        public static class MasterItemList
-        {
+        public static class MasterItemList {
             public static readonly BarbedWire barbedWire = new BarbedWire();
             public static readonly BoxingGloves boxingGloves = new BoxingGloves();
             public static readonly Brooch brooch = new Brooch();

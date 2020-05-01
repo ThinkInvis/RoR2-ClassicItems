@@ -4,11 +4,9 @@ using BepInEx.Configuration;
 using static ThinkInvisible.ClassicItems.MiscUtil;
 using System.Collections.Generic;
 
-namespace ThinkInvisible.ClassicItems
-{
-    public class BoxingGloves : ItemBoilerplate
-    {
-        public override string itemCodeName{get;} = "BoxingGloves";
+namespace ThinkInvisible.ClassicItems {
+    public class BoxingGloves : ItemBoilerplate {
+        public override string itemCodeName {get;} = "BoxingGloves";
 
         private ConfigEntry<float> cfgProcChance;
         private ConfigEntry<float> cfgProcForce;

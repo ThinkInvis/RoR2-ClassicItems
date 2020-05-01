@@ -8,11 +8,9 @@ using static ThinkInvisible.ClassicItems.ClassicItemsPlugin.MasterItemList;
 using MonoMod.Cil;
 using Mono.Cecil.Cil;
 
-namespace ThinkInvisible.ClassicItems
-{
-    public class SkeletonKey : ItemBoilerplate
-    {
-        public override string itemCodeName{get;} = "SkeletonKey";
+namespace ThinkInvisible.ClassicItems {
+    public class SkeletonKey : ItemBoilerplate {
+        public override string itemCodeName {get;} = "SkeletonKey";
 
         private ConfigEntry<float> cfgRadius;
 

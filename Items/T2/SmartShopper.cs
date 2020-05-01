@@ -4,11 +4,9 @@ using UnityEngine;
 using static ThinkInvisible.ClassicItems.MiscUtil;
 using System.Collections.Generic;
 
-namespace ThinkInvisible.ClassicItems
-{
-    public class SmartShopper : ItemBoilerplate
-    {
-        public override string itemCodeName{get;} = "SmartShopper";
+namespace ThinkInvisible.ClassicItems {
+    public class SmartShopper : ItemBoilerplate {
+        public override string itemCodeName {get;} = "SmartShopper";
 
         private ConfigEntry<float> cfgMult;
 

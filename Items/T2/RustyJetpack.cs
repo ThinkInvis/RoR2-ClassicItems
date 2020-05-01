@@ -9,11 +9,9 @@ using Mono.Cecil.Cil;
 using System;
 using System.Collections.Generic;
 
-namespace ThinkInvisible.ClassicItems
-{
-    public class RustyJetpack : ItemBoilerplate
-    {
-        public override string itemCodeName{get;} = "RustyJetpack";
+namespace ThinkInvisible.ClassicItems {
+    public class RustyJetpack : ItemBoilerplate {
+        public override string itemCodeName {get;} = "RustyJetpack";
 
         private ConfigEntry<float> cfgGravMod;
         private ConfigEntry<float> cfgJumpMult;

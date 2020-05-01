@@ -7,11 +7,9 @@ using System;
 using System.Collections.Generic;
 using R2API.Utils;
 
-namespace ThinkInvisible.ClassicItems
-{
-    public class GoldenGun : ItemBoilerplate
-    {
-        public override string itemCodeName{get;} = "GoldenGun";
+namespace ThinkInvisible.ClassicItems {
+    public class GoldenGun : ItemBoilerplate {
+        public override string itemCodeName {get;} = "GoldenGun";
 
         private ConfigEntry<float> cfgDamageBoost;
         private ConfigEntry<int> cfgGoldAmt;

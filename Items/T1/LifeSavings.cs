@@ -7,11 +7,9 @@ using UnityEngine.Networking;
 using static ThinkInvisible.ClassicItems.ClassicItemsPlugin.MasterItemList;
 using R2API.Utils;
 
-namespace ThinkInvisible.ClassicItems
-{
-    public class LifeSavings : ItemBoilerplate
-    {
-        public override string itemCodeName{get;} = "LifeSavings";
+namespace ThinkInvisible.ClassicItems {
+    public class LifeSavings : ItemBoilerplate {
+        public override string itemCodeName {get;} = "LifeSavings";
 
         private ConfigEntry<float> cfgGainPerSec;
         private ConfigEntry<int> cfgInvertCount;

@@ -10,11 +10,9 @@ using static ThinkInvisible.ClassicItems.MiscUtil;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace ThinkInvisible.ClassicItems
-{
-    public class Embryo : ItemBoilerplate
-    {
-        public override string itemCodeName{get;} = "Embryo";
+namespace ThinkInvisible.ClassicItems {
+    public class Embryo : ItemBoilerplate {
+        public override string itemCodeName {get;} = "Embryo";
 
         private ConfigEntry<float> cfgProcChance;
 
@@ -492,8 +490,7 @@ namespace ThinkInvisible.ClassicItems
         }
     }
     
-    public class EmbryoComponent : MonoBehaviour
-    {
+    public class EmbryoComponent : MonoBehaviour {
         public float boostedMissiles = 0f;
         public float boostedBFGs = 0f;
     }

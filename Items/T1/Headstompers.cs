@@ -6,11 +6,9 @@ using static ThinkInvisible.ClassicItems.MiscUtil;
 using System.Collections.Generic;
 using R2API.Utils;
 
-namespace ThinkInvisible.ClassicItems
-{
-    public class Headstompers : ItemBoilerplate
-    {
-        public override string itemCodeName{get;} = "Headstompers";
+namespace ThinkInvisible.ClassicItems {
+    public class Headstompers : ItemBoilerplate {
+        public override string itemCodeName {get;} = "Headstompers";
 
         private ConfigEntry<float> cfgBaseDamage;
         private ConfigEntry<float> cfgStackDamage;

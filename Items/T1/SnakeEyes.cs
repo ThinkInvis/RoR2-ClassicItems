@@ -8,11 +8,9 @@ using MonoMod.Cil;
 using System;
 using System.Collections.Generic;
 
-namespace ThinkInvisible.ClassicItems
-{
-    public class SnakeEyes : ItemBoilerplate
-    {
-        public override string itemCodeName{get;} = "SnakeEyes";
+namespace ThinkInvisible.ClassicItems {
+    public class SnakeEyes : ItemBoilerplate {
+        public override string itemCodeName {get;} = "SnakeEyes";
 
         private ConfigEntry<float> cfgAdd;
         private ConfigEntry<int> cfgCap;

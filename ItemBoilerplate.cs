@@ -7,10 +7,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using UnityEngine;
 
-namespace ThinkInvisible.ClassicItems
-{
-    public abstract class ItemBoilerplate
-    {
+namespace ThinkInvisible.ClassicItems {
+    public abstract class ItemBoilerplate {
         public bool itemIsEquipment {get; protected set;} = false;
         public bool itemAIBDefault {get;protected set;} = false;
 

@@ -4,11 +4,9 @@ using BepInEx.Configuration;
 using static ThinkInvisible.ClassicItems.MiscUtil;
 using System.Collections.Generic;
 
-namespace ThinkInvisible.ClassicItems
-{
-    public class Clover : ItemBoilerplate
-    {
-        public override string itemCodeName{get;} = "Clover";
+namespace ThinkInvisible.ClassicItems {
+    public class Clover : ItemBoilerplate {
+        public override string itemCodeName {get;} = "Clover";
 
         private ConfigEntry<float> cfgBaseChance;
         private ConfigEntry<float> cfgStackChance;

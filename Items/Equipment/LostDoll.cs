@@ -5,11 +5,9 @@ using System.Collections.ObjectModel;
 using UnityEngine;
 using static ThinkInvisible.ClassicItems.ClassicItemsPlugin.MasterItemList;
 
-namespace ThinkInvisible.ClassicItems
-{
-    public class LostDoll : ItemBoilerplate
-    {
-        public override string itemCodeName{get;} = "LostDoll";
+namespace ThinkInvisible.ClassicItems {
+    public class LostDoll : ItemBoilerplate {
+        public override string itemCodeName {get;} = "LostDoll";
 
         private ConfigEntry<float> cfgDamageTaken;
         private ConfigEntry<float> cfgDamageGiven;
@@ -104,7 +102,7 @@ namespace ThinkInvisible.ClassicItems
                         didHit = true;
                     }
                     if(didHit) {                        
-                        myHcpt.TakeDamage(new DamageInfo{
+                        myHcpt.TakeDamage(new DamageInfo {
 				            damage = myHcpt.combinedHealth * damageTaken,
 				            position = slot.characterBody.corePosition,
                             force = Vector3.zero,

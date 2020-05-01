@@ -5,10 +5,8 @@ using BepInEx.Configuration;
 using static ThinkInvisible.ClassicItems.MiscUtil;
 using System.Collections.Generic;
 
-namespace ThinkInvisible.ClassicItems
-{
-    public class PhotonJetpack : ItemBoilerplate
-    {
+namespace ThinkInvisible.ClassicItems {
+    public class PhotonJetpack : ItemBoilerplate {
         public override string itemCodeName {get;} = "PhotonJetpack";
 
         public BuffIndex photonFuelBuff {get;private set;}

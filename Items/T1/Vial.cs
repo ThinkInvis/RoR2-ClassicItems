@@ -7,11 +7,9 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 
-namespace ThinkInvisible.ClassicItems
-{
-    public class Vial : ItemBoilerplate
-    {
-        public override string itemCodeName{get;} = "Vial";
+namespace ThinkInvisible.ClassicItems {
+    public class Vial : ItemBoilerplate {
+        public override string itemCodeName {get;} = "Vial";
 
         private ConfigEntry<float> cfgAdd;
         private ConfigEntry<bool> cfgUseIL;

@@ -6,8 +6,7 @@ using UnityEngine;
 using R2API.Utils;
 using System.Collections;
 
-namespace ThinkInvisible.ClassicItems
-{
+namespace ThinkInvisible.ClassicItems {
     public static class MiscUtil {
         public static string pct(float tgt, uint prec = 0, float mult = 100f) {
             return (tgt*mult).ToString("N" + prec) + "%";

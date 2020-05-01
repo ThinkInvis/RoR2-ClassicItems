@@ -6,11 +6,9 @@ using System.Collections.Generic;
 using UnityEngine.Networking;
 using RoR2.Orbs;
 
-namespace ThinkInvisible.ClassicItems
-{
-    public class TeleSight : ItemBoilerplate
-    {
-        public override string itemCodeName{get;} = "TeleSight";
+namespace ThinkInvisible.ClassicItems {
+    public class TeleSight : ItemBoilerplate {
+        public override string itemCodeName {get;} = "TeleSight";
 
         private ConfigEntry<float> cfgProcChance;
         private ConfigEntry<float> cfgStackChance;

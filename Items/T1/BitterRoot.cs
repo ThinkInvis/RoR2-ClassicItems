@@ -8,11 +8,9 @@ using BepInEx.Configuration;
 using static ThinkInvisible.ClassicItems.MiscUtil;
 using System.Collections.Generic;
 
-namespace ThinkInvisible.ClassicItems
-{
-    public class BitterRoot : ItemBoilerplate
-    {
-        public override string itemCodeName{get;} = "BitterRoot";
+namespace ThinkInvisible.ClassicItems {
+    public class BitterRoot : ItemBoilerplate {
+        public override string itemCodeName {get;} = "BitterRoot";
 
         private ConfigEntry<float> cfgHealthMult;
         private ConfigEntry<float> cfgHealthCap;

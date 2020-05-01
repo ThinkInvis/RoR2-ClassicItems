@@ -9,10 +9,9 @@ using System.Collections.ObjectModel;
 using R2API;
 using RoR2.Orbs;
 
-namespace ThinkInvisible.ClassicItems
-{
+namespace ThinkInvisible.ClassicItems {
     public class BarbedWire : ItemBoilerplate {
-        public override string itemCodeName{get;} = "BarbedWire";
+        public override string itemCodeName {get;} = "BarbedWire";
 
         private ConfigEntry<float> cfgBaseRadius;
         private ConfigEntry<float> cfgStackRadius;
