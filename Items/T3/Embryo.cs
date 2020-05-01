@@ -491,7 +491,7 @@ namespace ThinkInvisible.ClassicItems {
     }
     
     public class EmbryoComponent : MonoBehaviour {
-        public float boostedMissiles = 0f;
-        public float boostedBFGs = 0f;
+        public int boostedMissiles = 0;
+        public int boostedBFGs = 0;
     }
 }
