@@ -39,6 +39,7 @@ By extension, the other clients' configs need to match too. This mod has some se
     - Doubles *burst heal* on: Foreign Fruit, Gnarled Woodsprite.
     - Doubles *speed and damage* on: Volcanic Egg.
     - *Lunar* equipment will not work with Beating Embryo by default.
+- Permafrost: "Chance to freeze enemies on hit."
 - Photon Jetpack: "No hands."
     - Provides flight while holding jump, using limited recharging fuel.
     - Diff. from RoR1: only provides flight after using all double jumps.
@@ -62,6 +63,7 @@ By extension, the other clients' configs need to match too. This mod has some se
 ## Issues/TODO
 
 - More items are on the way! There's a lot to work with.
+- Minor incompatibility with BiggerBazaar: Skeleton Key will open chests added by BiggerBazaar.
 - Item models are bigger than they should be, and are also just placeholder cards. The style's growing on me, but actual models may happen someday.
 - Stats are set close to RoR1's whenever possible. May eventually set up a config preset which balances items a little more carefully with respect to RoR2's existing content.
 - Beating Embryo has no effect on some equipments: Eccentric Vase (NYI), Milky Chrysalis (nonfunctional), Radar Scanner (NYI), Recycler (NYI).
@@ -72,6 +74,16 @@ By extension, the other clients' configs need to match too. This mod has some se
 ## Changelog
 
 The 5 latest updates are listed below. For a full changelog, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/changelog.md
+
+**2.4.0**
+
+- ADDED ITEM: Permafrost!
+- Fixed Barbed Wire VFX having half the intended radius.
+- Fixed Barbed Wire applying damage to the Artifact Reliquary.
+- Lost Doll now has proper team targeting, and should theoretically work for enemies if one manages to pick it up.
+- Headstompers no longer deals self damage while Artifact of Chaos is enabled.
+- Added an option (enabled by default) to pause Life Savings while the run timer is paused, e.g. in the bazaar.
+- Greatly improved stability and performance while setting buff count (Golden Gun, Photon Jetpack, Snake Eyes).
 
 **2.3.0**
 
@@ -102,9 +114,3 @@ The 5 latest updates are listed below. For a full changelog, see: https://github
 **2.0.1**
 
 - Fixed item disables in config not being checked.
-
-**2.0.0**
-
-- Life Savings will now work if the ShareSuite mod is installed.
-- Captain's Brooch should now display the correct cost to clients in multiplayer, and has much better ground targeting!
-- Started using language tokens instead of direct string loading. May fix an unconfirmed issue with logbook entries resetting on mod uninstall; will definitely reset existing logbook entries for CI items, as their internal names have changed.

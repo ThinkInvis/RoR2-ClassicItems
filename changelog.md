@@ -1,5 +1,16 @@
 ﻿# ClassicItems Changelog
 
+**2.4.0**
+
+- ADDED ITEM: Permafrost! [#8](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/41e2bf864f0367af1c2d5bc5cc96a6c679eb6e43)
+- Fixed Barbed Wire VFX having half the intended radius. [#1](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/ad124b5507390ba727dcf4a4500ccb8f9979bdd9)
+- Fixed Barbed Wire applying damage to the Artifact Reliquary. [#2](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/de6a1d8959c846340baedca813528d867a06eebe)
+- Lost Doll now has proper team targeting, and should theoretically work for enemies if one manages to pick it up. [#4](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/b3a44af078b988491e4d090c772b61f21dbcd2ca)
+- Headstompers no longer deals self damage while Artifact of Chaos is enabled. [#5](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/48938d13a36a2cd1cce9a260cb523e2fefd60fb5)
+- Added an option (enabled by default) to pause Life Savings while the run timer is paused, e.g. in the bazaar. [#6](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/21f0fca735b676d9f51a6b40048e3ce300c0eca9)
+- Greatly improved stability and performance while setting buff count (Golden Gun, Photon Jetpack, Snake Eyes). [#7](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/6a4a1e0efad5c3bebcd053898cd3483730eac38a)
+- Other minor commits: [#3](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/be7c0881a0173bacd35c4c26360aa2034efcded6), [#9](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/a6cd7150bb36805fad64cf5039d5106d9d40e939).
+
 **2.3.0**
 
 - ADDED ITEMS: Skeleton Key, Lost Doll, Telescopic Sight, Barbed Wire!
