@@ -55,6 +55,7 @@ namespace ThinkInvisible.ClassicItems {
             public static readonly Headstompers headstompers = new Headstompers();
             public static readonly LifeSavings lifeSavings = new LifeSavings();
             public static readonly LostDoll lostDoll = new LostDoll();
+            public static readonly Permafrost permafrost = new Permafrost();
             public static readonly PhotonJetpack photonJetpack = new PhotonJetpack();
             public static readonly RustyJetpack rustyJetpack = new RustyJetpack();
             public static readonly SkeletonKey skeletonKey = new SkeletonKey();
@@ -68,6 +69,8 @@ namespace ThinkInvisible.ClassicItems {
         
         private static ConfigEntry<bool> gCfgHSV2NoStomp;
         private static ConfigEntry<bool> gCfgCoolYourJets;
+
+        public static BuffIndex freezeBuff {get;private set;}
 
         public static bool gHSV2NoStomp {get;private set;}
         public static bool gCoolYourJets {get;private set;}
@@ -151,6 +154,17 @@ namespace ThinkInvisible.ClassicItems {
             if(gHSV2NoStomp) {
                 IL.EntityStates.Headstompers.HeadstompersIdle.FixedUpdate += IL_ESHeadstompersIdleFixedUpdate;
             }
+
+            Debug.Log("ClassicItems: registering shared buffs...");
+            //used only for purposes of Death Mark; applied by Permafrost and Snowglobe
+            var freezeBuffDef = new CustomBuff(new BuffDef {
+                buffColor = Color.cyan,
+                canStack = false,
+                isDebuff = true,
+                name = "CIFreeze",
+                iconPath = "@ClassicItems:Assets/ClassicItems/icons/freezeicon.png"
+            });
+            freezeBuff = BuffAPI.Add(freezeBuffDef);
 
             Debug.Log("ClassicItems: registering item behaviors...");
 
