@@ -110,7 +110,7 @@ namespace ThinkInvisible.ClassicItems
                 
             int currBuffStacks = cb.GetBuffCount(goldenGunBuff);
             if(tgtBuffStacks != currBuffStacks)
-                Reflection.InvokeMethod(cb, "SetBuffCount", goldenGunBuff, tgtBuffStacks);
+                cb.SetBuffCount(goldenGunBuff, tgtBuffStacks);
         }
 
         private void IL_CBTakeDamage(ILContext il) {

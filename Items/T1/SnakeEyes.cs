@@ -97,14 +97,11 @@ namespace ThinkInvisible.ClassicItems
                     }
                 }
             } else {
-                Reflection.InvokeMethod(tgtBody, "SetBuffCount", snakeEyesBuff, 0);
+                tgtBody.SetBuffCount(snakeEyesBuff, 0);
                 if(!inclDeploys) return;
                 var dplist = tgtBody.master?.GetFieldValue<List<DeployableInfo>>("deployablesList");
                 if(dplist != null) foreach(DeployableInfo d in dplist) {
-                    var dplBody = d.deployable.gameObject.GetComponent<CharacterMaster>().GetBody();
-                    if(dplBody) {
-                        Reflection.InvokeMethod(dplBody, "SetBuffCount", snakeEyesBuff, 0);
-                    }
+                    d.deployable.gameObject.GetComponent<CharacterMaster>()?.GetBody()?.SetBuffCount(snakeEyesBuff, 0);
                 }
             }
         }

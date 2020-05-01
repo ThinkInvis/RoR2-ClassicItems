@@ -131,7 +131,7 @@ namespace ThinkInvisible.ClassicItems
             int tgtFuelStacks = Mathf.CeilToInt(cpt.fuel/cpt.fuelCap*100f);
             int currFuelStacks = self.GetBuffCount(photonFuelBuff);
             if(tgtFuelStacks != currFuelStacks)
-                Reflection.InvokeMethod(self, "SetBuffCount", photonFuelBuff, tgtFuelStacks);
+                self.SetBuffCount(photonFuelBuff, tgtFuelStacks);
         }
 
         private void On_CBInventoryChanged(On.RoR2.CharacterBody.orig_OnInventoryChanged orig, CharacterBody self) {
@@ -143,12 +143,11 @@ namespace ThinkInvisible.ClassicItems
             cpt.fuelCap = stacks>0 ? baseFuel + stackFuel * (stacks-1) : 0;
             if(cpt.fuel>cpt.fuelCap) cpt.fuel=cpt.fuelCap;
             if(cpt.fuelCap == 0)
-                Reflection.InvokeMethod(self, "SetBuffCount", photonFuelBuff, 0);
+                self.SetBuffCount(photonFuelBuff, 0);
         }
     }
 
-    public class PhotonJetpackComponent : MonoBehaviour
-    {
+    public class PhotonJetpackComponent : MonoBehaviour {
         public float fuelCap = 0f;
         public float fuel = 0f;
         public uint flyState = 0;
