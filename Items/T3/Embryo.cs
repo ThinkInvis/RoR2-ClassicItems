@@ -334,12 +334,16 @@ namespace ThinkInvisible.ClassicItems {
                     x=>x.MatchLdstr("Prefabs/NetworkedObjects/ChestScanner"),
                     x=>x.MatchCall<UnityEngine.Resources>("Load"));
 
-                //Insert a custom function to check boost
-                //If proc happens, replace the loaded prefab with a boosted copy (allows proper networking)
-                c.EmitDelegate<Func<GameObject,GameObject>>((origObj)=>{
-                    if(boost) return boostedScannerPrefab;
-                    else return origObj;
-                });
+                if(ILFound) {
+                    //Insert a custom function to check boost
+                    //If proc happens, replace the loaded prefab with a boosted copy (allows proper networking)
+                    c.EmitDelegate<Func<GameObject,GameObject>>((origObj)=>{
+                        if(boost) return boostedScannerPrefab;
+                        else return origObj;
+                    });
+                } else {
+                    Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: Scanner; target instructions not found");
+                }
             }
 
 
