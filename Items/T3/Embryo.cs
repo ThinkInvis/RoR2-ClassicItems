@@ -50,7 +50,6 @@ namespace ThinkInvisible.ClassicItems {
                 if(ind == EquipmentIndex.AffixBlue || ind == EquipmentIndex.AffixGold || ind == EquipmentIndex.AffixHaunted || ind == EquipmentIndex.AffixPoison || ind == EquipmentIndex.AffixRed || ind == EquipmentIndex.AffixWhite || ind == EquipmentIndex.AffixYellow
                     || ind == EquipmentIndex.BurnNearby || ind == EquipmentIndex.CrippleWard || ind == EquipmentIndex.LunarPotion || ind == EquipmentIndex.SoulCorruptor || ind == EquipmentIndex.Tonic
                     || ind == EquipmentIndex.GhostGun || ind == EquipmentIndex.OrbitalLaser || ind == EquipmentIndex.SoulJar
-                    || ind == EquipmentIndex.Recycle
                     || ind == EquipmentIndex.Count || ind == EquipmentIndex.Enigma || ind == EquipmentIndex.None || ind == EquipmentIndex.QuestVolatileBattery
                     )
                     continue;
@@ -463,6 +462,32 @@ namespace ThinkInvisible.ClassicItems {
                     Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: Cleanse; target instructions not found");
                 }
             }
+            
+            //Recycle: double recycle count
+            if((int)EquipmentIndex.Recycle >= swarr.Length)
+                Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: Recycle; not in switch");
+            else if(subEnable[EquipmentIndex.Recycle]) {
+                c.GotoLabel(swarr[(int)EquipmentIndex.Recycle]);
+                ILFound = c.TryGotoNext(
+                    x=>x.MatchLdloc(out _),
+                    x=>x.MatchLdcI4(1),
+                    x=>x.MatchCallOrCallvirt<GenericPickupController>("set_NetworkRecycled"));
+
+                if(ILFound) {
+                    c.Index++;
+                    c.Emit(OpCodes.Dup);
+                    c.Index++;
+                    c.EmitDelegate<Func<GenericPickupController,bool,bool>>((pctrl,origRecyc) => {
+                        if(boost && pctrl && pctrl.GetComponent<EmbryoRecycleFlag>() == null) {
+                            pctrl.gameObject.AddComponent<EmbryoRecycleFlag>();
+                            return false;
+                        }
+                        return true;
+                    });
+                } else {
+                    Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: Recycle; target instructions not found");
+                }
+            }
         }
 
         private void IL_ESFixedUpdate(ILContext il) {
@@ -607,6 +632,8 @@ namespace ThinkInvisible.ClassicItems {
             }
         }
     }
+
+    public class EmbryoRecycleFlag : MonoBehaviour {}
     
     public class EmbryoComponent : NetworkBehaviour {
         public int boostedMissiles = 0;
