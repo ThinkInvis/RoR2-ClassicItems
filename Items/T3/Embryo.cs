@@ -9,6 +9,8 @@ using static ThinkInvisible.ClassicItems.ClassicItemsPlugin.MasterItemList;
 using static ThinkInvisible.ClassicItems.MiscUtil;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using UnityEngine.Networking;
+using R2API;
 
 namespace ThinkInvisible.ClassicItems {
     public class Embryo : ItemBoilerplate {
@@ -48,11 +50,8 @@ namespace ThinkInvisible.ClassicItems {
                 if(ind == EquipmentIndex.AffixBlue || ind == EquipmentIndex.AffixGold || ind == EquipmentIndex.AffixHaunted || ind == EquipmentIndex.AffixPoison || ind == EquipmentIndex.AffixRed || ind == EquipmentIndex.AffixWhite || ind == EquipmentIndex.AffixYellow
                     || ind == EquipmentIndex.BurnNearby || ind == EquipmentIndex.CrippleWard || ind == EquipmentIndex.LunarPotion || ind == EquipmentIndex.SoulCorruptor || ind == EquipmentIndex.Tonic
                     || ind == EquipmentIndex.GhostGun || ind == EquipmentIndex.OrbitalLaser || ind == EquipmentIndex.SoulJar
-                    || ind == EquipmentIndex.Gateway || ind == EquipmentIndex.Recycle || ind == EquipmentIndex.Scanner
+                    || ind == EquipmentIndex.Recycle || ind == EquipmentIndex.Scanner
                     || ind == EquipmentIndex.Count || ind == EquipmentIndex.Enigma || ind == EquipmentIndex.None || ind == EquipmentIndex.QuestVolatileBattery
-                    #if !DEBUG
-                    || ind == EquipmentIndex.Jetpack
-                    #endif
                     )
                     continue;
                 cfgSubEnable.Add(ind, cfl.Bind<bool>(new ConfigDefinition("Items." + itemCodeName, "SubEnable" + ind.ToString()), true, new ConfigDescription(
@@ -101,6 +100,19 @@ namespace ThinkInvisible.ClassicItems {
             if(subEnable[EquipmentIndex.GoldGat]) {
                 IL.EntityStates.GoldGat.GoldGatFire.FireBullet += IL_EntGGFFireBullet;
                 if(ILFailed) IL.EntityStates.GoldGat.GoldGatFire.FireBullet -= IL_EntGGFFireBullet;
+                ILFailed = false;
+            }
+
+            if(subEnable[EquipmentIndex.Gateway]) {
+                IL.RoR2.EquipmentSlot.FireGateway += IL_ESFireGateway;
+                if(ILFailed) IL.RoR2.EquipmentSlot.FireGateway -= IL_ESFireGateway;
+                ILFailed = false;
+            }
+
+            if(subEnable[EquipmentIndex.Jetpack]) {
+                IL.RoR2.JetpackController.FixedUpdate += IL_JCFixedUpdate;
+                if(ILFailed) IL.RoR2.JetpackController.FixedUpdate -= IL_JCFixedUpdate;
+                ILFailed = false;
             }
         }
 
@@ -108,7 +120,11 @@ namespace ThinkInvisible.ClassicItems {
             orig(self);
 
             var cpt = self.GetComponent<EmbryoComponent>();
-            if(!cpt) self.gameObject.AddComponent<EmbryoComponent>();
+            if(!cpt) {
+                cpt = self.gameObject.AddComponent<EmbryoComponent>();
+                cpt.ownerClient = self.connectionToClient;
+                Debug.Log(self.connectionToClient);
+            }
         }
 
         private bool On_ESPerformEquipmentAction(On.RoR2.EquipmentSlot.orig_PerformEquipmentAction orig, EquipmentSlot slot, EquipmentIndex ind) {
@@ -270,6 +286,21 @@ namespace ThinkInvisible.ClassicItems {
                 }
             }
 
+            //Gateway: double speed
+            if((int)EquipmentIndex.Gateway >= swarr.Length)
+                Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: Gateway; not in switch");
+            else if(subEnable[EquipmentIndex.Gateway]) {
+                //Find: start of Gateway label
+                c.GotoLabel(swarr[(int)EquipmentIndex.Gateway]);
+
+                //Insert a custom function to check boost
+                //If proc happens, increments the player's boosted gateway counter; this will be spent once the gateway spawns
+                c.EmitDelegate<Action>(()=>{
+                    if(boost && cpt) cpt.boostedGates++;
+                    Debug.Log("Upped boostedGates to " + cpt.boostedGates);
+                });
+            }
+
             //BFG: double impact damage
             if((int)EquipmentIndex.BFG >= swarr.Length)
                 Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: BFG; not in switch");
@@ -292,31 +323,20 @@ namespace ThinkInvisible.ClassicItems {
             }
 
             //Jetpack: double duration
-            #if DEBUG
-            if(subEnable[EquipmentIndex.Jetpack]) {
-                //Find: JetpackController.ResetTimer (incl. retrieval of JetpackController)
-                ILFound = c.TryGotoNext(
-                    x=>x.OpCode == OpCodes.Ldloc_S,
-                    x=>x.MatchCallvirt(typeof(JetpackController),"ResetTimer"));
+            if((int)EquipmentIndex.Jetpack >= swarr.Length)
+                Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: Jetpack; not in switch");
+            else if(subEnable[EquipmentIndex.Jetpack]) {
+                //Find: start of Jetpack label
+                c.GotoLabel(swarr[(int)EquipmentIndex.Jetpack]);
 
-                if(ILFound) {
-                    VariableDefinition jpcVar = (VariableDefinition)c.Next.Operand;
-                    //Advance cursor to just after the found callvirt
-                    c.Index+=2;
-                        
-                    //Insert a custom function to check boost (needs insertion of local var containing the JetpackController)
-                    //If proc happens, sets the JetpackController's stopwatch to negative duration (effectively 2x duration)
-                    c.Emit(OpCodes.Ldloc, jpcVar.Index);
-                    c.EmitDelegate<Action<JetpackController>>((jpc)=>{
-                        if(boost) {
-                            jpc.SetFieldValue("stopwatch", -jpc.duration); //this doesn't work... may have something to do with RPC
-                        }
-                    });
-                } else {
-                    Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: Jetpack");
-                }
+                //Insert a custom function to check boost
+                //If proc happens, increments the player's boosted jetpack counter; this will be spent during the RPC duration reset
+                c.EmitDelegate<Action>(()=>{
+                    if(boost && cpt) {
+                        cpt.ServerBoostJetpack();
+                    }
+                });
             }
-            #endif
 
             //FireBallDash: double speed and damage
             if((int)EquipmentIndex.FireBallDash >= swarr.Length)
@@ -461,6 +481,38 @@ namespace ThinkInvisible.ClassicItems {
             }
         }
 
+        private void IL_ESFireGateway(ILContext il) {
+            ILCursor c = new ILCursor(il);
+            
+            EmbryoComponent cpt = null;
+            c.Emit(OpCodes.Ldarg_0);
+            c.EmitDelegate<Action<EquipmentSlot>>((slot)=>{
+                cpt = slot.characterBody?.GetComponent<EmbryoComponent>();
+            });
+
+            bool ILFound = c.TryGotoNext(MoveType.After,
+                x=>x.MatchLdstr("Prefabs/NetworkedObjects/Zipline"),
+                x=>x.MatchCallOrCallvirt<UnityEngine.Resources>("Load"),
+                x=>x.MatchCallOrCallvirt<UnityEngine.Object>("Instantiate"),
+                x=>x.MatchDup(),
+                x=>x.MatchCallvirt<GameObject>("GetComponent"));
+
+            if(ILFound) {
+                c.Emit(OpCodes.Dup);
+                c.EmitDelegate<Action<ZiplineController>>((origCtrl) => {
+                    if(cpt && cpt.boostedGates > 0) {
+                        cpt.boostedGates --;
+                        origCtrl.ziplineVehiclePrefab = PrefabAPI.InstantiateClone(origCtrl.ziplineVehiclePrefab, "boostedZiplineVehicle");
+                        var vcpt = origCtrl.ziplineVehiclePrefab.GetComponent<ZiplineVehicle>();
+                        vcpt.maxSpeed *= 20;
+                        vcpt.acceleration *= 20;
+                    }
+                });
+            } else {
+                Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: Gateway (FireGateway)");
+            }
+        }
+
         private void IL_EntGGFFireBullet(ILContext il) {
             ILCursor c = new ILCursor(il);
             
@@ -488,10 +540,53 @@ namespace ThinkInvisible.ClassicItems {
                 ILFailed = true;
             }
         }
+
+        private void IL_JCFixedUpdate(ILContext il) {
+            ILCursor c = new ILCursor(il);
+
+            bool ILFound = c.TryGotoNext(
+                x=>x.MatchCallOrCallvirt<UnityEngine.Time>("get_fixedDeltaTime"),
+                x=>x.MatchAdd(),
+                x=>x.MatchStfld<JetpackController>("stopwatch"));
+
+            if(ILFound) {
+                c.Index++;
+                c.Emit(OpCodes.Ldarg_0);
+                c.EmitDelegate<Func<float,JetpackController,float>>((origDecr,jpc)=>{
+                    EmbryoComponent cpt = jpc.NetworktargetObject?.GetComponent<EmbryoComponent>();
+                    if(!cpt || cpt.boostedJetTime <= 0) return origDecr;
+                    cpt.boostedJetTime -= origDecr;
+                    return 0f;
+                });
+            } else {
+                Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: Jetpack (FixedUpdate); target instructions not found");
+                ILFailed = true;
+            }
+        }
     }
     
-    public class EmbryoComponent : MonoBehaviour {
+    public class EmbryoComponent : NetworkBehaviour {
         public int boostedMissiles = 0;
         public int boostedBFGs = 0;
+        public int boostedGates = 0;
+        public float boostedJetTime = 0f;
+        internal NetworkConnection ownerClient;
+        
+        [TargetRpc]
+        private void TargetBoostJetpack(NetworkConnection target) {
+            boostedJetTime = 15f;
+            Debug.Log("client jetTime set to 15");
+        }
+
+        [Server]
+        public void ServerBoostJetpack() {
+            boostedJetTime = 15f;
+            Debug.Log("server jetTime set to 15");
+            Debug.Log(connectionToClient);
+            Debug.Log(connectionToServer);
+            Debug.Log(playerControllerId);
+            Debug.Log(ownerClient);
+            if(connectionToClient != null) TargetBoostJetpack(connectionToClient);
+        }
     }
 }
