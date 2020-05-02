@@ -50,7 +50,7 @@ namespace ThinkInvisible.ClassicItems {
                 if(ind == EquipmentIndex.AffixBlue || ind == EquipmentIndex.AffixGold || ind == EquipmentIndex.AffixHaunted || ind == EquipmentIndex.AffixPoison || ind == EquipmentIndex.AffixRed || ind == EquipmentIndex.AffixWhite || ind == EquipmentIndex.AffixYellow
                     || ind == EquipmentIndex.BurnNearby || ind == EquipmentIndex.CrippleWard || ind == EquipmentIndex.LunarPotion || ind == EquipmentIndex.SoulCorruptor || ind == EquipmentIndex.Tonic
                     || ind == EquipmentIndex.GhostGun || ind == EquipmentIndex.OrbitalLaser || ind == EquipmentIndex.SoulJar
-                    || ind == EquipmentIndex.Recycle || ind == EquipmentIndex.Scanner
+                    || ind == EquipmentIndex.Recycle
                     || ind == EquipmentIndex.Count || ind == EquipmentIndex.Enigma || ind == EquipmentIndex.None || ind == EquipmentIndex.QuestVolatileBattery
                     )
                     continue;
@@ -92,8 +92,12 @@ namespace ThinkInvisible.ClassicItems {
 
         private GameObject embryoCptPrefab;
         private GameObject boostedGatewayPrefab;
+        private GameObject boostedScannerPrefab;
 
         protected override void SetupBehaviorInner() {
+            boostedScannerPrefab = Resources.Load<GameObject>("Prefabs/NetworkedObjects/ChestScanner").InstantiateClone("boostedScannerPrefab");
+            boostedScannerPrefab.GetComponent<ChestRevealer>().revealDuration *= 2f;
+
             boostedGatewayPrefab = Resources.Load<GameObject>("Prefabs/NetworkedObjects/Zipline").InstantiateClone("boostedGatewayPrefab");
             var ziplineCtrl = boostedGatewayPrefab.GetComponent<ZiplineController>();
             ziplineCtrl.ziplineVehiclePrefab = ziplineCtrl.ziplineVehiclePrefab.InstantiateClone("boostedGatewayVehiclePrefab");
@@ -319,6 +323,25 @@ namespace ThinkInvisible.ClassicItems {
                     if(boost && cpt) cpt.boostedGates++;
                 });
             }
+
+            //Scanner: double duration
+            if((int)EquipmentIndex.Scanner >= swarr.Length)
+                Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: Scanner; not in switch");
+            else if(subEnable[EquipmentIndex.Scanner]) {
+                //Find: loading of prefab
+                c.GotoLabel(swarr[(int)EquipmentIndex.Scanner]);
+                ILFound = c.TryGotoNext(MoveType.After,
+                    x=>x.MatchLdstr("Prefabs/NetworkedObjects/ChestScanner"),
+                    x=>x.MatchCall<UnityEngine.Resources>("Load"));
+
+                //Insert a custom function to check boost
+                //If proc happens, replace the loaded prefab with a boosted copy (allows proper networking)
+                c.EmitDelegate<Func<GameObject,GameObject>>((origObj)=>{
+                    if(boost) return boostedScannerPrefab;
+                    else return origObj;
+                });
+            }
+
 
             //BFG: double impact damage
             if((int)EquipmentIndex.BFG >= swarr.Length)
