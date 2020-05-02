@@ -90,7 +90,24 @@ namespace ThinkInvisible.ClassicItems {
 
         private bool ILFailed = false;
 
+        private GameObject embryoCptPrefab;
+        private GameObject boostedGatewayPrefab;
+
         protected override void SetupBehaviorInner() {
+            boostedGatewayPrefab = Resources.Load<GameObject>("Prefabs/NetworkedObjects/Zipline").InstantiateClone("boostedGatewayPrefab");
+            var ziplineCtrl = boostedGatewayPrefab.GetComponent<ZiplineController>();
+            ziplineCtrl.ziplineVehiclePrefab = ziplineCtrl.ziplineVehiclePrefab.InstantiateClone("boostedGatewayVehiclePrefab");
+            var zvh = ziplineCtrl.ziplineVehiclePrefab.GetComponent<ZiplineVehicle>();
+            zvh.maxSpeed *= 20;
+            zvh.acceleration *= 20;
+
+            var eCptPrefab2 = new GameObject("embryoCptPrefabPrefab");
+            eCptPrefab2.AddComponent<NetworkIdentity>();
+            eCptPrefab2.AddComponent<EmbryoComponent>();
+            eCptPrefab2.AddComponent<NetworkedBodyAttachment>().forceHostAuthority = true;
+            embryoCptPrefab = eCptPrefab2.InstantiateClone("embryoCptPrefab");
+            GameObject.Destroy(eCptPrefab2);
+
             On.RoR2.CharacterBody.OnInventoryChanged += On_CBOnInventoryChanged;
             On.RoR2.EquipmentSlot.PerformEquipmentAction += On_ESPerformEquipmentAction;
 
@@ -118,13 +135,16 @@ namespace ThinkInvisible.ClassicItems {
 
         private void On_CBOnInventoryChanged(On.RoR2.CharacterBody.orig_OnInventoryChanged orig, CharacterBody self) {            
             orig(self);
-
-            var cpt = self.GetComponent<EmbryoComponent>();
+            if(!NetworkServer.active || GetCount(self) < 1) return;
+            var cpt = self.GetComponentInChildren<EmbryoComponent>();
             if(!cpt) {
-                cpt = self.gameObject.AddComponent<EmbryoComponent>();
-                cpt.ownerClient = self.connectionToClient;
-                Debug.Log(self.connectionToClient);
+                var cptInst = GameObject.Instantiate(embryoCptPrefab, self.transform);
+                cptInst.GetComponent<NetworkedBodyAttachment>().AttachToGameObjectAndSpawn(self.gameObject);
             }
+            /*if(NetworkServer.active) {
+                var networkUser = Util.LookUpBodyNetworkUser(self.gameObject);
+                cpt.ownerClient = networkUser?.connectionToClient;
+            }*/
         }
 
         private bool On_ESPerformEquipmentAction(On.RoR2.EquipmentSlot.orig_PerformEquipmentAction orig, EquipmentSlot slot, EquipmentIndex ind) {
@@ -201,7 +221,7 @@ namespace ThinkInvisible.ClassicItems {
             c.Emit(OpCodes.Ldarg_0);
             c.EmitDelegate<Action<EquipmentSlot>>((slot)=>{
                 boost = Util.CheckRoll(GetCount(slot.characterBody)*procChance);
-                cpt = slot.characterBody?.GetComponent<EmbryoComponent>();
+                cpt = slot.characterBody?.GetComponentInChildren<EmbryoComponent>();
             });
             
             bool ILFound;
@@ -297,7 +317,6 @@ namespace ThinkInvisible.ClassicItems {
                 //If proc happens, increments the player's boosted gateway counter; this will be spent once the gateway spawns
                 c.EmitDelegate<Action>(()=>{
                     if(boost && cpt) cpt.boostedGates++;
-                    Debug.Log("Upped boostedGates to " + cpt.boostedGates);
                 });
             }
 
@@ -333,7 +352,7 @@ namespace ThinkInvisible.ClassicItems {
                 //If proc happens, increments the player's boosted jetpack counter; this will be spent during the RPC duration reset
                 c.EmitDelegate<Action>(()=>{
                     if(boost && cpt) {
-                        cpt.ServerBoostJetpack();
+                        cpt.boostedJetTime = 15f;
                     }
                 });
             }
@@ -425,7 +444,7 @@ namespace ThinkInvisible.ClassicItems {
             EmbryoComponent cpt = null;
             c.Emit(OpCodes.Ldarg_0);
             c.EmitDelegate<Action<EquipmentSlot>>((slot)=>{
-                cpt = slot.characterBody?.GetComponent<EmbryoComponent>();
+                cpt = slot.characterBody?.GetComponentInChildren<EmbryoComponent>();
             });
                 
             bool ILFound;
@@ -487,25 +506,22 @@ namespace ThinkInvisible.ClassicItems {
             EmbryoComponent cpt = null;
             c.Emit(OpCodes.Ldarg_0);
             c.EmitDelegate<Action<EquipmentSlot>>((slot)=>{
-                cpt = slot.characterBody?.GetComponent<EmbryoComponent>();
+                cpt = slot.characterBody?.GetComponentInChildren<EmbryoComponent>();
             });
 
-            bool ILFound = c.TryGotoNext(MoveType.After,
+            bool ILFound = c.TryGotoNext(
                 x=>x.MatchLdstr("Prefabs/NetworkedObjects/Zipline"),
                 x=>x.MatchCallOrCallvirt<UnityEngine.Resources>("Load"),
-                x=>x.MatchCallOrCallvirt<UnityEngine.Object>("Instantiate"),
-                x=>x.MatchDup(),
-                x=>x.MatchCallvirt<GameObject>("GetComponent"));
+                x=>x.MatchCallOrCallvirt<UnityEngine.Object>("Instantiate"));
 
             if(ILFound) {
-                c.Emit(OpCodes.Dup);
-                c.EmitDelegate<Action<ZiplineController>>((origCtrl) => {
+                c.Index += 2;
+                c.EmitDelegate<Func<GameObject,GameObject>>((origCtrl) => {
                     if(cpt && cpt.boostedGates > 0) {
                         cpt.boostedGates --;
-                        origCtrl.ziplineVehiclePrefab = PrefabAPI.InstantiateClone(origCtrl.ziplineVehiclePrefab, "boostedZiplineVehicle");
-                        var vcpt = origCtrl.ziplineVehiclePrefab.GetComponent<ZiplineVehicle>();
-                        vcpt.maxSpeed *= 20;
-                        vcpt.acceleration *= 20;
+                        return boostedGatewayPrefab;
+                    } else {
+                        return origCtrl;
                     }
                 });
             } else {
@@ -553,7 +569,7 @@ namespace ThinkInvisible.ClassicItems {
                 c.Index++;
                 c.Emit(OpCodes.Ldarg_0);
                 c.EmitDelegate<Func<float,JetpackController,float>>((origDecr,jpc)=>{
-                    EmbryoComponent cpt = jpc.NetworktargetObject?.GetComponent<EmbryoComponent>();
+                    EmbryoComponent cpt = jpc.NetworktargetObject?.GetComponentInChildren<EmbryoComponent>();
                     if(!cpt || cpt.boostedJetTime <= 0) return origDecr;
                     cpt.boostedJetTime -= origDecr;
                     return 0f;
@@ -568,25 +584,14 @@ namespace ThinkInvisible.ClassicItems {
     public class EmbryoComponent : NetworkBehaviour {
         public int boostedMissiles = 0;
         public int boostedBFGs = 0;
-        public int boostedGates = 0;
-        public float boostedJetTime = 0f;
-        internal NetworkConnection ownerClient;
-        
-        [TargetRpc]
-        private void TargetBoostJetpack(NetworkConnection target) {
-            boostedJetTime = 15f;
-            Debug.Log("client jetTime set to 15");
-        }
+        [SyncVar]
+        public int boostedGates;
+        [SyncVar]
+        public float boostedJetTime;
 
-        [Server]
-        public void ServerBoostJetpack() {
-            boostedJetTime = 15f;
-            Debug.Log("server jetTime set to 15");
-            Debug.Log(connectionToClient);
-            Debug.Log(connectionToServer);
-            Debug.Log(playerControllerId);
-            Debug.Log(ownerClient);
-            if(connectionToClient != null) TargetBoostJetpack(connectionToClient);
+        public void Awake() {
+            boostedGates = 0;
+            boostedJetTime = 0f;
         }
     }
 }
