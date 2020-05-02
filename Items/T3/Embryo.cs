@@ -98,8 +98,8 @@ namespace ThinkInvisible.ClassicItems {
             var ziplineCtrl = boostedGatewayPrefab.GetComponent<ZiplineController>();
             ziplineCtrl.ziplineVehiclePrefab = ziplineCtrl.ziplineVehiclePrefab.InstantiateClone("boostedGatewayVehiclePrefab");
             var zvh = ziplineCtrl.ziplineVehiclePrefab.GetComponent<ZiplineVehicle>();
-            zvh.maxSpeed *= 20;
-            zvh.acceleration *= 20;
+            zvh.maxSpeed *= 2f;
+            zvh.acceleration *= 2f;
 
             var eCptPrefab2 = new GameObject("embryoCptPrefabPrefab");
             eCptPrefab2.AddComponent<NetworkIdentity>();
