@@ -47,7 +47,7 @@ namespace ThinkInvisible.ClassicItems {
                 if(SceneCatalog.mostRecentSceneDef.baseSceneName == "bazaar") return false;
                 var sphpos = slot.characterBody.transform.position;
                 var sphrad = radius;
-                if(embryo.subEnableSkelKey && Util.CheckRoll(embryo.GetCount(slot.characterBody)*embryo.procChance)) sphrad *= 2;
+                if(embryo.itemEnabled && embryo.subEnableSkelKey && Util.CheckRoll(embryo.GetCount(slot.characterBody)*embryo.procChance)) sphrad *= 2;
 			    Collider[] sphits = Physics.OverlapSphere(sphpos, sphrad, LayerIndex.defaultLayer.mask, QueryTriggerInteraction.Collide);
                 bool foundAny = false;
                 foreach(Collider c in sphits) {

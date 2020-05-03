@@ -87,7 +87,7 @@ namespace ThinkInvisible.ClassicItems {
                         });
                         didHit = true;
                     }
-                    if(result2 && embryo.subEnableLostDoll && Util.CheckRoll(embryo.GetCount(slot.characterBody)*embryo.procChance)) {
+                    if(result2 && embryo.itemEnabled && embryo.subEnableLostDoll && Util.CheckRoll(embryo.GetCount(slot.characterBody)*embryo.procChance)) {
                         OrbManager.instance.AddOrb(new LostDollOrb {
                             attacker = slot.characterBody.gameObject,
                             damageColorIndex = DamageColorIndex.Default,
