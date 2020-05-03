@@ -31,7 +31,7 @@ namespace ThinkInvisible.ClassicItems {
     [BepInPlugin(ModGuid, ModName, ModVer)]
     [BepInDependency(R2API.R2API.PluginGUID)]
     [BepInDependency("com.funkfrog_sipondo.sharesuite",BepInDependency.DependencyFlags.SoftDependency)]
-    [R2APISubmoduleDependency(nameof(ItemAPI), nameof(LanguageAPI), nameof(ResourcesAPI), nameof(PlayerAPI), nameof(PrefabAPI), nameof(BuffAPI))]
+    [R2APISubmoduleDependency(nameof(ItemAPI), nameof(LanguageAPI), nameof(ResourcesAPI), nameof(PlayerAPI), nameof(PrefabAPI), nameof(BuffAPI), nameof(CommandHelper))]
     public class ClassicItemsPlugin:BaseUnityPlugin {
         public const string ModVer =
             #if DEBUG
@@ -143,8 +143,9 @@ namespace ThinkInvisible.ClassicItems {
 
         public void Awake() {
             Debug.Log("ClassicItems: performing plugin setup...");
-
-            nodeRefType = typeof(DirectorCore).GetNestedTypes(System.Reflection.BindingFlags.NonPublic).First(t=>t.Name == "NodeReference");
+            
+            CommandHelper.AddToConsoleWhenReady();
+            nodeRefType = typeof(DirectorCore).GetNestedTypes(BindingFlags.NonPublic).First(t=>t.Name == "NodeReference");
             nodeRefTypeArr = nodeRefType.MakeArrayType();
 
             Debug.Log("ClassicItems: tweaking vanilla stuff...");
