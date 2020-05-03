@@ -163,7 +163,7 @@ namespace ThinkInvisible.ClassicItems {
                 canStack = false,
                 isDebuff = true,
                 name = "CIFreeze",
-                iconPath = "@ClassicItems:Assets/ClassicItems/icons/permafrosticon.png"
+                iconPath = "@ClassicItems:Assets/ClassicItems/icons/permafrost_icon.png"
             });
             freezeBuff = BuffAPI.Add(freezeBuffDef);
 
