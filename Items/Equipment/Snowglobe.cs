@@ -107,6 +107,10 @@ namespace ThinkInvisible.ClassicItems {
                 if(!slot.characterBody || !slot.characterBody.teamComponent) return false;
                 var ctrlInst = UnityEngine.Object.Instantiate(snowglobeControllerPrefab, slot.characterBody.corePosition, Quaternion.identity);
                 ctrlInst.GetComponent<SnowglobeController>().myTeam = slot.characterBody.teamComponent.teamIndex;
+                if(embryo.itemEnabled && embryo.subEnableSnowglobe && Util.CheckRoll(embryo.GetCount(slot.characterBody)*embryo.procChance)) {
+                    ctrlInst.GetComponent<SnowglobeController>().remainingTicks *= 2;
+                    ctrlInst.GetComponentInChildren<PostProcessDuration>().maxDuration *= 2;
+                }
                 NetworkServer.Spawn(ctrlInst);
                 return true;
             } else return orig(slot, eqpid);
@@ -114,13 +118,9 @@ namespace ThinkInvisible.ClassicItems {
     }
 
 	public class SnowglobeController : NetworkBehaviour {
-        int remainingTicks;
+        internal int remainingTicks = snowglobe.duration;
         float stopwatch = 0f;
         public TeamIndex myTeam;
-
-        private void Awake() {
-            remainingTicks = snowglobe.duration;
-        }
 
         private void FixedUpdate() {
             if(!NetworkServer.active) return;
@@ -141,8 +141,6 @@ namespace ThinkInvisible.ClassicItems {
                 if(!Util.CheckRoll(snowglobe.procRate)) continue;
                 var ssoh = tcpt.gameObject.GetComponent<SetStateOnHurt>();
                 var hcpt = tcpt.gameObject.GetComponent<HealthComponent>();
-                Debug.Log(ssoh);
-                Debug.Log(hcpt);
                 if(ssoh.canBeFrozen && ssoh) {
                     hcpt.body.AddTimedBuff(ClassicItemsPlugin.freezeBuff, snowglobe.freezeTime);
                     ssoh.SetFrozen(snowglobe.freezeTime);
