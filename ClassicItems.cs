@@ -61,6 +61,7 @@ namespace ThinkInvisible.ClassicItems {
             public static readonly Snowglobe snowglobe = new Snowglobe();
             public static readonly SmartShopper smartShopper = new SmartShopper();
             public static readonly SnakeEyes snakeEyes = new SnakeEyes();
+            public static readonly Spikestrip spikestrip = new Spikestrip();
             public static readonly TeleSight teleSight = new TeleSight();
             public static readonly Vial vial = new Vial();
         }
