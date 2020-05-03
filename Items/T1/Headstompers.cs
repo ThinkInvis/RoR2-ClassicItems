@@ -41,7 +41,7 @@ namespace ThinkInvisible.ClassicItems {
         }
 
         protected override void SetupAttributesInner() {
-            modelPathName = "headstomperscard.prefab";
+            modelPathName = "headstompers_model.prefab";
             iconPathName = "headstompers_icon.png";
             RegLang("Headstompers",
             	"Hurt enemies by falling.",

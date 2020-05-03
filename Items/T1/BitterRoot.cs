@@ -38,7 +38,7 @@ namespace ThinkInvisible.ClassicItems {
         }
         
         protected override void SetupAttributesInner() {
-            modelPathName = "bitterrootcard.prefab";
+            modelPathName = "bitterroot_model.prefab";
             iconPathName = "bitterroot_icon.png";
             RegLang("Bitter Root",
             	"Gain " + pct(healthMult) + " max hp.",

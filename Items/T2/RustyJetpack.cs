@@ -39,7 +39,7 @@ namespace ThinkInvisible.ClassicItems {
         }
         
         protected override void SetupAttributesInner() {
-            modelPathName = "rustyjetpackcard.prefab";
+            modelPathName = "rustyjetpack_model.prefab";
             iconPathName = "rustyjetpack_icon.png";
             RegLang("Rusty Jetpack",
             	"Increase jump height and reduce gravity.",

@@ -23,7 +23,7 @@ namespace ThinkInvisible.ClassicItems {
         }
         
         protected override void SetupAttributesInner() {
-            modelPathName = "shoppercard.prefab";
+            modelPathName = "smartshopper_model.prefab";
             iconPathName = "smartshopper_icon.png";
             RegLang("Smart Shopper",
             	"Enemies drop extra gold.",

@@ -77,7 +77,7 @@ namespace ThinkInvisible.ClassicItems {
         }
         
         protected override void SetupAttributesInner() {
-            modelPathName = "embryocard.prefab";
+            modelPathName = "embryo_model.prefab";
             iconPathName = "embryo_icon.png";
             RegLang("Beating Embryo",
             	"Equipment has a 30% chance to deal double the effect.",

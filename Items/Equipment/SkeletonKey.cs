@@ -27,7 +27,7 @@ namespace ThinkInvisible.ClassicItems {
         protected override void SetupAttributesInner() {
             itemIsEquipment = true;
 
-            modelPathName = "skeletonkeycard.prefab";
+            modelPathName = "skeletonkey_model.prefab";
             iconPathName = "skeletonkey_icon.png";
             eqpCooldown = 90;
 

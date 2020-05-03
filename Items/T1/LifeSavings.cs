@@ -42,7 +42,7 @@ namespace ThinkInvisible.ClassicItems {
         }
 
         protected override void SetupAttributesInner() {
-            modelPathName = "savingscard.prefab";
+            modelPathName = "lifesavings_model.prefab";
             iconPathName = "lifesavings_icon.png";
             RegLang("Life Savings",
             	"Earn gold over time.",

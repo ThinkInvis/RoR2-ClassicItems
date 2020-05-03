@@ -31,7 +31,7 @@ namespace ThinkInvisible.ClassicItems {
             itemIsEquipment = true;
             eqpIsLunar = true;
 
-            modelPathName = "lostdollcard.prefab";
+            modelPathName = "lostdoll_model.prefab";
             iconPathName = "lostdoll_icon.png";
             eqpEnigmable = true;
             eqpCooldown = 45;

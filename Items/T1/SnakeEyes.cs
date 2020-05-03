@@ -50,7 +50,7 @@ namespace ThinkInvisible.ClassicItems {
         }
         
         protected override void SetupAttributesInner() {
-            modelPathName = "snakeeyescard.prefab";
+            modelPathName = "snakeeyes_model.prefab";
             iconPathName = "snakeeyes_icon.png";
             RegLang("Snake Eyes",
             	"Gain increased crit chance on failing a shrine. Removed on succeeding a shrine.",

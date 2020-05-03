@@ -57,7 +57,7 @@ namespace ThinkInvisible.ClassicItems {
         }
         
         protected override void SetupAttributesInner() {
-            modelPathName = "barbedwirecard.prefab";
+            modelPathName = "barbedwire_model.prefab";
             iconPathName = "barbedwire_icon.png";
             RegLang("Barbed Wire",
             	"Hurt nearby enemies.",

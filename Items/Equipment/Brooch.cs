@@ -41,8 +41,8 @@ namespace ThinkInvisible.ClassicItems {
         protected override void SetupAttributesInner() {
             itemIsEquipment = true;
 
-            modelPathName = "broochcard.prefab";
-            iconPathName = "captainsbrooch_icon.png";
+            modelPathName = "brooch_model.prefab";
+            iconPathName = "brooch_icon.png";
             eqpCooldown = 135;
 
             RegLang("Captain's Brooch",

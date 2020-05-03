@@ -39,7 +39,7 @@ namespace ThinkInvisible.ClassicItems {
         protected override void SetupAttributesInner() {
             itemAIBDefault = true;
 
-            modelPathName = "permafrostcard.prefab";
+            modelPathName = "permafrost_model.prefab";
             iconPathName = "permafrost_icon.png";
             RegLang("Permafrost",
             	"Chance to freeze enemies on hit.",

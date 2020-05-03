@@ -40,7 +40,7 @@ namespace ThinkInvisible.ClassicItems {
         
         protected override void SetupAttributesInner() {
             itemAIBDefault = true;
-            modelPathName = "telesightcard.prefab";
+            modelPathName = "telesight_model.prefab";
             iconPathName = "telesight_icon.png";
             RegLang("Telescopic Sight",
             	"Chance to instantly kill an enemy.",

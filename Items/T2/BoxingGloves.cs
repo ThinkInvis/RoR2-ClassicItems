@@ -27,7 +27,7 @@ namespace ThinkInvisible.ClassicItems {
         }
         
         protected override void SetupAttributesInner() {
-            modelPathName = "boxingglovescard.prefab";
+            modelPathName = "boxinggloves_model.prefab";
             iconPathName = "boxinggloves_icon.png";
             RegLang("Boxing Gloves",
             	"Hitting enemies have a " + pct(procChance,0,1) + " chance to knock them back.",

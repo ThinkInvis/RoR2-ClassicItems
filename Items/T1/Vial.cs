@@ -31,8 +31,8 @@ namespace ThinkInvisible.ClassicItems {
         }
         
         protected override void SetupAttributesInner() {
-            modelPathName = "vialcard.prefab";
-            iconPathName = "mysteriousvial_icon.png";
+            modelPathName = "vial_model.prefab";
+            iconPathName = "vial_icon.png";
             RegLang("Mysterious Vial",
             	"Increased health regeneration.",
             	"Increases <style=cIsHealing>health regen by +" + addRegen.ToString("N1") + "/sec</style> <style=cStack>(+" + addRegen.ToString("N1") + "/sec per stack)</style>.",

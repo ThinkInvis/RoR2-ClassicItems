@@ -47,7 +47,7 @@ namespace ThinkInvisible.ClassicItems {
         }
         
         protected override void SetupAttributesInner() {
-            modelPathName = "goldenguncard.prefab";
+            modelPathName = "goldengun_model.prefab";
             iconPathName = "goldengun_icon.png";
             RegLang("Golden Gun",
             	"More gold, more damage.",

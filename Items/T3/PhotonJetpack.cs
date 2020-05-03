@@ -56,7 +56,7 @@ namespace ThinkInvisible.ClassicItems {
         protected override void SetupAttributesInner() {
             itemAIBDefault = true;
 
-            modelPathName = "photonjetpackcard.prefab";
+            modelPathName = "photonjetpack_model.prefab";
             iconPathName = "photonjetpack_icon.png";
             RegLang("Photon Jetpack",
             	"No hands.",

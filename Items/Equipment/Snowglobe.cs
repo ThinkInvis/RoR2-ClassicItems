@@ -54,7 +54,7 @@ namespace ThinkInvisible.ClassicItems {
         protected override void SetupAttributesInner() {
             itemIsEquipment = true;
 
-            modelPathName = "snowglobecard.prefab";
+            modelPathName = "snowglobe_model.prefab";
             iconPathName = "snowglobe_icon.png";
             eqpEnigmable = true;
             eqpCooldown = 45;

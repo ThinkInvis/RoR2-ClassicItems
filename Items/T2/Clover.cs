@@ -94,7 +94,7 @@ namespace ThinkInvisible.ClassicItems {
         }
         
         protected override void SetupAttributesInner() {
-            modelPathName = "clovercard.prefab";
+            modelPathName = "clover_model.prefab";
             iconPathName = "clover_icon.png";
             RegLang("56 Leaf Clover",
             	"Elite mobs have a chance to drop items.",
