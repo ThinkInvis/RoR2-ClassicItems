@@ -69,8 +69,35 @@ namespace ThinkInvisible.ClassicItems {
             var ctrlPfb2 = new GameObject("snowglobeControllerPrefabPrefab");
             ctrlPfb2.AddComponent<NetworkIdentity>();
             ctrlPfb2.AddComponent<SnowglobeController>();
+
+            var msTemp = Resources.Load<GameObject>("Prefabs/NetworkedObjects/MeteorStorm");
+
+            var ppvOrig = msTemp.transform.GetChild(0).gameObject.GetComponent<PostProcessVolume>();
+            var ppvIn = UnityEngine.Object.Instantiate(msTemp.transform.GetChild(0).gameObject);
+            ppvIn.transform.parent = ctrlPfb2.transform;
+            var ppv = ppvIn.GetComponent<PostProcessVolume>();
+            ppv.sharedProfile = ScriptableObject.CreateInstance<PostProcessProfile>();
+			foreach(PostProcessEffectSettings ppesOrig in ppvOrig.sharedProfile.settings) {
+				PostProcessEffectSettings ppesNew = UnityEngine.Object.Instantiate(ppesOrig);
+				ppv.sharedProfile.settings.Add(ppesNew);
+			}
+            ppv.sharedProfile.GetSetting<Vignette>().color.Override(Color.grey);
+            ppv.sharedProfile.GetSetting<Vignette>().intensity.Override(0.2f);
+            ppv.sharedProfile.GetSetting<Bloom>().color.Override(Color.grey);
+            ppv.sharedProfile.GetSetting<Bloom>().intensity.Override(0.5f);
+            ppv.sharedProfile.GetSetting<ColorGrading>().mixerRedOutRedIn.Override(150.0f);
+            ppv.sharedProfile.GetSetting<ColorGrading>().mixerGreenOutGreenIn.Override(150.0f);
+            ppv.sharedProfile.GetSetting<ColorGrading>().mixerBlueOutBlueIn.Override(150.0f);
+            ppv.sharedProfile.GetSetting<ColorGrading>().contrast.Override(-10f);
+            ppv.sharedProfile.GetSetting<ColorGrading>().postExposure.Override(0.5f);
+
+            var ppdIn = ppvIn.GetComponent<PostProcessDuration>();
+            ppdIn.maxDuration = duration;
+            ppdIn.ppWeightCurve = new AnimationCurve(new Keyframe(0f, 0f), new Keyframe(0.1f, 1f), new Keyframe(0.9f, 1f), new Keyframe(1f, 0f));
+            ppdIn.destroyOnEnd = true;
+
             snowglobeControllerPrefab = ctrlPfb2.InstantiateClone("snowglobeControllerPrefab");
-            GameObject.Destroy(ctrlPfb2);
+            UnityEngine.Object.Destroy(ctrlPfb2);
 
             On.RoR2.EquipmentSlot.PerformEquipmentAction += On_ESPerformEquipmentAction;
         }
@@ -86,7 +113,7 @@ namespace ThinkInvisible.ClassicItems {
         }
     }
 
-	public class SnowglobeController : MonoBehaviour {
+	public class SnowglobeController : NetworkBehaviour {
         int remainingTicks;
         float stopwatch = 0f;
         public TeamIndex myTeam;
