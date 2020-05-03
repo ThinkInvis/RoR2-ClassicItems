@@ -144,6 +144,7 @@ namespace ThinkInvisible.ClassicItems {
                 Debug.Log(ssoh);
                 Debug.Log(hcpt);
                 if(ssoh.canBeFrozen && ssoh) {
+                    hcpt.body.AddTimedBuff(ClassicItemsPlugin.freezeBuff, snowglobe.freezeTime);
                     ssoh.SetFrozen(snowglobe.freezeTime);
                 }
                 if(((ssoh?.canBeFrozen ?? false) || snowglobe.slowUnfreezable) && hcpt) {
