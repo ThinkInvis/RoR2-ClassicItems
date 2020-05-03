@@ -161,6 +161,7 @@ namespace ThinkInvisible.ClassicItems {
             if(retv && slot.characterBody && Util.CheckRoll(GetCount(slot.characterBody)*procChance)) {
                 if(subEnableBrooch && brooch.itemEnabled && ind == brooch.regIndexEqp) {orig(slot, ind); return true;}
                 if(subEnableSkelKey && skeletonKey.itemEnabled && ind == skeletonKey.regIndexEqp) {return true;}
+                if(subEnableSnowglobe && snowglobe.itemEnabled && ind == snowglobe.regIndexEqp) {return true;}
                 switch(ind) {
                     case EquipmentIndex.Fruit:
                         if(subEnable[EquipmentIndex.Fruit]) 
