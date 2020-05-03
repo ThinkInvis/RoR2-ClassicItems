@@ -40,6 +40,9 @@
     <Reference Include="ShareSuite">
       <HintPath>lib\ShareSuite.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.Postprocessing.Runtime">
+      <HintPath>lib\Unity.Postprocessing.Runtime.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.TextMeshPro">
       <HintPath>..\REF\Managed\Unity.TextMeshPro.dll</HintPath>
       <Private>false</Private>
