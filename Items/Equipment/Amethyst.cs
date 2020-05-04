@@ -1,11 +1,8 @@
 ﻿using BepInEx.Configuration;
 using RoR2;
-using UnityEngine;
-using static ThinkInvisible.ClassicItems.ClassicItemsPlugin.MasterItemList;
-using UnityEngine.Networking;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Amethyst : ItemBoilerplate {
+    public class Amethyst : ItemBoilerplate<Amethyst> {
         public override string itemCodeName {get;} = "Amethyst";
 
         protected override void SetupConfigInner(ConfigFile cfl) {
@@ -34,7 +31,7 @@ namespace ThinkInvisible.ClassicItems {
                 var sloc = slot.characterBody?.skillLocator;
                 if(!sloc) return false;
                 sloc.ApplyAmmoPack();
-                if(embryo.itemEnabled && embryo.subEnableAmethyst && Util.CheckRoll(embryo.procChance * embryo.GetCount(slot.characterBody))) sloc.ApplyAmmoPack();
+                if(Embryo.instance.CheckProc<Amethyst>(slot.characterBody)) sloc.ApplyAmmoPack();
                 return true;
             } else return orig(slot, eqpid);
         }

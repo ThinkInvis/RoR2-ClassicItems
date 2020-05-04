@@ -8,6 +8,15 @@ using System.Collections.ObjectModel;
 using UnityEngine;
 
 namespace ThinkInvisible.ClassicItems {
+    public abstract class ItemBoilerplate<T>:ItemBoilerplate where T : ItemBoilerplate<T> {
+        public static T instance {get;private set;}
+
+        public ItemBoilerplate() {
+            if(instance != null) throw new InvalidOperationException("Singleton class \"" + typeof(T).Name + "\" inheriting ItemBoilerplate was instantiated twice");
+            instance = this as T;
+        }
+    }
+
     public abstract class ItemBoilerplate {
         public bool itemIsEquipment {get; protected set;} = false;
         public bool itemAIBDefault {get;protected set;} = false;
@@ -46,7 +55,7 @@ namespace ThinkInvisible.ClassicItems {
         protected abstract void SetupConfigInner(ConfigFile cfl);
 
         public ItemBoilerplate() {
-             if(itemIsEquipment) _itemTags = new List<ItemTag>();
+            if(itemIsEquipment) _itemTags = new List<ItemTag>();
         }
 
         public void SetupConfig(ConfigFile cfl) {

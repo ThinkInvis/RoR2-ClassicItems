@@ -9,7 +9,7 @@ using Mono.Cecil.Cil;
 using UnityEngine.Networking;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Brooch : ItemBoilerplate {
+    public class Brooch : ItemBoilerplate<Brooch> {
         public override string itemCodeName {get;} = "Brooch";
 
         private ConfigEntry<float> cfgExtraCost;
@@ -123,36 +123,41 @@ namespace ThinkInvisible.ClassicItems {
             if(eqpid == regIndexEqp) {
                 if(!slot.characterBody) return false;
                 if(SceneCatalog.mostRecentSceneDef.baseSceneName == "bazaar") return false;
-                var trans = slot.characterBody.transform;
-
-                var dsr = new DirectorSpawnRequest(broochPrefab, new DirectorPlacementRule {
-                    maxDistance = 25f,
-                    minDistance = 5f,
-                    placementMode = DirectorPlacementRule.PlacementMode.Approximate,
-                    position = trans.position,
-                    preventOverhead = true
-                }, BroochRNG);
-
-                dsr.onSpawnedServer += Evt_BroochChestSpawnServer;
-
-                var spawnobj = DirectorCore.instance.TrySpawnObject(dsr);
-                //broochPrefab.DoSpawn(trans.position, trans.rotation, dsr);
-                if(spawnobj == null) {
-                    if(doFallbackSpawn) {
-                        Debug.LogWarning("Captain's Brooch: spawn failed, using fallback position. This may be caused by too many objects nearby/no suitable ground.");
-                        var dsrFallback = new DirectorSpawnRequest(broochPrefab, new DirectorPlacementRule {
-                            placementMode = DirectorPlacementRule.PlacementMode.Direct,
-                            position = trans.position
-                        }, BroochRNG);
-                        dsrFallback.onSpawnedServer += Evt_BroochChestSpawnServer;
-                        broochPrefab.DoSpawn(trans.position, trans.rotation, dsrFallback);
-                        return true;
-                    } else {
-                        Debug.LogWarning("Captain's Brooch: spawn failed, not triggering equipment. This may be caused by too many objects nearby/no suitable ground.");
-                        return false;
-                    }
-                } else return true;
+                bool s1 = TrySpawnChest(slot.characterBody.transform);
+                bool s2 = false;
+                if(Embryo.instance.CheckProc<Brooch>(slot.characterBody)) s2 = TrySpawnChest(slot.characterBody.transform);
+                return s1 || s2;
             } else return orig(slot, eqpid);
+        }
+
+        private bool TrySpawnChest(Transform trans) {
+            var dsr = new DirectorSpawnRequest(broochPrefab, new DirectorPlacementRule {
+                maxDistance = 25f,
+                minDistance = 5f,
+                placementMode = DirectorPlacementRule.PlacementMode.Approximate,
+                position = trans.position,
+                preventOverhead = true
+            }, BroochRNG);
+
+            dsr.onSpawnedServer += Evt_BroochChestSpawnServer;
+
+            var spawnobj = DirectorCore.instance.TrySpawnObject(dsr);
+            //broochPrefab.DoSpawn(trans.position, trans.rotation, dsr);
+            if(spawnobj == null) {
+                if(doFallbackSpawn) {
+                    Debug.LogWarning("Captain's Brooch: spawn failed, using fallback position. This may be caused by too many objects nearby/no suitable ground.");
+                    var dsrFallback = new DirectorSpawnRequest(broochPrefab, new DirectorPlacementRule {
+                        placementMode = DirectorPlacementRule.PlacementMode.Direct,
+                        position = trans.position
+                    }, BroochRNG);
+                    dsrFallback.onSpawnedServer += Evt_BroochChestSpawnServer;
+                    broochPrefab.DoSpawn(trans.position, trans.rotation, dsrFallback);
+                    return true;
+                } else {
+                    Debug.LogWarning("Captain's Brooch: spawn failed, not triggering equipment. This may be caused by too many objects nearby/no suitable ground.");
+                    return false;
+                }
+            } else return true;
         }
     }
     internal class CaptainsBroochDroppod:NetworkBehaviour {

@@ -1,17 +1,14 @@
 ﻿using BepInEx.Configuration;
 using RoR2;
-using RoR2.Orbs;
 using System.Collections.ObjectModel;
 using UnityEngine;
 using static ThinkInvisible.ClassicItems.MiscUtil;
-using static ThinkInvisible.ClassicItems.ClassicItemsPlugin.MasterItemList;
 using UnityEngine.Networking;
 using R2API;
 using UnityEngine.Rendering.PostProcessing;
-using System.Collections.Generic;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Snowglobe : ItemBoilerplate {
+    public class Snowglobe : ItemBoilerplate<Snowglobe> {
         public override string itemCodeName {get;} = "Snowglobe";
 
         private ConfigEntry<float> cfgProcRate;
@@ -107,7 +104,7 @@ namespace ThinkInvisible.ClassicItems {
                 if(!slot.characterBody || !slot.characterBody.teamComponent) return false;
                 var ctrlInst = UnityEngine.Object.Instantiate(snowglobeControllerPrefab, slot.characterBody.corePosition, Quaternion.identity);
                 ctrlInst.GetComponent<SnowglobeController>().myTeam = slot.characterBody.teamComponent.teamIndex;
-                if(embryo.itemEnabled && embryo.subEnableSnowglobe && Util.CheckRoll(embryo.GetCount(slot.characterBody)*embryo.procChance)) {
+                if(Embryo.instance.CheckProc<Snowglobe>(slot.characterBody)) {
                     ctrlInst.GetComponent<SnowglobeController>().remainingTicks *= 2;
                     ctrlInst.GetComponentInChildren<PostProcessDuration>().maxDuration *= 2;
                 }
@@ -118,10 +115,11 @@ namespace ThinkInvisible.ClassicItems {
     }
 
 	public class SnowglobeController : NetworkBehaviour {
-        internal int remainingTicks = snowglobe.duration;
+        internal int remainingTicks = Snowglobe.instance.duration;
         float stopwatch = 0f;
         public TeamIndex myTeam;
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Used by UnityEngine")]
         private void FixedUpdate() {
             if(!NetworkServer.active) return;
             stopwatch += Time.fixedDeltaTime;
@@ -138,15 +136,15 @@ namespace ThinkInvisible.ClassicItems {
 			tind &= ~myTeam;
 			ReadOnlyCollection<TeamComponent> teamMembers = TeamComponent.GetTeamMembers(tind);
 			foreach(TeamComponent tcpt in teamMembers) {
-                if(!Util.CheckRoll(snowglobe.procRate)) continue;
+                if(!Util.CheckRoll(Snowglobe.instance.procRate)) continue;
                 var ssoh = tcpt.gameObject.GetComponent<SetStateOnHurt>();
                 var hcpt = tcpt.gameObject.GetComponent<HealthComponent>();
                 if(ssoh.canBeFrozen && ssoh) {
-                    hcpt.body.AddTimedBuff(ClassicItemsPlugin.freezeBuff, snowglobe.freezeTime);
-                    ssoh.SetFrozen(snowglobe.freezeTime);
+                    hcpt.body.AddTimedBuff(ClassicItemsPlugin.freezeBuff, Snowglobe.instance.freezeTime);
+                    ssoh.SetFrozen(Snowglobe.instance.freezeTime);
                 }
-                if(((ssoh?.canBeFrozen ?? false) || snowglobe.slowUnfreezable) && hcpt) {
-                    hcpt.body.AddTimedBuff(BuffIndex.Slow60, snowglobe.slowTime);
+                if(((ssoh?.canBeFrozen ?? false) || Snowglobe.instance.slowUnfreezable) && hcpt) {
+                    hcpt.body.AddTimedBuff(BuffIndex.Slow60, Snowglobe.instance.slowTime);
                 }
 			}
         }

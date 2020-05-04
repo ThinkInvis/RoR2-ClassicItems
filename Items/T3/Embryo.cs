@@ -5,7 +5,6 @@ using System;
 using UnityEngine;
 using R2API.Utils;
 using BepInEx.Configuration;
-using static ThinkInvisible.ClassicItems.ClassicItemsPlugin.MasterItemList;
 using static ThinkInvisible.ClassicItems.MiscUtil;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,35 +12,26 @@ using UnityEngine.Networking;
 using R2API;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Embryo : ItemBoilerplate {
+    public class Embryo : ItemBoilerplate<Embryo> {
         public override string itemCodeName {get;} = "Embryo";
 
         private ConfigEntry<float> cfgProcChance;
 
         private Dictionary<EquipmentIndex,ConfigEntry<bool>> cfgSubEnable;
+        private Dictionary<Type,ConfigEntry<bool>> cfgSubEnableInternal;
 
         private ConfigEntry<bool> cfgSubEnableModded;
-
-        private ConfigEntry<bool> cfgSubEnableBrooch;
-        private ConfigEntry<bool> cfgSubEnableSkelKey;
-        private ConfigEntry<bool> cfgSubEnableLostDoll;
-        private ConfigEntry<bool> cfgSubEnableSnowglobe;
-        private ConfigEntry<bool> cfgSubEnableAmethyst;
 
         public float procChance {get;private set;}
 
         public ReadOnlyDictionary<EquipmentIndex,bool> subEnable {get;private set;}
+        public ReadOnlyDictionary<Type,bool> subEnableInternal {get;private set;}
 
         public bool subEnableModded {get;private set;}
 
-        public bool subEnableBrooch {get;private set;}
-        public bool subEnableSkelKey {get;private set;}
-        public bool subEnableLostDoll {get;private set;}
-        public bool subEnableSnowglobe {get;private set;}
-        public bool subEnableAmethyst {get;private set;}
-
-
+        private ConfigFile cachedCfl;
         protected override void SetupConfigInner(ConfigFile cfl) {
+            cachedCfl = cfl;
             cfgProcChance = cfl.Bind<float>(new ConfigDefinition("Items." + itemCodeName, "ProcChance"), 30f, new ConfigDescription(
                 "Percent chance of triggering an equipment twice. Stacks additively.",
                 new AcceptableValueRange<float>(0f,100f)));
@@ -66,26 +56,6 @@ namespace ThinkInvisible.ClassicItems {
             cfgSubEnableModded = cfl.Bind<bool>(new ConfigDefinition("Items." + itemCodeName, "SubEnableModded"), false, new ConfigDescription(
                 "If false, Beating Embryo will not affect equipment added by other mods. If true, these items will be triggered twice when Beating Embryo procs, which may not work with some items."));
             subEnableModded = cfgSubEnableModded.Value;
-
-            cfgSubEnableBrooch = cfl.Bind<bool>(new ConfigDefinition("Items." + itemCodeName, "SubEnableBrooch"), true, new ConfigDescription(
-                "If false, Beating Embryo will not affect Captain's Brooch (added by CustomItems)."));
-            subEnableBrooch = cfgSubEnableBrooch.Value;
-
-            cfgSubEnableSkelKey = cfl.Bind<bool>(new ConfigDefinition("Items." + itemCodeName, "SubEnableSkelKey"), true, new ConfigDescription(
-                "If false, Beating Embryo will not affect Skeleton Key (added by CustomItems)."));
-            subEnableSkelKey = cfgSubEnableSkelKey.Value;
-
-            cfgSubEnableLostDoll = cfl.Bind<bool>(new ConfigDefinition("Items." + itemCodeName, "SubEnableLostDoll"), false, new ConfigDescription(
-                "If false, Beating Embryo will not affect LUNAR Lost Doll (added by CustomItems)."));
-            subEnableLostDoll = cfgSubEnableLostDoll.Value;
-
-            cfgSubEnableSnowglobe = cfl.Bind<bool>(new ConfigDefinition("Items." + itemCodeName, "SubEnableSnowglobe"), true, new ConfigDescription(
-                "If false, Beating Embryo will not affect Snowglobe (added by CustomItems)."));
-            subEnableSnowglobe = cfgSubEnableSnowglobe.Value;
-
-            cfgSubEnableAmethyst = cfl.Bind<bool>(new ConfigDefinition("Items." + itemCodeName, "SubEnableAmethyst"), true, new ConfigDescription(
-                "If false, Beating Embryo will not affect Gigantic Amethyst (added by CustomItems)."));
-            subEnableAmethyst = cfgSubEnableAmethyst.Value;
         }
         
         protected override void SetupAttributesInner() {
@@ -106,6 +76,21 @@ namespace ThinkInvisible.ClassicItems {
         private GameObject boostedScannerPrefab;
 
         protected override void SetupBehaviorInner() {
+            ///// WARNING: late config setup. is there a safer way to do this? eqpIsLunar and itemIsEquipment are defined during attributes stage
+            cfgSubEnableInternal = new Dictionary<Type,ConfigEntry<bool>>();
+            Dictionary<Type,bool> _subEnableInternal = new Dictionary<Type,bool>();
+            foreach(ItemBoilerplate bpl in ClassicItemsPlugin.masterItemList) {
+                if(bpl.itemIsEquipment) {
+                    Debug.Log("Embryo: adding " + bpl.itemCodeName + " (type " + bpl.GetType() + ")");
+                    cfgSubEnableInternal.Add(bpl.GetType(), cachedCfl.Bind<bool>(new ConfigDefinition("Items." + itemCodeName, "SubEnable" + bpl.itemCodeName), !bpl.eqpIsLunar, new ConfigDescription(
+                    "If false, Beating Embryo will not affect " + bpl.itemCodeName + " (added by CustomItems).")));
+                    _subEnableInternal.Add(bpl.GetType(), cfgSubEnableInternal[bpl.GetType()].Value);
+                }
+            }
+            subEnableInternal = new ReadOnlyDictionary<Type,bool>(_subEnableInternal);
+            ///// end late config setup
+
+
             boostedScannerPrefab = Resources.Load<GameObject>("Prefabs/NetworkedObjects/ChestScanner").InstantiateClone("boostedScannerPrefab");
             boostedScannerPrefab.GetComponent<ChestRevealer>().revealDuration *= 2f;
 
@@ -153,6 +138,17 @@ namespace ThinkInvisible.ClassicItems {
                 ILFailed = false;
             }
         }
+        
+        public bool CheckProc(CharacterBody body) {
+            return itemEnabled && Util.CheckRoll(GetCount(body)*procChance, body.master);
+        }
+        public bool CheckProc(EquipmentIndex subind, CharacterBody body) {
+            return subEnable[subind] && CheckProc(body);
+        }
+        public bool CheckProc<T>(CharacterBody body) where T:ItemBoilerplate {
+            Debug.Log("Checking proc for type " + typeof(T));
+            return itemEnabled && subEnableInternal[typeof(T)] && Util.CheckRoll(GetCount(body)*procChance, body.master);
+        }
 
         private void On_CBOnInventoryChanged(On.RoR2.CharacterBody.orig_OnInventoryChanged orig, CharacterBody self) {            
             orig(self);
@@ -171,10 +167,9 @@ namespace ThinkInvisible.ClassicItems {
         private bool On_ESPerformEquipmentAction(On.RoR2.EquipmentSlot.orig_PerformEquipmentAction orig, EquipmentSlot slot, EquipmentIndex ind) {
             var retv = orig(slot, ind);
             if(retv && slot.characterBody && Util.CheckRoll(GetCount(slot.characterBody)*procChance)) {
-                if(subEnableBrooch && brooch.itemEnabled && ind == brooch.regIndexEqp) {orig(slot, ind); return true;}
-                if(subEnableSkelKey && skeletonKey.itemEnabled && ind == skeletonKey.regIndexEqp) {return true;}
-                if(subEnableSnowglobe && snowglobe.itemEnabled && ind == snowglobe.regIndexEqp) {return true;}
-                if(subEnableAmethyst && amethyst.itemEnabled && ind == amethyst.regIndexEqp) {return true;}
+                foreach(ItemBoilerplate bpl in ClassicItemsPlugin.masterItemList) {
+                    if(bpl.itemEnabled && bpl.itemIsEquipment && ind == bpl.regIndexEqp) return true;
+                }
                 switch(ind) {
                     case EquipmentIndex.Fruit:
                         if(subEnable[EquipmentIndex.Fruit]) 
@@ -365,7 +360,6 @@ namespace ThinkInvisible.ClassicItems {
                     Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: Scanner; target instructions not found");
                 }
             }
-
 
             //BFG: double impact damage
             if((int)EquipmentIndex.BFG >= swarr.Length)

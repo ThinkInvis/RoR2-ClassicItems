@@ -7,7 +7,7 @@ using R2API;
 using static ThinkInvisible.ClassicItems.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
-    public class FireShield : ItemBoilerplate {
+    public class FireShield : ItemBoilerplate<FireShield> {
         public override string itemCodeName {get;} = "FireShield";
 
         private ConfigEntry<float> cfgHealthThreshold;

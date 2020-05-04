@@ -1,15 +1,10 @@
 ﻿using BepInEx.Configuration;
 using RoR2;
-using R2API;
-using System;
 using UnityEngine;
-using static ThinkInvisible.ClassicItems.MiscUtil;
-using static ThinkInvisible.ClassicItems.ClassicItemsPlugin.MasterItemList;
-using MonoMod.Cil;
-using Mono.Cecil.Cil;
+
 
 namespace ThinkInvisible.ClassicItems {
-    public class SkeletonKey : ItemBoilerplate {
+    public class SkeletonKey : ItemBoilerplate<SkeletonKey> {
         public override string itemCodeName {get;} = "SkeletonKey";
 
         private ConfigEntry<float> cfgRadius;
@@ -47,7 +42,8 @@ namespace ThinkInvisible.ClassicItems {
                 if(SceneCatalog.mostRecentSceneDef.baseSceneName == "bazaar") return false;
                 var sphpos = slot.characterBody.transform.position;
                 var sphrad = radius;
-                if(embryo.itemEnabled && embryo.subEnableSkelKey && Util.CheckRoll(embryo.GetCount(slot.characterBody)*embryo.procChance)) sphrad *= 2;
+                
+                if(Embryo.instance.CheckProc<SkeletonKey>(slot.characterBody)) sphrad *= 2;
 			    Collider[] sphits = Physics.OverlapSphere(sphpos, sphrad, LayerIndex.defaultLayer.mask, QueryTriggerInteraction.Collide);
                 bool foundAny = false;
                 foreach(Collider c in sphits) {

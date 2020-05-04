@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 
 namespace ThinkInvisible.ClassicItems {
-    public class SnakeEyes : ItemBoilerplate {
+    public class SnakeEyes : ItemBoilerplate<SnakeEyes> {
         public override string itemCodeName {get;} = "SnakeEyes";
 
         private ConfigEntry<float> cfgAdd;

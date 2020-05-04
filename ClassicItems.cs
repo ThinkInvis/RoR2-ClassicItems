@@ -37,32 +37,7 @@ namespace ThinkInvisible.ClassicItems {
 
         private static ConfigFile cfgFile;
         
-        public static class MasterItemList {
-            public static readonly Amethyst amethyst = new Amethyst();
-            public static readonly BarbedWire barbedWire = new BarbedWire();
-            public static readonly BoxingGloves boxingGloves = new BoxingGloves();
-            public static readonly Brooch brooch = new Brooch();
-            public static readonly BitterRoot bitterRoot = new BitterRoot();
-            public static readonly Clover clover = new Clover();
-            public static readonly Embryo embryo = new Embryo();
-            public static readonly FireShield fireShield = new FireShield();
-            public static readonly GoldenGun goldenGun = new GoldenGun();
-            public static readonly Headstompers headstompers = new Headstompers();
-            public static readonly LifeSavings lifeSavings = new LifeSavings();
-            public static readonly LostDoll lostDoll = new LostDoll();
-            public static readonly Permafrost permafrost = new Permafrost();
-            public static readonly PhotonJetpack photonJetpack = new PhotonJetpack();
-            public static readonly RustyJetpack rustyJetpack = new RustyJetpack();
-            public static readonly SkeletonKey skeletonKey = new SkeletonKey();
-            public static readonly Snowglobe snowglobe = new Snowglobe();
-            public static readonly SmartShopper smartShopper = new SmartShopper();
-            public static readonly SnakeEyes snakeEyes = new SnakeEyes();
-            public static readonly Spikestrip spikestrip = new Spikestrip();
-            public static readonly TeleSight teleSight = new TeleSight();
-            public static readonly Vial vial = new Vial();
-        }
-
-        private readonly List<ItemBoilerplate> MILL = new List<ItemBoilerplate>();
+        public static MiscUtil.FilingDictionary<ItemBoilerplate> masterItemList = new MiscUtil.FilingDictionary<ItemBoilerplate>();
         
         private static ConfigEntry<bool> gCfgHSV2NoStomp;
         private static ConfigEntry<bool> gCfgAllCards;
@@ -100,24 +75,26 @@ namespace ThinkInvisible.ClassicItems {
             gAllCards = gCfgAllCards.Value;
             gCoolYourJets = gCfgCoolYourJets.Value;
 
+            Debug.Log("ClassicItems: instantiating item classes...");
+
+            foreach(Type type in Assembly.GetAssembly(typeof(ItemBoilerplate)).GetTypes().Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(typeof(ItemBoilerplate)))) {
+                masterItemList.Add((ItemBoilerplate)Activator.CreateInstance(type));
+            }
+
             Debug.Log("ClassicItems: loading item configs...");
 
-            var mFields = typeof(MasterItemList).GetFields().ToList();
-            mFields.ForEach(x=>{
-                MILL.Add((ItemBoilerplate)x.GetValue(null));
-            });
-
-            MILL.ForEach(x=>{
+            foreach(ItemBoilerplate x in masterItemList) {
                 x.SetupConfig(cfgFile);
-            });
+            }
 
-            MILL.RemoveAll(x=>x.itemEnabled==false);
-            
+            masterItemList.RemoveWhere(x=>x.itemEnabled==false);
+
             Debug.Log("ClassicItems: registering item attributes...");
-            MILL.ForEach(x=>{
+
+            foreach(ItemBoilerplate x in masterItemList) {
                 x.SetupAttributes();
-                Debug.Log(x.itemCodeName + ": " + (x.itemIsEquipment ? (int)x.regIndexEqp : (int)x.regIndex));
-            });
+                Debug.Log(x.itemCodeName + ": " + (x.itemIsEquipment ? ("EQP"+x.regIndexEqp.ToString()) : x.regIndex.ToString()));
+            }
         }
 
         #if DEBUG
@@ -174,9 +151,10 @@ namespace ThinkInvisible.ClassicItems {
 
             Debug.Log("ClassicItems: registering item behaviors...");
 
-            MILL.ForEach(x=>{
+
+            foreach(ItemBoilerplate x in masterItemList) {
                 x.SetupBehavior();
-            });
+            }
 
             Debug.Log("ClassicItems: done!");
         }

@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Vial : ItemBoilerplate {
+    public class Vial : ItemBoilerplate<Vial> {
         public override string itemCodeName {get;} = "Vial";
 
         private ConfigEntry<float> cfgAdd;

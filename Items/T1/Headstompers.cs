@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using R2API.Utils;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Headstompers : ItemBoilerplate {
+    public class Headstompers : ItemBoilerplate<Headstompers> {
         public override string itemCodeName {get;} = "Headstompers";
 
         private ConfigEntry<float> cfgBaseDamage;

@@ -5,7 +5,7 @@ using static ThinkInvisible.ClassicItems.MiscUtil;
 using System.Collections.Generic;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Clover : ItemBoilerplate {
+    public class Clover : ItemBoilerplate<Clover> {
         public override string itemCodeName {get;} = "Clover";
 
         private ConfigEntry<float> cfgBaseChance;

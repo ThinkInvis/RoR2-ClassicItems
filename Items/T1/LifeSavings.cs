@@ -4,11 +4,10 @@ using UnityEngine;
 using BepInEx.Configuration;
 using System.Collections.Generic;
 using UnityEngine.Networking;
-using static ThinkInvisible.ClassicItems.ClassicItemsPlugin.MasterItemList;
 using R2API.Utils;
 
 namespace ThinkInvisible.ClassicItems {
-    public class LifeSavings : ItemBoilerplate {
+    public class LifeSavings : ItemBoilerplate<LifeSavings> {
         public override string itemCodeName {get;} = "LifeSavings";
 
         private ConfigEntry<float> cfgGainPerSec;
@@ -108,8 +107,8 @@ namespace ThinkInvisible.ClassicItems {
         [Server]
         public void ServerUpdateIcnt() {
             var body = this.gameObject.GetComponent<CharacterBody>();
-            icnt = lifeSavings.GetCount(body);
-            if(lifeSavings.inclDeploys && body.master) icnt += lifeSavings.GetCountOnDeploys(body.master);
+            icnt = LifeSavings.instance.GetCount(body);
+            if(LifeSavings.instance.inclDeploys && body.master) icnt += LifeSavings.instance.GetCountOnDeploys(body.master);
         }
 
         #pragma warning disable IDE0051
@@ -117,10 +116,10 @@ namespace ThinkInvisible.ClassicItems {
             var body = this.gameObject.GetComponent<CharacterBody>();
             if(body.inventory && body.master) {
                 if(icnt > 0)
-                    moneyBuffer += Time.fixedDeltaTime * lifeSavings.gainPerSec * ((icnt < lifeSavings.invertCount)?(1f/(float)(lifeSavings.invertCount-icnt+1)):(icnt-lifeSavings.invertCount+1));
+                    moneyBuffer += Time.fixedDeltaTime * LifeSavings.instance.gainPerSec * ((icnt < LifeSavings.instance.invertCount)?(1f/(float)(LifeSavings.instance.invertCount-icnt+1)):(icnt-LifeSavings.instance.invertCount+1));
                 //Disable during pre-teleport money drain so it doesn't softlock
                 //Accumulator is emptied into actual money variable whenever a tick passes and it has enough for a change in integer value
-                if(moneyBuffer >= 1.0f && !holdIt && (lifeSavings.ignoreTimestop || !Run.instance.isRunStopwatchPaused)){
+                if(moneyBuffer >= 1.0f && !holdIt && (LifeSavings.instance.ignoreTimestop || !Run.instance.isRunStopwatchPaused)){
                     if(Compat_ShareSuite.enabled && Compat_ShareSuite.MoneySharing())
                         Compat_ShareSuite.GiveMoney((uint)Math.Floor(moneyBuffer));
                     else

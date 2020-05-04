@@ -4,7 +4,7 @@ using static ThinkInvisible.ClassicItems.MiscUtil;
 using System.Collections.Generic;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Permafrost : ItemBoilerplate {
+    public class Permafrost : ItemBoilerplate<Permafrost> {
         public override string itemCodeName {get;} = "Permafrost";
 
         private ConfigEntry<float> cfgProcChance;

@@ -3,14 +3,13 @@ using RoR2;
 using UnityEngine;
 using BepInEx.Configuration;
 using static ThinkInvisible.ClassicItems.MiscUtil;
-using static ThinkInvisible.ClassicItems.ClassicItemsPlugin.MasterItemList;
 using MonoMod.Cil;
 using Mono.Cecil.Cil;
 using System;
 using System.Collections.Generic;
 
 namespace ThinkInvisible.ClassicItems {
-    public class RustyJetpack : ItemBoilerplate {
+    public class RustyJetpack : ItemBoilerplate<RustyJetpack> {
         public override string itemCodeName {get;} = "RustyJetpack";
 
         private ConfigEntry<float> cfgGravMod;
@@ -66,7 +65,7 @@ namespace ThinkInvisible.ClassicItems {
             orig(self);
             if(!self.characterMotor) return;
             if(GetCount(self) > 0 && self.inputBank.jump.down && (
-                    !photonJetpack.itemEnabled
+                    !PhotonJetpack.instance.itemEnabled
                     || !ClassicItemsPlugin.gCoolYourJets
                     || (self.GetComponent<PhotonJetpackComponent>()?.fuel ?? 0f) <= 0f))
                 self.characterMotor.velocity.y -= Time.fixedDeltaTime * Physics.gravity.y * gravMod;

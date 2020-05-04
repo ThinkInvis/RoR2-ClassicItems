@@ -2,7 +2,6 @@
 using UnityEngine;
 using BepInEx.Configuration;
 using static ThinkInvisible.ClassicItems.MiscUtil;
-using static ThinkInvisible.ClassicItems.ClassicItemsPlugin.MasterItemList;
 using System.Collections.Generic;
 using UnityEngine.Networking;
 using System.Collections.ObjectModel;
@@ -10,7 +9,7 @@ using R2API;
 using RoR2.Orbs;
 
 namespace ThinkInvisible.ClassicItems {
-    public class BarbedWire : ItemBoilerplate {
+    public class BarbedWire : ItemBoilerplate<BarbedWire> {
         public override string itemCodeName {get;} = "BarbedWire";
 
         private ConfigEntry<float> cfgBaseRadius;
@@ -195,7 +194,7 @@ namespace ThinkInvisible.ClassicItems {
 							target = tcpt.body.mainHurtBox,
 							teamIndex = teamFilter.teamIndex,
 						});
-						if(barbedWire.oneOnly) break;
+						if(BarbedWire.instance.oneOnly) break;
 					}
 				}
 			}

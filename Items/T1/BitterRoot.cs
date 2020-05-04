@@ -9,7 +9,7 @@ using static ThinkInvisible.ClassicItems.MiscUtil;
 using System.Collections.Generic;
 
 namespace ThinkInvisible.ClassicItems {
-    public class BitterRoot : ItemBoilerplate {
+    public class BitterRoot : ItemBoilerplate<BitterRoot> {
         public override string itemCodeName {get;} = "BitterRoot";
 
         private ConfigEntry<float> cfgHealthMult;

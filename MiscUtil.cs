@@ -8,6 +8,45 @@ using System.Collections;
 
 namespace ThinkInvisible.ClassicItems {
     public static class MiscUtil {
+        //Collection of unique class instances which all inherit the same type
+        public class FilingDictionary<T> : IEnumerable<T> {
+            private readonly Dictionary<Type, T> _dict = new Dictionary<Type, T>();
+
+            public void Add(T inst) {
+                _dict.Add(inst.GetType(), inst);
+            }
+
+            public void Add<subT>(subT inst) where subT : T {
+                _dict.Add(typeof(subT), inst);
+            }
+
+            public void Set<subT>(subT inst) where subT : T {
+                _dict[typeof(subT)] = inst;
+            }
+
+            public subT Get<subT>() where subT : T {
+                return (subT)_dict[typeof(subT)];
+            }
+
+            public void Remove(T inst) {
+                _dict.Remove(inst.GetType());
+            }
+
+            public void RemoveWhere(Func<T, bool> predicate) {
+                foreach (var key in _dict.Values.Where(predicate).ToList()) {
+                    _dict.Remove(key.GetType());
+                }
+            }
+
+            public IEnumerator<T> GetEnumerator() {
+                return _dict.Values.GetEnumerator();
+            }
+
+            IEnumerator IEnumerable.GetEnumerator() {
+                return GetEnumerator();
+            }
+        }
+
         public static string pct(float tgt, uint prec = 0, float mult = 100f) {
             return (tgt*mult).ToString("N" + prec) + "%";
         }

@@ -3,10 +3,10 @@ using RoR2;
 using RoR2.Orbs;
 using System.Collections.ObjectModel;
 using UnityEngine;
-using static ThinkInvisible.ClassicItems.ClassicItemsPlugin.MasterItemList;
+
 
 namespace ThinkInvisible.ClassicItems {
-    public class LostDoll : ItemBoilerplate {
+    public class LostDoll : ItemBoilerplate<LostDoll> {
         public override string itemCodeName {get;} = "LostDoll";
 
         private ConfigEntry<float> cfgDamageTaken;
@@ -87,7 +87,7 @@ namespace ThinkInvisible.ClassicItems {
                         });
                         didHit = true;
                     }
-                    if(result2 && embryo.itemEnabled && embryo.subEnableLostDoll && Util.CheckRoll(embryo.GetCount(slot.characterBody)*embryo.procChance)) {
+                    if(result2 && Embryo.instance.CheckProc<LostDoll>(slot.characterBody)) {
                         OrbManager.instance.AddOrb(new LostDollOrb {
                             attacker = slot.characterBody.gameObject,
                             damageColorIndex = DamageColorIndex.Default,

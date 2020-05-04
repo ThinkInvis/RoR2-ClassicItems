@@ -5,7 +5,7 @@ using static ThinkInvisible.ClassicItems.MiscUtil;
 using System.Collections.Generic;
 
 namespace ThinkInvisible.ClassicItems {
-    public class BoxingGloves : ItemBoilerplate {
+    public class BoxingGloves : ItemBoilerplate<BoxingGloves> {
         public override string itemCodeName {get;} = "BoxingGloves";
 
         private ConfigEntry<float> cfgProcChance;

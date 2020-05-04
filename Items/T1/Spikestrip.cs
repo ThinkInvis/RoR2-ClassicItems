@@ -6,7 +6,7 @@ using UnityEngine.Networking;
 using R2API;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Spikestrip : ItemBoilerplate {
+    public class Spikestrip : ItemBoilerplate<Spikestrip> {
         public override string itemCodeName {get;} = "Spikestrip";
 
         private ConfigEntry<float> cfgBaseRadius;

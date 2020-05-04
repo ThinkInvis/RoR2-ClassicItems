@@ -5,7 +5,7 @@ using static ThinkInvisible.ClassicItems.MiscUtil;
 using System.Collections.Generic;
 
 namespace ThinkInvisible.ClassicItems {
-    public class SmartShopper : ItemBoilerplate {
+    public class SmartShopper : ItemBoilerplate<SmartShopper> {
         public override string itemCodeName {get;} = "SmartShopper";
 
         private ConfigEntry<float> cfgMult;
