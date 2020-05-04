@@ -71,13 +71,19 @@ By extension, the other clients' configs need to match too. This mod has some se
 
 - More items are on the way! There's a lot to work with.
 - Stats are set close to RoR1's whenever possible. May eventually set up a config preset which balances items a little more carefully with respect to RoR2's existing content.
-- Beating Embryo does not update the visual effects on some equipments despite mechanical effects being properly doubled (e.g. Ocular HUD model deactivates too early).
 - Beating Embryo has no effect on Lunar equipments (other than Lost Doll). This is a design decision, but disabled-by-default effects are planned.
 - See the GitHub repo for more!
 
 ## Changelog
 
 The 5 latest updates are listed below. For a full changelog, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/changelog.md
+
+**3.0.1**
+
+- Fixed Fire Shield not having a pickup model.
+- Beating Embryo now doubles the uptime of the display model of Ocular HUD.
+- Behind-the-scenes: item instantiation is MUCH easier to keep track of now.
+- Fixed internal item names not being set up correctly. This will reset logbook entries again (hopefully for the last time).
 
 **3.0.0**
 
@@ -113,14 +119,3 @@ The 5 latest updates are listed below. For a full changelog, see: https://github
 - Headstompers and Life Savings are now networked properly and should no longer act wonky if you're not the host.
 - Life Savings (disabled by default), Snake Eyes, and Golden Gun can now work on deployables (e.g. Engineer turrets).
 - Several other small internal bugfixes and optimizations.
-
-**2.1.0**
-
-- ADDED ITEM: Golden Gun!
-- Beating Embryo now works on Blast Shower and The Crowdfunder.
-- Beating Embryo IL patches are now slightly more stable.
-- Captain's Brooch is now networked and should animate smoothly and play sound for non-host players.
-- Added a missing SubmoduleDependency which could cause Captain's Brooch to break if no other mod loaded the Submodule.
-- Finished incomplete IL failure fallback for Captain's Brooch, which should no longer potentially cause errors if another mod interferes with its IL patch.
-- Added inverse behavior at low stacks to Life Savings. Default config options now provide (per second, by stack count): $1/3, $1/2, $1, $2, $3....
-- Updated libraries for RoR2 patch #4892828.

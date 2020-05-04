@@ -97,7 +97,7 @@ namespace ThinkInvisible.ClassicItems {
 
             if(itemIsEquipment) {
                 regDefEqp = new EquipmentDef {
-                    name = itemCodeName,
+                    name = "CI"+itemCodeName,
                     pickupModelPath = "@ClassicItems:Assets/ClassicItems/models/" + modelPathName,
                     pickupIconPath = "@ClassicItems:Assets/ClassicItems/icons/" + iconPathName,
                     nameToken = gNameToken,
@@ -115,7 +115,7 @@ namespace ThinkInvisible.ClassicItems {
                 if(itemAIB) _itemTags.Add(ItemTag.AIBlacklist);
                 var iarr = _itemTags.ToArray();
                 regDef = new ItemDef {
-                    name = itemCodeName,
+                    name = "CI"+itemCodeName,
                     tier = itemTier,
                     pickupModelPath = "@ClassicItems:Assets/ClassicItems/models/" + modelPathName,
                     pickupIconPath = "@ClassicItems:Assets/ClassicItems/icons/" + iconPathName,

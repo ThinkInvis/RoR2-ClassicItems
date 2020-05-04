@@ -1,5 +1,13 @@
 ﻿# ClassicItems Changelog
 
+**3.0.1**
+
+- Fixed Fire Shield not having a pickup model. [#1](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/987b53224662cd571335b404ba6a867f48b559d1)
+- Beating Embryo now doubles the 'active' time of the display model of Ocular HUD. [#2](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/cc0672bd03baa0f289f4c6d61e2fe6210a5d3e42)
+- Behind-the-scenes: item instantiation is MUCH easier to keep track of now. [#3](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/1d4b8d6173ac1902d04546b8641df05527e380b5)
+- Fixed internal item names not being set up correctly. This will reset logbook entries again (hopefully for the last time). [#5](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/e7f932fd401e770931a3deeefec0f2e48b6731db), [#6](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/721330042710c4e6912cf6b72da8baca42c0073d)
+- Other minor commits: [#4](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/7283174731ef5a6105f6a4c0ddbcf29cac4aef4b)
+
 **3.0.0**
 
 - ADDED ITEMS: Snowglobe, Spikestrip, Gigantic Amethyst, Fire Shield!
