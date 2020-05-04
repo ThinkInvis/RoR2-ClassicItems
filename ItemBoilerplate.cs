@@ -81,6 +81,14 @@ namespace ThinkInvisible.ClassicItems {
         
         protected abstract void SetupAttributesInner();
             
+        private static Dictionary<ItemTier, string> modelNameMap = new Dictionary<ItemTier, string>{
+            {ItemTier.Boss, "BossCard"},
+            {ItemTier.Lunar, "LunarCard"},
+            {ItemTier.Tier1, "CommonCard"},
+            {ItemTier.Tier2, "UncommonCard"},
+            {ItemTier.Tier3, "RareCard"}
+        };
+
         public void SetupAttributes() {
             if(attributesDone) {
                 Debug.LogError("ClassicItems: something tried to setup attributes for an item twice");
@@ -98,7 +106,7 @@ namespace ThinkInvisible.ClassicItems {
             if(itemIsEquipment) {
                 regDefEqp = new EquipmentDef {
                     name = "CI"+itemCodeName,
-                    pickupModelPath = "@ClassicItems:Assets/ClassicItems/models/" + modelPathName,
+                    pickupModelPath = "@ClassicItems:Assets/ClassicItems/models/EqpCard.prefab" ,
                     pickupIconPath = "@ClassicItems:Assets/ClassicItems/icons/" + iconPathName,
                     nameToken = gNameToken,
                     pickupToken = gPickupToken,
@@ -117,7 +125,7 @@ namespace ThinkInvisible.ClassicItems {
                 regDef = new ItemDef {
                     name = "CI"+itemCodeName,
                     tier = itemTier,
-                    pickupModelPath = "@ClassicItems:Assets/ClassicItems/models/" + modelPathName,
+                    pickupModelPath = "@ClassicItems:Assets/ClassicItems/models/" + modelNameMap[itemTier] + ".prefab",
                     pickupIconPath = "@ClassicItems:Assets/ClassicItems/icons/" + iconPathName,
                     nameToken = gNameToken,
                     pickupToken = gPickupToken,

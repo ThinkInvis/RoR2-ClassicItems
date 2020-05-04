@@ -42,12 +42,14 @@ namespace ThinkInvisible.ClassicItems {
         
         private static ConfigEntry<bool> gCfgHSV2NoStomp;
         private static ConfigEntry<bool> gCfgAllCards;
+        private static ConfigEntry<bool> gCfgHideDesc;
         private static ConfigEntry<bool> gCfgCoolYourJets;
 
         public static BuffIndex freezeBuff {get;private set;}
 
         public static bool gHSV2NoStomp {get;private set;}
         public static bool gAllCards {get;private set;}
+        public static bool gHideDesc {get;private set;}
         public static bool gCoolYourJets {get;private set;}
 
         public ClassicItemsPlugin() {
@@ -68,12 +70,15 @@ namespace ThinkInvisible.ClassicItems {
             gCfgHSV2NoStomp = cfgFile.Bind(new ConfigDefinition("Global.VanillaTweaks", "NoHeadStompV2"), true, new ConfigDescription(
                 "If true, removes the hold-space-to-stomp functionality of H3AD-5T V2 (due to overlap in functionality with ClassicItems Headstompers). H3AD-5T V2 will still increase jump height and prevent fall damage."));   
             gCfgAllCards = cfgFile.Bind(new ConfigDefinition("Global.VanillaTweaks", "AllCards"), false, new ConfigDescription(
-                "If true, replaces the pickup models for most vanilla items and equipments with trading cards."));            
+                "If true, replaces the pickup models for most vanilla items and equipments with trading cards."));
+            gCfgHideDesc = cfgFile.Bind(new ConfigDefinition("Global.VanillaTweaks", "HideDesc"), false, new ConfigDescription(
+                "If true, hides the dynamic description text on trading card-style pickup models. Enabling this may slightly improve performance."));
             gCfgCoolYourJets = cfgFile.Bind(new ConfigDefinition("Global.Interaction", "CoolYourJets"), true, new ConfigDescription(
                 "If true, disables the Rusty Jetpack gravity reduction while Photon Jetpack is active. If false, there shall be yeet."));
 
             gHSV2NoStomp = gCfgHSV2NoStomp.Value;
             gAllCards = gCfgAllCards.Value;
+            gHideDesc = gCfgHideDesc.Value;
             gCoolYourJets = gCfgCoolYourJets.Value;
 
             Debug.Log("ClassicItems: instantiating item classes...");
@@ -174,6 +179,16 @@ namespace ThinkInvisible.ClassicItems {
             orig();
 
             Debug.Log("ClassicItems: processing pickup models...");
+
+            foreach(ItemBoilerplate bpl in masterItemList) {
+                PickupIndex pind;
+                if(bpl.itemIsEquipment) pind = PickupCatalog.FindPickupIndex(bpl.regIndexEqp);
+                else pind = PickupCatalog.FindPickupIndex(bpl.regIndex);
+                var pickup = PickupCatalog.GetPickupDef(pind);
+                Debug.Log(pickup.internalName);
+                pickup.displayPrefab = pickup.displayPrefab.InstantiateClone(pickup.internalName + "CICardPrefab", false);
+            }
+
             if(gAllCards) {
                 var eqpCardPrefab = Resources.Load<GameObject>("@ClassicItems:Assets/ClassicItems/models/VOvr/EqpCard.prefab");
                 var lunarCardPrefab = Resources.Load<GameObject>("@ClassicItems:Assets/ClassicItems/models/VOvr/LunarCard.prefab");
@@ -212,47 +227,59 @@ namespace ThinkInvisible.ClassicItems {
                         }
                         replacedItems ++;
                     } else continue;
-                    pickup.displayPrefab = npfb.InstantiateClone(pickup.nameToken + "CICardPrefab", false);
-                    pickup.displayPrefab.transform.Find("ovrsprite").GetComponent<MeshRenderer>().material.mainTexture = pickup.iconTexture;
+                    pickup.displayPrefab = npfb.InstantiateClone(pickup.internalName + "CICardPrefab", false);
                 }
 
                 Debug.Log("ClassicItems: replaced " + replacedItems + " item models and " + replacedEqps + " equipment models.");
             }
-            
+
             int replacedDescs = 0;
 
-            var chPrefab = Resources.Load<GameObject>("Assets/Resources/prefabs/CostHologramContent.prefab");
-            Debug.Log(chPrefab);
-            var textPrefab = chPrefab.transform.Find("TextMeshPro").gameObject;
-            Debug.Log(textPrefab);
+            var tmpfont = Resources.Load<TMP_FontAsset>("tmpfonts/misc/tmpRiskOfRainFont Bold OutlineSDF");
+            var tmpmtl = Resources.Load<Material>("tmpfonts/misc/tmpRiskOfRainFont Bold OutlineSDF");
 
             foreach(var pickup in PickupCatalog.allPickups) {
-                string desc;
+                var ctsf = pickup.displayPrefab?.transform;
+                if(!ctsf) continue;
+                var cfront = ctsf.Find("cardfront");
+                if(cfront == null) continue;
+                var croot = cfront.Find("carddesc");
+                var csprite = ctsf.Find("ovrsprite");
+                
+                csprite.GetComponent<MeshRenderer>().material.mainTexture = pickup.iconTexture;
+
+                string pname;
+                string pdesc;
                 if(pickup.interactContextToken == "EQUIPMENT_PICKUP_CONTEXT") {
                     var eqp = EquipmentCatalog.GetEquipmentDef(pickup.equipmentIndex);
                     if(eqp == null) continue;
-                    desc = Language.GetString(eqp.descriptionToken);
+                    pname = Language.GetString(eqp.nameToken);
+                    pdesc = Language.GetString(eqp.descriptionToken);
                 } else if(pickup.interactContextToken == "ITEM_PICKUP_CONTEXT") {
                     var item = ItemCatalog.GetItemDef(pickup.itemIndex);
                     if(item == null) continue;
-                    desc = Language.GetString(item.descriptionToken);
+                    pname = Language.GetString(item.nameToken);
+                    pdesc = Language.GetString(item.descriptionToken);
                 } else continue;
 
-                var croot = pickup.displayPrefab.transform.Find("cardfront")?.Find("carddesc");
-                if(croot == null) continue;
-                var cdscobj = textPrefab.InstantiateClone(pickup.nameToken + "CICardText");
-                var cdsc = cdscobj.GetComponent<TextMeshPro>();
-                Debug.Log(cdsc);
-                cdsc.enableWordWrapping = true;
-                cdsc.alignment = TMPro.TextAlignmentOptions.Center;
-                cdsc.margin = new Vector4(4f, 1.874178f, 4f, 1.015695f);
-                cdsc.enableAutoSizing = true;
-                cdsc.fontSizeMin = 1;
-                cdsc.fontSizeMax = 36;
-                cdsc.font = RoR2.UI.HGTextMeshProUGUI.defaultLanguageFont;
-                cdsc.text = desc;
-                cdscobj.transform.parent = croot;
-                replacedDescs ++;
+                if(gHideDesc) {
+                    Destroy(croot.gameObject);
+                } else {
+                    var cdsc = croot.gameObject.AddComponent<TextMeshPro>();
+                    cdsc.richText = true;
+                    cdsc.enableWordWrapping = true;
+                    cdsc.alignment = TMPro.TextAlignmentOptions.Center;
+                    cdsc.margin = new Vector4(4f, 1.874178f, 4f, 1.015695f);
+                    cdsc.enableAutoSizing = true;
+                    cdsc.overrideColorTags = false;
+                    cdsc.fontSizeMin = 1;
+                    cdsc.fontSizeMax = 36;
+                    _ = cdsc.renderer;
+                    cdsc.font = tmpfont;
+                    cdsc.material = tmpmtl;
+                    cdsc.text = "<i><b>" + pname + "</b></i>: " + pdesc;
+                    replacedDescs ++;
+                }
             }
             Debug.Log("ClassicItems: inserted " + replacedDescs + " pickup model descriptions.");
         }
