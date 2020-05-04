@@ -26,6 +26,7 @@ namespace ThinkInvisible.ClassicItems {
         private ConfigEntry<bool> cfgSubEnableSkelKey;
         private ConfigEntry<bool> cfgSubEnableLostDoll;
         private ConfigEntry<bool> cfgSubEnableSnowglobe;
+        private ConfigEntry<bool> cfgSubEnableAmethyst;
 
         public float procChance {get;private set;}
 
@@ -37,6 +38,7 @@ namespace ThinkInvisible.ClassicItems {
         public bool subEnableSkelKey {get;private set;}
         public bool subEnableLostDoll {get;private set;}
         public bool subEnableSnowglobe {get;private set;}
+        public bool subEnableAmethyst {get;private set;}
 
 
         protected override void SetupConfigInner(ConfigFile cfl) {
@@ -80,6 +82,10 @@ namespace ThinkInvisible.ClassicItems {
             cfgSubEnableSnowglobe = cfl.Bind<bool>(new ConfigDefinition("Items." + itemCodeName, "SubEnableSnowglobe"), true, new ConfigDescription(
                 "If false, Beating Embryo will not affect Snowglobe (added by CustomItems)."));
             subEnableSnowglobe = cfgSubEnableSnowglobe.Value;
+
+            cfgSubEnableAmethyst = cfl.Bind<bool>(new ConfigDefinition("Items." + itemCodeName, "SubEnableAmethyst"), true, new ConfigDescription(
+                "If false, Beating Embryo will not affect Gigantic Amethyst (added by CustomItems)."));
+            subEnableAmethyst = cfgSubEnableAmethyst.Value;
         }
         
         protected override void SetupAttributesInner() {
@@ -162,6 +168,7 @@ namespace ThinkInvisible.ClassicItems {
                 if(subEnableBrooch && brooch.itemEnabled && ind == brooch.regIndexEqp) {orig(slot, ind); return true;}
                 if(subEnableSkelKey && skeletonKey.itemEnabled && ind == skeletonKey.regIndexEqp) {return true;}
                 if(subEnableSnowglobe && snowglobe.itemEnabled && ind == snowglobe.regIndexEqp) {return true;}
+                if(subEnableAmethyst && amethyst.itemEnabled && ind == amethyst.regIndexEqp) {return true;}
                 switch(ind) {
                     case EquipmentIndex.Fruit:
                         if(subEnable[EquipmentIndex.Fruit]) 
