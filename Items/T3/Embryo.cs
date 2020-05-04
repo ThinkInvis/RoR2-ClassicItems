@@ -146,6 +146,12 @@ namespace ThinkInvisible.ClassicItems {
                 if(ILFailed) IL.RoR2.JetpackController.FixedUpdate -= IL_JCFixedUpdate;
                 ILFailed = false;
             }
+
+            if(subEnable[EquipmentIndex.CritOnUse]) {
+                IL.RoR2.EquipmentSlot.RpcOnClientEquipmentActivationRecieved += IL_ESRpcOnEquipmentActivationReceived;
+                if(ILFailed) IL.RoR2.EquipmentSlot.RpcOnClientEquipmentActivationRecieved -= IL_ESRpcOnEquipmentActivationReceived;
+                ILFailed = false;
+            }
         }
 
         private void On_CBOnInventoryChanged(On.RoR2.CharacterBody.orig_OnInventoryChanged orig, CharacterBody self) {            
@@ -316,6 +322,7 @@ namespace ThinkInvisible.ClassicItems {
                     //Replace original buff time with a custom function to check for Embryo proc
                     //If proc happens, doubles the buff time; otherwise returns original
                     c.EmitDelegate<Func<float,float>>((origBuffTime) => {
+                        if(cpt) cpt.lastCOUBoosted = boost;
                         return boost ? origBuffTime*2 : origBuffTime;
                     });
                 } else {
@@ -645,6 +652,32 @@ namespace ThinkInvisible.ClassicItems {
                 ILFailed = true;
             }
         }
+
+        private void IL_ESRpcOnEquipmentActivationReceived(ILContext il) {
+            ILCursor c = new ILCursor(il);
+
+            EmbryoComponent cpt = null;
+            c.Emit(OpCodes.Ldarg_0);
+            c.EmitDelegate<Action<EquipmentSlot>>((slot)=>{
+                cpt = slot.characterBody?.GetComponentInChildren<EmbryoComponent>();
+            });
+
+            bool ILFound = c.TryGotoNext(MoveType.After,
+                x=>x.MatchLdstr("activeDuration"),
+                x=>x.MatchLdcR4(out _));
+
+            if(ILFound) {
+                c.EmitDelegate<Func<float,float>>((origValue)=>{
+                    if(cpt?.lastCOUBoosted == true) return origValue*2;
+                    return origValue;
+                });
+
+            } else {
+                Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: CritOnUse VFX (RpcOnEquipmentActivationReceived); target instructions not found");
+                ILFailed = true;
+            }
+
+        }
     }
 
     public class EmbryoRecycleFlag : MonoBehaviour {}
@@ -656,6 +689,8 @@ namespace ThinkInvisible.ClassicItems {
         public int boostedGates;
         [SyncVar]
         public float boostedJetTime;
+        [SyncVar]
+        public bool lastCOUBoosted = false;
 
         public void Awake() {
             boostedGates = 0;
