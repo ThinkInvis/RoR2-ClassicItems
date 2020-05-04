@@ -1,5 +1,23 @@
 ﻿# ClassicItems Changelog
 
+**3.0.0**
+
+- ADDED ITEMS: Snowglobe, Spikestrip, Gigantic Amethyst, Fire Shield!
+	- Snowglobe: [#11](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/4d0b6b4eb88c1f92ced8cd8545e4030c870ef570), [#13](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/65cc276c195570940c451caa617c467c41b67556), [#14](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/c29a8096719bacf6fb7effc728b7887c1c17c4ef), [#16](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/3d7f0aba3c6ed634162645b8dcb8cedb78451795), [#19](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/ade1fefff8116c9771f2b83e1572257cbd446348)
+	- Spikestrip: [#18](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/e2972ec4ff504cb34bc0db82fa873419d228ff51)
+	- Amethyst: [#20](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/23c64deb9be06594996ab55f6c49dd493dfbb964)
+	- FireShield: [#21](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/23b15f2e87cf798927fd877453e3eeec79023b05)
+- Fancy new textures for item pickup models! These also use meshes instead of sprites and should look better in general. [#12](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/7a7f56c897a4f46b3987497b71d67cbb9227e926)
+- New disabled-by-default option to replace vanilla item pickup models with trading cards too. [#22](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/e4ed57b5377a9103f4031fe52a5a7b687d1162c1)
+- Beating Embryo now works on Milky Chrysalis (2x duration), Eccentric Vase (2x speed), Radar Scanner (2x duration), and Recycler (2x count).
+	- Chyrsalis/Vase: [#3](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/124f3256a93f6f1d2eb9c8fd496823d645ff0b38), [#4](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/a23b22a8c70b7678acdc926ddb043e32b6fc506b), [#5](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/be973a515d8e66f572b7f76b209ae8cdd0a7da7b)
+	- Scanner: [#6](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/fc8ec43c375f67cd6c3eb759fb41a8511be4ad40), [#7](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/e2838f540ccfe2568bb29d03f7a8a02297eaabce)
+	- Recycler: [#8](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/d344347d189f8006d3080d9ccaab350e3234474a)
+- Skeleton Key and Captain's Brooch will no longer work in the Bazaar (fixes compatibility with BiggerBazaar). [#1](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/644ca908193acfa195e20dc6b80656f486f678a1)
+- Fixed freeze debuff not having an icon. [#9](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/a0e4eae4a0cf44f6280b078365ac6ee4bd0d2185), [#17](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/89a93cfdf4dd0d2c7a4e113fd08fd2b135e7d6d2)
+- Added a console command for debugging: evo_setitem adds/removes items in the Artifact of Evolution item pool. [#10](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/8b064addc3912a9740a40c345eb31094205d264f)
+- Other minor commits: [#2](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/0d9c4b2fe76f6c496e7c23f9de97bb3218e9de19), [#15](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/7f53fd5dcdcb2b06909e536d39a5ba22415dd090).
+
 **2.4.0**
 
 - ADDED ITEM: Permafrost! [#8](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/41e2bf864f0367af1c2d5bc5cc96a6c679eb6e43)

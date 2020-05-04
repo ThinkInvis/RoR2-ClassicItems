@@ -14,17 +14,11 @@ using System;
 
 //TODO:
 // Add missing documentation in... a whole lotta places... whoops.
-// Give the IL patches in Beating Embryo another pass -- those were made before I realized that there are more options in GotoNext than just full matches
 // Change H3AD-5T V2 to a green item if removing the stomp effect?
 // Add lots of missing items!
-// Find a better way to store custom data on character bodies, seems like there should be an ingame solution rather than the current one (CPD lib)... custom-built GameObjects?
-// Move CPD setup into item files
 // Figure out skill modification/overwrites, for e.g. Ancient Scepter
 // Watch for R2API.StatsAPI or similar, for use in some items like Bitter Root, Mysterious Vial, Rusty Jetpack
-// Rusty Jetpack: add an IL patch option for jump height modification
 // Find out how to safely and instantaneously change money counter, for cases like Life Savings that shouldn't have the sound effects
-// Multiplayer testing and solutions
-// Actually model the items instead of cheating with sprites (or at least get a better card sprite)
 // Engineer turrets spammed errors during FixedUpdate and/or RecalculateStats at one point?? Probably resolved now but keep an eye out for things like this
 
 namespace ThinkInvisible.ClassicItems {
@@ -37,7 +31,7 @@ namespace ThinkInvisible.ClassicItems {
             #if DEBUG
                 "0." +
             #endif
-            "2.4.0";
+            "3.0.0";
         public const string ModName = "ClassicItems";
         public const string ModGuid = "com.ThinkInvisible.ClassicItems";
 
