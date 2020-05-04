@@ -51,6 +51,7 @@ namespace ThinkInvisible.ClassicItems {
             public static readonly BitterRoot bitterRoot = new BitterRoot();
             public static readonly Clover clover = new Clover();
             public static readonly Embryo embryo = new Embryo();
+            public static readonly FireShield fireShield = new FireShield();
             public static readonly GoldenGun goldenGun = new GoldenGun();
             public static readonly Headstompers headstompers = new Headstompers();
             public static readonly LifeSavings lifeSavings = new LifeSavings();
