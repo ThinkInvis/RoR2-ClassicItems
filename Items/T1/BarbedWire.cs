@@ -148,15 +148,18 @@ namespace ThinkInvisible.ClassicItems {
 
 		private float stopwatch;
 
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Used by UnityEngine")]
 		private void Awake() {
 			teamFilter = base.GetComponent<TeamFilter>();
 		}
 
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Used by UnityEngine")]
 		private void Update() {
 			float num = Mathf.SmoothDamp(rangeIndicator.localScale.x, radius*2f, ref rangeIndicatorScaleVelocity, 0.2f);
 			rangeIndicator.localScale = new Vector3(num, num, num);
 		}
 
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Used by UnityEngine")]
 		private void FixedUpdate() {
 			stopwatch -= Time.fixedDeltaTime;
 			if (stopwatch <= 0f) {
@@ -167,6 +170,7 @@ namespace ThinkInvisible.ClassicItems {
 			}
 		}
 
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Used by UnityEngine")]
 		private void OnDestroy() {
 			Destroy(rangeIndicator);
 		}
@@ -189,7 +193,7 @@ namespace ThinkInvisible.ClassicItems {
 							isCrit = false,
 							lightningType = LightningOrb.LightningType.RazorWire,
 							origin = transform.position,
-							procChainMask = default(ProcChainMask),
+							procChainMask = default,
 							procCoefficient = 1f,
 							target = tcpt.body.mainHurtBox,
 							teamIndex = teamFilter.teamIndex,

@@ -105,17 +105,18 @@ namespace ThinkInvisible.ClassicItems {
 			if (this.target) {
 				HealthComponent healthComponent = this.target.healthComponent;
 				if (healthComponent) {
-					DamageInfo damageInfo = new DamageInfo();
-					damageInfo.damage = this.damageValue;
-					damageInfo.attacker = this.attacker;
-					damageInfo.inflictor = null;
-					damageInfo.force = Vector3.zero;
-					damageInfo.crit = this.isCrit;
-					damageInfo.procChainMask = this.procChainMask;
-					damageInfo.procCoefficient = this.procCoefficient;
-					damageInfo.position = this.target.transform.position;
-					damageInfo.damageColorIndex = this.damageColorIndex;
-					healthComponent.TakeDamage(damageInfo);
+                    DamageInfo damageInfo = new DamageInfo {
+                        damage = this.damageValue,
+                        attacker = this.attacker,
+                        inflictor = null,
+                        force = Vector3.zero,
+                        crit = this.isCrit,
+                        procChainMask = this.procChainMask,
+                        procCoefficient = this.procCoefficient,
+                        position = this.target.transform.position,
+                        damageColorIndex = this.damageColorIndex
+                    };
+                    healthComponent.TakeDamage(damageInfo);
 					GlobalEventManager.instance.OnHitEnemy(damageInfo, healthComponent.gameObject);
 					GlobalEventManager.instance.OnHitAll(damageInfo, healthComponent.gameObject);
 				}

@@ -82,7 +82,7 @@ namespace ThinkInvisible.ClassicItems {
                             origin = slot.characterBody.corePosition,
                             target = result,
                             procCoefficient = 0f,
-                            procChainMask = default(ProcChainMask),
+                            procChainMask = default,
                             scale = 10f
                         });
                         didHit = true;
@@ -96,7 +96,7 @@ namespace ThinkInvisible.ClassicItems {
                             origin = slot.characterBody.corePosition,
                             target = result2,
                             procCoefficient = 0f,
-                            procChainMask = default(ProcChainMask),
+                            procChainMask = default,
                             scale = 10f
                         });
                         didHit = true;
@@ -112,7 +112,7 @@ namespace ThinkInvisible.ClassicItems {
 				            inflictor = null,
 				            damageType = (DamageType.NonLethal | DamageType.BypassArmor | DamageType.BypassOneShotProtection),
 				            procCoefficient = 0f,
-				            procChainMask = default(ProcChainMask)
+				            procChainMask = default
                         });
                     }
                 }
@@ -138,17 +138,18 @@ namespace ThinkInvisible.ClassicItems {
 			if (this.target) {
 				HealthComponent healthComponent = this.target.healthComponent;
 				if (healthComponent) {
-					DamageInfo damageInfo = new DamageInfo();
-					damageInfo.damage = this.damageValue;
-					damageInfo.attacker = this.attacker;
-					damageInfo.inflictor = null;
-					damageInfo.force = Vector3.zero;
-					damageInfo.crit = this.isCrit;
-					damageInfo.procChainMask = this.procChainMask;
-					damageInfo.procCoefficient = this.procCoefficient;
-					damageInfo.position = this.target.transform.position;
-					damageInfo.damageColorIndex = this.damageColorIndex;
-					healthComponent.TakeDamage(damageInfo);
+                    DamageInfo damageInfo = new DamageInfo {
+                        damage = this.damageValue,
+                        attacker = this.attacker,
+                        inflictor = null,
+                        force = Vector3.zero,
+                        crit = this.isCrit,
+                        procChainMask = this.procChainMask,
+                        procCoefficient = this.procCoefficient,
+                        position = this.target.transform.position,
+                        damageColorIndex = this.damageColorIndex
+                    };
+                    healthComponent.TakeDamage(damageInfo);
 					GlobalEventManager.instance.OnHitEnemy(damageInfo, healthComponent.gameObject);
 					GlobalEventManager.instance.OnHitAll(damageInfo, healthComponent.gameObject);
 				}

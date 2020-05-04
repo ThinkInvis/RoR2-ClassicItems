@@ -111,7 +111,7 @@ namespace ThinkInvisible.ClassicItems {
             if(LifeSavings.instance.inclDeploys && body.master) icnt += LifeSavings.instance.GetCountOnDeploys(body.master);
         }
 
-        #pragma warning disable IDE0051
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Used by UnityEngine")]
         private void FixedUpdate() {
             var body = this.gameObject.GetComponent<CharacterBody>();
             if(body.inventory && body.master) {
