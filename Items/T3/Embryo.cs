@@ -77,11 +77,11 @@ namespace ThinkInvisible.ClassicItems {
 
         protected override void SetupBehaviorInner() {
             ///// WARNING: late config setup. is there a safer way to do this? eqpIsLunar and itemIsEquipment are defined during attributes stage
+            Debug.Log("ClassicItems: adding late config for Embryo");
             cfgSubEnableInternal = new Dictionary<Type,ConfigEntry<bool>>();
             Dictionary<Type,bool> _subEnableInternal = new Dictionary<Type,bool>();
             foreach(ItemBoilerplate bpl in ClassicItemsPlugin.masterItemList) {
                 if(bpl.itemIsEquipment) {
-                    Debug.Log("Embryo: adding " + bpl.itemCodeName + " (type " + bpl.GetType() + ")");
                     cfgSubEnableInternal.Add(bpl.GetType(), cachedCfl.Bind<bool>(new ConfigDefinition("Items." + itemCodeName, "SubEnable" + bpl.itemCodeName), !bpl.eqpIsLunar, new ConfigDescription(
                     "If false, Beating Embryo will not affect " + bpl.itemCodeName + " (added by CustomItems).")));
                     _subEnableInternal.Add(bpl.GetType(), cfgSubEnableInternal[bpl.GetType()].Value);
