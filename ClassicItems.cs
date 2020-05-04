@@ -11,6 +11,7 @@ using UnityEngine;
 using BepInEx.Configuration;
 using Mono.Cecil.Cil;
 using System;
+using TMPro;
 
 //TODO:
 // Add missing documentation in... a whole lotta places... whoops.
@@ -134,9 +135,7 @@ namespace ThinkInvisible.ClassicItems {
             if(gHSV2NoStomp) {
                 IL.EntityStates.Headstompers.HeadstompersIdle.FixedUpdate += IL_ESHeadstompersIdleFixedUpdate;
             }
-            if(gAllCards) {
-                On.RoR2.PickupCatalog.Init += On_PickupCatalogInit;
-            }
+            On.RoR2.PickupCatalog.Init += On_PickupCatalogInit;
 
             Debug.Log("ClassicItems: registering shared buffs...");
             //used only for purposes of Death Mark; applied by Permafrost and Snowglobe
@@ -174,50 +173,88 @@ namespace ThinkInvisible.ClassicItems {
         public void On_PickupCatalogInit(On.RoR2.PickupCatalog.orig_Init orig) {
             orig();
 
-            Debug.Log("ClassicItems: replacing pickup models...");
+            Debug.Log("ClassicItems: processing pickup models...");
+            if(gAllCards) {
+                var eqpCardPrefab = Resources.Load<GameObject>("@ClassicItems:Assets/ClassicItems/models/VOvr/EqpCard.prefab");
+                var lunarCardPrefab = Resources.Load<GameObject>("@ClassicItems:Assets/ClassicItems/models/VOvr/LunarCard.prefab");
+                var t1CardPrefab = Resources.Load<GameObject>("@ClassicItems:Assets/ClassicItems/models/VOvr/CommonCard.prefab");
+                var t2CardPrefab = Resources.Load<GameObject>("@ClassicItems:Assets/ClassicItems/models/VOvr/UncommonCard.prefab");
+                var t3CardPrefab = Resources.Load<GameObject>("@ClassicItems:Assets/ClassicItems/models/VOvr/RareCard.prefab");
+                var bossCardPrefab = Resources.Load<GameObject>("@ClassicItems:Assets/ClassicItems/models/VOvr/BossCard.prefab");
 
-            var eqpCardPrefab = Resources.Load<GameObject>("@ClassicItems:Assets/ClassicItems/models/VOvr/EqpCard.prefab");
-            var lunarCardPrefab = Resources.Load<GameObject>("@ClassicItems:Assets/ClassicItems/models/VOvr/LunarCard.prefab");
-            var t1CardPrefab = Resources.Load<GameObject>("@ClassicItems:Assets/ClassicItems/models/VOvr/CommonCard.prefab");
-            var t2CardPrefab = Resources.Load<GameObject>("@ClassicItems:Assets/ClassicItems/models/VOvr/UncommonCard.prefab");
-            var t3CardPrefab = Resources.Load<GameObject>("@ClassicItems:Assets/ClassicItems/models/VOvr/RareCard.prefab");
-            var bossCardPrefab = Resources.Load<GameObject>("@ClassicItems:Assets/ClassicItems/models/VOvr/BossCard.prefab");
+                int replacedItems = 0;
+                int replacedEqps = 0;
 
-            int replacedItems = 0;
-            int replacedEqps = 0;
+                foreach(var pickup in PickupCatalog.allPickups) {
+                    GameObject npfb;
+                    if(pickup.interactContextToken == "EQUIPMENT_PICKUP_CONTEXT") {
+                        if(pickup.equipmentIndex >= EquipmentIndex.Count || pickup.equipmentIndex < 0) continue;
+                        var eqp = EquipmentCatalog.GetEquipmentDef(pickup.equipmentIndex);
+                        if(!eqp.canDrop) continue;
+                        npfb = eqpCardPrefab;
+                        replacedEqps ++;
+                    } else if(pickup.interactContextToken == "ITEM_PICKUP_CONTEXT") {
+                        if(pickup.itemIndex >= ItemIndex.Count || pickup.itemIndex < 0) continue;
+                        var item = ItemCatalog.GetItemDef(pickup.itemIndex);
+                        switch(item.tier) {
+                            case ItemTier.Tier1:
+                                npfb = t1CardPrefab; break;
+                            case ItemTier.Tier2:
+                                npfb = t2CardPrefab; break;
+                            case ItemTier.Tier3:
+                                npfb = t3CardPrefab; break;
+                            case ItemTier.Lunar:
+                                npfb = lunarCardPrefab; break;
+                            case ItemTier.Boss:
+                                npfb = bossCardPrefab; break;
+                            default:
+                                continue;
+                        }
+                        replacedItems ++;
+                    } else continue;
+                    pickup.displayPrefab = npfb.InstantiateClone(pickup.nameToken + "CICardPrefab", false);
+                    pickup.displayPrefab.transform.Find("ovrsprite").GetComponent<MeshRenderer>().material.mainTexture = pickup.iconTexture;
+                }
+
+                Debug.Log("ClassicItems: replaced " + replacedItems + " item models and " + replacedEqps + " equipment models.");
+            }
+            
+            int replacedDescs = 0;
+
+            var chPrefab = Resources.Load<GameObject>("Assets/Resources/prefabs/CostHologramContent.prefab");
+            Debug.Log(chPrefab);
+            var textPrefab = chPrefab.transform.Find("TextMeshPro").gameObject;
+            Debug.Log(textPrefab);
 
             foreach(var pickup in PickupCatalog.allPickups) {
-                GameObject npfb;
+                string desc;
                 if(pickup.interactContextToken == "EQUIPMENT_PICKUP_CONTEXT") {
-                    if(pickup.equipmentIndex >= EquipmentIndex.Count || pickup.equipmentIndex < 0) continue;
                     var eqp = EquipmentCatalog.GetEquipmentDef(pickup.equipmentIndex);
-                    if(!eqp.canDrop) continue;
-                    npfb = eqpCardPrefab;
-                    replacedEqps ++;
+                    if(eqp == null) continue;
+                    desc = Language.GetString(eqp.descriptionToken);
                 } else if(pickup.interactContextToken == "ITEM_PICKUP_CONTEXT") {
-                    if(pickup.itemIndex >= ItemIndex.Count || pickup.itemIndex < 0) continue;
                     var item = ItemCatalog.GetItemDef(pickup.itemIndex);
-                    switch(item.tier) {
-                        case ItemTier.Tier1:
-                            npfb = t1CardPrefab; break;
-                        case ItemTier.Tier2:
-                            npfb = t2CardPrefab; break;
-                        case ItemTier.Tier3:
-                            npfb = t3CardPrefab; break;
-                        case ItemTier.Lunar:
-                            npfb = lunarCardPrefab; break;
-                        case ItemTier.Boss:
-                            npfb = bossCardPrefab; break;
-                        default:
-                            continue;
-                    }
-                    replacedItems ++;
+                    if(item == null) continue;
+                    desc = Language.GetString(item.descriptionToken);
                 } else continue;
-                pickup.displayPrefab = npfb.InstantiateClone(pickup.nameToken + "CICardPrefab", false);
-                pickup.displayPrefab.transform.Find("ovrsprite").GetComponent<MeshRenderer>().material.mainTexture = pickup.iconTexture;
-            }
 
-            Debug.Log("ClassicItems: replaced " + replacedItems + " item models and " + replacedEqps + " equipment models.");
+                var croot = pickup.displayPrefab.transform.Find("cardfront")?.Find("carddesc");
+                if(croot == null) continue;
+                var cdscobj = textPrefab.InstantiateClone(pickup.nameToken + "CICardText");
+                var cdsc = cdscobj.GetComponent<TextMeshPro>();
+                Debug.Log(cdsc);
+                cdsc.enableWordWrapping = true;
+                cdsc.alignment = TMPro.TextAlignmentOptions.Center;
+                cdsc.margin = new Vector4(4f, 1.874178f, 4f, 1.015695f);
+                cdsc.enableAutoSizing = true;
+                cdsc.fontSizeMin = 1;
+                cdsc.fontSizeMax = 36;
+                cdsc.font = RoR2.UI.HGTextMeshProUGUI.defaultLanguageFont;
+                cdsc.text = desc;
+                cdscobj.transform.parent = croot;
+                replacedDescs ++;
+            }
+            Debug.Log("ClassicItems: inserted " + replacedDescs + " pickup model descriptions.");
         }
     }
 
