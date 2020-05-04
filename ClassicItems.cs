@@ -31,7 +31,7 @@ namespace ThinkInvisible.ClassicItems {
             #if DEBUG
                 "0." +
             #endif
-            "3.0.0";
+            "3.0.1";
         public const string ModName = "ClassicItems";
         public const string ModGuid = "com.ThinkInvisible.ClassicItems";
 
@@ -93,7 +93,7 @@ namespace ThinkInvisible.ClassicItems {
 
             foreach(ItemBoilerplate x in masterItemList) {
                 x.SetupAttributes();
-                Debug.Log(x.itemCodeName + ": " + (x.itemIsEquipment ? ("EQP"+x.regIndexEqp.ToString()) : x.regIndex.ToString()));
+                Debug.Log("CI"+x.itemCodeName + ": " + (x.itemIsEquipment ? ("EQP"+((int)x.regIndexEqp).ToString()) : ((int)x.regIndex).ToString()));
             }
         }
 
