@@ -71,11 +71,13 @@ namespace ThinkInvisible.ClassicItems {
         private readonly List<ItemBoilerplate> MILL = new List<ItemBoilerplate>();
         
         private static ConfigEntry<bool> gCfgHSV2NoStomp;
+        private static ConfigEntry<bool> gCfgAllCards;
         private static ConfigEntry<bool> gCfgCoolYourJets;
 
         public static BuffIndex freezeBuff {get;private set;}
 
         public static bool gHSV2NoStomp {get;private set;}
+        public static bool gAllCards {get;private set;}
         public static bool gCoolYourJets {get;private set;}
 
         public ClassicItemsPlugin() {
@@ -94,11 +96,14 @@ namespace ThinkInvisible.ClassicItems {
             Debug.Log("ClassicItems: loading global configs...");
 
             gCfgHSV2NoStomp = cfgFile.Bind(new ConfigDefinition("Global.VanillaTweaks", "NoHeadStompV2"), true, new ConfigDescription(
-                "If true, removes the hold-space-to-stomp functionality of H3AD-5T V2 (due to overlap in functionality with ClassicItems Headstompers). H3AD-5T V2 will still increase jump height and prevent fall damage."));            
+                "If true, removes the hold-space-to-stomp functionality of H3AD-5T V2 (due to overlap in functionality with ClassicItems Headstompers). H3AD-5T V2 will still increase jump height and prevent fall damage."));   
+            gCfgAllCards = cfgFile.Bind(new ConfigDefinition("Global.VanillaTweaks", "AllCards"), false, new ConfigDescription(
+                "If true, replaces the pickup models for most vanilla items and equipments with trading cards."));            
             gCfgCoolYourJets = cfgFile.Bind(new ConfigDefinition("Global.Interaction", "CoolYourJets"), true, new ConfigDescription(
                 "If true, disables the Rusty Jetpack gravity reduction while Photon Jetpack is active. If false, there shall be yeet."));
 
             gHSV2NoStomp = gCfgHSV2NoStomp.Value;
+            gAllCards = gCfgAllCards.Value;
             gCoolYourJets = gCfgCoolYourJets.Value;
 
             Debug.Log("ClassicItems: loading item configs...");
@@ -158,6 +163,9 @@ namespace ThinkInvisible.ClassicItems {
             if(gHSV2NoStomp) {
                 IL.EntityStates.Headstompers.HeadstompersIdle.FixedUpdate += IL_ESHeadstompersIdleFixedUpdate;
             }
+            if(gAllCards) {
+                On.RoR2.PickupCatalog.Init += On_PickupCatalogInit;
+            }
 
             Debug.Log("ClassicItems: registering shared buffs...");
             //used only for purposes of Death Mark; applied by Permafrost and Snowglobe
@@ -190,6 +198,54 @@ namespace ThinkInvisible.ClassicItems {
             } else {
                 Debug.LogError("ClassicItems: failed to apply vanilla IL patch (HSV2NoStomp)");
             }
+        }
+        public void On_PickupCatalogInit(On.RoR2.PickupCatalog.orig_Init orig) {
+            orig();
+
+            Debug.Log("ClassicItems: replacing pickup models...");
+
+            var eqpCardPrefab = Resources.Load<GameObject>("@ClassicItems:Assets/ClassicItems/models/VOvr/EqpCard.prefab");
+            var lunarCardPrefab = Resources.Load<GameObject>("@ClassicItems:Assets/ClassicItems/models/VOvr/LunarCard.prefab");
+            var t1CardPrefab = Resources.Load<GameObject>("@ClassicItems:Assets/ClassicItems/models/VOvr/CommonCard.prefab");
+            var t2CardPrefab = Resources.Load<GameObject>("@ClassicItems:Assets/ClassicItems/models/VOvr/UncommonCard.prefab");
+            var t3CardPrefab = Resources.Load<GameObject>("@ClassicItems:Assets/ClassicItems/models/VOvr/RareCard.prefab");
+            var bossCardPrefab = Resources.Load<GameObject>("@ClassicItems:Assets/ClassicItems/models/VOvr/BossCard.prefab");
+
+            int replacedItems = 0;
+            int replacedEqps = 0;
+
+            foreach(var pickup in PickupCatalog.allPickups) {
+                GameObject npfb;
+                if(pickup.interactContextToken == "EQUIPMENT_PICKUP_CONTEXT") {
+                    if(pickup.equipmentIndex >= EquipmentIndex.Count || pickup.equipmentIndex < 0) continue;
+                    var eqp = EquipmentCatalog.GetEquipmentDef(pickup.equipmentIndex);
+                    if(!eqp.canDrop) continue;
+                    npfb = eqpCardPrefab;
+                    replacedEqps ++;
+                } else if(pickup.interactContextToken == "ITEM_PICKUP_CONTEXT") {
+                    if(pickup.itemIndex >= ItemIndex.Count || pickup.itemIndex < 0) continue;
+                    var item = ItemCatalog.GetItemDef(pickup.itemIndex);
+                    switch(item.tier) {
+                        case ItemTier.Tier1:
+                            npfb = t1CardPrefab; break;
+                        case ItemTier.Tier2:
+                            npfb = t2CardPrefab; break;
+                        case ItemTier.Tier3:
+                            npfb = t3CardPrefab; break;
+                        case ItemTier.Lunar:
+                            npfb = lunarCardPrefab; break;
+                        case ItemTier.Boss:
+                            npfb = bossCardPrefab; break;
+                        default:
+                            continue;
+                    }
+                    replacedItems ++;
+                } else continue;
+                pickup.displayPrefab = npfb.InstantiateClone(pickup.nameToken + "CICardPrefab", false);
+                pickup.displayPrefab.transform.Find("ovrsprite").GetComponent<MeshRenderer>().material.mainTexture = pickup.iconTexture;
+            }
+
+            Debug.Log("ClassicItems: replaced " + replacedItems + " item models and " + replacedEqps + " equipment models.");
         }
     }
 
