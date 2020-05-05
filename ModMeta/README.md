@@ -48,18 +48,24 @@ By extension, the other clients' configs need to match too. This mod has some se
     - Provides flight while holding jump, using limited recharging fuel.
     - Diff. from RoR1: only provides flight after using all double jumps.
 - Telescopic Sight: "Chance to instantly kill an enemy."
+#### Lunar
+- Old Box: "Chance to fear enemies when attacked."
 #### Equipment
 - Captain's Brooch: "One man's wreckage is another man's treasure."
     - Calls down an expensive first-tier item chest.
 - Gigantic Amethyst: "Resets all your cooldowns."
+- Pillaged Gold: "For 14 seconds, hitting enemies cause them to drop gold."
+- Prescriptions: "Increase damage and attack speed for 8 seconds."
 - Skeleton Key: "Open all chests in view."
     - Diff. from RoR1: limited to a 50-meter radius instead of line-of-sight.
 - Snowglobe: "Randomly freeze enemies for 8 seconds."
 #### Lunar Equipment
 - Lost Doll: "Harm yourself to instantly kill an enemy."
     - Takes 25% of your current health to damage the closest enemy for 500% of your maximum health.
+- Safeguard Lantern: "Drop a lantern that fears and damages enemies for 10 seconds."
 
 ### Other Features
+
 - Every item added by Classic Items can be individually disabled in the mod's config file.
 - More config options for various aspects of item effects (how much regen a Mysterious Vial provides, which equipments Beating Embryo affects...).
 - Descriptions in the logbook match config values.
@@ -72,11 +78,27 @@ By extension, the other clients' configs need to match too. This mod has some se
 - More items are on the way! There's a lot to work with.
 - Stats are set close to RoR1's whenever possible. May eventually set up a config preset which balances items a little more carefully with respect to RoR2's existing content.
 - Beating Embryo has no effect on Lunar equipments (other than Lost Doll). This is a design decision, but disabled-by-default effects are planned.
+- Color tags on pickup model text are too bright.
 - See the GitHub repo for more!
+
+## Modder Resources
+
+ClassicItems exposes some members as public for use in compatibility patches in other mods. For details and instructions on applying these, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/modding.md
 
 ## Changelog
 
 The 5 latest updates are listed below. For a full changelog, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/changelog.md
+
+**3.1.0**
+
+- ADDED ITEMS: Pillaged Gold, Prescriptions, Safeguard Lantern, Old Box!
+- Pickup models now have dynamically generated name/description text instead of an unreadable blur. This can be disabled for performance on low-end systems.
+- Pickup models now also have a modified spin animation (so the new text stays still long enough to read).
+- Improved appearance of pickup models in general.
+- Lunar Equipment cards now look different from normal Equipment.
+- Fixed Snake Eyes not working in multiplayer, and not applying to enemies if in AffectAll mode.
+- Added a few failsafes to Boxing Gloves and Snowglobe, which were possibly conflicting with other mods.
+- Beating Embryo now exposes a Compat_Register method for stopping default proc behavior on modded equipments.
 
 **3.0.1**
 
@@ -112,10 +134,3 @@ The 5 latest updates are listed below. For a full changelog, see: https://github
 - Fixed Beating Embryo having a duplicate config named SubEnableSaw instead of one named SubEnableBrooch.
 - Made some event hooks more stable in case of failure (original event is called first where possible).
 - Updated R2API dependency to v2.4.21. ClassicItems now uses the BuffAPI and LanguageAPI submodules.
-
-**2.2.0**
-
-- All items can now be added to the AI blacklist from config. By default, this is enabled for: Life Savings, 56 Leaf Clover, Golden Gun, Rusty Jetpack, Smart Shopper, Photon Jetpack.
-- Headstompers and Life Savings are now networked properly and should no longer act wonky if you're not the host.
-- Life Savings (disabled by default), Snake Eyes, and Golden Gun can now work on deployables (e.g. Engineer turrets).
-- Several other small internal bugfixes and optimizations.

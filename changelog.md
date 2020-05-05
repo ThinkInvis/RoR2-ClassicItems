@@ -1,5 +1,23 @@
 ﻿# ClassicItems Changelog
 
+**3.1.0**
+
+- ADDED ITEMS: Pillaged Gold, Prescriptions, Safeguard Lantern, Old Box!
+	- Pillage: [#11](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/ab18becc265c16b0de50e6408373d7b548aa96b6), [#19](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/dc0393d0163ce659c0e96740f3eb052d99f9ac58), [#20](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/874d80c40784cc9ae21a5bf6e530ee342708efe0)
+	- Prescriptions: [#12](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/b3cd17c851b08f21cd4f4200a9aed6e7db76d71a), [#25](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/cc11c3db7df2abb5b28e68d1be7477aa9d0a2809)
+	- Lantern: [#14](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/4e5b7e1a14ffea60aab3efa27ce4f9b11640fb98)
+	- OldBox: [#16](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/3133342755a18c8becb05ea9a6b5a68e1f86dbf7)
+	- All assets added in [#17](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/52611d7944423f5ff3de0e1d8c0cb86f992e2dda)
+- Pickup models now have dynamically generated description text instead of an unreadable blur. This can be disabled for performance on low-end systems. [#1](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/9d0f1fef5ce2f665c2fdbc2f2ca14bf67c0e4b67), [#2](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/5bb42f899fd1bbbe15a41c4c2da3a27bb7ff778b), [#9](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/03d714ceccd11d58119c86dac97dd1c8a13f74b3), [#21](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/3d6eba8645f80a4344e4e5d3d88f17742e44f045)
+- Pickup models now also have a modified spin animation (so the new text stays still long enough to read). [#4](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/7f594d259f7cf5407a45973622c7a508790670e1)
+- Improved appearance of pickup models. [#2](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/5bb42f899fd1bbbe15a41c4c2da3a27bb7ff778b)
+- Lunar Equipment cards now look different from normal Equipment. [#18](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/f60365625bb565e5c5585d434d3bbd819bf0b725)
+- Fixed Snake Eyes not working in multiplayer, and not applying to enemies if in AffectAll mode. [#23](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/8377c8d51f75c8d9d4e2f07ca5b451e353faba25)
+- Added a few failsafes to Boxing Gloves and Snowglobe, which were possibly conflicting with other mods. [#5](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/cf75bfca89b2035f9f414cd6283379b84aef51cf)
+- Fixed typo in Spikestrip description. [#7](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/3df242060f1a3a2df99def28c05107249d0fb90d)
+- Beating Embryo now exposes a Compat_Register method for stopping default proc behavior on modded equipments. [#13](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/65af16eacf3cd97bd6662e909fedf635f5a03a72)
+- Other minor commits: [#3](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/706b2e7ae2e92a964acec44e3cd03242866eb26f), [#6](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/2ebadb6c25b18aeb5453ef2022d1a18da1141d1c), [#8](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/7674f18036dd777e7699c8249d4f95b536ee9c14), [#10](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/181585fcb56d065734011c51dbe0536d207f2cd5), [#15](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/a96d429e4aec4e9be47d759abca98cf4bf15ff20), [#22](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/de542721d8c3d6cd7f376e981045ae8e57ec077c), [#24](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/097fb9e693ed53670b8df6d475efbecce0bd73db).
+
 **3.0.1**
 
 - Fixed Fire Shield not having a pickup model. [#1](https://github.com/ThinkInvis/RoR2-ClassicItems/commit/987b53224662cd571335b404ba6a867f48b559d1)
