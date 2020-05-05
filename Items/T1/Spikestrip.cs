@@ -40,7 +40,7 @@ namespace ThinkInvisible.ClassicItems {
             iconPathName = "spikestrip_icon.png";
             RegLang("Spikestrip",
             	"Drop spikestrips on being hit, slowing enemies.",
-            	"<style=cIsDamage>When hit</style>, drop a <style=cIsUtility>" + baseRadius.ToString("N0") + " m AoE</style> which <style=cIsUtility>slows enemies by 50%</style> and lasts <style=cIsUtility>" + baseDuration.ToString("N1") + " s<style> <style=cStack>(+" + stackDuration.ToString("N1") + " s per stack)</style>.",
+            	"<style=cIsDamage>When hit</style>, drop a <style=cIsUtility>" + baseRadius.ToString("N0") + " m AoE</style> which <style=cIsUtility>slows enemies by 50%</style> and lasts <style=cIsUtility>" + baseDuration.ToString("N1") + " s</style> <style=cStack>(+" + stackDuration.ToString("N1") + " s per stack)</style>.",
             	"A relic of times long past (ClassicItems mod)");
             _itemTags = new List<ItemTag>{ItemTag.Utility};
             itemTier = ItemTier.Tier1;
