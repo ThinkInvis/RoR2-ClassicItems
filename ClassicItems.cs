@@ -12,6 +12,7 @@ using BepInEx.Configuration;
 using Mono.Cecil.Cil;
 using System;
 using TMPro;
+using UnityEngine.Networking;
 
 //TODO:
 // Add missing documentation in... a whole lotta places... whoops.
@@ -43,6 +44,7 @@ namespace ThinkInvisible.ClassicItems {
         private static ConfigEntry<bool> gCfgHSV2NoStomp;
         private static ConfigEntry<bool> gCfgAllCards;
         private static ConfigEntry<bool> gCfgHideDesc;
+        private static ConfigEntry<bool> gCfgSpinMod;
         private static ConfigEntry<bool> gCfgCoolYourJets;
 
         public static BuffIndex freezeBuff {get;private set;}
@@ -50,6 +52,7 @@ namespace ThinkInvisible.ClassicItems {
         public static bool gHSV2NoStomp {get;private set;}
         public static bool gAllCards {get;private set;}
         public static bool gHideDesc {get;private set;}
+        public static bool gSpinMod {get;private set;}
         public static bool gCoolYourJets {get;private set;}
 
         public ClassicItemsPlugin() {
@@ -73,12 +76,15 @@ namespace ThinkInvisible.ClassicItems {
                 "If true, replaces the pickup models for most vanilla items and equipments with trading cards."));
             gCfgHideDesc = cfgFile.Bind(new ConfigDefinition("Global.VanillaTweaks", "HideDesc"), false, new ConfigDescription(
                 "If true, hides the dynamic description text on trading card-style pickup models. Enabling this may slightly improve performance."));
+            gCfgSpinMod = cfgFile.Bind(new ConfigDefinition("Global.VanillaTweaks", "SpinMod"), true, new ConfigDescription(
+                "If true, trading card-style pickup models will have customized spin behavior which makes descriptions more readable. Disabling this may slightly improve compatibility and performance."));
             gCfgCoolYourJets = cfgFile.Bind(new ConfigDefinition("Global.Interaction", "CoolYourJets"), true, new ConfigDescription(
                 "If true, disables the Rusty Jetpack gravity reduction while Photon Jetpack is active. If false, there shall be yeet."));
 
             gHSV2NoStomp = gCfgHSV2NoStomp.Value;
             gAllCards = gCfgAllCards.Value;
             gHideDesc = gCfgHideDesc.Value;
+            gSpinMod = gCfgSpinMod.Value;
             gCoolYourJets = gCfgCoolYourJets.Value;
 
             Debug.Log("ClassicItems: instantiating item classes...");
@@ -137,10 +143,11 @@ namespace ThinkInvisible.ClassicItems {
             Debug.Log("ClassicItems: tweaking vanilla stuff...");
 
             //Remove the H3AD-5T V2 state transition from idle to stomp, as Headstompers has similar functionality
-            if(gHSV2NoStomp) {
+            if(gHSV2NoStomp)
                 IL.EntityStates.Headstompers.HeadstompersIdle.FixedUpdate += IL_ESHeadstompersIdleFixedUpdate;
-            }
             On.RoR2.PickupCatalog.Init += On_PickupCatalogInit;
+            if(gSpinMod)
+                IL.RoR2.PickupDisplay.Update += IL_PickupDisplayUpdate;
 
             Debug.Log("ClassicItems: registering shared buffs...");
             //used only for purposes of Death Mark; applied by Permafrost and Snowglobe
@@ -155,14 +162,51 @@ namespace ThinkInvisible.ClassicItems {
 
             Debug.Log("ClassicItems: registering item behaviors...");
 
-
             foreach(ItemBoilerplate x in masterItemList) {
                 x.SetupBehavior();
             }
 
             Debug.Log("ClassicItems: done!");
         }
-        public void IL_ESHeadstompersIdleFixedUpdate(ILContext il) {            
+        public void IL_PickupDisplayUpdate(ILContext il) {
+            ILCursor c = new ILCursor(il);
+
+            
+            bool ILFound = c.TryGotoNext(MoveType.After,
+                x=>x.MatchLdfld<PickupDisplay>("modelObject"));
+            GameObject puo = null;
+            if(ILFound) {
+                c.Emit(OpCodes.Dup);
+                c.EmitDelegate<Action<GameObject>>(x=>{
+                    puo=x;
+                });
+            } else {
+                Debug.LogError("ClassicItems: failed to apply vanilla IL patch (pickup model spin modifier)");
+                return;
+            }
+
+            ILFound = c.TryGotoNext(MoveType.After,
+                x=>x.MatchLdarg(0),
+                x=>x.MatchLdfld<PickupDisplay>("spinSpeed"),
+                x=>x.MatchLdarg(0),
+                x=>x.MatchLdfld<PickupDisplay>("localTime"),
+                x=>x.MatchMul());
+            if(ILFound) {
+                c.EmitDelegate<Func<float,float>>((origAngle) => {
+                    if(!puo.GetComponent<SpinModFlag>() || !NetworkClient.active) return origAngle;
+                    var body = PlayerCharacterMasterController.instances[0].master.GetBody();
+                    if(!body) return origAngle;
+                    return Util.QuaternionSafeLookRotation(body.coreTransform.position - puo.transform.position).eulerAngles.y
+                        + (float)Math.Tanh(((origAngle/100.0f) % 6.2832f - 3.1416f) * 2f) * 180f
+                        + 180f
+                        - (puo.transform.parent?.eulerAngles.y ?? 0f);
+                });
+            } else {
+                Debug.LogError("ClassicItems: failed to apply vanilla IL patch (pickup model spin modifier)");
+            }
+
+        }
+        public void IL_ESHeadstompersIdleFixedUpdate(ILContext il) {
             ILCursor c = new ILCursor(il);
             bool ILFound = c.TryGotoNext(
                 x=>x.MatchLdarg(0),
@@ -248,6 +292,9 @@ namespace ThinkInvisible.ClassicItems {
                 
                 csprite.GetComponent<MeshRenderer>().material.mainTexture = pickup.iconTexture;
 
+                if(gSpinMod)
+                    pickup.displayPrefab.AddComponent<SpinModFlag>();
+
                 string pname;
                 string pdesc;
                 if(pickup.interactContextToken == "EQUIPMENT_PICKUP_CONTEXT") {
@@ -268,7 +315,7 @@ namespace ThinkInvisible.ClassicItems {
                     var cdsc = croot.gameObject.AddComponent<TextMeshPro>();
                     cdsc.richText = true;
                     cdsc.enableWordWrapping = true;
-                    cdsc.alignment = TMPro.TextAlignmentOptions.Center;
+                    cdsc.alignment = TextAlignmentOptions.Center;
                     cdsc.margin = new Vector4(4f, 1.874178f, 4f, 1.015695f);
                     cdsc.enableAutoSizing = true;
                     cdsc.overrideColorTags = false;
@@ -285,5 +332,5 @@ namespace ThinkInvisible.ClassicItems {
         }
     }
 
-
+    public class SpinModFlag : MonoBehaviour {}
 }
