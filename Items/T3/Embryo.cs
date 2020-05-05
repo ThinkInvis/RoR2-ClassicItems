@@ -146,7 +146,6 @@ namespace ThinkInvisible.ClassicItems {
             return subEnable[subind] && CheckProc(body);
         }
         public bool CheckProc<T>(CharacterBody body) where T:ItemBoilerplate {
-            Debug.Log("Checking proc for type " + typeof(T));
             return itemEnabled && subEnableInternal[typeof(T)] && Util.CheckRoll(GetCount(body)*procChance, body.master);
         }
 
