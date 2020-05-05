@@ -14,7 +14,7 @@ namespace ThinkInvisible.ClassicItems {
         public BuffIndex pillageBuff {get;private set;}
 
         protected override void SetupConfigInner(ConfigFile cfl) {
-            cfgDuration = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "Duration"), 11f, new ConfigDescription(
+            cfgDuration = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "Duration"), 14f, new ConfigDescription(
                 "Duration of the buff applied by Pillaged Gold.",
                 new AcceptableValueRange<float>(0f,float.MaxValue)));
 
