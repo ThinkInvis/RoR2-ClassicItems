@@ -42,7 +42,7 @@ namespace ThinkInvisible.ClassicItems {
             iconPathName = "rustyjetpack_icon.png";
             RegLang("Rusty Jetpack",
             	"Increase jump height and reduce gravity.",
-            	"<style=cIsUtility>Reduces gravity</style> by <style=cIsUtility>" + pct(gravMod) + "</style> while <style=cIsUtility>holding jump</style>. Increases <style=cIsUtility>jump power</style> by <style=cIsUtility>" + pct(jumpMult) + "</style> <style=cStack>(+" + pct(jumpMult)  + " per stack, linear)</style>.",
+            	"<style=cIsUtility>Reduces gravity</style> by <style=cIsUtility>" + Pct(gravMod) + "</style> while <style=cIsUtility>holding jump</style>. Increases <style=cIsUtility>jump power</style> by <style=cIsUtility>" + Pct(jumpMult) + "</style> <style=cStack>(+" + Pct(jumpMult)  + " per stack, linear)</style>.",
             	"A relic of times long past (ClassicItems mod)");
             _itemTags = new List<ItemTag>{ItemTag.Utility};
             itemTier = ItemTier.Tier2;

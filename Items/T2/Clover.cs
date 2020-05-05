@@ -98,7 +98,7 @@ namespace ThinkInvisible.ClassicItems {
             iconPathName = "clover_icon.png";
             RegLang("56 Leaf Clover",
             	"Elite mobs have a chance to drop items.",
-            	"Elites have a <style=cIsUtility>" + pct(baseChance, 1, 1) + " chance</style> <style=cStack>(+" + pct(stackChance, 1, 1) + " per stack COMBINED FOR ALL PLAYERS, up to " + pct(capChance, 1, 1) + ")</style> to <style=cIsUtility>drop items</style> when <style=cIsDamage>killed</style>. <style=cStack>(Further stacks increase uncommon/rare chance up to " +pct(capUnc,2,1) +" and "+pct(capRare,3,1)+", respectively.)</style>",
+            	"Elites have a <style=cIsUtility>" + Pct(baseChance, 1, 1) + " chance</style> <style=cStack>(+" + Pct(stackChance, 1, 1) + " per stack COMBINED FOR ALL PLAYERS, up to " + Pct(capChance, 1, 1) + ")</style> to <style=cIsUtility>drop items</style> when <style=cIsDamage>killed</style>. <style=cStack>(Further stacks increase uncommon/rare chance up to " +Pct(capUnc,2,1) +" and "+Pct(capRare,3,1)+", respectively.)</style>",
             	"A relic of times long past (ClassicItems mod)");
             _itemTags = new List<ItemTag>{ItemTag.Utility};
             itemTier = ItemTier.Tier2;
@@ -116,7 +116,7 @@ namespace ThinkInvisible.ClassicItems {
             if(victimBody == null || victimBody.teamComponent.teamIndex != TeamIndex.Monster || !victimBody.isElite) return;
             int numberOfClovers = 0;
             if(globalStack)
-                foreach(CharacterMaster chrm in aliveList()) {
+                foreach(CharacterMaster chrm in AliveList()) {
                     numberOfClovers += chrm?.inventory?.GetItemCount(regIndex) ?? 0;
                 }
             else
@@ -141,7 +141,7 @@ namespace ThinkInvisible.ClassicItems {
                     else
                         tier = 0;
                 }
-                spawnItemFromBody(victimBody, tier);
+                SpawnItemFromBody(victimBody, tier);
             }
 
         }

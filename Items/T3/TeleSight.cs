@@ -44,7 +44,7 @@ namespace ThinkInvisible.ClassicItems {
             iconPathName = "telesight_icon.png";
             RegLang("Telescopic Sight",
             	"Chance to instantly kill an enemy.",
-            	"<style=cIsDamage>" + pct(procChance,1,1) + "</style> <style=cStack>(+" + pct(stackChance,1,1) + " per stack, up to " + pct(capChance,1,1) + ")</style> chance to <style=cIsDamage>instantly kill</style> an enemy. Affected by proc coefficient.",
+            	"<style=cIsDamage>" + Pct(procChance,1,1) + "</style> <style=cStack>(+" + Pct(stackChance,1,1) + " per stack, up to " + Pct(capChance,1,1) + ")</style> chance to <style=cIsDamage>instantly kill</style> an enemy. Affected by proc coefficient.",
             	"A relic of times long past (ClassicItems mod)");
             _itemTags = new List<ItemTag>{ItemTag.Damage};
             itemTier = ItemTier.Tier3;

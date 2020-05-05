@@ -45,7 +45,7 @@ namespace ThinkInvisible.ClassicItems {
             iconPathName = "oldbox_icon.png";
             RegLang("Old Box",
             	"Chance to fear enemies when attacked.",
-            	"<style=cDeath>When hit for more than " + pct(healthThreshold,1,1f) + " max health</style> <style=cStack>(/2 per stack)</style>, <style=cIsUtility>fear enemies</style> within <style=cIsUtility>" + radius.ToString("N0") + " m</style> for <style=cIsUtility>" + duration.ToString("N1") + " seconds</style>. <style=cIsUtility>Feared enemies will run out of melee</style>, <style=cDeath>but that won't stop them from shooting you.</style>",
+            	"<style=cDeath>When hit for more than " + Pct(healthThreshold,1,1f) + " max health</style> <style=cStack>(/2 per stack)</style>, <style=cIsUtility>fear enemies</style> within <style=cIsUtility>" + radius.ToString("N0") + " m</style> for <style=cIsUtility>" + duration.ToString("N1") + " seconds</style>. <style=cIsUtility>Feared enemies will run out of melee</style>, <style=cDeath>but that won't stop them from shooting you.</style>",
             	"A relic of times long past (ClassicItems mod)");
             _itemTags = new List<ItemTag>{ItemTag.Utility};
             itemTier = ItemTier.Lunar;

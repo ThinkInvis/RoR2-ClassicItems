@@ -58,7 +58,7 @@ namespace ThinkInvisible.ClassicItems {
 
             RegLang("Snowglobe",
                 "Randomly freeze enemies for 8 seconds.",
-                "Summon a snowstorm that <style=cIsUtility>freezes</style> monsters at a <style=cIsUtility>" + pct(procRate,1,1) + " chance over " + duration + " seconds</style>.",
+                "Summon a snowstorm that <style=cIsUtility>freezes</style> monsters at a <style=cIsUtility>" + Pct(procRate,1,1) + " chance over " + duration + " seconds</style>.",
                 "A relic of times long past (ClassicItems mod)");
         }
 

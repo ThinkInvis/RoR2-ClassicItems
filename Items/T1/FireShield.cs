@@ -50,7 +50,7 @@ namespace ThinkInvisible.ClassicItems {
             iconPathName = "fireshield_icon.png";
             RegLang("Fire Shield",
             	"Retaliate on taking heavy damage.",
-            	"<style=cDeath>When hit for more than " + pct(healthThreshold,1,1f) + " max health</style>, <style=cIsDamage>explode</style> for up to <style=cIsDamage>" + pct(baseDmg) + "</style> <style=cStack>(+" + pct(stackDmg) + " per stack)</style> damage to enemies within <style=cIsDamage>" + baseRadius.ToString("N0") + " m</style>.",
+            	"<style=cDeath>When hit for more than " + Pct(healthThreshold,1,1f) + " max health</style>, <style=cIsDamage>explode</style> for up to <style=cIsDamage>" + Pct(baseDmg) + "</style> <style=cStack>(+" + Pct(stackDmg) + " per stack)</style> damage to enemies within <style=cIsDamage>" + baseRadius.ToString("N0") + " m</style>.",
             	"A relic of times long past (ClassicItems mod)");
             _itemTags = new List<ItemTag>{ItemTag.Damage};
             itemTier = ItemTier.Tier1;

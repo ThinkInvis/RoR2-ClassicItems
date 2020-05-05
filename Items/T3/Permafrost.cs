@@ -43,7 +43,7 @@ namespace ThinkInvisible.ClassicItems {
             iconPathName = "permafrost_icon.png";
             RegLang("Permafrost",
             	"Chance to freeze enemies on hit.",
-            	"<style=cIsUtility>" + pct(procChance,1,1) + "</style> <style=cStack>(+" + pct(procChance,1,1) + " per stack, inverse-mult.)</style> chance to <style=cIsUtility>freeze and slow</style> an enemy (" + freezeTime.ToString("N1") + " sec, " + slowTime.ToString("N1") + " sec). Affected by proc coefficient.",
+            	"<style=cIsUtility>" + Pct(procChance,1,1) + "</style> <style=cStack>(+" + Pct(procChance,1,1) + " per stack, inverse-mult.)</style> chance to <style=cIsUtility>freeze and slow</style> an enemy (" + freezeTime.ToString("N1") + " sec, " + slowTime.ToString("N1") + " sec). Affected by proc coefficient.",
             	"A relic of times long past (ClassicItems mod)");
             _itemTags = new List<ItemTag>{ItemTag.Utility};
             itemTier = ItemTier.Tier3;

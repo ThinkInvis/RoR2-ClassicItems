@@ -47,16 +47,16 @@ namespace ThinkInvisible.ClassicItems {
             }
         }
 
-        public static string pct(float tgt, uint prec = 0, float mult = 100f) {
+        public static string Pct(float tgt, uint prec = 0, float mult = 100f) {
             return (tgt*mult).ToString("N" + prec) + "%";
         }
-        public static string nplur(float tgt, uint prec = 0) {
+        public static string NPlur(float tgt, uint prec = 0) {
             if(prec == 0)
                 return (tgt == 1 || tgt == -1) ? "" : "s";
             else
                 return (Math.Abs(Math.Abs(tgt)-1) < Math.Pow(10,-prec)) ? "" : "s";
         }
-        public static float getDifficultyCoeffIncreaseAfter(float time, int stages) {
+        public static float GetDifficultyCoeffIncreaseAfter(float time, int stages) {
 			DifficultyDef difficultyDef = DifficultyCatalog.GetDifficultyDef(Run.instance.selectedDifficulty);
 			float num2 = Mathf.Floor((Run.instance.GetRunStopwatch() + time) * 0.0166666675f);
 			float num4 = 0.7f + (float)Run.instance.participatingPlayerCount * 0.3f;
@@ -64,12 +64,11 @@ namespace ThinkInvisible.ClassicItems {
 			float num9 = Mathf.Pow(1.15f, (float)Run.instance.stageClearCount + (float)stages);
 			return (num4 + num7 * num2) * num9 - Run.instance.difficultyCoefficient;
         }
-        //from DropGoldAfterDeath mod: https://github.com/exel80/DropGoldAfterDeath/blob/master/DropGoldAfterDeath.cs
-        public static List<CharacterMaster> aliveList(bool playersOnly = false) {
+        public static List<CharacterMaster> AliveList(bool playersOnly = false) {
             if(playersOnly) return PlayerCharacterMasterController.instances.Where(x=>x.isConnected && x.master && !x.master.IsDeadAndOutOfLivesServer()).Select(x=>x.master).ToList();
             else return CharacterMaster.readOnlyInstancesList.Where(x=>!x.IsDeadAndOutOfLivesServer()).ToList();
         }
-        public static void spawnItemFromBody(CharacterBody src, int tier) {
+        public static void SpawnItemFromBody(CharacterBody src, int tier) {
             List<PickupIndex> spawnList;
             switch(tier) {
                 case 1:

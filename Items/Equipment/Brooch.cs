@@ -47,7 +47,7 @@ namespace ThinkInvisible.ClassicItems {
 
             RegLang("Captain's Brooch",
                 "One man's wreckage is another man's treasure.",
-                "Calls down a <style=cIsUtility>low-tier item chest</style> which <style=cIsUtility>costs " + pct(extraCost) + " more than usual</style>.",
+                "Calls down a <style=cIsUtility>low-tier item chest</style> which <style=cIsUtility>costs " + Pct(extraCost) + " more than usual</style>.",
                 "A relic of times long past (ClassicItems mod)");
         }
 

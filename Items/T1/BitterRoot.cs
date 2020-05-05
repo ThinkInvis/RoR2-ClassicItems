@@ -41,8 +41,8 @@ namespace ThinkInvisible.ClassicItems {
             modelPathName = "bitterroot_model.prefab";
             iconPathName = "bitterroot_icon.png";
             RegLang("Bitter Root",
-            	"Gain " + pct(healthMult) + " max hp.",
-            	"Increases <style=cIsHealing>health</style> by <style=cIsHealing>" + pct(healthMult) + "</style> <style=cStack>(+" +pct(healthMult)+ " per stack, linear)</style>, up to a <style=cIsHealing>maximum</style> of <style=cIsHealing>+"+pct(healthCap)+"</style>.",
+            	"Gain " + Pct(healthMult) + " max hp.",
+            	"Increases <style=cIsHealing>health</style> by <style=cIsHealing>" + Pct(healthMult) + "</style> <style=cStack>(+" +Pct(healthMult)+ " per stack, linear)</style>, up to a <style=cIsHealing>maximum</style> of <style=cIsHealing>+"+Pct(healthCap)+"</style>.",
             	"A relic of times long past (ClassicItems mod)");
             _itemTags = new List<ItemTag>{ItemTag.Healing};
             itemTier = ItemTier.Tier1;

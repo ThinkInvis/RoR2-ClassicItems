@@ -49,7 +49,7 @@ namespace ThinkInvisible.ClassicItems {
 
             RegLang("Safeguard Lantern",
                 "Drop a lantern that fears and damages enemies for 10 seconds.",
-                "Sets a " + range.ToString("N0") + "-meter, " + duration.ToString("N0") + "-second AoE which <style=cIsUtility>fears enemies</style> and deals <style=cIsDamage>" + pct(damage) + " damage per second</style>. <style=cIsUtility>Feared enemies will run out of melee</style>, <style=cDeath>but that won't stop them from shooting you.</style>" ,
+                "Sets a " + range.ToString("N0") + "-meter, " + duration.ToString("N0") + "-second AoE which <style=cIsUtility>fears enemies</style> and deals <style=cIsDamage>" + Pct(damage) + " damage per second</style>. <style=cIsUtility>Feared enemies will run out of melee</style>, <style=cDeath>but that won't stop them from shooting you.</style>" ,
                 "A relic of times long past (ClassicItems mod)");
         }
 

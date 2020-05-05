@@ -60,7 +60,7 @@ namespace ThinkInvisible.ClassicItems {
             iconPathName = "barbedwire_icon.png";
             RegLang("Barbed Wire",
             	"Hurt nearby enemies.",
-            	"Deal <style=cIsDamage>" + pct(baseDmg) + "</style> <style=cStack>(+" + pct(stackDmg) + " per stack)</style> <style=cIsDamage>damage/sec</style> to enemies within <style=cIsDamage>" + baseRadius.ToString("N1") + " m</style> <style=cStack>(+ " + stackRadius.ToString("N2") + " per stack)</style>",
+            	"Deal <style=cIsDamage>" + Pct(baseDmg) + "</style> <style=cStack>(+" + Pct(stackDmg) + " per stack)</style> <style=cIsDamage>damage/sec</style> to enemies within <style=cIsDamage>" + baseRadius.ToString("N1") + " m</style> <style=cStack>(+ " + stackRadius.ToString("N2") + " per stack)</style>",
             	"A relic of times long past (ClassicItems mod)");
             _itemTags = new List<ItemTag>{ItemTag.Damage};
             itemTier = ItemTier.Tier1;

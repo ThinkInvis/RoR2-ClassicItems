@@ -83,7 +83,7 @@ namespace ThinkInvisible.ClassicItems {
             iconPathName = "embryo_icon.png";
             RegLang("Beating Embryo",
             	"Equipment has a 30% chance to deal double the effect.",
-            	"Upon activating an equipment, adds a <style=cIsUtility>" + pct(procChance, 0, 1) + "</style> <style=cStack>(+" + pct(procChance, 0, 1) + " per stack)</style> chance to <style=cIsUtility>double its effects somehow</style>.",
+            	"Upon activating an equipment, adds a <style=cIsUtility>" + Pct(procChance, 0, 1) + "</style> <style=cStack>(+" + Pct(procChance, 0, 1) + " per stack)</style> chance to <style=cIsUtility>double its effects somehow</style>.",
             	"A relic of times long past (ClassicItems mod)");
             _itemTags = new List<ItemTag>{ItemTag.EquipmentRelated};
             itemTier = ItemTier.Tier3;

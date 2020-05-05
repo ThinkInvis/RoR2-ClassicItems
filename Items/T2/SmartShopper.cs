@@ -27,7 +27,7 @@ namespace ThinkInvisible.ClassicItems {
             iconPathName = "smartshopper_icon.png";
             RegLang("Smart Shopper",
             	"Enemies drop extra gold.",
-            	"Gain <style=cIsUtility>+" + pct(moneyMult) + "</style> <style=cStack>(+" + pct(moneyMult) + " per stack, linear)</style> <style=cIsUtility>money</style> from <style=cIsDamage>killing enemies</style>.",
+            	"Gain <style=cIsUtility>+" + Pct(moneyMult) + "</style> <style=cStack>(+" + Pct(moneyMult) + " per stack, linear)</style> <style=cIsUtility>money</style> from <style=cIsDamage>killing enemies</style>.",
             	"A relic of times long past (ClassicItems mod)");
             _itemTags = new List<ItemTag>{ItemTag.Utility};
             itemTier = ItemTier.Tier2;
