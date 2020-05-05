@@ -77,11 +77,11 @@ namespace ThinkInvisible.ClassicItems {
                 "If true, removes the hold-space-to-stomp functionality of H3AD-5T V2 (due to overlap in functionality with ClassicItems Headstompers). H3AD-5T V2 will still increase jump height and prevent fall damage."));   
             gCfgAllCards = cfgFile.Bind(new ConfigDefinition("Global.VanillaTweaks", "AllCards"), false, new ConfigDescription(
                 "If true, replaces the pickup models for most vanilla items and equipments with trading cards."));
-            gCfgHideDesc = cfgFile.Bind(new ConfigDefinition("Global.VanillaTweaks", "HideDesc"), false, new ConfigDescription(
+            gCfgHideDesc = cfgFile.Bind(new ConfigDefinition("Global.Cosmetic", "HideDesc"), false, new ConfigDescription(
                 "If true, hides the dynamic description text on trading card-style pickup models. Enabling this may slightly improve performance."));
-            gCfgLongDesc = cfgFile.Bind(new ConfigDefinition("Global.VanillaTweaks", "LongDesc"), true, new ConfigDescription(
+            gCfgLongDesc = cfgFile.Bind(new ConfigDefinition("Global.Cosmetic", "LongDesc"), true, new ConfigDescription(
                 "If true, descriptions on trading card-style pickup models will be the (typically longer) description text of the item. If false, pickup text will be used instead."));
-            gCfgSpinMod = cfgFile.Bind(new ConfigDefinition("Global.VanillaTweaks", "SpinMod"), true, new ConfigDescription(
+            gCfgSpinMod = cfgFile.Bind(new ConfigDefinition("Global.Cosmetic", "SpinMod"), true, new ConfigDescription(
                 "If true, trading card-style pickup models will have customized spin behavior which makes descriptions more readable. Disabling this may slightly improve compatibility and performance."));
             gCfgCoolYourJets = cfgFile.Bind(new ConfigDefinition("Global.Interaction", "CoolYourJets"), true, new ConfigDescription(
                 "If true, disables the Rusty Jetpack gravity reduction while Photon Jetpack is active. If false, there shall be yeet."));
