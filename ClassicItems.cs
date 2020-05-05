@@ -48,6 +48,7 @@ namespace ThinkInvisible.ClassicItems {
         private static ConfigEntry<bool> gCfgCoolYourJets;
 
         public static BuffIndex freezeBuff {get;private set;}
+        public static BuffIndex fearBuff {get;private set;}
 
         public static bool gHSV2NoStomp {get;private set;}
         public static bool gAllCards {get;private set;}
@@ -161,6 +162,16 @@ namespace ThinkInvisible.ClassicItems {
             });
             freezeBuff = BuffAPI.Add(freezeBuffDef);
 
+            var fearBuffDef = new CustomBuff(new BuffDef {
+                buffColor = Color.blue,
+                canStack = false,
+                isDebuff = true,
+                name = "CIFear",
+                iconPath = "@ClassicItems:Assets/ClassicItems/icons/permafrost_icon.png"
+            });
+            fearBuff = BuffAPI.Add(fearBuffDef);
+            IL.EntityStates.AI.Walker.Combat.FixedUpdate += IL_ESAIWalkerCombatFixedUpdate;
+
             Debug.Log("ClassicItems: registering item behaviors...");
 
             foreach(ItemBoilerplate x in masterItemList) {
@@ -170,10 +181,33 @@ namespace ThinkInvisible.ClassicItems {
             Debug.Log("ClassicItems: done!");
         }
 
+        private void IL_ESAIWalkerCombatFixedUpdate(ILContext il) {
+            ILCursor c = new ILCursor(il);
+
+            int locMoveState = 0;
+            bool ILFound = c.TryGotoNext(
+                x=>x.MatchLdarg(0),
+                x=>x.MatchLdfld<EntityStates.AI.Walker.Combat>("dominantSkillDriver"),
+                x=>x.MatchLdfld<RoR2.CharacterAI.AISkillDriver>("movementType"),
+                x=>x.MatchStloc(out locMoveState))
+                && c.TryGotoNext(MoveType.After,
+                x=>x.MatchCallOrCallvirt<EntityStates.AI.BaseAIState>("get_body"));
+            if(ILFound) {
+                c.Emit(OpCodes.Dup);
+                c.Emit(OpCodes.Ldloc_S, (byte)locMoveState);
+                c.EmitDelegate<Func<CharacterBody,RoR2.CharacterAI.AISkillDriver.MovementType,RoR2.CharacterAI.AISkillDriver.MovementType>>((body,origMove) => {
+                    if(!body || !body.HasBuff(fearBuff)) return origMove;
+                    else return RoR2.CharacterAI.AISkillDriver.MovementType.FleeMoveTarget;
+                });
+                c.Emit(OpCodes.Stloc_S, (byte)locMoveState);
+            } else {
+                Debug.LogError("ClassicItems: failed to apply shared buff IL patch (CIFear)");
+            }
+        }
+
         private void IL_PickupDisplayUpdate(ILContext il) {
             ILCursor c = new ILCursor(il);
 
-            
             bool ILFound = c.TryGotoNext(MoveType.After,
                 x=>x.MatchLdfld<PickupDisplay>("modelObject"));
             GameObject puo = null;
