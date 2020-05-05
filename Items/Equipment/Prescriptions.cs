@@ -5,7 +5,7 @@ using R2API.Utils;
 using RoR2;
 using System;
 using UnityEngine;
-using UnityEngine.Networking;
+using static ThinkInvisible.ClassicItems.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
     public class Prescriptions : ItemBoilerplate<Prescriptions> {
@@ -52,7 +52,7 @@ namespace ThinkInvisible.ClassicItems {
 
             RegLang("Pillaged Gold",
                 "Increase damage and attack speed for 8 seconds.",
-                ".",
+                "While active, increases <style=cIsDamage>base damage by " + dmgBoost.ToString("N0") + " points<style> and <style=cIsDamage>attack speed by " + Pct(aSpdBoost) + "</style>. Lasts <style=cIsDamage>" + duration.ToString("N0") + " seconds</style>.",
                 "A relic of times long past (ClassicItems mod)");
         }
 
