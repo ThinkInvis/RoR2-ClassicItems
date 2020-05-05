@@ -41,6 +41,8 @@ namespace ThinkInvisible.ClassicItems {
         }
         
         protected override void SetupAttributesInner() {
+            itemAIBDefault = true;
+
             modelPathName = "oldbox_model.prefab";
             iconPathName = "oldbox_icon.png";
             RegLang("Old Box",
