@@ -288,6 +288,7 @@ namespace ThinkInvisible.ClassicItems {
                 var cfront = ctsf.Find("cardfront");
                 if(cfront == null) continue;
                 var croot = cfront.Find("carddesc");
+                var cnroot = cfront.Find("cardname");
                 var csprite = ctsf.Find("ovrsprite");
                 
                 csprite.GetComponent<MeshRenderer>().material.mainTexture = pickup.iconTexture;
@@ -297,20 +298,30 @@ namespace ThinkInvisible.ClassicItems {
 
                 string pname;
                 string pdesc;
+                Color prar = new Color(1f, 0f, 1f);
                 if(pickup.interactContextToken == "EQUIPMENT_PICKUP_CONTEXT") {
                     var eqp = EquipmentCatalog.GetEquipmentDef(pickup.equipmentIndex);
                     if(eqp == null) continue;
                     pname = Language.GetString(eqp.nameToken);
                     pdesc = Language.GetString(eqp.descriptionToken);
+                    prar = new Color(1f, 0.7f, 0.4f);
                 } else if(pickup.interactContextToken == "ITEM_PICKUP_CONTEXT") {
                     var item = ItemCatalog.GetItemDef(pickup.itemIndex);
                     if(item == null) continue;
                     pname = Language.GetString(item.nameToken);
                     pdesc = Language.GetString(item.descriptionToken);
+                    switch(item.tier) {
+                        case ItemTier.Boss: prar = new Color(1f, 1f, 0f); break;
+                        case ItemTier.Lunar: prar = new Color(0f, 0.6f, 1f); break;
+                        case ItemTier.Tier1: prar = new Color(0.8f, 0.8f, 0.8f); break;
+                        case ItemTier.Tier2: prar = new Color(0.2f, 1f, 0.2f); break;
+                        case ItemTier.Tier3: prar = new Color(1f, 0.2f, 0.2f); break;
+                    }
                 } else continue;
 
                 if(gHideDesc) {
                     Destroy(croot.gameObject);
+                    Destroy(cnroot.gameObject);
                 } else {
                     var cdsc = croot.gameObject.AddComponent<TextMeshPro>();
                     cdsc.richText = true;
@@ -320,15 +331,49 @@ namespace ThinkInvisible.ClassicItems {
                     cdsc.enableAutoSizing = true;
                     cdsc.overrideColorTags = false;
                     cdsc.fontSizeMin = 1;
-                    cdsc.fontSizeMax = 36;
+                    cdsc.fontSizeMax = 8;
                     _ = cdsc.renderer;
                     cdsc.font = tmpfont;
                     cdsc.material = tmpmtl;
-                    cdsc.text = "<i><b>" + pname + "</b></i>: " + pdesc;
-                    replacedDescs ++;
+                    cdsc.color = Color.black;
+                    cdsc.text = pdesc;
+
+                    var cname = cnroot.gameObject.AddComponent<TextMeshPro>();
+                    cname.richText = true;
+                    cname.enableWordWrapping = false;
+                    cname.alignment = TextAlignmentOptions.Center;
+                    cname.margin = new Vector4(6.0f, 1.2f, 6.0f, 1.4f);
+                    cname.enableAutoSizing = true;
+                    cname.overrideColorTags = true;
+                    cname.fontSizeMin = 1;
+                    cname.fontSizeMax = 10;
+                    _ = cname.renderer;
+                    cname.font = tmpfont;
+                    cname.material = tmpmtl;
+                    cname.outlineColor = prar;
+                    cname.outlineWidth = 0.15f;
+                    cname.color = Color.black;
+                    cname.fontStyle = FontStyles.Bold;
+                    cname.text = pname;
+                }
+                replacedDescs ++;
+            }
+            Debug.Log("ClassicItems: " + (gHideDesc ? "destroyed " : "inserted ") + replacedDescs + " pickup model descriptions.");
+        }
+
+        private RoR2.UI.LogBook.Entry[] On_LogbookBuildPickupEntries(On.RoR2.UI.LogBook.LogBookController.orig_BuildPickupEntries orig) {
+            var retv = orig();
+            Debug.Log("ClassicItems: processing logbook models...");
+            int replacedModels = 0;
+            foreach(RoR2.UI.LogBook.Entry e in retv) {
+                if(!(e.extraData is PickupIndex)) continue;
+                if(e.modelPrefab.transform.Find("cardfront")) {
+                    e.modelPrefab = PickupCatalog.GetPickupDef((PickupIndex)e.extraData).displayPrefab;
+                    replacedModels++;
                 }
             }
-            Debug.Log("ClassicItems: inserted " + replacedDescs + " pickup model descriptions.");
+            Debug.Log("ClassicItems: modified " + replacedModels + " logbook models.");
+            return retv;
         }
     }
 
