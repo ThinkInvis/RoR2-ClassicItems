@@ -65,16 +65,9 @@ namespace ThinkInvisible.ClassicItems {
 			return (num4 + num7 * num2) * num9 - Run.instance.difficultyCoefficient;
         }
         //from DropGoldAfterDeath mod: https://github.com/exel80/DropGoldAfterDeath/blob/master/DropGoldAfterDeath.cs
-        public static List<CharacterMaster> aliveList() {
-            List<CharacterMaster> players = new List<CharacterMaster>();
-
-            foreach(PlayerCharacterMasterController player in PlayerCharacterMasterController.instances) {
-                if (player.isClient && player.isConnected && !player.master.IsDeadAndOutOfLivesServer()) { //  player.master.isActiveAndEnabled
-                    players.Add(player.master);
-                }
-            }
-
-            return players;
+        public static List<CharacterMaster> aliveList(bool playersOnly = false) {
+            if(playersOnly) return PlayerCharacterMasterController.instances.Where(x=>x.isConnected && x.master && !x.master.IsDeadAndOutOfLivesServer()).Select(x=>x.master).ToList();
+            else return CharacterMaster.readOnlyInstancesList.Where(x=>!x.IsDeadAndOutOfLivesServer()).ToList();
         }
         public static void spawnItemFromBody(CharacterBody src, int tier) {
             List<PickupIndex> spawnList;
