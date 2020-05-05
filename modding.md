@@ -6,7 +6,7 @@ To use public members of another mod in your own, you must perform ALL of these 
 
 - Add the other mod's DLL as a dependency in your VS project.
 - Add `[BepInExDependency("full.mod.id", BepInDependency.DependencyFlags.SoftDependency)]` to your main plugin to ensure that it always loads after the other mod, if the other mod is present.
-- Put any code referencing any part of ClassicItems in a standalone method with the following attribute: `[MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]` (requres `using System.Runtime.CompilerServices;`). This will prevent the compiler from trying to access the other mod's code when it might not exist.
+- Put any code referencing any part of the other mod in a standalone method with the following attribute: `[MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]` (requres `using System.Runtime.CompilerServices;`). This will prevent the compiler from trying to access the other mod's code when it might not exist.
 - **DO NOT** use any of these standalone methods without checking for `BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("full.mod.id")` first.
 
 See [this source file](Compat/ShareSuite.cs) for a partial example.
