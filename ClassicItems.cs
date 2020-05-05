@@ -39,7 +39,7 @@ namespace ThinkInvisible.ClassicItems {
 
         private static ConfigFile cfgFile;
         
-        public static MiscUtil.FilingDictionary<ItemBoilerplate> masterItemList = new MiscUtil.FilingDictionary<ItemBoilerplate>();
+        internal static MiscUtil.FilingDictionary<ItemBoilerplate> masterItemList = new MiscUtil.FilingDictionary<ItemBoilerplate>();
         
         private static ConfigEntry<bool> gCfgHSV2NoStomp;
         private static ConfigEntry<bool> gCfgAllCards;
@@ -55,7 +55,7 @@ namespace ThinkInvisible.ClassicItems {
         public static bool gSpinMod {get;private set;}
         public static bool gCoolYourJets {get;private set;}
 
-        public ClassicItemsPlugin() {
+        private ClassicItemsPlugin() {
             #if DEBUG
             Debug.LogWarning("ClassicItems: running test build with debug enabled! If you're seeing this after downloading the mod from Thunderstore, please panic.");
             #endif
@@ -133,7 +133,7 @@ namespace ThinkInvisible.ClassicItems {
         internal static Type nodeRefType;
         internal static Type nodeRefTypeArr;
 
-        public void Awake() {
+        private void Awake() {
             Debug.Log("ClassicItems: performing plugin setup...");
             
             CommandHelper.AddToConsoleWhenReady();
@@ -146,6 +146,7 @@ namespace ThinkInvisible.ClassicItems {
             if(gHSV2NoStomp)
                 IL.EntityStates.Headstompers.HeadstompersIdle.FixedUpdate += IL_ESHeadstompersIdleFixedUpdate;
             On.RoR2.PickupCatalog.Init += On_PickupCatalogInit;
+            On.RoR2.UI.LogBook.LogBookController.BuildPickupEntries += On_LogbookBuildPickupEntries;
             if(gSpinMod)
                 IL.RoR2.PickupDisplay.Update += IL_PickupDisplayUpdate;
 
@@ -168,7 +169,8 @@ namespace ThinkInvisible.ClassicItems {
 
             Debug.Log("ClassicItems: done!");
         }
-        public void IL_PickupDisplayUpdate(ILContext il) {
+
+        private void IL_PickupDisplayUpdate(ILContext il) {
             ILCursor c = new ILCursor(il);
 
             
@@ -206,7 +208,7 @@ namespace ThinkInvisible.ClassicItems {
             }
 
         }
-        public void IL_ESHeadstompersIdleFixedUpdate(ILContext il) {
+        private void IL_ESHeadstompersIdleFixedUpdate(ILContext il) {
             ILCursor c = new ILCursor(il);
             bool ILFound = c.TryGotoNext(
                 x=>x.MatchLdarg(0),
@@ -219,7 +221,7 @@ namespace ThinkInvisible.ClassicItems {
                 Debug.LogError("ClassicItems: failed to apply vanilla IL patch (HSV2NoStomp)");
             }
         }
-        public void On_PickupCatalogInit(On.RoR2.PickupCatalog.orig_Init orig) {
+        private void On_PickupCatalogInit(On.RoR2.PickupCatalog.orig_Init orig) {
             orig();
 
             Debug.Log("ClassicItems: processing pickup models...");
