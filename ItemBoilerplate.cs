@@ -106,7 +106,7 @@ namespace ThinkInvisible.ClassicItems {
             if(itemIsEquipment) {
                 regDefEqp = new EquipmentDef {
                     name = "CI"+itemCodeName,
-                    pickupModelPath = "@ClassicItems:Assets/ClassicItems/models/EqpCard.prefab" ,
+                    pickupModelPath = "@ClassicItems:Assets/ClassicItems/models/" + (eqpIsLunar ? "LqpCard.prefab" : "EqpCard.prefab"),
                     pickupIconPath = "@ClassicItems:Assets/ClassicItems/icons/" + iconPathName,
                     nameToken = gNameToken,
                     pickupToken = gPickupToken,

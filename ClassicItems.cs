@@ -272,6 +272,7 @@ namespace ThinkInvisible.ClassicItems {
             if(gAllCards) {
                 var eqpCardPrefab = Resources.Load<GameObject>("@ClassicItems:Assets/ClassicItems/models/VOvr/EqpCard.prefab");
                 var lunarCardPrefab = Resources.Load<GameObject>("@ClassicItems:Assets/ClassicItems/models/VOvr/LunarCard.prefab");
+                var lunEqpCardPrefab = Resources.Load<GameObject>("@ClassicItems:Assets/ClassicItems/models/VOvr/LqpCard.prefab");
                 var t1CardPrefab = Resources.Load<GameObject>("@ClassicItems:Assets/ClassicItems/models/VOvr/CommonCard.prefab");
                 var t2CardPrefab = Resources.Load<GameObject>("@ClassicItems:Assets/ClassicItems/models/VOvr/UncommonCard.prefab");
                 var t3CardPrefab = Resources.Load<GameObject>("@ClassicItems:Assets/ClassicItems/models/VOvr/RareCard.prefab");
@@ -286,7 +287,7 @@ namespace ThinkInvisible.ClassicItems {
                         if(pickup.equipmentIndex >= EquipmentIndex.Count || pickup.equipmentIndex < 0) continue;
                         var eqp = EquipmentCatalog.GetEquipmentDef(pickup.equipmentIndex);
                         if(!eqp.canDrop) continue;
-                        npfb = eqpCardPrefab;
+                        npfb = eqp.isLunar ? lunEqpCardPrefab : eqpCardPrefab;
                         replacedEqps ++;
                     } else if(pickup.interactContextToken == "ITEM_PICKUP_CONTEXT") {
                         if(pickup.itemIndex >= ItemIndex.Count || pickup.itemIndex < 0) continue;
