@@ -27,7 +27,32 @@ namespace ThinkInvisible.ClassicItems {
         public ReadOnlyDictionary<EquipmentIndex,bool> subEnable {get;private set;}
         public ReadOnlyDictionary<Type,bool> subEnableInternal {get;private set;}
 
+        private readonly List<EquipmentIndex> subEnableExt = new List<EquipmentIndex>();
+        public void Compat_Register(EquipmentIndex ind) {
+            if(subEnableExt.Contains(ind)) throw new InvalidOperationException("The given equipment index (" + (int)ind + ") has already been registered.");
+            subEnableExt.Add(ind);
+        }
+
         public bool subEnableModded {get;private set;}
+
+        private readonly ReadOnlyCollection<EquipmentIndex> simpleDoubleEqps = new ReadOnlyCollection<EquipmentIndex>(new[] {
+            EquipmentIndex.Fruit,
+            EquipmentIndex.Lightning,
+            EquipmentIndex.DroneBackup,
+            EquipmentIndex.PassiveHealing,
+            EquipmentIndex.Saw
+        });
+
+        private readonly ReadOnlyCollection<EquipmentIndex> unhandledEqps = new ReadOnlyCollection<EquipmentIndex>(new[] {
+            //Affixes
+            EquipmentIndex.AffixBlue, EquipmentIndex.AffixGold, EquipmentIndex.AffixHaunted, EquipmentIndex.AffixPoison, EquipmentIndex.AffixRed, EquipmentIndex.AffixWhite, EquipmentIndex.AffixYellow,
+            //Lunar
+            EquipmentIndex.BurnNearby, EquipmentIndex.CrippleWard, EquipmentIndex.LunarPotion, EquipmentIndex.SoulCorruptor, EquipmentIndex.Tonic,
+            //NYI by game
+            EquipmentIndex.GhostGun, EquipmentIndex.OrbitalLaser, EquipmentIndex.SoulJar, EquipmentIndex.Enigma,
+            //Special
+            EquipmentIndex.Count, EquipmentIndex.None, EquipmentIndex.QuestVolatileBattery
+        });
 
         private ConfigFile cachedCfl;
         protected override void SetupConfigInner(ConfigFile cfl) {
@@ -41,12 +66,7 @@ namespace ThinkInvisible.ClassicItems {
             Dictionary<EquipmentIndex,bool> _subEnable = new Dictionary<EquipmentIndex, bool>();
             
             foreach(EquipmentIndex ind in (EquipmentIndex[]) Enum.GetValues(typeof(EquipmentIndex))) {
-                if(ind == EquipmentIndex.AffixBlue || ind == EquipmentIndex.AffixGold || ind == EquipmentIndex.AffixHaunted || ind == EquipmentIndex.AffixPoison || ind == EquipmentIndex.AffixRed || ind == EquipmentIndex.AffixWhite || ind == EquipmentIndex.AffixYellow
-                    || ind == EquipmentIndex.BurnNearby || ind == EquipmentIndex.CrippleWard || ind == EquipmentIndex.LunarPotion || ind == EquipmentIndex.SoulCorruptor || ind == EquipmentIndex.Tonic
-                    || ind == EquipmentIndex.GhostGun || ind == EquipmentIndex.OrbitalLaser || ind == EquipmentIndex.SoulJar
-                    || ind == EquipmentIndex.Count || ind == EquipmentIndex.Enigma || ind == EquipmentIndex.None || ind == EquipmentIndex.QuestVolatileBattery
-                    )
-                    continue;
+                if(unhandledEqps.Contains(ind)) continue;
                 cfgSubEnable.Add(ind, cfl.Bind<bool>(new ConfigDefinition("Items." + itemCodeName, "SubEnable" + ind.ToString()), true, new ConfigDescription(
                 "If false, Beating Embryo will not affect " + ind.ToString() + ".")));
                 _subEnable.Add(ind, cfgSubEnable[ind].Value);
@@ -74,14 +94,6 @@ namespace ThinkInvisible.ClassicItems {
         private GameObject embryoCptPrefab;
         private GameObject boostedGatewayPrefab;
         private GameObject boostedScannerPrefab;
-
-        private readonly ReadOnlyCollection<EquipmentIndex> simpleDoubleEqps = new ReadOnlyCollection<EquipmentIndex>(new[] {
-            EquipmentIndex.Fruit,
-            EquipmentIndex.Lightning,
-            EquipmentIndex.DroneBackup,
-            EquipmentIndex.PassiveHealing,
-            EquipmentIndex.Saw
-        });
 
         protected override void SetupBehaviorInner() {
             ///// WARNING: late config setup. is there a safer way to do this? eqpIsLunar and itemIsEquipment are defined during attributes stage
@@ -169,6 +181,7 @@ namespace ThinkInvisible.ClassicItems {
 
         private bool On_ESPerformEquipmentAction(On.RoR2.EquipmentSlot.orig_PerformEquipmentAction orig, EquipmentSlot slot, EquipmentIndex ind) {
             var retv = orig(slot, ind);
+            if(subEnableExt.Contains(ind)) return retv;
             foreach(ItemBoilerplate bpl in ClassicItemsPlugin.masterItemList) {
                 if(bpl.itemEnabled && bpl.itemIsEquipment && ind == bpl.regIndexEqp) return retv; //Embryo is handled in individual item code for CI items
             }
