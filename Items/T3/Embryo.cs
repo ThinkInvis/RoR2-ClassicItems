@@ -75,6 +75,14 @@ namespace ThinkInvisible.ClassicItems {
         private GameObject boostedGatewayPrefab;
         private GameObject boostedScannerPrefab;
 
+        private readonly ReadOnlyCollection<EquipmentIndex> simpleDoubleEqps = new ReadOnlyCollection<EquipmentIndex>(new[] {
+            EquipmentIndex.Fruit,
+            EquipmentIndex.Lightning,
+            EquipmentIndex.DroneBackup,
+            EquipmentIndex.PassiveHealing,
+            EquipmentIndex.Saw
+        });
+
         protected override void SetupBehaviorInner() {
             ///// WARNING: late config setup. is there a safer way to do this? eqpIsLunar and itemIsEquipment are defined during attributes stage
             Debug.Log("ClassicItems: adding late config for Embryo");
@@ -157,80 +165,23 @@ namespace ThinkInvisible.ClassicItems {
                 var cptInst = GameObject.Instantiate(embryoCptPrefab, self.transform);
                 cptInst.GetComponent<NetworkedBodyAttachment>().AttachToGameObjectAndSpawn(self.gameObject);
             }
-            /*if(NetworkServer.active) {
-                var networkUser = Util.LookUpBodyNetworkUser(self.gameObject);
-                cpt.ownerClient = networkUser?.connectionToClient;
-            }*/
         }
 
         private bool On_ESPerformEquipmentAction(On.RoR2.EquipmentSlot.orig_PerformEquipmentAction orig, EquipmentSlot slot, EquipmentIndex ind) {
             var retv = orig(slot, ind);
-            if(retv && slot.characterBody && Util.CheckRoll(GetCount(slot.characterBody)*procChance)) {
-                foreach(ItemBoilerplate bpl in ClassicItemsPlugin.masterItemList) {
-                    if(bpl.itemEnabled && bpl.itemIsEquipment && ind == bpl.regIndexEqp) return true;
-                }
-                switch(ind) {
-                    case EquipmentIndex.Fruit:
-                        if(subEnable[EquipmentIndex.Fruit]) 
-                            orig(slot, ind);
-                        break;
-                    case EquipmentIndex.Lightning:
-                        if(subEnable[EquipmentIndex.Lightning]) 
-                            orig(slot, ind);
-                        break;
-                    case EquipmentIndex.DroneBackup:
-                        if(subEnable[EquipmentIndex.DroneBackup]) 
-                            orig(slot, ind);
-                        break;
-                    case EquipmentIndex.PassiveHealing:
-                        if(subEnable[EquipmentIndex.PassiveHealing]) 
-                            orig(slot, ind);
-                        break;
-                    case EquipmentIndex.Saw:
-                        if(subEnable[EquipmentIndex.Saw])
-                            orig(slot, ind);
-                        break;
-                    case EquipmentIndex.BFG:
-                    case EquipmentIndex.Blackhole:
-                    case EquipmentIndex.BurnNearby:
-                    case EquipmentIndex.Cleanse:
-                    case EquipmentIndex.CommandMissile:
-                    case EquipmentIndex.CrippleWard:
-                    case EquipmentIndex.CritOnUse:
-                    case EquipmentIndex.Enigma:
-                    case EquipmentIndex.FireBallDash:
-                    case EquipmentIndex.GainArmor:
-                    case EquipmentIndex.Gateway:
-                    case EquipmentIndex.GhostGun:
-                    case EquipmentIndex.GoldGat:
-                    case EquipmentIndex.Jetpack:
-                    case EquipmentIndex.LunarPotion:
-                    case EquipmentIndex.Meteor:
-                    case EquipmentIndex.None:
-                    case EquipmentIndex.OrbitalLaser:
-                    case EquipmentIndex.QuestVolatileBattery:
-                    case EquipmentIndex.Recycle:
-                    case EquipmentIndex.Scanner:
-                    case EquipmentIndex.SoulCorruptor:
-                    case EquipmentIndex.SoulJar:
-                    case EquipmentIndex.Tonic:
-                        break;
-                    default:
-                        if(subEnableModded)
-                            orig(slot, ind);
-                        break;
-                }
+            foreach(ItemBoilerplate bpl in ClassicItemsPlugin.masterItemList) {
+                if(bpl.itemEnabled && bpl.itemIsEquipment && ind == bpl.regIndexEqp) return retv; //Embryo is handled in individual item code for CI items
+            }
+            if(slot.characterBody && Util.CheckRoll(GetCount(slot.characterBody)*procChance)) {
+                if((simpleDoubleEqps.Contains(ind) && subEnable[ind])
+                    || (ind >= EquipmentIndex.Count && subEnableModded))
+                    retv = retv || orig(slot, ind);
             }
             return retv;
         }
 
         private void IL_ESPerformEquipmentAction(ILContext il) {            
             ILCursor c = new ILCursor(il);
-
-            //for some reason, this breaks the entire IL patch despite not throwing an error
-            /*c.GotoNext(x=>x.MatchRet(),
-                x=>x.MatchLdarg(1));
-            c.Index++;*/
 
             //Insert a check for Embryo procs at the top of the function
             bool boost = false;
@@ -649,27 +600,19 @@ namespace ThinkInvisible.ClassicItems {
         private void IL_ESRpcOnEquipmentActivationReceived(ILContext il) {
             ILCursor c = new ILCursor(il);
 
-            EmbryoComponent cpt = null;
-            c.Emit(OpCodes.Ldarg_0);
-            c.EmitDelegate<Action<EquipmentSlot>>((slot)=>{
-                cpt = slot.characterBody?.GetComponentInChildren<EmbryoComponent>();
-            });
-
             bool ILFound = c.TryGotoNext(MoveType.After,
                 x=>x.MatchLdstr("activeDuration"),
                 x=>x.MatchLdcR4(out _));
 
             if(ILFound) {
-                c.EmitDelegate<Func<float,float>>((origValue)=>{
-                    if(cpt?.lastCOUBoosted == true) return origValue*2;
-                    return origValue;
+                c.Emit(OpCodes.Ldarg_0);
+                c.EmitDelegate<Func<float,EquipmentSlot,float>>((origValue, slot)=>{
+                    return (slot.characterBody?.GetComponentInChildren<EmbryoComponent>()?.lastCOUBoosted == true) ? origValue * 2f : origValue;
                 });
-
             } else {
                 Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: CritOnUse VFX (RpcOnEquipmentActivationReceived); target instructions not found");
                 ILFailed = true;
             }
-
         }
     }
 
