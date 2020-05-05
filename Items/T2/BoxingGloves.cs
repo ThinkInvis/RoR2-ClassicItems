@@ -42,7 +42,7 @@ namespace ThinkInvisible.ClassicItems {
         }
 
         private void On_HCTakeDamage(On.RoR2.HealthComponent.orig_TakeDamage orig, HealthComponent self, DamageInfo di) {
-            if(di.attacker) {
+            if(di?.attacker) {
                 var cb = di.attacker.GetComponent<CharacterBody>();
                 if(cb) {
                     var pChance = (1f-Mathf.Pow(1-procChance/100f,GetCount(cb)))*100f;

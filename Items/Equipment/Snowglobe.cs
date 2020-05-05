@@ -126,8 +126,8 @@ namespace ThinkInvisible.ClassicItems {
             if(stopwatch >= 1f) {
                 stopwatch -= 1f;
                 remainingTicks --;
-                DoFreeze();
-                if(remainingTicks == 0) Destroy(this);
+                if(remainingTicks < 0) Destroy(this);
+                else DoFreeze();
             }
         }
 
