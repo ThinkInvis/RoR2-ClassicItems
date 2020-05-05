@@ -31,7 +31,7 @@ namespace ThinkInvisible.ClassicItems {
 
             RegLang("Pillaged Gold",
                 "For 14 seconds, hitting enemies cause them to drop gold.",
-                "While active, every hit <style=cIsUtility>drops 1 gold</style> (scales with difficulty).",
+                "While active, every hit <style=cIsUtility>drops 1 gold</style> (scales with difficulty). Lasts <style=cIsUtility>" + duration.ToString("N0") + " seconds</style>.",
                 "A relic of times long past (ClassicItems mod)");
         }
 
