@@ -1,16 +1,17 @@
 ﻿using R2API.Utils;
 using RoR2;
 using UnityEngine;
-using BepInEx.Configuration;
 using static ThinkInvisible.ClassicItems.MiscUtil;
 using MonoMod.Cil;
 using Mono.Cecil.Cil;
 using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace ThinkInvisible.ClassicItems {
-    public class RustyJetpack : ItemBoilerplate<RustyJetpack> {
-        public override string displayName {get;} = "Rusty Jetpack";
+    public class RustyJetpack : Item<RustyJetpack> {
+        public override string displayName => "Rusty Jetpack";
+		public override ItemTier itemTier => ItemTier.Tier2;
+		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
 
         [AutoItemCfg("Multiplier for gravity reduction (0.0 = no effect, 1.0 = full anti-grav).", default, 0f, 0.999f)]
         public float gravMod {get;private set;} = 0.5f;
@@ -26,8 +27,6 @@ namespace ThinkInvisible.ClassicItems {
             	"Increase jump height and reduce gravity.",
             	"<style=cIsUtility>Reduces gravity</style> by <style=cIsUtility>" + Pct(gravMod) + "</style> while <style=cIsUtility>holding jump</style>. Increases <style=cIsUtility>jump power</style> by <style=cIsUtility>" + Pct(jumpMult) + "</style> <style=cStack>(+" + Pct(jumpMult)  + " per stack, linear)</style>.",
             	"A relic of times long past (ClassicItems mod)");
-            _itemTags = new List<ItemTag>{ItemTag.Utility};
-            itemTier = ItemTier.Tier2;
         }
 
         public override void SetupBehaviorInner() {
@@ -47,7 +46,7 @@ namespace ThinkInvisible.ClassicItems {
             orig(self);
             if(!self.characterMotor) return;
             if(GetCount(self) > 0 && self.inputBank.jump.down && (
-                    !PhotonJetpack.instance.itemEnabled
+                    !PhotonJetpack.instance.enabled
                     || !ClassicItemsPlugin.gCoolYourJets
                     || (self.GetComponent<PhotonJetpackComponent>()?.fuel ?? 0f) <= 0f))
                 self.characterMotor.velocity.y -= Time.fixedDeltaTime * Physics.gravity.y * gravMod;

@@ -1,12 +1,14 @@
 ﻿using RoR2;
 using System;
-using BepInEx.Configuration;
 using static ThinkInvisible.ClassicItems.MiscUtil;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Clover : ItemBoilerplate<Clover> {
-        public override string displayName {get;} = "56 Leaf Clover";
+    public class Clover : Item<Clover> {
+        public override string displayName => "56 Leaf Clover";
+		public override ItemTier itemTier => ItemTier.Tier2;
+		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
+        public override bool itemAIBDefault => true;
 
         [AutoItemCfg("Percent chance for a Clover drop to happen at first stack -- as such, multiplicative with Rare/Uncommon chances.", default, 0f, 100f)]
         public float baseChance {get;private set;} = 4f;
@@ -34,18 +36,12 @@ namespace ThinkInvisible.ClassicItems {
 
         [AutoItemCfg("If true, all clovers across all living players are counted towards item drops. If false, only the killer's items count.")]
         public bool globalStack {get;private set;} = true;
-
-        public override void SetupConfigInner(ConfigFile cfl) {
-            itemAIBDefault = true;
-        }
         
         public override void SetupAttributesInner() {
             RegLang(
             	"Elite mobs have a chance to drop items.",
             	"Elites have a <style=cIsUtility>" + Pct(baseChance, 1, 1) + " chance</style> <style=cStack>(+" + Pct(stackChance, 1, 1) + " per stack COMBINED FOR ALL PLAYERS, up to " + Pct(capChance, 1, 1) + ")</style> to <style=cIsUtility>drop items</style> when <style=cIsDamage>killed</style>. <style=cStack>(Further stacks increase uncommon/rare chance up to " +Pct(capUnc,2,1) +" and "+Pct(capRare,3,1)+", respectively.)</style>",
             	"A relic of times long past (ClassicItems mod)");
-            _itemTags = new List<ItemTag>{ItemTag.Utility};
-            itemTier = ItemTier.Tier2;
         }
 
         public override void SetupBehaviorInner() {

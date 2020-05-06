@@ -1,16 +1,17 @@
 ﻿using RoR2;
 using UnityEngine;
-using BepInEx.Configuration;
 using static ThinkInvisible.ClassicItems.MiscUtil;
-using System.Collections.Generic;
 using UnityEngine.Networking;
 using System.Collections.ObjectModel;
 using R2API;
 using RoR2.Orbs;
 
 namespace ThinkInvisible.ClassicItems {
-    public class BarbedWire : ItemBoilerplate<BarbedWire> {
-        public override string displayName {get;} = "Barbed Wire";
+    public class BarbedWire : Item<BarbedWire> {
+        public override string displayName => "Barbed Wire";
+		
+		public override ItemTier itemTier => ItemTier.Tier1;
+		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
 
 		[AutoItemCfg("AoE radius for the first stack of Barbed Wire.", default, 0f, float.MaxValue)]
         public float baseRadius {get; private set;} = 5f;
@@ -32,8 +33,6 @@ namespace ThinkInvisible.ClassicItems {
             	"Hurt nearby enemies.",
             	"Deal <style=cIsDamage>" + Pct(baseDmg) + "</style> <style=cStack>(+" + Pct(stackDmg) + " per stack)</style> <style=cIsDamage>damage/sec</style> to enemies within <style=cIsDamage>" + baseRadius.ToString("N1") + " m</style> <style=cStack>(+ " + stackRadius.ToString("N2") + " per stack)</style>",
             	"A relic of times long past (ClassicItems mod)");
-            _itemTags = new List<ItemTag>{ItemTag.Damage};
-            itemTier = ItemTier.Tier1;
         }
 
         public override void SetupBehaviorInner() {

@@ -1,14 +1,16 @@
 ﻿using RoR2;
 using UnityEngine;
-using BepInEx.Configuration;
 using static ThinkInvisible.ClassicItems.MiscUtil;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using UnityEngine.Networking;
 using RoR2.Orbs;
 
 namespace ThinkInvisible.ClassicItems {
-    public class TeleSight : ItemBoilerplate<TeleSight> {
-        public override string displayName {get;} = "Telescopic Sight";
+    public class TeleSight : Item<TeleSight> {
+        public override string displayName => "Telescopic Sight";
+		public override ItemTier itemTier => ItemTier.Tier3;
+		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
+        public override bool itemAIBDefault => true;
 
         [AutoItemCfg("Base percent chance of triggering Telescopic Sight on hit. Affected by proc coefficient.",default,0f,100f)]
         public float procChance {get;private set;} = 1f;
@@ -19,17 +21,11 @@ namespace ThinkInvisible.ClassicItems {
         [AutoItemCfg("If true, Telescopic Sight will not trigger on bosses.")]
         public bool bossImmunity {get;private set;} = false;
 
-        public override void SetupConfigInner(ConfigFile cfl) {
-            itemAIBDefault = true;
-        }
-        
         public override void SetupAttributesInner() {
             RegLang(
             	"Chance to instantly kill an enemy.",
             	"<style=cIsDamage>" + Pct(procChance,1,1) + "</style> <style=cStack>(+" + Pct(stackChance,1,1) + " per stack, up to " + Pct(capChance,1,1) + ")</style> chance to <style=cIsDamage>instantly kill</style> an enemy. Affected by proc coefficient.",
             	"A relic of times long past (ClassicItems mod)");
-            _itemTags = new List<ItemTag>{ItemTag.Damage};
-            itemTier = ItemTier.Tier3;
         }
 
         public override void SetupBehaviorInner() {

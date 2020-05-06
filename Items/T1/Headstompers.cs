@@ -1,14 +1,15 @@
-﻿using BepInEx.Configuration;
-using RoR2;
+﻿using RoR2;
 using System;
 using UnityEngine;
 using static ThinkInvisible.ClassicItems.MiscUtil;
-using System.Collections.Generic;
 using R2API.Utils;
+using System.Collections.ObjectModel;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Headstompers : ItemBoilerplate<Headstompers> {
-        public override string displayName {get;} = "Headstompers";
+    public class Headstompers : Item<Headstompers> {
+        public override string displayName => "Headstompers";
+		public override ItemTier itemTier => ItemTier.Tier1;
+		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
 
         [AutoItemCfg("Multiplier for player base damage applied by explosion.", default, 0f, float.MaxValue)]
         public float baseDamage {get;private set;} = 5f;
@@ -24,8 +25,6 @@ namespace ThinkInvisible.ClassicItems {
             	"Hurt enemies by falling.",
             	"Hitting the ground faster than <style=cIsDamage>" + velThreshold.ToString("N1") + " m/s</style> (vertical component only) causes a <style=cIsDamage>10 m</style> radius <style=cIsDamage>kinetic explosion</style>, dealing up to <style=cIsDamage>" + Pct(baseDamage) + " base damage</style> <style=cStack>(+" + Pct(stackDamage) + " per stack, linear)</style>. <style=cIsDamage>Max damage</style> requires <style=cIsDamage>" + (velMax+velThreshold).ToString("N1") + " m/s falling speed</style>.",
             	"A relic of times long past (ClassicItems mod)");
-            _itemTags = new List<ItemTag>{ItemTag.Damage};
-            itemTier = ItemTier.Tier1;
         }
 
         public override void SetupBehaviorInner() {

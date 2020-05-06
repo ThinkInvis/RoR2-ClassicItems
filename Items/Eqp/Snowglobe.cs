@@ -8,8 +8,8 @@ using R2API;
 using UnityEngine.Rendering.PostProcessing;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Snowglobe : ItemBoilerplate<Snowglobe> {
-        public override string displayName {get;} = "Snowglobe";
+    public class Snowglobe : Equipment<Snowglobe> {
+        public override string displayName => "Snowglobe";
 
         [AutoItemCfg("Percent chance of freezing each individual enemy for every Snowglobe tick.", default, 0f, 100f)]
         public float procRate {get;private set;} = 30f;
@@ -25,11 +25,6 @@ namespace ThinkInvisible.ClassicItems {
         private GameObject snowglobeControllerPrefab;
 
         public override void SetupAttributesInner() {
-            itemIsEquipment = true;
-
-            eqpEnigmable = true;
-            eqpCooldown = 45;
-
             RegLang(
                 "Randomly freeze enemies for 8 seconds.",
                 "Summon a snowstorm that <style=cIsUtility>freezes</style> monsters at a <style=cIsUtility>" + Pct(procRate,1,1) + " chance over " + duration.ToString("N0") + " seconds</style>.",
@@ -74,7 +69,7 @@ namespace ThinkInvisible.ClassicItems {
         }
         
         private bool On_ESPerformEquipmentAction(On.RoR2.EquipmentSlot.orig_PerformEquipmentAction orig, EquipmentSlot slot, EquipmentIndex eqpid) {
-            if(eqpid == regIndexEqp) {
+            if(eqpid == regIndex) {
                 if(!slot.characterBody || !slot.characterBody.teamComponent) return false;
                 var ctrlInst = UnityEngine.Object.Instantiate(snowglobeControllerPrefab, slot.characterBody.corePosition, Quaternion.identity);
                 ctrlInst.GetComponent<SnowglobeController>().myTeam = slot.characterBody.teamComponent.teamIndex;

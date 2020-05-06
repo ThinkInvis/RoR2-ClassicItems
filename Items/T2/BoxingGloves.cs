@@ -1,12 +1,13 @@
 ﻿using RoR2;
 using UnityEngine;
-using BepInEx.Configuration;
 using static ThinkInvisible.ClassicItems.MiscUtil;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace ThinkInvisible.ClassicItems {
-    public class BoxingGloves : ItemBoilerplate<BoxingGloves> {
-        public override string displayName {get;} = "Boxing Gloves";
+    public class BoxingGloves : Item<BoxingGloves> {
+        public override string displayName => "Boxing Gloves";
+		public override ItemTier itemTier => ItemTier.Tier2;
+		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
 
         [AutoItemCfg("Percent chance for Boxing Gloves to proc; stacks multiplicatively.", default, 0f, 100f)]
         public float procChance {get;private set;} = 6f;
@@ -18,8 +19,6 @@ namespace ThinkInvisible.ClassicItems {
             	"Hitting enemies have a " + Pct(procChance,0,1) + " chance to knock them back.",
             	"<style=cIsUtility>" + Pct(procChance,0,1) + "</style> <style=cStack>(+"+Pct(procChance,0,1)+" per stack, mult.)</style> chance to <style=cIsUtility>knock back</style> an enemy <style=cIsDamage>based on attack damage</style>.",
             	"A relic of times long past (ClassicItems mod)");
-            _itemTags = new List<ItemTag>{ItemTag.Utility};
-            itemTier = ItemTier.Tier2;
         }
 
         public override void SetupBehaviorInner() {

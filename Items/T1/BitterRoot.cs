@@ -4,13 +4,14 @@ using R2API.Utils;
 using RoR2;
 using System;
 using UnityEngine;
-using BepInEx.Configuration;
 using static ThinkInvisible.ClassicItems.MiscUtil;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace ThinkInvisible.ClassicItems {
-    public class BitterRoot : ItemBoilerplate<BitterRoot> {
-        public override string displayName {get;} = "Bitter Root";
+    public class BitterRoot : Item<BitterRoot> {
+        public override string displayName => "Bitter Root";
+		public override ItemTier itemTier => ItemTier.Tier1;
+		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Healing});
 
         [AutoItemCfg("Linearly-stacking multiplier for health gained from Bitter Root.", default, 0f, float.MaxValue)]
         public float healthMult {get; private set;} = 0.08f;
@@ -26,8 +27,6 @@ namespace ThinkInvisible.ClassicItems {
             	"Gain " + Pct(healthMult) + " max hp.",
             	"Increases <style=cIsHealing>health</style> by <style=cIsHealing>" + Pct(healthMult) + "</style> <style=cStack>(+" +Pct(healthMult)+ " per stack, linear)</style>, up to a <style=cIsHealing>maximum</style> of <style=cIsHealing>+"+Pct(healthCap)+"</style>.",
             	"A relic of times long past (ClassicItems mod)");
-            _itemTags = new List<ItemTag>{ItemTag.Healing};
-            itemTier = ItemTier.Tier1;
         }
 
         public override void SetupBehaviorInner() {

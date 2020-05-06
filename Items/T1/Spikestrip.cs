@@ -1,13 +1,14 @@
 ﻿using RoR2;
 using UnityEngine;
-using BepInEx.Configuration;
-using System.Collections.Generic;
 using UnityEngine.Networking;
 using R2API;
+using System.Collections.ObjectModel;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Spikestrip : ItemBoilerplate<Spikestrip> {
-        public override string displayName {get;} = "Spikestrip";
+    public class Spikestrip : Item<Spikestrip> {
+        public override string displayName => "Spikestrip";
+		public override ItemTier itemTier => ItemTier.Tier1;
+		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
 
         [AutoItemCfg("AoE radius for Spikestrip.", default, 0f, float.MaxValue)]
         public float baseRadius {get; private set;} = 5f;
@@ -23,8 +24,6 @@ namespace ThinkInvisible.ClassicItems {
             	"Drop spikestrips on being hit, slowing enemies.",
             	"<style=cIsDamage>When hit</style>, drop a <style=cIsUtility>" + baseRadius.ToString("N0") + " m AoE</style> which <style=cIsUtility>slows enemies by 50%</style> and lasts <style=cIsUtility>" + baseDuration.ToString("N1") + " s</style> <style=cStack>(+" + stackDuration.ToString("N1") + " s per stack)</style>.",
             	"A relic of times long past (ClassicItems mod)");
-            _itemTags = new List<ItemTag>{ItemTag.Utility};
-            itemTier = ItemTier.Tier1;
         }
 
         public override void SetupBehaviorInner() {

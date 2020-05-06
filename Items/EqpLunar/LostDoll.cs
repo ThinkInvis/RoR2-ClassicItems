@@ -6,21 +6,17 @@ using UnityEngine;
 
 
 namespace ThinkInvisible.ClassicItems {
-    public class LostDoll : ItemBoilerplate<LostDoll> {
-        public override string displayName {get;} = "Lost Doll";
+    public class LostDoll : Equipment<LostDoll> {
+        public override string displayName => "Lost Doll";
 
         [AutoItemCfg("Fraction of CURRENT health to take from the user when Lost Doll is activated.", default, 0f, 1f)]
         public float damageTaken {get;private set;} = 0.25f;
         [AutoItemCfg("Fraction of MAXIMUM health to deal in damage to the closest enemy when Lost Doll is activated.", default, 0f, float.MaxValue)]
         public float damageGiven {get;private set;} = 5f;
+        
+		public override bool eqpIsLunar{get;} = true;
 
         public override void SetupAttributesInner() {
-            itemIsEquipment = true;
-            eqpIsLunar = true;
-
-            eqpEnigmable = true;
-            eqpCooldown = 45;
-
             RegLang(
                 "Harm yourself to instantly kill an enemy.",
                 "Sacrifices <style=cIsDamage>25%</style> of your <style=cIsDamage>current health</style> to damage the nearest enemy for <style=cIsDamage>500%</style> of your <style=cIsDamage>maximum health</style>.",
@@ -32,7 +28,7 @@ namespace ThinkInvisible.ClassicItems {
         }
         
         private bool On_ESPerformEquipmentAction(On.RoR2.EquipmentSlot.orig_PerformEquipmentAction orig, EquipmentSlot slot, EquipmentIndex eqpid) {
-            if(eqpid == regIndexEqp) {
+            if(eqpid == regIndex) {
                 if(!slot.characterBody || !slot.characterBody.teamComponent) return false;
                 var tpos = slot.characterBody.transform.position;
 			    ReadOnlyCollection<TeamComponent> teamMembers = TeamComponent.GetTeamMembers((TeamIndex.Player | TeamIndex.Neutral | TeamIndex.Monster) & ~slot.characterBody.teamComponent.teamIndex);

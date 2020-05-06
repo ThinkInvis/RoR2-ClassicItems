@@ -4,17 +4,15 @@ using UnityEngine;
 
 
 namespace ThinkInvisible.ClassicItems {
-    public class SkeletonKey : ItemBoilerplate<SkeletonKey> {
-        public override string displayName {get;} = "Skeleton Key";
+    public class SkeletonKey : Equipment<SkeletonKey> {
+        public override string displayName => "Skeleton Key";
 
         [AutoItemCfg("Radius around the user to search for chests to open when using Skeleton Key.", default, 0f, float.MaxValue)]
         public float radius {get;private set;} = 50f;
+
+		public override float eqpCooldown{get;} = 90f;
         
         public override void SetupAttributesInner() {
-            itemIsEquipment = true;
-
-            eqpCooldown = 90;
-
             RegLang(
                 "Open all nearby chests.",
                 "Opens all <style=cIsUtility>chests</style> within <style=cIsUtility>" + radius.ToString("N0") + " m</style> for <style=cIsUtility>no cost</style>.",
@@ -26,7 +24,7 @@ namespace ThinkInvisible.ClassicItems {
         }
         
         private bool On_ESPerformEquipmentAction(On.RoR2.EquipmentSlot.orig_PerformEquipmentAction orig, EquipmentSlot slot, EquipmentIndex eqpid) {
-            if(eqpid == regIndexEqp) {
+            if(eqpid == regIndex) {
                 if(!slot.characterBody) return false;
                 if(SceneCatalog.mostRecentSceneDef.baseSceneName == "bazaar") return false;
                 var sphpos = slot.characterBody.transform.position;

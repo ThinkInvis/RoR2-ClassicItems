@@ -6,14 +6,17 @@ using UnityEngine;
 using R2API.Utils;
 using BepInEx.Configuration;
 using static ThinkInvisible.ClassicItems.MiscUtil;
+using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using UnityEngine.Networking;
 using R2API;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Embryo : ItemBoilerplate<Embryo> {
-        public override string displayName {get;} = "Beating Embryo";
+    public class Embryo : Item<Embryo> {
+        public override string displayName => "Beating Embryo";
+		public override ItemTier itemTier => ItemTier.Tier3;
+		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.EquipmentRelated});
 
         private ConfigEntry<float> cfgProcChance;
 
@@ -83,8 +86,6 @@ namespace ThinkInvisible.ClassicItems {
             	"Equipment has a 30% chance to deal double the effect.",
             	"Upon activating an equipment, adds a <style=cIsUtility>" + Pct(procChance, 0, 1) + "</style> <style=cStack>(+" + Pct(procChance, 0, 1) + " per stack)</style> chance to <style=cIsUtility>double its effects somehow</style>.",
             	"A relic of times long past (ClassicItems mod)");
-            _itemTags = new List<ItemTag>{ItemTag.EquipmentRelated};
-            itemTier = ItemTier.Tier3;
         }
 
         private bool ILFailed = false;
@@ -98,12 +99,10 @@ namespace ThinkInvisible.ClassicItems {
             Debug.Log("ClassicItems: adding late config for Embryo");
             cfgSubEnableInternal = new Dictionary<Type,ConfigEntry<bool>>();
             Dictionary<Type,bool> _subEnableInternal = new Dictionary<Type,bool>();
-            foreach(ItemBoilerplate bpl in ClassicItemsPlugin.masterItemList) {
-                if(bpl.itemIsEquipment) {
-                    cfgSubEnableInternal.Add(bpl.GetType(), cachedCfl.Bind<bool>(new ConfigDefinition("Items." + itemCodeName, "SubEnable" + bpl.itemCodeName), !bpl.eqpIsLunar, new ConfigDescription(
-                    "If false, Beating Embryo will not affect " + bpl.itemCodeName + " (added by CustomItems).")));
-                    _subEnableInternal.Add(bpl.GetType(), cfgSubEnableInternal[bpl.GetType()].Value);
-                }
+            foreach(Equipment bpl in ClassicItemsPlugin.masterItemList.OfType<Equipment>()) {
+                cfgSubEnableInternal.Add(bpl.GetType(), cachedCfl.Bind<bool>(new ConfigDefinition("Items." + itemCodeName, "SubEnable" + bpl.itemCodeName), !bpl.eqpIsLunar, new ConfigDescription(
+                "If false, Beating Embryo will not affect " + bpl.itemCodeName + " (added by CustomItems).")));
+                _subEnableInternal.Add(bpl.GetType(), cfgSubEnableInternal[bpl.GetType()].Value);
             }
             subEnableInternal = new ReadOnlyDictionary<Type,bool>(_subEnableInternal);
             ///// end late config setup
@@ -158,13 +157,13 @@ namespace ThinkInvisible.ClassicItems {
         }
         
         public bool CheckProc(CharacterBody body) {
-            return itemEnabled && Util.CheckRoll(GetCount(body)*procChance, body.master);
+            return enabled && Util.CheckRoll(GetCount(body)*procChance, body.master);
         }
         public bool CheckProc(EquipmentIndex subind, CharacterBody body) {
             return subEnable[subind] && CheckProc(body);
         }
-        public bool CheckProc<T>(CharacterBody body) where T:ItemBoilerplate {
-            return itemEnabled && subEnableInternal[typeof(T)] && Util.CheckRoll(GetCount(body)*procChance, body.master);
+        public bool CheckProc<T>(CharacterBody body) where T:Equipment {
+            return enabled && subEnableInternal[typeof(T)] && Util.CheckRoll(GetCount(body)*procChance, body.master);
         }
 
         private void On_CBOnInventoryChanged(On.RoR2.CharacterBody.orig_OnInventoryChanged orig, CharacterBody self) {            
@@ -180,8 +179,8 @@ namespace ThinkInvisible.ClassicItems {
         private bool On_ESPerformEquipmentAction(On.RoR2.EquipmentSlot.orig_PerformEquipmentAction orig, EquipmentSlot slot, EquipmentIndex ind) {
             var retv = orig(slot, ind);
             if(subEnableExt.Contains(ind)) return retv;
-            foreach(ItemBoilerplate bpl in ClassicItemsPlugin.masterItemList) {
-                if(bpl.itemEnabled && bpl.itemIsEquipment && ind == bpl.regIndexEqp) return retv; //Embryo is handled in individual item code for CI items
+            foreach(Equipment bpl in ClassicItemsPlugin.masterItemList.OfType<Equipment>()) {
+                if(bpl.enabled && ind == bpl.regIndex) return retv; //Embryo is handled in individual item code for CI items
             }
             if(slot.characterBody && Util.CheckRoll(GetCount(slot.characterBody)*procChance)) {
                 if((simpleDoubleEqps.Contains(ind) && subEnable[ind])

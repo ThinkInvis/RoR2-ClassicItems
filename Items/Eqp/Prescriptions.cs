@@ -8,8 +8,8 @@ using UnityEngine;
 using static ThinkInvisible.ClassicItems.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Prescriptions : ItemBoilerplate<Prescriptions> {
-        public override string displayName {get;} = "Prescriptions";
+    public class Prescriptions : Equipment<Prescriptions> {
+        public override string displayName => "Prescriptions";
 
         [AutoItemCfg("Duration of the buff applied by Prescriptions.", default, 0f, float.MaxValue)]
         public float duration {get;private set;} = 11f;
@@ -24,11 +24,6 @@ namespace ThinkInvisible.ClassicItems {
         public BuffIndex prescriptionsBuff {get;private set;}
         
         public override void SetupAttributesInner() {
-            itemIsEquipment = true;
-
-            eqpEnigmable = true;
-            eqpCooldown = 45;
-
             RegLang(
                 "Increase damage and attack speed for 8 seconds.",
                 "While active, increases <style=cIsDamage>base damage by " + dmgBoost.ToString("N0") + " points</style> and <style=cIsDamage>attack speed by " + Pct(aSpdBoost) + "</style>. Lasts <style=cIsDamage>" + duration.ToString("N0") + " seconds</style>.",
@@ -58,7 +53,7 @@ namespace ThinkInvisible.ClassicItems {
         }
         
         private bool On_ESPerformEquipmentAction(On.RoR2.EquipmentSlot.orig_PerformEquipmentAction orig, EquipmentSlot slot, EquipmentIndex eqpid) {
-            if(eqpid == regIndexEqp) {
+            if(eqpid == regIndex) {
                 var sbdy = slot.characterBody;
                 if(!sbdy) return false;
                 sbdy.ClearTimedBuffs(prescriptionsBuff);

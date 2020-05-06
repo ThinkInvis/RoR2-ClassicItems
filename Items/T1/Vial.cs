@@ -1,15 +1,16 @@
 ﻿using R2API.Utils;
 using RoR2;
-using BepInEx.Configuration;
 using MonoMod.Cil;
 using Mono.Cecil.Cil;
 using UnityEngine;
 using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Vial : ItemBoilerplate<Vial> {
-        public override string displayName {get;} = "Mysterious Vial";
+    public class Vial : Item<Vial> {
+        public override string displayName => "Mysterious Vial";
+		public override ItemTier itemTier => ItemTier.Tier1;
+		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Healing});
 
         [AutoItemCfg("Direct additive to natural health regen per stack of Mysterious Vial.", default, 0f, float.MaxValue)]
         public float addRegen {get;private set;} = 1.4f;
@@ -23,8 +24,6 @@ namespace ThinkInvisible.ClassicItems {
             	"Increased health regeneration.",
             	"Increases <style=cIsHealing>health regen by +" + addRegen.ToString("N1") + "/sec</style> <style=cStack>(+" + addRegen.ToString("N1") + "/sec per stack)</style>.",
             	"A relic of times long past (ClassicItems mod)");
-            _itemTags = new List<ItemTag>{ItemTag.Healing};
-            itemTier = ItemTier.Tier1;
         }
 
         public override void SetupBehaviorInner() {

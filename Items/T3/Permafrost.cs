@@ -1,11 +1,13 @@
 ﻿using RoR2;
-using BepInEx.Configuration;
 using static ThinkInvisible.ClassicItems.MiscUtil;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Permafrost : ItemBoilerplate<Permafrost> {
-        public override string displayName {get;} = "Permafrost";
+    public class Permafrost : Item<Permafrost> {
+        public override string displayName => "Permafrost";
+		public override ItemTier itemTier => ItemTier.Tier3;
+		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
+        public override bool itemAIBDefault => true;
 
         [AutoItemCfg("Percent chance of triggering Permafrost on hit. Affected by proc coefficient; stacks inverse-multiplicatively.", default, 0f, 100f)]
         public float procChance {get;private set;} = 6f;
@@ -16,17 +18,11 @@ namespace ThinkInvisible.ClassicItems {
         [AutoItemCfg("If true, Permafrost will slow targets even if they can't be frozen.")]
         public bool slowUnfreezable {get;private set;} = true;
 
-        public override void SetupConfigInner(ConfigFile cfl) {
-            itemAIBDefault = true;
-        }
-
         public override void SetupAttributesInner() {
             RegLang(
             	"Chance to freeze enemies on hit.",
             	"<style=cIsUtility>" + Pct(procChance,1,1) + "</style> <style=cStack>(+" + Pct(procChance,1,1) + " per stack, inverse-mult.)</style> chance to <style=cIsUtility>freeze and slow</style> an enemy (" + freezeTime.ToString("N1") + " sec, " + slowTime.ToString("N1") + " sec). Affected by proc coefficient.",
             	"A relic of times long past (ClassicItems mod)");
-            _itemTags = new List<ItemTag>{ItemTag.Utility};
-            itemTier = ItemTier.Tier3;
         }
 
         public override void SetupBehaviorInner() {

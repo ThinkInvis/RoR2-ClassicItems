@@ -1,15 +1,14 @@
 ﻿using RoR2;
 using UnityEngine;
-using BepInEx.Configuration;
-using System.Collections.Generic;
-using UnityEngine.Networking;
-using R2API;
 using static ThinkInvisible.ClassicItems.MiscUtil;
 using System.Collections.ObjectModel;
 
 namespace ThinkInvisible.ClassicItems {
-    public class OldBox : ItemBoilerplate<OldBox> {
-        public override string displayName {get;} = "Old Box";
+    public class OldBox : Item<OldBox> {
+        public override string displayName => "Old Box";
+		public override ItemTier itemTier => ItemTier.Lunar;
+		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
+        public override bool itemAIBDefault => true;
 
         [AutoItemCfg("Fraction of max health required as damage taken to trigger Old Box (halved per additional stack).", default, 0f, 1f)]
         public float healthThreshold {get; private set;} = 0.5f;
@@ -20,17 +19,11 @@ namespace ThinkInvisible.ClassicItems {
         [AutoItemCfg("If true, damage to shield and barrier (from e.g. Personal Shield Generator, Topaz Brooch) will not count towards triggering Old Box.")]
         public bool requireHealth {get; private set;} = true;
 
-        public override void SetupConfigInner(ConfigFile cfl) {
-            itemAIBDefault = true;
-        }
-        
         public override void SetupAttributesInner() {
             RegLang(
             	"Chance to fear enemies when attacked.",
             	"<style=cDeath>When hit for more than " + Pct(healthThreshold) + " max health</style> <style=cStack>(/2 per stack)</style>, <style=cIsUtility>fear enemies</style> within <style=cIsUtility>" + radius.ToString("N0") + " m</style> for <style=cIsUtility>" + duration.ToString("N1") + " seconds</style>. <style=cIsUtility>Feared enemies will run out of melee</style>, <style=cDeath>but that won't stop them from shooting you.</style>",
             	"A relic of times long past (ClassicItems mod)");
-            _itemTags = new List<ItemTag>{ItemTag.Utility};
-            itemTier = ItemTier.Lunar;
         }
 
         public override void SetupBehaviorInner() {

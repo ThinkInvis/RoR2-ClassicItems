@@ -2,12 +2,10 @@
 using RoR2;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Amethyst : ItemBoilerplate<Amethyst> {
-        public override string displayName {get;} = "Gigantic Amethyst";
+    public class Amethyst : Equipment<Amethyst> {
+        public override string displayName => "Gigantic Amethyst";
         
         public override void SetupAttributesInner() {
-            itemIsEquipment = true;
-
             RegLang(
                 "Resets all your cooldowns.",
                 "Immediately <style=cIsUtility>restores 1 charge each</style> to <style=cIsUtility>all</style> of your <style=cIsUtility>skills</style>.",
@@ -19,7 +17,7 @@ namespace ThinkInvisible.ClassicItems {
         }
         
         private bool On_ESPerformEquipmentAction(On.RoR2.EquipmentSlot.orig_PerformEquipmentAction orig, EquipmentSlot slot, EquipmentIndex eqpid) {
-            if(eqpid == regIndexEqp) {
+            if(eqpid == regIndex) {
                 var sloc = slot.characterBody?.skillLocator;
                 if(!sloc) return false;
                 sloc.ApplyAmmoPack();

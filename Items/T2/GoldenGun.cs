@@ -4,12 +4,13 @@ using BepInEx.Configuration;
 using MonoMod.Cil;
 using Mono.Cecil.Cil;
 using System;
-using System.Collections.Generic;
-using R2API.Utils;
+using System.Collections.ObjectModel;
 
 namespace ThinkInvisible.ClassicItems {
-    public class GoldenGun : ItemBoilerplate<GoldenGun> {
-        public override string displayName {get;} = "Golden Gun";
+    public class GoldenGun : Item<GoldenGun> {
+        public override string displayName => "Golden Gun";
+		public override ItemTier itemTier => ItemTier.Tier2;
+		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
 
         [AutoItemCfg("Maximum multiplier to add to player damage.",default,0f,float.MaxValue)]
         public float damageBoost {get;private set;} = 0.4f;
@@ -24,17 +25,11 @@ namespace ThinkInvisible.ClassicItems {
         
         public BuffIndex goldenGunBuff {get;private set;}
 
-        public override void SetupConfigInner(ConfigFile cfl) {
-            itemAIBDefault = true;
-        }
-        
         public override void SetupAttributesInner() {
             RegLang(
             	"More gold, more damage.",
             	"Deal <style=cIsDamage>bonus damage</style> based on your <style=cIsUtility>money</style>, up to <style=cIsDamage>40% damage</style> at <style=cIsUtility>$700</style> <style=cStack>(cost increases with difficulty, -50% per stack)</style>.",
             	"A relic of times long past (ClassicItems mod)");
-            _itemTags = new List<ItemTag>{ItemTag.Utility};
-            itemTier = ItemTier.Tier2;
         }
 
         public override void SetupBehaviorInner() {

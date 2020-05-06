@@ -9,8 +9,8 @@ using UnityEngine.Rendering.PostProcessing;
 using RoR2.Orbs;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Lantern : ItemBoilerplate<Lantern> {
-        public override string displayName {get;} = "Safeguard Lantern";
+    public class Lantern : Equipment<Lantern> {
+        public override string displayName => "Safeguard Lantern";
 
         [AutoItemCfg("Duration of the Safeguard Lantern effect.", default, 0f, float.MaxValue)]
         public float duration {get;private set;} = 10f;
@@ -20,14 +20,10 @@ namespace ThinkInvisible.ClassicItems {
         public float range {get;private set;} = 25f;
 
         private GameObject lanternWardPrefab;
+
+		public override bool eqpIsLunar{get;} = true;
         
         public override void SetupAttributesInner() {
-            itemIsEquipment = true;
-
-            eqpEnigmable = true;
-			eqpIsLunar = true;
-            eqpCooldown = 45;
-
             RegLang(
                 "Drop a lantern that fears and damages enemies for 10 seconds.",
                 "Sets a " + range.ToString("N0") + "-meter, " + duration.ToString("N0") + "-second AoE which <style=cIsUtility>fears enemies</style> and deals <style=cIsDamage>" + Pct(damage) + " damage per second</style>. <style=cIsUtility>Feared enemies will run out of melee</style>, <style=cDeath>but that won't stop them from shooting you.</style>" ,
@@ -55,7 +51,7 @@ namespace ThinkInvisible.ClassicItems {
         }
         
         private bool On_ESPerformEquipmentAction(On.RoR2.EquipmentSlot.orig_PerformEquipmentAction orig, EquipmentSlot slot, EquipmentIndex eqpid) {
-            if(eqpid == regIndexEqp) {
+            if(eqpid == regIndex) {
                 if(!slot.characterBody || !slot.characterBody.teamComponent) return false;
                 var ctrlInst = UnityEngine.Object.Instantiate(lanternWardPrefab, slot.characterBody.corePosition, Quaternion.identity);
 				var lw = ctrlInst.GetComponent<LanternWard>();

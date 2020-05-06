@@ -9,8 +9,10 @@ using Mono.Cecil.Cil;
 using UnityEngine.Networking;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Brooch : ItemBoilerplate<Brooch> {
-        public override string displayName {get;} = "Captain's Brooch";
+    public class Brooch : Equipment<Brooch> {
+        public override string displayName => "Captain's Brooch";
+
+        public override float eqpCooldown => 135f;
 
         [AutoItemCfg("Multiplier for additional cost of chests spawned by Captain's Brooch.", default, 0f, float.MaxValue)]
         public float extraCost {get;private set;} = 0.5f;
@@ -24,10 +26,6 @@ namespace ThinkInvisible.ClassicItems {
         internal static InteractableSpawnCard broochPrefab;
         
         public override void SetupAttributesInner() {
-            itemIsEquipment = true;
-
-            eqpCooldown = 135;
-
             RegLang(
                 "One man's wreckage is another man's treasure.",
                 "Calls down a <style=cIsUtility>low-tier item chest</style> which <style=cIsUtility>costs " + Pct(extraCost) + " more than usual</style>.",
@@ -103,7 +101,7 @@ namespace ThinkInvisible.ClassicItems {
         }
 
         private bool On_ESPerformEquipmentAction(On.RoR2.EquipmentSlot.orig_PerformEquipmentAction orig, EquipmentSlot slot, EquipmentIndex eqpid) {
-            if(eqpid == regIndexEqp) {
+            if(eqpid == regIndex) {
                 if(!slot.characterBody) return false;
                 if(SceneCatalog.mostRecentSceneDef.baseSceneName == "bazaar") return false;
                 bool s1 = TrySpawnChest(slot.characterBody.transform);

@@ -1,16 +1,18 @@
 ﻿using R2API.Utils;
 using RoR2;
 using UnityEngine;
-using BepInEx.Configuration;
 using static ThinkInvisible.ClassicItems.MiscUtil;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace ThinkInvisible.ClassicItems {
-    public class SnakeEyes : ItemBoilerplate<SnakeEyes> {
-        public override string displayName {get;} = "Snake Eyes";
+    public class SnakeEyes : Item<SnakeEyes> {
+        public override string displayName => "Snake Eyes";
+		public override ItemTier itemTier => ItemTier.Tier1;
+		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
 
         [AutoItemCfg("Direct additive to percent crit chance per proc per stack of Snake Eyes.", default, 0f, 100f)]
         public float critAdd {get;private set;} = 8f;
@@ -32,8 +34,6 @@ namespace ThinkInvisible.ClassicItems {
             	"Gain increased crit chance on failing a shrine. Removed on succeeding a shrine.",
             	"Increases <style=cIsDamage>crit chance</style> by <style=cIsDamage>" + Pct(critAdd, 0, 1) + "</style> <style=cStack>(+" + Pct(critAdd, 0, 1) + " per stack, linear)</style> for up to <style=cIsUtility>" + stackCap + "</style> consecutive <style=cIsUtility>chance shrine failures</style>. <style=cIsDamage>Resets to 0</style> on any <style=cIsUtility>chance shrine success</style>.",
             	"A relic of times long past (ClassicItems mod)");
-            _itemTags = new List<ItemTag>{ItemTag.Damage};
-            itemTier = ItemTier.Tier1;
         }
 
         public override void SetupBehaviorInner() {

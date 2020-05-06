@@ -5,8 +5,8 @@ using UnityEngine;
 using UnityEngine.Networking;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Pillage : ItemBoilerplate<Pillage> {
-        public override string displayName {get;} = "Pillaged Gold";
+    public class Pillage : Equipment<Pillage> {
+        public override string displayName => "Pillaged Gold";
 
         [AutoItemCfg("Duration of the buff applied by Pillaged Gold.", default, 0f, float.MaxValue)]
         public float duration {get;private set;} = 14f;
@@ -14,11 +14,6 @@ namespace ThinkInvisible.ClassicItems {
         public BuffIndex pillageBuff {get;private set;}
 
         public override void SetupAttributesInner() {
-            itemIsEquipment = true;
-
-            eqpEnigmable = true;
-            eqpCooldown = 45;
-
             RegLang(
                 "For 14 seconds, hitting enemies cause them to drop gold.",
                 "While active, every hit <style=cIsUtility>drops 1 gold</style> (scales with difficulty). Lasts <style=cIsUtility>" + duration.ToString("N0") + " seconds</style>.",
@@ -40,7 +35,7 @@ namespace ThinkInvisible.ClassicItems {
         }
         
         private bool On_ESPerformEquipmentAction(On.RoR2.EquipmentSlot.orig_PerformEquipmentAction orig, EquipmentSlot slot, EquipmentIndex eqpid) {
-            if(eqpid == regIndexEqp) {
+            if(eqpid == regIndex) {
                 var sbdy = slot.characterBody;
                 if(!sbdy) return false;
                 sbdy.ClearTimedBuffs(pillageBuff);

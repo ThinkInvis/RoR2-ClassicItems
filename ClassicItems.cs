@@ -14,6 +14,7 @@ using System;
 using TMPro;
 using UnityEngine.Networking;
 using Path = System.IO.Path;
+using System.Collections.ObjectModel;
 
 //TODO:
 // Add missing documentation in... a whole lotta places... whoops.
@@ -58,6 +59,14 @@ namespace ThinkInvisible.ClassicItems {
         public static bool gLongDesc {get;private set;}
         public static bool gSpinMod {get;private set;}
         public static bool gCoolYourJets {get;private set;}
+        
+        private static readonly ReadOnlyDictionary<ItemTier, string> modelNameMap = new ReadOnlyDictionary<ItemTier,string>(new Dictionary<ItemTier, string>{
+            {ItemTier.Boss, "BossCard"},
+            {ItemTier.Lunar, "LunarCard"},
+            {ItemTier.Tier1, "CommonCard"},
+            {ItemTier.Tier2, "UncommonCard"},
+            {ItemTier.Tier3, "RareCard"}
+        });
 
         private ClassicItemsPlugin() {
             #if DEBUG
@@ -95,25 +104,34 @@ namespace ThinkInvisible.ClassicItems {
             gCoolYourJets = gCfgCoolYourJets.Value;
 
             Debug.Log("ClassicItems: instantiating item classes...");
-
-            foreach(Type type in Assembly.GetAssembly(typeof(ItemBoilerplate)).GetTypes().Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(typeof(ItemBoilerplate)))) {
-                masterItemList.Add((ItemBoilerplate)Activator.CreateInstance(type));
-            }
+            masterItemList = ItemBoilerplate.InitAll();
 
             Debug.Log("ClassicItems: loading item configs...");
-
             foreach(ItemBoilerplate x in masterItemList) {
                 x.SetupConfig(cfgFile);
             }
 
-            masterItemList.RemoveWhere(x=>x.itemEnabled==false);
-
             Debug.Log("ClassicItems: registering item attributes...");
 
             foreach(ItemBoilerplate x in masterItemList) {
-                x.SetupAttributes();
-                Debug.Log("CI"+x.itemCodeName + ": " + (x.itemIsEquipment ? ("EQP"+((int)x.regIndexEqp).ToString()) : ((int)x.regIndex).ToString()));
+                var mpnOvr = "@ClassicItems:Assets/ClassicItems/models/" +
+                    (x is Item
+                    ? modelNameMap[((Item)x).itemTier]
+                    : ((Equipment)x).eqpIsLunar ? "LqpCard" : "EqpCard") + ".prefab";
+                var ipnOvr = "@ClassicItems:Assets/ClassicItems/icons/" + x.itemCodeName + "_icon.png";
+
+                typeof(ItemBoilerplate).GetProperty("modelPathName").SetValue(x, mpnOvr);
+                typeof(ItemBoilerplate).GetProperty("iconPathName").SetValue(x, ipnOvr);
+
+                Debug.Log(x.modelPathName);
+                Debug.Log(x.iconPathName);
+                
+                x.SetupAttributes("CLASSICITEMS", "CI");
+
+                Debug.Log("CI"+x.itemCodeName + ": " + (x is Equipment ? ("EQP"+((int)((Equipment)x).regIndex).ToString()) : ((int)((Item)x).regIndex).ToString()));
             }
+
+            masterItemList.RemoveWhere(x=>x.enabled==false);
         }
 
         #if DEBUG
@@ -268,8 +286,8 @@ namespace ThinkInvisible.ClassicItems {
 
             foreach(ItemBoilerplate bpl in masterItemList) {
                 PickupIndex pind;
-                if(bpl.itemIsEquipment) pind = PickupCatalog.FindPickupIndex(bpl.regIndexEqp);
-                else pind = PickupCatalog.FindPickupIndex(bpl.regIndex);
+                if(bpl is Equipment) pind = PickupCatalog.FindPickupIndex(((Equipment)bpl).regIndex);
+                else pind = PickupCatalog.FindPickupIndex(((Item)bpl).regIndex);
                 var pickup = PickupCatalog.GetPickupDef(pind);
                 Debug.Log(pickup.internalName);
                 pickup.displayPrefab = pickup.displayPrefab.InstantiateClone(pickup.internalName + "CICardPrefab", false);

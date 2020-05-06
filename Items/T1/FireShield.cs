@@ -1,12 +1,13 @@
 ﻿using RoR2;
 using UnityEngine;
-using BepInEx.Configuration;
-using System.Collections.Generic;
 using static ThinkInvisible.ClassicItems.MiscUtil;
+using System.Collections.ObjectModel;
 
 namespace ThinkInvisible.ClassicItems {
-    public class FireShield : ItemBoilerplate<FireShield> {
-        public override string displayName {get;} = "Fire Shield";
+    public class FireShield : Item<FireShield> {
+        public override string displayName => "Fire Shield";
+		public override ItemTier itemTier => ItemTier.Tier1;
+		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
         
         [AutoItemCfg("Fraction of max health required as damage taken to trigger Fire Shield.", default, 0f, 1f)]
         public float healthThreshold {get; private set;} = 0.1f;
@@ -24,8 +25,6 @@ namespace ThinkInvisible.ClassicItems {
             	"Retaliate on taking heavy damage.",
             	"<style=cDeath>When hit for more than " + Pct(healthThreshold) + " max health</style>, <style=cIsDamage>explode</style> for up to <style=cIsDamage>" + Pct(baseDmg) + "</style> <style=cStack>(+" + Pct(stackDmg) + " per stack)</style> damage to enemies within <style=cIsDamage>" + baseRadius.ToString("N0") + " m</style>.",
             	"A relic of times long past (ClassicItems mod)");
-            _itemTags = new List<ItemTag>{ItemTag.Damage};
-            itemTier = ItemTier.Tier1;
         }
 
         public override void SetupBehaviorInner() {

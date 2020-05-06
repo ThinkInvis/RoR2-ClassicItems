@@ -93,6 +93,8 @@ namespace ThinkInvisible.ClassicItems {
         ExposeAsConVar = 512,
         ///<summary>If SET: will stop the property value from being changed by the initial config read during BindAll.</summary>
         NoInitialRead = 1024,
+        ///<summary>(TODO: net mismatch checking is NYI) If UNSET: the property will temporarily retrieve its value from the host in multiplayer.</summary>
+        AllowNetMismatch = 2048,
         ///<summary>(TODO: NYI) If SET: invalidates all supported aspects of the attached item.</summary>
         AUInvalidateAll = AUInvalidateNameToken | AUInvalidatePickupToken | AUInvalidateDescToken | AUInvalidateLoreToken | AUInvalidatePickupModel
     }

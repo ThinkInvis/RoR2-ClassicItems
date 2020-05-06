@@ -4,11 +4,14 @@ using UnityEngine;
 using BepInEx.Configuration;
 using System.Collections.Generic;
 using UnityEngine.Networking;
-using R2API.Utils;
+using System.Collections.ObjectModel;
 
 namespace ThinkInvisible.ClassicItems {
-    public class LifeSavings : ItemBoilerplate<LifeSavings> {
-        public override string displayName {get;} = "Life Savings";
+    public class LifeSavings : Item<LifeSavings> {
+        public override string displayName => "Life Savings";
+        public override bool itemAIBDefault => true;
+        public override ItemTier itemTier => ItemTier.Tier1;
+		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
 
         [AutoItemCfg("Money to add to players per second per Life Savings stack (without taking into account InvertCount).", default, 0f, float.MaxValue)]
         public float gainPerSec {get;private set;} = 1f;
@@ -19,17 +22,11 @@ namespace ThinkInvisible.ClassicItems {
         [AutoItemCfg("If true, Life Savings will continue to work in areas where the run timer is paused (e.g. bazaar).")]
         public bool ignoreTimestop {get;private set;} = false;
 
-        public override void SetupConfigInner(ConfigFile cfl) {
-            itemAIBDefault = true;
-        }
-
         public override void SetupAttributesInner() {
             RegLang(
             	"Earn gold over time.",
             	"Generates <style=cIsUtility>$" + gainPerSec.ToString("N0") + "</style> <style=cStack>(+$" + gainPerSec.ToString("N0") + " per stack)</style> every second. <style=cStack>Generates less below " + invertCount.ToString("N0") + " stacks.</style>",
             	"A relic of times long past (ClassicItems mod)");
-            _itemTags = new List<ItemTag>{ItemTag.Utility};
-            itemTier = ItemTier.Tier1;
         }
 
         public override void SetupBehaviorInner() {
