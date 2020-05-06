@@ -52,7 +52,7 @@ namespace ThinkInvisible.ClassicItems {
 
             RegLang("Prescriptions",
                 "Increase damage and attack speed for 8 seconds.",
-                "While active, increases <style=cIsDamage>base damage by " + dmgBoost.ToString("N0") + " points<style> and <style=cIsDamage>attack speed by " + Pct(aSpdBoost) + "</style>. Lasts <style=cIsDamage>" + duration.ToString("N0") + " seconds</style>.",
+                "While active, increases <style=cIsDamage>base damage by " + dmgBoost.ToString("N0") + " points</style> and <style=cIsDamage>attack speed by " + Pct(aSpdBoost) + "</style>. Lasts <style=cIsDamage>" + duration.ToString("N0") + " seconds</style>.",
                 "A relic of times long past (ClassicItems mod)");
         }
 
