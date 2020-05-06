@@ -168,11 +168,11 @@ namespace ThinkInvisible.ClassicItems {
             freezeBuff = BuffAPI.Add(freezeBuffDef);
 
             var fearBuffDef = new CustomBuff(new BuffDef {
-                buffColor = Color.blue,
+                buffColor = Color.red,
                 canStack = false,
                 isDebuff = true,
                 name = "CIFear",
-                iconPath = "@ClassicItems:Assets/ClassicItems/icons/permafrost_icon.png"
+                iconPath = "textures/miscicons/texSprintIcon"
             });
             fearBuff = BuffAPI.Add(fearBuffDef);
             IL.EntityStates.AI.Walker.Combat.FixedUpdate += IL_ESAIWalkerCombatFixedUpdate;
