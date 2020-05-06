@@ -6,97 +6,41 @@ using System.Collections.Generic;
 
 namespace ThinkInvisible.ClassicItems {
     public class Clover : ItemBoilerplate<Clover> {
-        public override string itemCodeName {get;} = "Clover";
+        public override string displayName {get;} = "56 Leaf Clover";
 
-        private ConfigEntry<float> cfgBaseChance;
-        private ConfigEntry<float> cfgStackChance;
-        private ConfigEntry<float> cfgCapChance;
-
-        private ConfigEntry<float> cfgBaseUnc;
-        private ConfigEntry<float> cfgStackUnc;
-        private ConfigEntry<float> cfgCapUnc;
-
-        private ConfigEntry<float> cfgBaseRare;
-        private ConfigEntry<float> cfgStackRare;
-        private ConfigEntry<float> cfgCapRare;
-
-        private ConfigEntry<float> cfgEqpChance;
-
-        private ConfigEntry<bool> cfgGlobalStack;
-
-        public float baseChance {get;private set;}
-        public float stackChance {get;private set;}
-        public float capChance {get;private set;}
+        [AutoItemCfg("Percent chance for a Clover drop to happen at first stack -- as such, multiplicative with Rare/Uncommon chances.", default, 0f, 100f)]
+        public float baseChance {get;private set;} = 4f;
+        [AutoItemCfg("Percent chance for a Clover drop to happen per extra stack.", default, 0f, 100f)]
+        public float stackChance {get;private set;} = 1.5f;
+        [AutoItemCfg("Maximum percent chance for a Clover drop on elite kill.", default, 0f, 100f)]
+        public float capChance {get;private set;} = 100f;
         
-        public float baseUnc {get;private set;}
-        public float stackUnc {get;private set;}
-        public float capUnc {get;private set;}
+        [AutoItemCfg("Percent chance for a Clover drop to become Tier 2 at first stack (if it hasn't already become Tier 3).", default, 0f, 100f)]
+        public float baseUnc {get;private set;} = 1f;
+        [AutoItemCfg("Percent chance for a Clover drop to become Tier 2 per extra stack.", default, 0f, 100f)]
+        public float stackUnc {get;private set;} = 0.1f;
+        [AutoItemCfg("Maximum percent chance for a Clover drop to become Tier 2.", default, 0f, 100f)]
+        public float capUnc {get;private set;} = 25f;
         
-        public float baseRare {get;private set;}
-        public float stackRare {get;private set;}
-        public float capRare {get;private set;}
+        [AutoItemCfg("Percent chance for a Clover drop to become Tier 3 at first stack.", default, 0f, 100f)]
+        public float baseRare {get;private set;} = 0.01f;
+        [AutoItemCfg("Percent chance for a Clover drop to become Tier 3 per extra stack.", default, 0f, 100f)]
+        public float stackRare {get;private set;} = 0.001f;
+        [AutoItemCfg("Maximum percent chance for a Clover drop to become Tier 3.", default, 0f, 100f)]
+        public float capRare {get;private set;} = 1f;
 
-        public float baseEqp {get;private set;}
+        [AutoItemCfg("Percent chance for a Tier 1 Clover drop to become Equipment instead.", default, 0f, 100f)]
+        public float baseEqp {get;private set;} = 5f;
 
-        public bool globalStack {get;private set;}
+        [AutoItemCfg("If true, all clovers across all living players are counted towards item drops. If false, only the killer's items count.")]
+        public bool globalStack {get;private set;} = true;
 
-        protected override void SetupConfigInner(ConfigFile cfl) {
+        public override void SetupConfigInner(ConfigFile cfl) {
             itemAIBDefault = true;
-
-            cfgBaseChance = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "BaseChance"), 4f, new ConfigDescription(
-                "Percent chance for a Clover drop to happen at first stack -- as such, multiplicative with Rare/Uncommon chances.",
-                new AcceptableValueRange<float>(0f,100f)));
-            cfgStackChance = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "StackChance"), 1.5f, new ConfigDescription(
-                "Percent chance for a Clover drop to happen per extra stack.",
-                new AcceptableValueRange<float>(0f,100f)));
-            cfgCapChance = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "CapChance"), 100f, new ConfigDescription(
-                "Maximum percent chance for a Clover drop on elite kill.",
-                new AcceptableValueRange<float>(0f,100f)));
-            cfgBaseUnc = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "BaseUnc"), 1f, new ConfigDescription(
-                "Percent chance for a Clover drop to become Tier 2 at first stack (if it hasn't already become Tier 3).",
-                new AcceptableValueRange<float>(0f,100f)));
-            cfgStackUnc = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "StackUnc"), 0.1f, new ConfigDescription(
-                "Percent chance for a Clover drop to become Tier 2 per extra stack.",
-                new AcceptableValueRange<float>(0f,100f)));
-            cfgCapUnc = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "CapUnc"), 25f, new ConfigDescription(
-                "Maximum percent chance for a Clover drop to become Tier 2.",
-                new AcceptableValueRange<float>(0f,100f)));
-            cfgBaseRare = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "BaseRare"), 0.01f, new ConfigDescription(
-                "Percent chance for a Clover drop to become Tier 3 at first stack.",
-                new AcceptableValueRange<float>(0f,100f)));
-            cfgStackRare = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "StackRare"), 0.001f, new ConfigDescription(
-                "Percent chance for a Clover drop to become Tier 3 per extra stack.",
-                new AcceptableValueRange<float>(0f,100f)));
-            cfgCapRare = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "CapRare"), 1f, new ConfigDescription(
-                "Maximum percent chance for a Clover drop to become Tier 3.",
-                new AcceptableValueRange<float>(0f,100f)));
-            cfgEqpChance = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "EqpChance"), 5f, new ConfigDescription(
-                "Percent chance for a Tier 1 Clover drop to become Equipment instead.",
-                new AcceptableValueRange<float>(0f,100f)));
-            cfgGlobalStack = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "GlobalStack"), true, new ConfigDescription(
-                "If true, all clovers across all living players are counted towards item drops. If false, only the killer's items count."));
-
-            baseChance = cfgBaseChance.Value;
-            stackChance = cfgStackChance.Value;
-            capChance = cfgCapChance.Value;
-            
-            baseUnc = cfgBaseUnc.Value;
-            stackUnc = cfgStackUnc.Value;
-            capUnc = cfgCapUnc.Value;
-
-            baseRare = cfgBaseRare.Value;
-            stackRare = cfgStackRare.Value;
-            capRare = cfgCapRare.Value;
-
-            baseEqp = cfgEqpChance.Value;
-
-            globalStack = cfgGlobalStack.Value;
         }
         
-        protected override void SetupAttributesInner() {
-            modelPathName = "clover_model.prefab";
-            iconPathName = "clover_icon.png";
-            RegLang("56 Leaf Clover",
+        public override void SetupAttributesInner() {
+            RegLang(
             	"Elite mobs have a chance to drop items.",
             	"Elites have a <style=cIsUtility>" + Pct(baseChance, 1, 1) + " chance</style> <style=cStack>(+" + Pct(stackChance, 1, 1) + " per stack COMBINED FOR ALL PLAYERS, up to " + Pct(capChance, 1, 1) + ")</style> to <style=cIsUtility>drop items</style> when <style=cIsDamage>killed</style>. <style=cStack>(Further stacks increase uncommon/rare chance up to " +Pct(capUnc,2,1) +" and "+Pct(capRare,3,1)+", respectively.)</style>",
             	"A relic of times long past (ClassicItems mod)");
@@ -104,7 +48,7 @@ namespace ThinkInvisible.ClassicItems {
             itemTier = ItemTier.Tier2;
         }
 
-        protected override void SetupBehaviorInner() {
+        public override void SetupBehaviorInner() {
             On.RoR2.DeathRewards.OnKilledServer += On_DROnKilledServer;
         }
 

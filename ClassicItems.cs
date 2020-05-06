@@ -13,6 +13,7 @@ using Mono.Cecil.Cil;
 using System;
 using TMPro;
 using UnityEngine.Networking;
+using Path = System.IO.Path;
 
 //TODO:
 // Add missing documentation in... a whole lotta places... whoops.
@@ -68,7 +69,7 @@ namespace ThinkInvisible.ClassicItems {
                 var provider = new AssetBundleResourcesProvider("@ClassicItems", bundle);
                 ResourcesAPI.AddProvider(provider);
             }
-            cfgFile = new ConfigFile(Paths.ConfigPath + "\\" + ModGuid + ".cfg", true);
+            cfgFile = new ConfigFile(Path.Combine(Paths.ConfigPath, ModGuid + ".cfg"), true);
             
 
             Debug.Log("ClassicItems: loading global configs...");

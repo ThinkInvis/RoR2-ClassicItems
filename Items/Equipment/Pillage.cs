@@ -6,36 +6,26 @@ using UnityEngine.Networking;
 
 namespace ThinkInvisible.ClassicItems {
     public class Pillage : ItemBoilerplate<Pillage> {
-        public override string itemCodeName {get;} = "Pillage";
+        public override string displayName {get;} = "Pillaged Gold";
 
-        private ConfigEntry<float> cfgDuration;
-        public float duration {get;private set;}
+        [AutoItemCfg("Duration of the buff applied by Pillaged Gold.", default, 0f, float.MaxValue)]
+        public float duration {get;private set;} = 14f;
 
         public BuffIndex pillageBuff {get;private set;}
 
-        protected override void SetupConfigInner(ConfigFile cfl) {
-            cfgDuration = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "Duration"), 14f, new ConfigDescription(
-                "Duration of the buff applied by Pillaged Gold.",
-                new AcceptableValueRange<float>(0f,float.MaxValue)));
-
-            duration = cfgDuration.Value;
-        }
-        
-        protected override void SetupAttributesInner() {
+        public override void SetupAttributesInner() {
             itemIsEquipment = true;
 
-            modelPathName = "pillage_model.prefab";
-            iconPathName = "pillage_icon.png";
             eqpEnigmable = true;
             eqpCooldown = 45;
 
-            RegLang("Pillaged Gold",
+            RegLang(
                 "For 14 seconds, hitting enemies cause them to drop gold.",
                 "While active, every hit <style=cIsUtility>drops 1 gold</style> (scales with difficulty). Lasts <style=cIsUtility>" + duration.ToString("N0") + " seconds</style>.",
                 "A relic of times long past (ClassicItems mod)");
         }
 
-        protected override void SetupBehaviorInner() {
+        public override void SetupBehaviorInner() {
             var pillageBuffDef = new R2API.CustomBuff(new BuffDef {
                 buffColor = new Color(0.85f, 0.8f, 0.3f),
                 canStack = true,

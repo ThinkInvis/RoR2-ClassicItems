@@ -10,50 +10,31 @@ using RoR2.Orbs;
 
 namespace ThinkInvisible.ClassicItems {
     public class Lantern : ItemBoilerplate<Lantern> {
-        public override string itemCodeName {get;} = "Lantern";
+        public override string displayName {get;} = "Safeguard Lantern";
 
-        private ConfigEntry<float> cfgDuration;
-        private ConfigEntry<float> cfgDamage;
-        private ConfigEntry<float> cfgRange;
-        
-        public float duration {get;private set;}
-        public float damage {get;private set;}
-        public float range {get;private set;}
+        [AutoItemCfg("Duration of the Safeguard Lantern effect.", default, 0f, float.MaxValue)]
+        public float duration {get;private set;} = 10f;
+		[AutoItemCfg("Base-player-damage/sec applied by Safeguard Lantern.", default, 0f, float.MaxValue)]
+        public float damage {get;private set;} = 0.2f;
+		[AutoItemCfg("Radius of the Safeguard Lantern aura.", default, 0f, float.MaxValue)]
+        public float range {get;private set;} = 25f;
 
         private GameObject lanternWardPrefab;
-
-        protected override void SetupConfigInner(ConfigFile cfl) {
-            cfgDuration = cfl.Bind<float>(new ConfigDefinition("Items." + itemCodeName, "Duration"), 10f, new ConfigDescription(
-                "Duration of the Safeguard Lantern effect.",
-                new AcceptableValueRange<float>(0,float.MaxValue)));
-            cfgDamage = cfl.Bind<float>(new ConfigDefinition("Items." + itemCodeName, "Damage"), 0.2f, new ConfigDescription(
-                "Base-player-damage/sec applied by Safeguard Lantern.",
-                new AcceptableValueRange<float>(0,float.MaxValue)));
-            cfgRange = cfl.Bind<float>(new ConfigDefinition("Items." + itemCodeName, "Range"), 25f, new ConfigDescription(
-                "Radius of the Safeguard Lantern aura.",
-                new AcceptableValueRange<float>(0,float.MaxValue)));
-
-            duration = cfgDuration.Value;
-            damage = cfgDamage.Value;
-            range = cfgRange.Value;
-        }
         
-        protected override void SetupAttributesInner() {
+        public override void SetupAttributesInner() {
             itemIsEquipment = true;
 
-            modelPathName = "lantern_model.prefab";
-            iconPathName = "lantern_icon.png";
             eqpEnigmable = true;
 			eqpIsLunar = true;
             eqpCooldown = 45;
 
-            RegLang("Safeguard Lantern",
+            RegLang(
                 "Drop a lantern that fears and damages enemies for 10 seconds.",
                 "Sets a " + range.ToString("N0") + "-meter, " + duration.ToString("N0") + "-second AoE which <style=cIsUtility>fears enemies</style> and deals <style=cIsDamage>" + Pct(damage) + " damage per second</style>. <style=cIsUtility>Feared enemies will run out of melee</style>, <style=cDeath>but that won't stop them from shooting you.</style>" ,
                 "A relic of times long past (ClassicItems mod)");
         }
 
-        protected override void SetupBehaviorInner() {
+        public override void SetupBehaviorInner() {
 			var mshPrefab = Resources.Load<GameObject>("Prefabs/NetworkedObjects/WarbannerWard").transform.Find("Indicator");
 
 			var lPrefabPrefab = new GameObject("LanternAuraPrefabPrefab");

@@ -13,7 +13,7 @@ using R2API;
 
 namespace ThinkInvisible.ClassicItems {
     public class Embryo : ItemBoilerplate<Embryo> {
-        public override string itemCodeName {get;} = "Embryo";
+        public override string displayName {get;} = "Beating Embryo";
 
         private ConfigEntry<float> cfgProcChance;
 
@@ -55,7 +55,7 @@ namespace ThinkInvisible.ClassicItems {
         });
 
         private ConfigFile cachedCfl;
-        protected override void SetupConfigInner(ConfigFile cfl) {
+        public override void SetupConfigInner(ConfigFile cfl) {
             cachedCfl = cfl;
             cfgProcChance = cfl.Bind<float>(new ConfigDefinition("Items." + itemCodeName, "ProcChance"), 30f, new ConfigDescription(
                 "Percent chance of triggering an equipment twice. Stacks additively.",
@@ -78,10 +78,8 @@ namespace ThinkInvisible.ClassicItems {
             subEnableModded = cfgSubEnableModded.Value;
         }
         
-        protected override void SetupAttributesInner() {
-            modelPathName = "embryo_model.prefab";
-            iconPathName = "embryo_icon.png";
-            RegLang("Beating Embryo",
+        public override void SetupAttributesInner() {
+            RegLang(
             	"Equipment has a 30% chance to deal double the effect.",
             	"Upon activating an equipment, adds a <style=cIsUtility>" + Pct(procChance, 0, 1) + "</style> <style=cStack>(+" + Pct(procChance, 0, 1) + " per stack)</style> chance to <style=cIsUtility>double its effects somehow</style>.",
             	"A relic of times long past (ClassicItems mod)");
@@ -95,7 +93,7 @@ namespace ThinkInvisible.ClassicItems {
         private GameObject boostedGatewayPrefab;
         private GameObject boostedScannerPrefab;
 
-        protected override void SetupBehaviorInner() {
+        public override void SetupBehaviorInner() {
             ///// WARNING: late config setup. is there a safer way to do this? eqpIsLunar and itemIsEquipment are defined during attributes stage
             Debug.Log("ClassicItems: adding late config for Embryo");
             cfgSubEnableInternal = new Dictionary<Type,ConfigEntry<bool>>();

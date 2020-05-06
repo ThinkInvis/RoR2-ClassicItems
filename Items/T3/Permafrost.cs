@@ -5,43 +5,23 @@ using System.Collections.Generic;
 
 namespace ThinkInvisible.ClassicItems {
     public class Permafrost : ItemBoilerplate<Permafrost> {
-        public override string itemCodeName {get;} = "Permafrost";
+        public override string displayName {get;} = "Permafrost";
 
-        private ConfigEntry<float> cfgProcChance;
-        private ConfigEntry<float> cfgFreezeTime;
-        private ConfigEntry<float> cfgSlowTime;
-        private ConfigEntry<bool> cfgSlowUnfreezable;
+        [AutoItemCfg("Percent chance of triggering Permafrost on hit. Affected by proc coefficient; stacks inverse-multiplicatively.", default, 0f, 100f)]
+        public float procChance {get;private set;} = 6f;
+        [AutoItemCfg("Duration of freeze applied by Permafrost.", default, 0f, float.MaxValue)]
+        public float freezeTime {get;private set;} = 1.5f;
+        [AutoItemCfg("Duration of slow applied by Permafrost.", default, 0f, float.MaxValue)]
+        public float slowTime {get;private set;} = 3.0f;
+        [AutoItemCfg("If true, Permafrost will slow targets even if they can't be frozen.")]
+        public bool slowUnfreezable {get;private set;} = true;
 
-        public float procChance {get;private set;}
-        public float freezeTime {get;private set;}
-        public float slowTime {get;private set;}
-        public bool slowUnfreezable {get;private set;}
-
-        protected override void SetupConfigInner(ConfigFile cfl) {
-            cfgProcChance = cfl.Bind<float>(new ConfigDefinition("Items." + itemCodeName, "ProcChance"), 6f, new ConfigDescription(
-                "Percent chance of triggering Permafrost on hit. Affected by proc coefficient; stacks inverse-multiplicatively.",
-                new AcceptableValueRange<float>(0f,100f)));
-            cfgFreezeTime = cfl.Bind<float>(new ConfigDefinition("Items." + itemCodeName, "FreezeTime"), 1.5f, new ConfigDescription(
-                "Duration of freeze applied by Permafrost.",
-                new AcceptableValueRange<float>(0f,float.MaxValue)));
-            cfgSlowTime = cfl.Bind<float>(new ConfigDefinition("Items." + itemCodeName, "SlowTime"), 3.0f, new ConfigDescription(
-                "Duration of slow applied by Permafrost.",
-                new AcceptableValueRange<float>(0f,float.MaxValue)));
-            cfgSlowUnfreezable = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "SlowUnfreezable"), true, new ConfigDescription(
-                "If true, Permafrost will slow targets even if they can't be frozen."));
-
-            procChance = cfgProcChance.Value;
-            freezeTime = cfgFreezeTime.Value;
-            slowTime = cfgSlowTime.Value;
-            slowUnfreezable = cfgSlowUnfreezable.Value;
-        }
-        
-        protected override void SetupAttributesInner() {
+        public override void SetupConfigInner(ConfigFile cfl) {
             itemAIBDefault = true;
+        }
 
-            modelPathName = "permafrost_model.prefab";
-            iconPathName = "permafrost_icon.png";
-            RegLang("Permafrost",
+        public override void SetupAttributesInner() {
+            RegLang(
             	"Chance to freeze enemies on hit.",
             	"<style=cIsUtility>" + Pct(procChance,1,1) + "</style> <style=cStack>(+" + Pct(procChance,1,1) + " per stack, inverse-mult.)</style> chance to <style=cIsUtility>freeze and slow</style> an enemy (" + freezeTime.ToString("N1") + " sec, " + slowTime.ToString("N1") + " sec). Affected by proc coefficient.",
             	"A relic of times long past (ClassicItems mod)");
@@ -49,7 +29,7 @@ namespace ThinkInvisible.ClassicItems {
             itemTier = ItemTier.Tier3;
         }
 
-        protected override void SetupBehaviorInner() {
+        public override void SetupBehaviorInner() {
             On.RoR2.SetStateOnHurt.OnTakeDamageServer += On_SSOHOnTakeDamageServer;
         }
 

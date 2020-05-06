@@ -7,58 +7,29 @@ using System.Collections.Generic;
 
 namespace ThinkInvisible.ClassicItems {
     public class PhotonJetpack : ItemBoilerplate<PhotonJetpack> {
-        public override string itemCodeName {get;} = "PhotonJetpack";
+        public override string displayName {get;} = "Photon Jetpack";
 
         public BuffIndex photonFuelBuff {get;private set;}
 
-        private ConfigEntry<float> cfgCooldown;
-        private ConfigEntry<float> cfgRecharge;
-        private ConfigEntry<float> cfgFuel;
-        private ConfigEntry<float> cfgStackFuel;
-        private ConfigEntry<float> cfgGravMod;
-        private ConfigEntry<float> cfgFallBoost;
+        [AutoItemCfg("Time in seconds that jump must be released before Photon Jetpack fuel begins recharging.",default,0f,float.MaxValue)]
+        public float rchDelay {get;private set;} = 1.0f;
+        [AutoItemCfg("Seconds of Photon Jetpack fuel recharged per second realtime.",default,0f,float.MaxValue)]
+        public float rchRate {get;private set;} = 1.0f;
+        [AutoItemCfg("Seconds of Photon Jetpack fuel capacity at first stack.",default,0f,float.MaxValue)]
+        public float baseFuel {get;private set;} = 1.6f;
+        [AutoItemCfg("Seconds of Photon Jetpack fuel capacity per additional stack.",default,0f,float.MaxValue)]
+        public float stackFuel {get;private set;} = 1.6f;
+        [AutoItemCfg("Multiplier for gravity reduction while Photon Jetpack is active. Effectively the thrust provided by the jetpack -- 0 = no effect, 1 = anti-grav, 2 = negative gravity, etc.",default,0f,float.MaxValue)]
+        public float gravMod {get;private set;} = 1.2f;
+        [AutoItemCfg("Added to Photon Jetpack's GravMod while the character is falling (negative vertical velocity) to assist in stopping falls.",default,0f,float.MaxValue)]
+        public float fallBoost {get;private set;} = 2.0f;
 
-        public float rchDelay {get;private set;}
-        public float rchRate {get;private set;}
-        public float baseFuel {get;private set;}
-        public float stackFuel {get;private set;}
-        public float gravMod {get;private set;}
-        public float fallBoost {get;private set;}
-
-        protected override void SetupConfigInner(ConfigFile cfl) {
-            cfgCooldown = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "Cooldown"), 1.0f, new ConfigDescription(
-                "Time in seconds that jump must be released before Photon Jetpack fuel begins recharging.",
-                new AcceptableValueRange<float>(0f,float.MaxValue)));
-            cfgRecharge = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "Recharge"), 1.0f, new ConfigDescription(
-                "Seconds of Photon Jetpack fuel recharged per second realtime.",
-                new AcceptableValueRange<float>(0f,float.MaxValue)));
-            cfgFuel = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "Fuel"), 1.6f, new ConfigDescription(
-                "Seconds of Photon Jetpack fuel capacity at first stack.",
-                new AcceptableValueRange<float>(0f,float.MaxValue)));
-            cfgStackFuel = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "StackFuel"), 1.6f, new ConfigDescription(
-                "Seconds of Photon Jetpack fuel capacity per additional stack.",
-                new AcceptableValueRange<float>(0f,float.MaxValue)));
-            cfgGravMod = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "GravMod"), 1.2f, new ConfigDescription(
-                "Multiplier for gravity reduction while Photon Jetpack is active. Effectively the thrust provided by the jetpack -- 0 = no effect, 1 = anti-grav, 2 = negative gravity, etc.",
-                new AcceptableValueRange<float>(0f,float.MaxValue)));
-            cfgFallBoost = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "FallBoost"), 2.0f, new ConfigDescription(
-                "Added to Photon Jetpack's GravMod while the character is falling (negative vertical velocity) to assist in stopping falls.",
-                new AcceptableValueRange<float>(0f,float.MaxValue)));
-
-            rchDelay = cfgCooldown.Value;
-            rchRate = cfgRecharge.Value;
-            baseFuel = cfgFuel.Value;
-            stackFuel = cfgStackFuel.Value;
-            gravMod = cfgGravMod.Value;
-            fallBoost = cfgFallBoost.Value;
+        public override void SetupConfigInner(ConfigFile cfl) {
+            itemAIBDefault = true;
         }
         
-        protected override void SetupAttributesInner() {
-            itemAIBDefault = true;
-
-            modelPathName = "photonjetpack_model.prefab";
-            iconPathName = "photonjetpack_icon.png";
-            RegLang("Photon Jetpack",
+        public override void SetupAttributesInner() {
+            RegLang(
             	"No hands.",
             	"Grants <style=cIsUtility>" + baseFuel.ToString("N1") + " second" + NPlur(baseFuel, 1) + "</style> <style=cStack>(+" + stackFuel.ToString("N1") +" s per stack)</style> of <style=cIsUtility>flight</style> at <style=cIsUtility>" + gravMod.ToString("N1") + "g</style> <style=cStack>(+" + fallBoost.ToString("N1") + "g while falling)</style>, usable once you have no double jumps remaining. Fuel <style=cIsUtility>recharges</style> at <style=cIsUtility>" + Pct(rchRate) + " speed</style> after a <style=cIsUtility>delay</style> of <style=cIsUtility>" + rchDelay.ToString("N0") + " second" + NPlur(rchDelay) + "</style>.",
             	"A relic of times long past (ClassicItems mod)");
@@ -66,7 +37,7 @@ namespace ThinkInvisible.ClassicItems {
             itemTier = ItemTier.Tier3;
         }
 
-        protected override void SetupBehaviorInner() {
+        public override void SetupBehaviorInner() {
             var PhotonJetpackBuff = new R2API.CustomBuff(new BuffDef {
                 buffColor = Color.cyan,
                 canStack = true,

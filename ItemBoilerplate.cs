@@ -8,16 +8,18 @@ using System.Collections.ObjectModel;
 using UnityEngine;
 
 namespace ThinkInvisible.ClassicItems {
+
     public abstract class ItemBoilerplate<T>:ItemBoilerplate where T : ItemBoilerplate<T> {
         public static T instance {get;private set;}
 
         public ItemBoilerplate() {
             if(instance != null) throw new InvalidOperationException("Singleton class \"" + typeof(T).Name + "\" inheriting ItemBoilerplate was instantiated twice");
+            this.itemCodeName = typeof(T).Name;
             instance = this as T;
         }
     }
 
-    public abstract class ItemBoilerplate {
+    public abstract class ItemBoilerplate : IAutoItemCfg {
         public bool itemIsEquipment {get; protected set;} = false;
         public bool itemAIBDefault {get;protected set;} = false;
 
@@ -42,7 +44,8 @@ namespace ThinkInvisible.ClassicItems {
         public bool attributesDone {get; private set;} = false;
         public bool behaviorDone {get; private set;} = false;
 
-        public abstract string itemCodeName {get;}
+        public string itemCodeName {get;protected set;}
+        public abstract string displayName {get;} //The item's display name in the mod's default language. Will be used in config files; may also be used in RegLang.
 
         public ItemIndex regIndex {get; private set;}
         public ItemDef regDef {get; private set;}
@@ -52,11 +55,13 @@ namespace ThinkInvisible.ClassicItems {
         public EquipmentDef regDefEqp {get; private set;}
         public CustomEquipment regEqp {get; private set;}
 
-        protected abstract void SetupConfigInner(ConfigFile cfl);
+        public virtual void SetupConfigInner(ConfigFile cfl) {}
 
         public ItemBoilerplate() {
             if(itemIsEquipment) _itemTags = new List<ItemTag>();
         }
+        
+        public Dictionary<string, ConfigEntryBase> autoItemCfgs {get;} = new Dictionary<string, ConfigEntryBase>();
 
         public void SetupConfig(ConfigFile cfl) {
             if(configDone) {
@@ -65,29 +70,30 @@ namespace ThinkInvisible.ClassicItems {
             }
             configDone = true;
 
+            this.BindAll(cfl, "Items." + itemCodeName);
+
             SetupConfigInner(cfl);
-                
+
             cfgEnable = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "Enable"), true, new ConfigDescription(
-            "If false, the item will not appear ingame, nor will any relevant IL patches or hooks be added."));
+            "If false, " + displayName + " will not appear ingame, nor will any relevant IL patches or hooks be added."));
             itemEnabled = cfgEnable.Value;
 
             if(!itemIsEquipment) {
                 cfgAIB = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "AIBlacklist"), itemAIBDefault, new ConfigDescription(
-                "If true, the item will not be given to enemies by Evolution nor in the arena map, and it will not be found by Scavengers."));
+                "If true, " + displayName + " will not be given to enemies by Evolution nor in the arena map, and it will not be found by Scavengers."));
                 itemAIB = cfgAIB.Value;
             }
-
         }
         
-        protected abstract void SetupAttributesInner();
+        public abstract void SetupAttributesInner();
             
-        private static Dictionary<ItemTier, string> modelNameMap = new Dictionary<ItemTier, string>{
+        private static readonly ReadOnlyDictionary<ItemTier, string> modelNameMap = new ReadOnlyDictionary<ItemTier,string>(new Dictionary<ItemTier, string>{
             {ItemTier.Boss, "BossCard"},
             {ItemTier.Lunar, "LunarCard"},
             {ItemTier.Tier1, "CommonCard"},
             {ItemTier.Tier2, "UncommonCard"},
             {ItemTier.Tier3, "RareCard"}
-        };
+        });
 
         public void SetupAttributes() {
             if(attributesDone) {
@@ -106,8 +112,8 @@ namespace ThinkInvisible.ClassicItems {
             if(itemIsEquipment) {
                 regDefEqp = new EquipmentDef {
                     name = "CI"+itemCodeName,
-                    pickupModelPath = "@ClassicItems:Assets/ClassicItems/models/" + (eqpIsLunar ? "LqpCard.prefab" : "EqpCard.prefab"),
-                    pickupIconPath = "@ClassicItems:Assets/ClassicItems/icons/" + iconPathName,
+                    pickupModelPath = modelPathName ?? ("@ClassicItems:Assets/ClassicItems/models/" + (eqpIsLunar ? "LqpCard.prefab" : "EqpCard.prefab")),
+                    pickupIconPath = iconPathName ?? ("@ClassicItems:Assets/ClassicItems/icons/" + itemCodeName + "_icon.png"),
                     nameToken = gNameToken,
                     pickupToken = gPickupToken,
                     descriptionToken = gDescriptionToken,
@@ -125,8 +131,8 @@ namespace ThinkInvisible.ClassicItems {
                 regDef = new ItemDef {
                     name = "CI"+itemCodeName,
                     tier = itemTier,
-                    pickupModelPath = "@ClassicItems:Assets/ClassicItems/models/" + modelNameMap[itemTier] + ".prefab",
-                    pickupIconPath = "@ClassicItems:Assets/ClassicItems/icons/" + iconPathName,
+                    pickupModelPath = modelPathName ?? ("@ClassicItems:Assets/ClassicItems/models/" + modelNameMap[itemTier] + ".prefab"),
+                    pickupIconPath = iconPathName ?? ("@ClassicItems:Assets/ClassicItems/icons/" + itemCodeName + "_icon.png"),
                     nameToken = gNameToken,
                     pickupToken = gPickupToken,
                     descriptionToken = gDescriptionToken,
@@ -140,7 +146,7 @@ namespace ThinkInvisible.ClassicItems {
             }
         }
 
-        public void RegLang(string name, string pickup, string desc, string lore, string langid = null) {
+        public void RegLang(string name, string pickup, string desc, string lore, string langid) {
             var gNameToken = "CLASSICITEMS_" + itemCodeName.ToUpper() + "_NAME";
             var gPickupToken = "CLASSICITEMS_" + itemCodeName.ToUpper() + "_PICKUP";
             var gDescriptionToken = "CLASSICITEMS_" + itemCodeName.ToUpper() + "_DESC";
@@ -159,6 +165,10 @@ namespace ThinkInvisible.ClassicItems {
             }
         }
 
+        public void RegLang(string pickup, string desc, string lore) {
+            RegLang(displayName, pickup, desc, lore, null);
+        }
+
         public void SetupBehavior() {
             if(behaviorDone) {
                 Debug.LogError("ClassicItems: something tried to setup behavior for an item twice");
@@ -169,7 +179,7 @@ namespace ThinkInvisible.ClassicItems {
             SetupBehaviorInner();
         }
 
-        protected abstract void SetupBehaviorInner();
+        public abstract void SetupBehaviorInner();
         
         public int GetCount(Inventory inv) {
             if(itemIsEquipment) {

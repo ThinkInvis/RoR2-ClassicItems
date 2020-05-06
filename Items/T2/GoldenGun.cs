@@ -9,47 +9,27 @@ using R2API.Utils;
 
 namespace ThinkInvisible.ClassicItems {
     public class GoldenGun : ItemBoilerplate<GoldenGun> {
-        public override string itemCodeName {get;} = "GoldenGun";
+        public override string displayName {get;} = "Golden Gun";
 
-        private ConfigEntry<float> cfgDamageBoost;
-        private ConfigEntry<int> cfgGoldAmt;
-        private ConfigEntry<float> cfgGoldReduc;
-        private ConfigEntry<bool> cfgInclDeploys;
-
-        public float damageBoost {get;private set;}
-        public int goldAmt {get;private set;}
-        public float goldReduc {get;private set;}
-        public bool inclDeploys {get;private set;}
+        [AutoItemCfg("Maximum multiplier to add to player damage.",default,0f,float.MaxValue)]
+        public float damageBoost {get;private set;} = 0.4f;
+        [AutoItemCfg("Gold required for maximum damage. Scales with difficulty level.",default,0,int.MaxValue)]
+        public int goldAmt {get;private set;} = 700;
+        [AutoItemCfg("Inverse-exponential multiplier for reduced GoldAmt per stack (higher = more powerful).",default,0f,0.999f)]
+        public float goldReduc {get;private set;} = 0.5f;
+        [AutoItemCfg("If true, deployables (e.g. Engineer turrets) with Golden Gun will benefit from their master's money.")]
+        public bool inclDeploys {get;private set;} = true;
 
         private bool ilFailed = false;
         
         public BuffIndex goldenGunBuff {get;private set;}
 
-        protected override void SetupConfigInner(ConfigFile cfl) {
+        public override void SetupConfigInner(ConfigFile cfl) {
             itemAIBDefault = true;
-
-            cfgDamageBoost = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "DamageBoost"), 0.4f, new ConfigDescription(
-                "Maximum multiplier to add to player damage.",
-                new AcceptableValueRange<float>(0f,float.MaxValue)));
-            cfgGoldAmt = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "GoldAmt"), 700, new ConfigDescription(
-                "Gold required for maximum damage. Scales with difficulty level.",
-                new AcceptableValueRange<int>(0,int.MaxValue)));
-            cfgGoldReduc = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "GoldReduc"), 0.5f, new ConfigDescription(
-                "Inverse-exponential multiplier for reduced GoldAmt per stack.",
-                new AcceptableValueRange<float>(0f,0.999f)));
-            cfgInclDeploys = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "InclDeploys"), true, new ConfigDescription(
-                "If true, deployables (e.g. Engineer turrets) with Golden Gun will benefit from their master's money."));
-
-            damageBoost = cfgDamageBoost.Value;
-            goldAmt = cfgGoldAmt.Value;
-            goldReduc = cfgGoldReduc.Value;
-            inclDeploys = cfgInclDeploys.Value;
         }
         
-        protected override void SetupAttributesInner() {
-            modelPathName = "goldengun_model.prefab";
-            iconPathName = "goldengun_icon.png";
-            RegLang("Golden Gun",
+        public override void SetupAttributesInner() {
+            RegLang(
             	"More gold, more damage.",
             	"Deal <style=cIsDamage>bonus damage</style> based on your <style=cIsUtility>money</style>, up to <style=cIsDamage>40% damage</style> at <style=cIsUtility>$700</style> <style=cStack>(cost increases with difficulty, -50% per stack)</style>.",
             	"A relic of times long past (ClassicItems mod)");
@@ -57,7 +37,7 @@ namespace ThinkInvisible.ClassicItems {
             itemTier = ItemTier.Tier2;
         }
 
-        protected override void SetupBehaviorInner() {
+        public override void SetupBehaviorInner() {
             var goldenGunBuffDef = new R2API.CustomBuff(new BuffDef {
                 buffColor = new Color(0.85f, 0.8f, 0.3f),
                 canStack = true,

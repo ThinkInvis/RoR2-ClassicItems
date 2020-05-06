@@ -6,30 +6,15 @@ using System.Collections.Generic;
 
 namespace ThinkInvisible.ClassicItems {
     public class BoxingGloves : ItemBoilerplate<BoxingGloves> {
-        public override string itemCodeName {get;} = "BoxingGloves";
+        public override string displayName {get;} = "Boxing Gloves";
 
-        private ConfigEntry<float> cfgProcChance;
-        private ConfigEntry<float> cfgProcForce;
+        [AutoItemCfg("Percent chance for Boxing Gloves to proc; stacks multiplicatively.", default, 0f, 100f)]
+        public float procChance {get;private set;} = 6f;
+        [AutoItemCfg("Multiplier for knockback force.", default, 0f, float.MaxValue)]
+        public float procForce {get;private set;} = 50f;
 
-        public float procChance {get;private set;}
-        public float procForce {get;private set;}
-
-        protected override void SetupConfigInner(ConfigFile cfl) {
-            cfgProcChance = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "ProcChance"), 6f, new ConfigDescription(
-                "Percent chance for Boxing Gloves to proc; stacks multiplicatively.",
-                new AcceptableValueRange<float>(0f,100f)));
-            cfgProcForce = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "ProcForce"), 50f, new ConfigDescription(
-                "Multiplier for knockback force.",
-                new AcceptableValueRange<float>(0f,float.MaxValue)));
-
-            procChance = cfgProcChance.Value;
-            procForce = cfgProcForce.Value;
-        }
-        
-        protected override void SetupAttributesInner() {
-            modelPathName = "boxinggloves_model.prefab";
-            iconPathName = "boxinggloves_icon.png";
-            RegLang("Boxing Gloves",
+        public override void SetupAttributesInner() {
+            RegLang(
             	"Hitting enemies have a " + Pct(procChance,0,1) + " chance to knock them back.",
             	"<style=cIsUtility>" + Pct(procChance,0,1) + "</style> <style=cStack>(+"+Pct(procChance,0,1)+" per stack, mult.)</style> chance to <style=cIsUtility>knock back</style> an enemy <style=cIsDamage>based on attack damage</style>.",
             	"A relic of times long past (ClassicItems mod)");
@@ -37,7 +22,7 @@ namespace ThinkInvisible.ClassicItems {
             itemTier = ItemTier.Tier2;
         }
 
-        protected override void SetupBehaviorInner() {
+        public override void SetupBehaviorInner() {
             On.RoR2.HealthComponent.TakeDamage += On_HCTakeDamage;
         }
 

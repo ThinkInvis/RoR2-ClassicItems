@@ -10,37 +10,19 @@ using System.Collections.Generic;
 
 namespace ThinkInvisible.ClassicItems {
     public class RustyJetpack : ItemBoilerplate<RustyJetpack> {
-        public override string itemCodeName {get;} = "RustyJetpack";
+        public override string displayName {get;} = "Rusty Jetpack";
 
-        private ConfigEntry<float> cfgGravMod;
-        private ConfigEntry<float> cfgJumpMult;
-        private ConfigEntry<bool> cfgUseIL;
-
-        public float gravMod {get;private set;}
-        public float jumpMult {get;private set;}
-        public bool useIL {get;private set;}
+        [AutoItemCfg("Multiplier for gravity reduction (0.0 = no effect, 1.0 = full anti-grav).", default, 0f, 0.999f)]
+        public float gravMod {get;private set;} = 0.5f;
+        [AutoItemCfg("Amount added to jump power per stack.", default, 0f, float.MaxValue)]
+        public float jumpMult {get;private set;} = 0.1f;
+        [AutoItemCfg("Set to false to change Rusty Jetpack's effect from an IL patch to an event hook, which may help if experiencing compatibility issues with another mod. This will change how Rusty Jetpack interacts with other effects.")]
+        public bool useIL {get;private set;} = true;
 
         private bool ilFailed = false;
-
-        protected override void SetupConfigInner(ConfigFile cfl) {
-            cfgGravMod = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "GravMod"), 0.5f, new ConfigDescription(
-                "Multiplier for gravity reduction (0.0 = no effect, 1.0 = full anti-grav).",
-                new AcceptableValueRange<float>(0f,0.99f)));
-            cfgJumpMult = cfl.Bind<float>(new ConfigDefinition("Items." + itemCodeName, "JumpMult"), 0.1f, new ConfigDescription(
-                "Amount added to jump power per stack.",
-                new AcceptableValueRange<float>(0f,float.MaxValue)));
-            cfgUseIL = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "UseIL"), true, new ConfigDescription(
-                "Set to false to change Rusty Jetpack's effect from an IL patch to an event hook, which may help if experiencing compatibility issues with another mod. This will change how Rusty Jetpack interacts with other effects."));
-
-            gravMod = cfgGravMod.Value;
-            jumpMult = cfgJumpMult.Value;
-            useIL = cfgUseIL.Value;
-        }
         
-        protected override void SetupAttributesInner() {
-            modelPathName = "rustyjetpack_model.prefab";
-            iconPathName = "rustyjetpack_icon.png";
-            RegLang("Rusty Jetpack",
+        public override void SetupAttributesInner() {
+            RegLang(
             	"Increase jump height and reduce gravity.",
             	"<style=cIsUtility>Reduces gravity</style> by <style=cIsUtility>" + Pct(gravMod) + "</style> while <style=cIsUtility>holding jump</style>. Increases <style=cIsUtility>jump power</style> by <style=cIsUtility>" + Pct(jumpMult) + "</style> <style=cStack>(+" + Pct(jumpMult)  + " per stack, linear)</style>.",
             	"A relic of times long past (ClassicItems mod)");
@@ -48,7 +30,7 @@ namespace ThinkInvisible.ClassicItems {
             itemTier = ItemTier.Tier2;
         }
 
-        protected override void SetupBehaviorInner() {
+        public override void SetupBehaviorInner() {
             On.RoR2.CharacterBody.FixedUpdate += On_CBFixedUpdate;
 
             if(useIL) {

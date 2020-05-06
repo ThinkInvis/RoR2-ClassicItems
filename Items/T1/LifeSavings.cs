@@ -8,50 +8,31 @@ using R2API.Utils;
 
 namespace ThinkInvisible.ClassicItems {
     public class LifeSavings : ItemBoilerplate<LifeSavings> {
-        public override string itemCodeName {get;} = "LifeSavings";
+        public override string displayName {get;} = "Life Savings";
 
-        private ConfigEntry<float> cfgGainPerSec;
-        private ConfigEntry<int> cfgInvertCount;
-        private ConfigEntry<bool> cfgInclDeploys;
-        private ConfigEntry<bool> cfgIgnoreTimestop;
+        [AutoItemCfg("Money to add to players per second per Life Savings stack (without taking into account InvertCount).", default, 0f, float.MaxValue)]
+        public float gainPerSec {get;private set;} = 1f;
+        [AutoItemCfg("With <InvertCount stacks, number of stacks affects time per interval instead of multiplying money gained.", default, 0, int.MaxValue)]
+        public int invertCount {get;private set;} = 3;
+        [AutoItemCfg("If true, Life Savings stacks on deployables (e.g. Engineer turrets) will send money to their master.")]
+        public bool inclDeploys {get;private set;} = false;
+        [AutoItemCfg("If true, Life Savings will continue to work in areas where the run timer is paused (e.g. bazaar).")]
+        public bool ignoreTimestop {get;private set;} = false;
 
-        public float gainPerSec {get;private set;}
-        public int invertCount {get;private set;}
-        public bool inclDeploys {get;private set;}
-        public bool ignoreTimestop {get;private set;}
-
-        protected override void SetupConfigInner(ConfigFile cfl) {
+        public override void SetupConfigInner(ConfigFile cfl) {
             itemAIBDefault = true;
-
-            cfgGainPerSec = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "GainPerSec"), 1f, new ConfigDescription(
-                "Money to add to players per second per Life Savings stack (without taking into account InvertCount).",
-                new AcceptableValueRange<float>(0f,float.MaxValue)));
-            cfgInvertCount = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "InvertCount"), 3, new ConfigDescription(
-                "With <InvertCount stacks, number of stacks affects time per interval instead of multiplying money gained.",
-                new AcceptableValueRange<int>(0,int.MaxValue)));
-            cfgInclDeploys = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "InclDeploys"), false, new ConfigDescription(
-                "If true, Life Savings stacks on deployables (e.g. Engineer turrets) will send money to their master."));
-            cfgIgnoreTimestop = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "IgnoreTimestop"), false, new ConfigDescription(
-                "If true, Life Savings will continue to work in areas where the run timer is paused (e.g. bazaar)."));
-
-            gainPerSec = cfgGainPerSec.Value;
-            invertCount = cfgInvertCount.Value;
-            inclDeploys = cfgInclDeploys.Value;
-            ignoreTimestop = cfgIgnoreTimestop.Value;
         }
 
-        protected override void SetupAttributesInner() {
-            modelPathName = "lifesavings_model.prefab";
-            iconPathName = "lifesavings_icon.png";
-            RegLang("Life Savings",
+        public override void SetupAttributesInner() {
+            RegLang(
             	"Earn gold over time.",
-            	"Generates <style=cIsUtility>$" + gainPerSec + "</style> <style=cStack>(+$" + gainPerSec + " per stack)</style> every second.",
+            	"Generates <style=cIsUtility>$" + gainPerSec.ToString("N0") + "</style> <style=cStack>(+$" + gainPerSec.ToString("N0") + " per stack)</style> every second. <style=cStack>Generates less below " + invertCount.ToString("N0") + " stacks.</style>",
             	"A relic of times long past (ClassicItems mod)");
             _itemTags = new List<ItemTag>{ItemTag.Utility};
             itemTier = ItemTier.Tier1;
         }
 
-        protected override void SetupBehaviorInner() {
+        public override void SetupBehaviorInner() {
             On.RoR2.CharacterBody.OnInventoryChanged += On_CBOnInventoryChanged;
             On.RoR2.SceneExitController.Begin += On_SECBegin;
             On.EntityStates.SpawnTeleporterState.OnExit += On_EntSTSOnExit;

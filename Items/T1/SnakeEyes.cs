@@ -10,49 +10,25 @@ using System.Collections.Generic;
 
 namespace ThinkInvisible.ClassicItems {
     public class SnakeEyes : ItemBoilerplate<SnakeEyes> {
-        public override string itemCodeName {get;} = "SnakeEyes";
+        public override string displayName {get;} = "Snake Eyes";
 
-        private ConfigEntry<float> cfgAdd;
-        private ConfigEntry<int> cfgCap;
-        private ConfigEntry<bool> cfgAffectAll;
-        private ConfigEntry<bool> cfgInclDeploys;
-        private ConfigEntry<bool> cfgUseIL;
-
-        public float critAdd {get;private set;}
-        public int stackCap {get;private set;}
-        public bool affectAll {get;private set;}
-        public bool inclDeploys {get;private set;}
-        public bool useIL {get;private set;}
+        [AutoItemCfg("Direct additive to percent crit chance per proc per stack of Snake Eyes.", default, 0f, 100f)]
+        public float critAdd {get;private set;} = 8f;
+        [AutoItemCfg("Maximum number of successive failed shrines to count towards increasing Snake Eyes buff.", default, 1, int.MaxValue)]
+        public int stackCap {get;private set;} = 6;
+        [AutoItemCfg("If true, any chance shrine activation will trigger Snake Eyes on all living players (matches behavior from RoR1). If false, only the purchaser will be affected.")]
+        public bool affectAll {get;private set;} = true;
+        [AutoItemCfg("If true, deployables (e.g. Engineer turrets) with Snake Eyes will gain/lose buff stacks whenever their master does. If false, Snake Eyes will not work on deployables at all.")]
+        public bool inclDeploys {get;private set;} = true;
+        [AutoItemCfg("Set to false to change Snake Eyes' effect from an IL patch to an event hook, which may help if experiencing compatibility issues with another mod. This will change how Snake Eyes interacts with other effects.")]
+        public bool useIL {get;private set;} = true;
 
         public BuffIndex snakeEyesBuff {get;private set;}
 
         private bool ilFailed = false;
 
-        protected override void SetupConfigInner(ConfigFile cfl) {
-            cfgAdd = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "Add"), 8f, new ConfigDescription(
-                "Direct additive to percent crit chance per proc * stack of Snake Eyes.",
-                new AcceptableValueRange<float>(0f,100f)));
-            cfgCap = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "Cap"), 6, new ConfigDescription(
-                "Number of successive failed shrines that count towards increasing Snake Eyes buff.",
-                new AcceptableValueRange<int>(1,int.MaxValue)));
-            cfgAffectAll = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "AffectAll"), true, new ConfigDescription(
-                "If true, any chance shrine activation will trigger Snake Eyes on all living players (matches behavior from RoR1). If false, only the purchaser will be affected."));
-            cfgInclDeploys = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "InclDeploys"), true, new ConfigDescription(
-                "If true, deployables (e.g. Engineer turrets) with Snake Eyes will gain/lose buff stacks whenever their master does. If false, Snake Eyes will not work on deployables at all."));
-            cfgUseIL = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "UseIL"), true, new ConfigDescription(
-                "Set to false to change Snake Eyes' effect from an IL patch to an event hook, which may help if experiencing compatibility issues with another mod. This will change how Snake Eyes interacts with other effects."));
-
-            critAdd = cfgAdd.Value;
-            stackCap = cfgCap.Value;
-            affectAll = cfgAffectAll.Value;
-            inclDeploys = cfgInclDeploys.Value;
-            useIL = cfgUseIL.Value;
-        }
-        
-        protected override void SetupAttributesInner() {
-            modelPathName = "snakeeyes_model.prefab";
-            iconPathName = "snakeeyes_icon.png";
-            RegLang("Snake Eyes",
+        public override void SetupAttributesInner() {
+            RegLang(
             	"Gain increased crit chance on failing a shrine. Removed on succeeding a shrine.",
             	"Increases <style=cIsDamage>crit chance</style> by <style=cIsDamage>" + Pct(critAdd, 0, 1) + "</style> <style=cStack>(+" + Pct(critAdd, 0, 1) + " per stack, linear)</style> for up to <style=cIsUtility>" + stackCap + "</style> consecutive <style=cIsUtility>chance shrine failures</style>. <style=cIsDamage>Resets to 0</style> on any <style=cIsUtility>chance shrine success</style>.",
             	"A relic of times long past (ClassicItems mod)");
@@ -60,7 +36,7 @@ namespace ThinkInvisible.ClassicItems {
             itemTier = ItemTier.Tier1;
         }
 
-        protected override void SetupBehaviorInner() {
+        public override void SetupBehaviorInner() {
             var snakeEyesBuffDef = new R2API.CustomBuff(new BuffDef {
                 buffColor = Color.red,
                 canStack = true,

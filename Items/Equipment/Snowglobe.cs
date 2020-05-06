@@ -9,60 +9,34 @@ using UnityEngine.Rendering.PostProcessing;
 
 namespace ThinkInvisible.ClassicItems {
     public class Snowglobe : ItemBoilerplate<Snowglobe> {
-        public override string itemCodeName {get;} = "Snowglobe";
+        public override string displayName {get;} = "Snowglobe";
 
-        private ConfigEntry<float> cfgProcRate;
-        private ConfigEntry<int> cfgDuration;
-        private ConfigEntry<float> cfgFreezeTime;
-        private ConfigEntry<float> cfgSlowTime;
-        private ConfigEntry<bool> cfgSlowUnfreezable;
-        
-        public float procRate {get;private set;}
-        public int duration {get;private set;}
-        public float freezeTime {get;private set;}
-        public float slowTime {get;private set;}
-        public bool slowUnfreezable {get;private set;}
+        [AutoItemCfg("Percent chance of freezing each individual enemy for every Snowglobe tick.", default, 0f, 100f)]
+        public float procRate {get;private set;} = 30f;
+        [AutoItemCfg("Number of 1-second ticks of Snowglobe duration.", default, 0, int.MaxValue)]
+        public int duration {get;private set;} = 8;
+        [AutoItemCfg("Duration of freeze applied by Snowglobe.", default, 0f, float.MaxValue)]
+        public float freezeTime {get;private set;} = 1.5f;
+        [AutoItemCfg("Duration of slow applied by Snowglobe.", default, 0f, float.MaxValue)]
+        public float slowTime {get;private set;} = 3.0f;
+        [AutoItemCfg("If true, Snowglobe will slow targets even if they can't be frozen.")]
+        public bool slowUnfreezable {get;private set;} = true;
 
         private GameObject snowglobeControllerPrefab;
 
-        protected override void SetupConfigInner(ConfigFile cfl) {
-            cfgProcRate = cfl.Bind<float>(new ConfigDefinition("Items." + itemCodeName, "ProcRate"), 30f, new ConfigDescription(
-                "Percent chance of freezing each individual enemy for every Snowglobe tick.",
-                new AcceptableValueRange<float>(0f,100f)));
-            cfgDuration = cfl.Bind<int>(new ConfigDefinition("Items." + itemCodeName, "Duration"), 8, new ConfigDescription(
-                "Number of 1-second ticks of Snowglobe duration.",
-                new AcceptableValueRange<int>(0,int.MaxValue)));
-            cfgFreezeTime = cfl.Bind<float>(new ConfigDefinition("Items." + itemCodeName, "FreezeTime"), 1.5f, new ConfigDescription(
-                "Duration of freeze applied by Snowglobe.",
-                new AcceptableValueRange<float>(0f,float.MaxValue)));
-            cfgSlowTime = cfl.Bind<float>(new ConfigDefinition("Items." + itemCodeName, "SlowTime"), 3.0f, new ConfigDescription(
-                "Duration of slow applied by Snowglobe.",
-                new AcceptableValueRange<float>(0f,float.MaxValue)));
-            cfgSlowUnfreezable = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "SlowUnfreezable"), true, new ConfigDescription(
-                "If true, Snowglobe will slow targets even if they can't be frozen."));
-
-            procRate = cfgProcRate.Value;
-            duration = cfgDuration.Value;
-            freezeTime = cfgFreezeTime.Value;
-            slowTime = cfgSlowTime.Value;
-            slowUnfreezable = cfgSlowUnfreezable.Value;
-        }
-        
-        protected override void SetupAttributesInner() {
+        public override void SetupAttributesInner() {
             itemIsEquipment = true;
 
-            modelPathName = "snowglobe_model.prefab";
-            iconPathName = "snowglobe_icon.png";
             eqpEnigmable = true;
             eqpCooldown = 45;
 
-            RegLang("Snowglobe",
+            RegLang(
                 "Randomly freeze enemies for 8 seconds.",
-                "Summon a snowstorm that <style=cIsUtility>freezes</style> monsters at a <style=cIsUtility>" + Pct(procRate,1,1) + " chance over " + duration + " seconds</style>.",
+                "Summon a snowstorm that <style=cIsUtility>freezes</style> monsters at a <style=cIsUtility>" + Pct(procRate,1,1) + " chance over " + duration.ToString("N0") + " seconds</style>.",
                 "A relic of times long past (ClassicItems mod)");
         }
 
-        protected override void SetupBehaviorInner() {
+        public override void SetupBehaviorInner() {
             var ctrlPfb2 = new GameObject("snowglobeControllerPrefabPrefab");
             ctrlPfb2.AddComponent<NetworkIdentity>();
             ctrlPfb2.AddComponent<SnowglobeController>();

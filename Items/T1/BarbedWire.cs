@@ -10,55 +10,25 @@ using RoR2.Orbs;
 
 namespace ThinkInvisible.ClassicItems {
     public class BarbedWire : ItemBoilerplate<BarbedWire> {
-        public override string itemCodeName {get;} = "BarbedWire";
+        public override string displayName {get;} = "Barbed Wire";
 
-        private ConfigEntry<float> cfgBaseRadius;
-        private ConfigEntry<float> cfgStackRadius;
-        private ConfigEntry<float> cfgBaseDmg;
-        private ConfigEntry<float> cfgStackDmg;
-        private ConfigEntry<bool> cfgOneOnly;
-		private ConfigEntry<bool> cfgInclDeploys;
-
-        public float baseRadius {get; private set;}
-        public float stackRadius {get; private set;}
-        public float baseDmg {get; private set;}
-        public float stackDmg {get; private set;}
-		public bool oneOnly {get; private set;}
-        public bool inclDeploys {get;private set;}
+		[AutoItemCfg("AoE radius for the first stack of Barbed Wire.", default, 0f, float.MaxValue)]
+        public float baseRadius {get; private set;} = 5f;
+		[AutoItemCfg("AoE radius to add per additional stack of Barbed Wire.", default, 0f, float.MaxValue)]
+        public float stackRadius {get; private set;} = 1f;
+		[AutoItemCfg("AoE damage/sec (as fraction of owner base damage) for the first stack of Barbed Wire.", default, 0f, float.MaxValue)]
+        public float baseDmg {get; private set;} = 0.5f;
+		[AutoItemCfg("AoE damage/sec (as fraction of owner base damage) per additional stack of Barbed Wire.", default, 0f, float.MaxValue)]
+        public float stackDmg {get; private set;} = 0.15f;
+		[AutoItemCfg("If true, Barbed Wire only affects one target at most. If false, Barbed Wire affects every target in range.")]
+		public bool oneOnly {get; private set;} = true;
+		[AutoItemCfg("If true, deployables (e.g. Engineer turrets) with Barbed Wire will benefit from their master's damage. Deployables usually have 0 damage stat by default, and will not otherwise be able to use Barbed Wire.")]
+        public bool inclDeploys {get;private set;} = true;
 
 		internal static GameObject barbedWardPrefab;
-
-        protected override void SetupConfigInner(ConfigFile cfl) {
-            cfgBaseRadius = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "BaseRadius"), 5f, new ConfigDescription(
-                "AoE radius for the first stack of Barbed Wire.",
-                new AcceptableValueRange<float>(0f, float.MaxValue)));
-            cfgStackRadius = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "StackRadius"), 1f, new ConfigDescription(
-                "AoE radius to add per additional stack of Barbed Wire.",
-                new AcceptableValueRange<float>(0f, float.MaxValue)));
-            cfgBaseDmg = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "BaseDmg"), 0.5f, new ConfigDescription(
-                "AoE damage/sec (as fraction of owner base damage) for the first stack of Barbed Wire.",
-                new AcceptableValueRange<float>(0f, float.MaxValue)));
-            cfgStackDmg = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "StackDmg"), 0.15f, new ConfigDescription(
-                "AoE damage/sec (as fraction of owner base damage) per additional stack of Barbed Wire.",
-                new AcceptableValueRange<float>(0f, float.MaxValue)));
-			cfgOneOnly = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "OneOnly"), true, new ConfigDescription(
-                "If true, Barbed Wire only affects one target at most. If false, Barbed Wire affects every target in range."));
-			cfgInclDeploys = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "InclDeploys"), true, new ConfigDescription(
-                "If true, deployables (e.g. Engineer turrets) with Barbed Wire will benefit from their master's damage. Deployables usually have 0 damage stat by default, and will not otherwise be able to use Barbed Wire."));
-
-
-            baseRadius = cfgBaseRadius.Value;
-            stackRadius = cfgStackRadius.Value;
-            baseDmg = cfgBaseDmg.Value;
-            stackDmg = cfgStackDmg.Value;
-			oneOnly = cfgOneOnly.Value;
-			inclDeploys = cfgInclDeploys.Value;
-        }
         
-        protected override void SetupAttributesInner() {
-            modelPathName = "barbedwire_model.prefab";
-            iconPathName = "barbedwire_icon.png";
-            RegLang("Barbed Wire",
+        public override void SetupAttributesInner() {
+            RegLang(
             	"Hurt nearby enemies.",
             	"Deal <style=cIsDamage>" + Pct(baseDmg) + "</style> <style=cStack>(+" + Pct(stackDmg) + " per stack)</style> <style=cIsDamage>damage/sec</style> to enemies within <style=cIsDamage>" + baseRadius.ToString("N1") + " m</style> <style=cStack>(+ " + stackRadius.ToString("N2") + " per stack)</style>",
             	"A relic of times long past (ClassicItems mod)");
@@ -66,7 +36,7 @@ namespace ThinkInvisible.ClassicItems {
             itemTier = ItemTier.Tier1;
         }
 
-        protected override void SetupBehaviorInner() {
+        public override void SetupBehaviorInner() {
 			var mshPrefab = Resources.Load<GameObject>("Prefabs/NetworkedObjects/MushroomWard");
 
 			var bwPrefabPrefab = new GameObject("BarbedWardAuraPrefabPrefab");

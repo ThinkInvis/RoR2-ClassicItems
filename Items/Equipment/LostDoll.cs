@@ -7,42 +7,27 @@ using UnityEngine;
 
 namespace ThinkInvisible.ClassicItems {
     public class LostDoll : ItemBoilerplate<LostDoll> {
-        public override string itemCodeName {get;} = "LostDoll";
+        public override string displayName {get;} = "Lost Doll";
 
-        private ConfigEntry<float> cfgDamageTaken;
-        private ConfigEntry<float> cfgDamageGiven;
+        [AutoItemCfg("Fraction of CURRENT health to take from the user when Lost Doll is activated.", default, 0f, 1f)]
+        public float damageTaken {get;private set;} = 0.25f;
+        [AutoItemCfg("Fraction of MAXIMUM health to deal in damage to the closest enemy when Lost Doll is activated.", default, 0f, float.MaxValue)]
+        public float damageGiven {get;private set;} = 5f;
 
-        public float damageTaken {get;private set;}
-        public float damageGiven {get;private set;}
-
-        protected override void SetupConfigInner(ConfigFile cfl) {
-            cfgDamageTaken = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "DamageTaken"), 0.25f, new ConfigDescription(
-                "Fraction of CURRENT health to take from the user when Lost Doll is activated.",
-                new AcceptableValueRange<float>(0f, 1f)));
-            cfgDamageGiven = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "DamageGiven"), 5f, new ConfigDescription(
-                "Fraction of MAXIMUM health to deal in damage to the closest enemy when Lost Doll is activated.",
-                new AcceptableValueRange<float>(0f, float.MaxValue)));
-
-            damageTaken = cfgDamageTaken.Value;
-            damageGiven = cfgDamageGiven.Value;
-        }
-        
-        protected override void SetupAttributesInner() {
+        public override void SetupAttributesInner() {
             itemIsEquipment = true;
             eqpIsLunar = true;
 
-            modelPathName = "lostdoll_model.prefab";
-            iconPathName = "lostdoll_icon.png";
             eqpEnigmable = true;
             eqpCooldown = 45;
 
-            RegLang("Lost Doll",
+            RegLang(
                 "Harm yourself to instantly kill an enemy.",
                 "Sacrifices <style=cIsDamage>25%</style> of your <style=cIsDamage>current health</style> to damage the nearest enemy for <style=cIsDamage>500%</style> of your <style=cIsDamage>maximum health</style>.",
                 "A relic of times long past (ClassicItems mod)");
         }
 
-        protected override void SetupBehaviorInner() {
+        public override void SetupBehaviorInner() {
             On.RoR2.EquipmentSlot.PerformEquipmentAction += On_ESPerformEquipmentAction;
         }
         

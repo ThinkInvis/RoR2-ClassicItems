@@ -3,26 +3,18 @@ using RoR2;
 
 namespace ThinkInvisible.ClassicItems {
     public class Amethyst : ItemBoilerplate<Amethyst> {
-        public override string itemCodeName {get;} = "Amethyst";
-
-        protected override void SetupConfigInner(ConfigFile cfl) {
-        }
+        public override string displayName {get;} = "Gigantic Amethyst";
         
-        protected override void SetupAttributesInner() {
+        public override void SetupAttributesInner() {
             itemIsEquipment = true;
 
-            modelPathName = "amethyst_model.prefab";
-            iconPathName = "amethyst_icon.png";
-            eqpEnigmable = true;
-            eqpCooldown = 8;
-
-            RegLang("Gigantic Amethyst",
+            RegLang(
                 "Resets all your cooldowns.",
                 "Immediately <style=cIsUtility>restores 1 charge each</style> to <style=cIsUtility>all</style> of your <style=cIsUtility>skills</style>.",
                 "A relic of times long past (ClassicItems mod)");
         }
 
-        protected override void SetupBehaviorInner() {
+        public override void SetupBehaviorInner() {
             On.RoR2.EquipmentSlot.PerformEquipmentAction += On_ESPerformEquipmentAction;
         }
         

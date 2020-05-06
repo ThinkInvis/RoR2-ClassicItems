@@ -9,54 +9,33 @@ using static ThinkInvisible.ClassicItems.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
     public class Prescriptions : ItemBoilerplate<Prescriptions> {
-        public override string itemCodeName {get;} = "Prescriptions";
+        public override string displayName {get;} = "Prescriptions";
 
-        private ConfigEntry<float> cfgDuration;
-        private ConfigEntry<float> cfgASpdBoost;
-        private ConfigEntry<float> cfgDmgBoost;
-        private ConfigEntry<bool> cfgUseIL;
-        public float duration {get;private set;}
-        public float aSpdBoost {get;private set;}
-        public float dmgBoost {get;private set;}
+        [AutoItemCfg("Duration of the buff applied by Prescriptions.", default, 0f, float.MaxValue)]
+        public float duration {get;private set;} = 11f;
+        [AutoItemCfg("Attack speed added while Prescriptions is active.", default, 0f, float.MaxValue)]
+        public float aSpdBoost {get;private set;} = 0.4f;
+        [AutoItemCfg("Base damage added while Prescriptions is active.", default, 0f, float.MaxValue)]
+        public float dmgBoost {get;private set;} = 10f;
+        [AutoItemCfg("Set to false to change Prescriptions' effect from an IL patch to an event hook, which may help if experiencing compatibility issues with another mod. This will change how Prescriptions interacts with other effects.")]
         public bool useIL {get; private set;}
 
         private bool ilFailed = false;
         public BuffIndex prescriptionsBuff {get;private set;}
-
-        protected override void SetupConfigInner(ConfigFile cfl) {
-            cfgDuration = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "Duration"), 11f, new ConfigDescription(
-                "Duration of the buff applied by Prescriptions.",
-                new AcceptableValueRange<float>(0f,float.MaxValue)));
-            cfgASpdBoost = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "ASpdBoost"), 0.4f, new ConfigDescription(
-                "Attack speed added while Prescriptions is active.",
-                new AcceptableValueRange<float>(0f,float.MaxValue)));
-            cfgDmgBoost = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "DmgBoost"), 10f, new ConfigDescription(
-                "Base damage added while Prescriptions is active.",
-                new AcceptableValueRange<float>(0f,float.MaxValue)));
-            cfgUseIL = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "UseIL"), true, new ConfigDescription(
-                "Set to false to change Prescriptions' effect from an IL patch to an event hook, which may help if experiencing compatibility issues with another mod. This will change how Prescriptions interacts with other effects."));
-
-            duration = cfgDuration.Value;
-            aSpdBoost = cfgASpdBoost.Value;
-            dmgBoost = cfgDmgBoost.Value;
-            useIL = cfgUseIL.Value;
-        }
         
-        protected override void SetupAttributesInner() {
+        public override void SetupAttributesInner() {
             itemIsEquipment = true;
 
-            modelPathName = "prescriptions_model.prefab";
-            iconPathName = "prescriptions_icon.png";
             eqpEnigmable = true;
             eqpCooldown = 45;
 
-            RegLang("Prescriptions",
+            RegLang(
                 "Increase damage and attack speed for 8 seconds.",
                 "While active, increases <style=cIsDamage>base damage by " + dmgBoost.ToString("N0") + " points</style> and <style=cIsDamage>attack speed by " + Pct(aSpdBoost) + "</style>. Lasts <style=cIsDamage>" + duration.ToString("N0") + " seconds</style>.",
                 "A relic of times long past (ClassicItems mod)");
         }
 
-        protected override void SetupBehaviorInner() {
+        public override void SetupBehaviorInner() {
             var prescriptionsBuffDef = new R2API.CustomBuff(new BuffDef {
                 buffColor = Color.red,
                 canStack = true,

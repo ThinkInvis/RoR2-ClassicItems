@@ -10,37 +10,19 @@ using System.Collections.Generic;
 
 namespace ThinkInvisible.ClassicItems {
     public class BitterRoot : ItemBoilerplate<BitterRoot> {
-        public override string itemCodeName {get;} = "BitterRoot";
+        public override string displayName {get;} = "Bitter Root";
 
-        private ConfigEntry<float> cfgHealthMult;
-        private ConfigEntry<float> cfgHealthCap;
-        private ConfigEntry<bool> cfgUseIL;
-
-        public float healthMult {get; private set;}
-        public float healthCap {get; private set;}
-        public bool useIL {get; private set;}
+        [AutoItemCfg("Linearly-stacking multiplier for health gained from Bitter Root.", default, 0f, float.MaxValue)]
+        public float healthMult {get; private set;} = 0.08f;
+        [AutoItemCfg("Cap for health multiplier gained from Bitter Root.", default, 0f, float.MaxValue)]
+        public float healthCap {get; private set;} = 3f;
+        [AutoItemCfg("Set to false to change Bitter Root's effect from an IL patch to an event hook, which may help if experiencing compatibility issues with another mod. This will change how Bitter Root interacts with other effects.")]
+        public bool useIL {get; private set;} = true;
 
         private bool ilFailed = false;
-
-        protected override void SetupConfigInner(ConfigFile cfl) {
-            cfgHealthMult = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "HealthMult"), 0.08f, new ConfigDescription(
-                "Linearly-stacking multiplier for health gained from Bitter Root.",
-                new AcceptableValueRange<float>(0f, float.MaxValue)));
-            cfgHealthCap = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "HealthCap"), 3f, new ConfigDescription(
-                "Cap for health multiplier gained from Bitter Root.",
-                new AcceptableValueRange<float>(0f, float.MaxValue)));
-            cfgUseIL = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "UseIL"), true, new ConfigDescription(
-                "Set to false to change Bitter Root's effect from an IL patch to an event hook, which may help if experiencing compatibility issues with another mod. This will change how Bitter Root interacts with other effects."));
-
-            healthMult = cfgHealthMult.Value;
-            healthCap = cfgHealthCap.Value;
-            useIL = cfgUseIL.Value;
-        }
         
-        protected override void SetupAttributesInner() {
-            modelPathName = "bitterroot_model.prefab";
-            iconPathName = "bitterroot_icon.png";
-            RegLang("Bitter Root",
+        public override void SetupAttributesInner() {
+            RegLang(
             	"Gain " + Pct(healthMult) + " max hp.",
             	"Increases <style=cIsHealing>health</style> by <style=cIsHealing>" + Pct(healthMult) + "</style> <style=cStack>(+" +Pct(healthMult)+ " per stack, linear)</style>, up to a <style=cIsHealing>maximum</style> of <style=cIsHealing>+"+Pct(healthCap)+"</style>.",
             	"A relic of times long past (ClassicItems mod)");
@@ -48,7 +30,7 @@ namespace ThinkInvisible.ClassicItems {
             itemTier = ItemTier.Tier1;
         }
 
-        protected override void SetupBehaviorInner() {
+        public override void SetupBehaviorInner() {
             if(useIL) {
                 IL.RoR2.CharacterBody.RecalculateStats += IL_CBRecalcStats;
                 if(ilFailed) {

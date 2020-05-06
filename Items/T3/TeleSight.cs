@@ -8,41 +8,23 @@ using RoR2.Orbs;
 
 namespace ThinkInvisible.ClassicItems {
     public class TeleSight : ItemBoilerplate<TeleSight> {
-        public override string itemCodeName {get;} = "TeleSight";
+        public override string displayName {get;} = "Telescopic Sight";
 
-        private ConfigEntry<float> cfgProcChance;
-        private ConfigEntry<float> cfgStackChance;
-        private ConfigEntry<float> cfgCapChance;
-        private ConfigEntry<bool> cfgBossImmunity;
+        [AutoItemCfg("Base percent chance of triggering Telescopic Sight on hit. Affected by proc coefficient.",default,0f,100f)]
+        public float procChance {get;private set;} = 1f;
+        [AutoItemCfg("Added to ProcChance per extra stack of Telescopic Sight.",default,0f,100f)]
+        public float stackChance {get;private set;} = 0.5f;
+        [AutoItemCfg("Maximum allowed ProcChance for Telescopic Sight.",default,0f,100f)]
+        public float capChance {get;private set;} = 3f;
+        [AutoItemCfg("If true, Telescopic Sight will not trigger on bosses.")]
+        public bool bossImmunity {get;private set;} = false;
 
-        public float procChance {get;private set;}
-        public float stackChance {get;private set;}
-        public float capChance {get;private set;}
-        public bool bossImmunity {get;private set;}
-
-        protected override void SetupConfigInner(ConfigFile cfl) {
-            cfgProcChance = cfl.Bind<float>(new ConfigDefinition("Items." + itemCodeName, "ProcChance"), 1f, new ConfigDescription(
-                "Base percent chance of triggering Telescopic Sight on hit. Affected by proc coefficient.",
-                new AcceptableValueRange<float>(0f,100f)));
-            procChance = cfgProcChance.Value;
-            cfgStackChance = cfl.Bind<float>(new ConfigDefinition("Items." + itemCodeName, "StackChance"), 0.5f, new ConfigDescription(
-                "Added to ProcChance per extra stack of Telescopic Sight.",
-                new AcceptableValueRange<float>(0f,100f)));
-            stackChance = cfgStackChance.Value;
-            cfgCapChance = cfl.Bind<float>(new ConfigDefinition("Items." + itemCodeName, "CapChance"), 3f, new ConfigDescription(
-                "Maximum allowed ProcChance for Telescopic Sight.",
-                new AcceptableValueRange<float>(0f,100f)));
-            capChance = cfgCapChance.Value;
-            cfgBossImmunity = cfl.Bind<bool>(new ConfigDefinition("Items." + itemCodeName, "BossImmunity"), false, new ConfigDescription(
-                "If true, Telescopic Sight will not trigger on bosses."));
-            bossImmunity = cfgBossImmunity.Value;
+        public override void SetupConfigInner(ConfigFile cfl) {
+            itemAIBDefault = true;
         }
         
-        protected override void SetupAttributesInner() {
-            itemAIBDefault = true;
-            modelPathName = "telesight_model.prefab";
-            iconPathName = "telesight_icon.png";
-            RegLang("Telescopic Sight",
+        public override void SetupAttributesInner() {
+            RegLang(
             	"Chance to instantly kill an enemy.",
             	"<style=cIsDamage>" + Pct(procChance,1,1) + "</style> <style=cStack>(+" + Pct(stackChance,1,1) + " per stack, up to " + Pct(capChance,1,1) + ")</style> chance to <style=cIsDamage>instantly kill</style> an enemy. Affected by proc coefficient.",
             	"A relic of times long past (ClassicItems mod)");
@@ -50,7 +32,7 @@ namespace ThinkInvisible.ClassicItems {
             itemTier = ItemTier.Tier3;
         }
 
-        protected override void SetupBehaviorInner() {
+        public override void SetupBehaviorInner() {
             On.RoR2.GlobalEventManager.OnHitEnemy += On_GEMOnHitEnemy;
         }
 

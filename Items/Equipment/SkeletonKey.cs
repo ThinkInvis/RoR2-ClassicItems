@@ -5,34 +5,23 @@ using UnityEngine;
 
 namespace ThinkInvisible.ClassicItems {
     public class SkeletonKey : ItemBoilerplate<SkeletonKey> {
-        public override string itemCodeName {get;} = "SkeletonKey";
+        public override string displayName {get;} = "Skeleton Key";
 
-        private ConfigEntry<float> cfgRadius;
-
-        public float radius {get;private set;}
-
-        protected override void SetupConfigInner(ConfigFile cfl) {
-            cfgRadius = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "Radius"), 50f, new ConfigDescription(
-                "Radius around the user to search for chests to open when using Skeleton Key.",
-                new AcceptableValueRange<float>(0f, float.MaxValue)));
-
-            radius = cfgRadius.Value;
-        }
+        [AutoItemCfg("Radius around the user to search for chests to open when using Skeleton Key.", default, 0f, float.MaxValue)]
+        public float radius {get;private set;} = 50f;
         
-        protected override void SetupAttributesInner() {
+        public override void SetupAttributesInner() {
             itemIsEquipment = true;
 
-            modelPathName = "skeletonkey_model.prefab";
-            iconPathName = "skeletonkey_icon.png";
             eqpCooldown = 90;
 
-            RegLang("Skeleton Key",
+            RegLang(
                 "Open all nearby chests.",
                 "Opens all <style=cIsUtility>chests</style> within <style=cIsUtility>" + radius.ToString("N0") + " m</style> for <style=cIsUtility>no cost</style>.",
                 "A relic of times long past (ClassicItems mod)");
         }
 
-        protected override void SetupBehaviorInner() {
+        public override void SetupBehaviorInner() {
             On.RoR2.EquipmentSlot.PerformEquipmentAction += On_ESPerformEquipmentAction;
         }
         

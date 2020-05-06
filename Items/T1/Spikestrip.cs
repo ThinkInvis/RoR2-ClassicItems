@@ -7,38 +7,19 @@ using R2API;
 
 namespace ThinkInvisible.ClassicItems {
     public class Spikestrip : ItemBoilerplate<Spikestrip> {
-        public override string itemCodeName {get;} = "Spikestrip";
+        public override string displayName {get;} = "Spikestrip";
 
-        private ConfigEntry<float> cfgBaseRadius;
-        private ConfigEntry<float> cfgBaseDuration;
-        private ConfigEntry<float> cfgStackDuration;
-
-        public float baseRadius {get; private set;}
-        public float baseDuration {get; private set;}
-        public float stackDuration {get; private set;}
+        [AutoItemCfg("AoE radius for Spikestrip.", default, 0f, float.MaxValue)]
+        public float baseRadius {get; private set;} = 5f;
+        [AutoItemCfg("AoE duration for the first stack of Spikestrip, in seconds.", default, 0f, float.MaxValue)]
+        public float baseDuration {get; private set;} = 2f;
+        [AutoItemCfg("AoE duration per additional stack of Spikestrip, in seconds.", default, 0f, float.MaxValue)]
+        public float stackDuration {get; private set;} = 1f;
 
 		internal static GameObject spikeWardPrefab;
 
-        protected override void SetupConfigInner(ConfigFile cfl) {
-            cfgBaseRadius = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "BaseRadius"), 5f, new ConfigDescription(
-                "AoE radius for Spikestrip.",
-                new AcceptableValueRange<float>(0f, float.MaxValue)));
-            cfgBaseDuration = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "BaseDuration"), 2f, new ConfigDescription(
-                "AoE duration for the first stack of Spikestrip, in seconds.",
-                new AcceptableValueRange<float>(0f, float.MaxValue)));
-            cfgStackDuration = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "StackDuration"), 1f, new ConfigDescription(
-                "AoE duration per additional stack of Spikestrip, in seconds.",
-                new AcceptableValueRange<float>(0f, float.MaxValue)));
-
-            baseRadius = cfgBaseRadius.Value;
-            baseDuration = cfgBaseDuration.Value;
-            stackDuration = cfgStackDuration.Value;
-        }
-        
-        protected override void SetupAttributesInner() {
-            modelPathName = "spikestrip_model.prefab";
-            iconPathName = "spikestrip_icon.png";
-            RegLang("Spikestrip",
+        public override void SetupAttributesInner() {
+            RegLang(
             	"Drop spikestrips on being hit, slowing enemies.",
             	"<style=cIsDamage>When hit</style>, drop a <style=cIsUtility>" + baseRadius.ToString("N0") + " m AoE</style> which <style=cIsUtility>slows enemies by 50%</style> and lasts <style=cIsUtility>" + baseDuration.ToString("N1") + " s</style> <style=cStack>(+" + stackDuration.ToString("N1") + " s per stack)</style>.",
             	"A relic of times long past (ClassicItems mod)");
@@ -46,7 +27,7 @@ namespace ThinkInvisible.ClassicItems {
             itemTier = ItemTier.Tier1;
         }
 
-        protected override void SetupBehaviorInner() {
+        public override void SetupBehaviorInner() {
 			var mshPrefab = Resources.Load<GameObject>("Prefabs/NetworkedObjects/MushroomWard");
 
 			var bwPrefabPrefab = new GameObject("SpikestripAuraPrefabPrefab");

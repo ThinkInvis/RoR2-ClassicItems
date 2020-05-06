@@ -9,31 +9,17 @@ using System.Collections.Generic;
 
 namespace ThinkInvisible.ClassicItems {
     public class Vial : ItemBoilerplate<Vial> {
-        public override string itemCodeName {get;} = "Vial";
+        public override string displayName {get;} = "Mysterious Vial";
 
-        private ConfigEntry<float> cfgAdd;
-        private ConfigEntry<bool> cfgUseIL;
-
-        public float addRegen {get;private set;}
-        public bool useIL {get;private set;}
+        [AutoItemCfg("Direct additive to natural health regen per stack of Mysterious Vial.", default, 0f, float.MaxValue)]
+        public float addRegen {get;private set;} = 1.4f;
+        [AutoItemCfg("Set to false to change Mysterious Vial's effect from an IL patch to an event hook, which may help if experiencing compatibility issues with another mod. This will change how Mysterious Vial interacts with other effects.")]
+        public bool useIL {get;private set;} = true;
 
         private bool ilFailed = false;
-
-        protected override void SetupConfigInner(ConfigFile cfl) {
-            cfgAdd = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "Add"), 1.4f, new ConfigDescription(
-                "Direct additive to natural health regen per stack of Mysterious Vial.",
-                new AcceptableValueRange<float>(0f,int.MaxValue)));
-            cfgUseIL = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "UseIL"), true, new ConfigDescription(
-                "Set to false to change Mysterious Vial's effect from an IL patch to an event hook, which may help if experiencing compatibility issues with another mod. This will change how Mysterious Vial interacts with other effects."));
-
-            addRegen = cfgAdd.Value;
-            useIL = cfgUseIL.Value;
-        }
         
-        protected override void SetupAttributesInner() {
-            modelPathName = "vial_model.prefab";
-            iconPathName = "vial_icon.png";
-            RegLang("Mysterious Vial",
+        public override void SetupAttributesInner() {
+            RegLang(
             	"Increased health regeneration.",
             	"Increases <style=cIsHealing>health regen by +" + addRegen.ToString("N1") + "/sec</style> <style=cStack>(+" + addRegen.ToString("N1") + "/sec per stack)</style>.",
             	"A relic of times long past (ClassicItems mod)");
@@ -41,7 +27,7 @@ namespace ThinkInvisible.ClassicItems {
             itemTier = ItemTier.Tier1;
         }
 
-        protected override void SetupBehaviorInner() {
+        public override void SetupBehaviorInner() {
             if(useIL) {
                 IL.RoR2.CharacterBody.RecalculateStats += IL_CBRecalcStats;
                 if(ilFailed) {

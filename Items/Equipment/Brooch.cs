@@ -10,42 +10,25 @@ using UnityEngine.Networking;
 
 namespace ThinkInvisible.ClassicItems {
     public class Brooch : ItemBoilerplate<Brooch> {
-        public override string itemCodeName {get;} = "Brooch";
+        public override string displayName {get;} = "Captain's Brooch";
 
-        private ConfigEntry<float> cfgExtraCost;
-        private ConfigEntry<bool> cfgSafeMode;
-        private ConfigEntry<bool> cfgFallbackSpawn;
-
-        public float extraCost {get;private set;}
-        public bool safeMode {get;private set;}
-        public bool doFallbackSpawn {get;private set;}
+        [AutoItemCfg("Multiplier for additional cost of chests spawned by Captain's Brooch.", default, 0f, float.MaxValue)]
+        public float extraCost {get;private set;} = 0.5f;
+        [AutoItemCfg("If true, chests spawned by Captain's Brooch will immediately appear at the target position instead of falling nearby, and will not be destroyed after purchase.")]
+        public bool safeMode {get;private set;} = false;
+        [AutoItemCfg("If true, Captain's Brooch will spawn chests directly at the player's position if it can't find a suitable spot nearby. If false, it will fail to spawn the chest and refrain from using an equipment charge.")]
+        public bool doFallbackSpawn {get;private set;} = false;
 
         private Xoroshiro128Plus BroochRNG;
 
         internal static InteractableSpawnCard broochPrefab;
-
-        protected override void SetupConfigInner(ConfigFile cfl) {
-            cfgExtraCost = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "ExtraCost"), 0.5f, new ConfigDescription(
-                "Multiplier for additional cost of chests spawned by Captain's Brooch.",
-                new AcceptableValueRange<float>(0f, float.MaxValue)));
-            cfgSafeMode = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "SafeMode"), false, new ConfigDescription(
-                "If true, chests spawned by Captain's Brooch will immediately appear at the target position instead of falling nearby, and will not be destroyed after purchase."));
-            cfgFallbackSpawn = cfl.Bind(new ConfigDefinition("Items." + itemCodeName, "FallbackSpawn"), false, new ConfigDescription(
-                "If true, Captain's Brooch will spawn chests directly at the player's position if it can't find a suitable spot nearby. If false, it will fail to spawn the chest and refrain from using an equipment charge."));
-
-            extraCost = cfgExtraCost.Value;
-            safeMode = cfgSafeMode.Value;
-            doFallbackSpawn = cfgFallbackSpawn.Value;
-        }
         
-        protected override void SetupAttributesInner() {
+        public override void SetupAttributesInner() {
             itemIsEquipment = true;
 
-            modelPathName = "brooch_model.prefab";
-            iconPathName = "brooch_icon.png";
             eqpCooldown = 135;
 
-            RegLang("Captain's Brooch",
+            RegLang(
                 "One man's wreckage is another man's treasure.",
                 "Calls down a <style=cIsUtility>low-tier item chest</style> which <style=cIsUtility>costs " + Pct(extraCost) + " more than usual</style>.",
                 "A relic of times long past (ClassicItems mod)");
@@ -54,7 +37,7 @@ namespace ThinkInvisible.ClassicItems {
 
         private bool ILFailed = false;
 
-        protected override void SetupBehaviorInner() {
+        public override void SetupBehaviorInner() {
             IL.RoR2.DirectorCore.TrySpawnObject += IL_DCTrySpawnObject;
             if(ILFailed) safeMode = true;
 
