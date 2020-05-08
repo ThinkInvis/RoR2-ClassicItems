@@ -8,8 +8,8 @@ namespace ThinkInvisible.ClassicItems {
     public class Pillage : Equipment<Pillage> {
         public override string displayName => "Pillaged Gold";
 
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken | AICAUEventFlags.InvalidatePickupToken)]
-        [AutoItemCfg("Duration of the buff applied by Pillaged Gold.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken | AutoUpdateEventFlags.InvalidatePickupToken)]
+        [AutoItemConfig("Duration of the buff applied by Pillaged Gold.", AICFlags.None, 0f, float.MaxValue)]
         public float duration {get;private set;} = 14f;
 
         public BuffIndex pillageBuff {get;private set;}

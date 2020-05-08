@@ -14,15 +14,15 @@ namespace ThinkInvisible.ClassicItems {
 		public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Healing});
 
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken | AICAUEventFlags.InvalidatePickupToken)]
-        [AutoItemCfg("Linearly-stacking multiplier for health gained from Bitter Root.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken | AutoUpdateEventFlags.InvalidatePickupToken)]
+        [AutoItemConfig("Linearly-stacking multiplier for health gained from Bitter Root.", AICFlags.None, 0f, float.MaxValue)]
         public float healthMult {get; private set;} = 0.08f;
 
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-        [AutoItemCfg("Cap for health multiplier gained from Bitter Root.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoItemConfig("Cap for health multiplier gained from Bitter Root.", AICFlags.None, 0f, float.MaxValue)]
         public float healthCap {get; private set;} = 3f;
 
-        [AutoItemCfg("Set to false to change Bitter Root's effect from an IL patch to an event hook, which may help if experiencing compatibility issues with another mod. This will change how Bitter Root interacts with other effects.")]
+        [AutoItemConfig("Set to false to change Bitter Root's effect from an IL patch to an event hook, which may help if experiencing compatibility issues with another mod. This will change how Bitter Root interacts with other effects.")]
         public bool useIL {get; private set;} = true;
 
         private bool ilFailed = false;        

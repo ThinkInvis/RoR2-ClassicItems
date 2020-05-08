@@ -12,20 +12,20 @@ namespace ThinkInvisible.ClassicItems {
 		public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
 
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-        [AutoItemCfg("Multiplier for player base damage applied by explosion.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoItemConfig("Multiplier for player base damage applied by explosion.", AICFlags.None, 0f, float.MaxValue)]
         public float baseDamage {get;private set;} = 5f;
 
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-        [AutoItemCfg("Added to BaseDamage per extra stack.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoItemConfig("Added to BaseDamage per extra stack.", AICFlags.None, 0f, float.MaxValue)]
         public float stackDamage {get;private set;} = 0.5f;
 
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-        [AutoItemCfg("Minimum vertical velocity required to trigger Headstompers.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoItemConfig("Minimum vertical velocity required to trigger Headstompers.", AICFlags.None, 0f, float.MaxValue)]
         public float velThreshold {get;private set;} = 20f;
 
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-        [AutoItemCfg("Additional vertical velocity required for max damage (scales linearly from 0 @ VelThreshold).", AICFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoItemConfig("Additional vertical velocity required for max damage (scales linearly from 0 @ VelThreshold).", AICFlags.None, 0f, float.MaxValue)]
 
         public float velMax {get;private set;} = 40f;
         protected override string NewLangName(string langid = null) => displayName;

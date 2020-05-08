@@ -10,24 +10,24 @@ namespace ThinkInvisible.ClassicItems {
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage, ItemTag.Utility, ItemTag.OnKillEffect});
         public override bool itemAIB {get; protected set;} = true;
         
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-        [AutoItemCfg("Duration of on-kill buff applied by the first stack of Burning Witness.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoItemConfig("Duration of on-kill buff applied by the first stack of Burning Witness.", AICFlags.None, 0f, float.MaxValue)]
         public float baseDuration {get; private set;} = 6f;
         
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-        [AutoItemCfg("Duration of on-kill buff applied per additional stack of Burning Witness.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoItemConfig("Duration of on-kill buff applied per additional stack of Burning Witness.", AICFlags.None, 0f, float.MaxValue)]
         public float stackDuration {get; private set;} = 3f;
         
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-        [AutoItemCfg("Move speed bonus from the first stack of Burning Witness, while active.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoItemConfig("Move speed bonus from the first stack of Burning Witness, while active.", AICFlags.None, 0f, float.MaxValue)]
         public float baseSpeed {get; private set;} = 0.05f;
         
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-        [AutoItemCfg("Move speed bonus per additional stack of Burning Witness, while active.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoItemConfig("Move speed bonus per additional stack of Burning Witness, while active.", AICFlags.None, 0f, float.MaxValue)]
         public float stackSpeed {get; private set;} = 0.05f;
         
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-        [AutoItemCfg("Damage bonus applied by Burning Witness, while active.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoItemConfig("Damage bonus applied by Burning Witness, while active.", AICFlags.None, 0f, float.MaxValue)]
         public float damage {get; private set;} = 1f;     
         
         protected override string NewLangName(string langid = null) => displayName;        

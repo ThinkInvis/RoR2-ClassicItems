@@ -11,8 +11,8 @@ namespace ThinkInvisible.ClassicItems {
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
         public override bool itemAIB {get; protected set;} = true;
 
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-        [AutoItemCfg("Linear multiplier for money-on-kill increase per stack of Smart Shopper.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoItemConfig("Linear multiplier for money-on-kill increase per stack of Smart Shopper.", AICFlags.None, 0f, float.MaxValue)]
         public float moneyMult {get;private set;} = 0.25f;
 
         protected override string NewLangName(string langid = null) => displayName;

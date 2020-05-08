@@ -13,18 +13,18 @@ namespace ThinkInvisible.ClassicItems {
         public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
 
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-        [AutoItemCfg("Money to add to players per second per Life Savings stack (without taking into account InvertCount).", AICFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoItemConfig("Money to add to players per second per Life Savings stack (without taking into account InvertCount).", AICFlags.None, 0f, float.MaxValue)]
         public float gainPerSec {get;private set;} = 1f;
 
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-        [AutoItemCfg("With <InvertCount stacks, number of stacks affects time per interval instead of multiplying money gained.", AICFlags.None, 0, int.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoItemConfig("With <InvertCount stacks, number of stacks affects time per interval instead of multiplying money gained.", AICFlags.None, 0, int.MaxValue)]
         public int invertCount {get;private set;} = 3;
 
-        [AutoItemCfg("If true, Life Savings stacks on deployables (e.g. Engineer turrets) will send money to their master.")]
+        [AutoItemConfig("If true, Life Savings stacks on deployables (e.g. Engineer turrets) will send money to their master.")]
         public bool inclDeploys {get;private set;} = false;
 
-        [AutoItemCfg("If true, Life Savings will continue to work in areas where the run timer is paused (e.g. bazaar).")]
+        [AutoItemConfig("If true, Life Savings will continue to work in areas where the run timer is paused (e.g. bazaar).")]
         public bool ignoreTimestop {get;private set;} = false;
 
         protected override string NewLangName(string langid = null) => displayName;

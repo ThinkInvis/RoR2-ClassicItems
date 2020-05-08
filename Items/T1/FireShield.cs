@@ -10,23 +10,23 @@ namespace ThinkInvisible.ClassicItems {
 		public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
         
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-        [AutoItemCfg("Fraction of max health required as damage taken to trigger Fire Shield.", AICFlags.None, 0f, 1f)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoItemConfig("Fraction of max health required as damage taken to trigger Fire Shield.", AICFlags.None, 0f, 1f)]
         public float healthThreshold {get; private set;} = 0.1f;
 
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-        [AutoItemCfg("AoE radius for Fire Shield.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoItemConfig("AoE radius for Fire Shield.", AICFlags.None, 0f, float.MaxValue)]
         public float baseRadius {get; private set;} = 15f;
 
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-        [AutoItemCfg("AoE damage, based on player base damage, for the first stack of Fire Shield.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoItemConfig("AoE damage, based on player base damage, for the first stack of Fire Shield.", AICFlags.None, 0f, float.MaxValue)]
         public float baseDmg {get; private set;} = 2f;
 
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-        [AutoItemCfg("AoE damage, based on player base damage, per additional stack of Fire Shield.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoItemConfig("AoE damage, based on player base damage, per additional stack of Fire Shield.", AICFlags.None, 0f, float.MaxValue)]
         public float stackDmg {get; private set;} = 0.5f;
 
-        [AutoItemCfg("If true, damage to shield and barrier (from e.g. Personal Shield Generator, Topaz Brooch) will not count towards triggering Fire Shield.")]
+        [AutoItemConfig("If true, damage to shield and barrier (from e.g. Personal Shield Generator, Topaz Brooch) will not count towards triggering Fire Shield.")]
         public bool requireHealth {get; private set;} = true;
 
         protected override string NewLangName(string langid = null) => displayName;

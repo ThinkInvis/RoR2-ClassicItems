@@ -10,16 +10,16 @@ namespace ThinkInvisible.ClassicItems {
     public class Lantern : Equipment<Lantern> {
         public override string displayName => "Safeguard Lantern";
 
-		[AICAUEventInfo(AICAUEventFlags.InvalidateDescToken | AICAUEventFlags.InvalidatePickupToken)]
-        [AutoItemCfg("Duration of the Safeguard Lantern effect.", AICFlags.None, 0f, float.MaxValue)]
+		[AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken | AutoUpdateEventFlags.InvalidatePickupToken)]
+        [AutoItemConfig("Duration of the Safeguard Lantern effect.", AICFlags.None, 0f, float.MaxValue)]
         public float duration {get;private set;} = 10f;
 
-		[AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-		[AutoItemCfg("Base-player-damage/sec applied by Safeguard Lantern.", AICFlags.None, 0f, float.MaxValue)]
+		[AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+		[AutoItemConfig("Base-player-damage/sec applied by Safeguard Lantern.", AICFlags.None, 0f, float.MaxValue)]
         public float damage {get;private set;} = 0.2f;
 
-		[AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-		[AutoItemCfg("Radius of the Safeguard Lantern aura.", AICFlags.None, 0f, float.MaxValue)]
+		[AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+		[AutoItemConfig("Radius of the Safeguard Lantern aura.", AICFlags.None, 0f, float.MaxValue)]
         public float range {get;private set;} = 25f;
 
         private GameObject lanternWardPrefab;

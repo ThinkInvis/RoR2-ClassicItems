@@ -13,26 +13,26 @@ namespace ThinkInvisible.ClassicItems {
 		public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
 
-		[AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-		[AutoItemCfg("AoE radius for the first stack of Barbed Wire.", AICFlags.None, 0f, float.MaxValue)]
+		[AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+		[AutoItemConfig("AoE radius for the first stack of Barbed Wire.", AICFlags.None, 0f, float.MaxValue)]
         public float baseRadius {get; private set;} = 5f;
 
-		[AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-		[AutoItemCfg("AoE radius to add per additional stack of Barbed Wire.", AICFlags.None, 0f, float.MaxValue)]
+		[AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+		[AutoItemConfig("AoE radius to add per additional stack of Barbed Wire.", AICFlags.None, 0f, float.MaxValue)]
         public float stackRadius {get; private set;} = 1f;
 
-		[AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-		[AutoItemCfg("AoE damage/sec (as fraction of owner base damage) for the first stack of Barbed Wire.", AICFlags.None, 0f, float.MaxValue)]
+		[AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+		[AutoItemConfig("AoE damage/sec (as fraction of owner base damage) for the first stack of Barbed Wire.", AICFlags.None, 0f, float.MaxValue)]
         public float baseDmg {get; private set;} = 0.5f;
 
-		[AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-		[AutoItemCfg("AoE damage/sec (as fraction of owner base damage) per additional stack of Barbed Wire.", AICFlags.None, 0f, float.MaxValue)]
+		[AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+		[AutoItemConfig("AoE damage/sec (as fraction of owner base damage) per additional stack of Barbed Wire.", AICFlags.None, 0f, float.MaxValue)]
         public float stackDmg {get; private set;} = 0.15f;
 
-		[AutoItemCfg("If true, Barbed Wire only affects one target at most. If false, Barbed Wire affects every target in range.")]
+		[AutoItemConfig("If true, Barbed Wire only affects one target at most. If false, Barbed Wire affects every target in range.")]
 		public bool oneOnly {get; private set;} = true;
 
-		[AutoItemCfg("If true, deployables (e.g. Engineer turrets) with Barbed Wire will benefit from their master's damage. Deployables usually have 0 damage stat by default, and will not otherwise be able to use Barbed Wire.")]
+		[AutoItemConfig("If true, deployables (e.g. Engineer turrets) with Barbed Wire will benefit from their master's damage. Deployables usually have 0 damage stat by default, and will not otherwise be able to use Barbed Wire.")]
         public bool inclDeploys {get;private set;} = true;
 
 		internal static GameObject barbedWardPrefab;        

@@ -24,20 +24,20 @@ namespace ThinkInvisible.ClassicItems {
 		public override ItemTier itemTier => ItemTier.Tier3;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.EquipmentRelated});
 
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-        [AutoItemCfg("Percent chance of triggering an equipment twice. Stacks additively.", AICFlags.None, 0f, 100f)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoItemConfig("Percent chance of triggering an equipment twice. Stacks additively.", AICFlags.None, 0f, 100f)]
         public float procChance {get;private set;} = 30f;
 
         
-        [AutoItemCfg("SubEnable<AIC.DictKey>", "If false, Beating Embryo will not affect <AIC.DictKey>.", AICFlags.BindDict)]
+        [AutoItemConfig("SubEnable<AIC.DictKey>", "If false, Beating Embryo will not affect <AIC.DictKey>.", AICFlags.BindDict)]
         private Dictionary<EquipmentIndex,bool> subEnable {get;} = new Dictionary<EquipmentIndex, bool>();
         public ReadOnlyDictionary<EquipmentIndex,bool> subEnableGet {get;private set;}
 
-        [AutoItemCfg("SubEnable<AIC.DictKeyProp." + nameof(Equipment.itemCodeName) + ">","If false, Beating Embryo will not affect <AIC.DictKeyProp." + nameof(Equipment.displayName) + "> (added by ClassicItems).", AICFlags.BindDict)]
+        [AutoItemConfig("SubEnable<AIC.DictKeyProp." + nameof(Equipment.itemCodeName) + ">","If false, Beating Embryo will not affect <AIC.DictKeyProp." + nameof(Equipment.displayName) + "> (added by ClassicItems).", AICFlags.BindDict)]
         private Dictionary<Equipment,bool> subEnableInternal {get;} = new Dictionary<Equipment, bool>();
         public ReadOnlyDictionary<Equipment,bool> subEnableInternalGet {get;private set;}
 
-        [AutoItemCfg("If false, Beating Embryo will not affect equipment added by other mods. If true, these items will be triggered twice when Beating Embryo procs, which may not work with some items.")]
+        [AutoItemConfig("If false, Beating Embryo will not affect equipment added by other mods. If true, these items will be triggered twice when Beating Embryo procs, which may not work with some items.")]
         public bool subEnableModded {get;private set;} = false;
 
         private readonly List<EquipmentIndex> subEnableExt = new List<EquipmentIndex>();

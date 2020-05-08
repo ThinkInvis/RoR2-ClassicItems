@@ -14,14 +14,14 @@ namespace ThinkInvisible.ClassicItems {
 
         public override float eqpCooldown => 135f;
 
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-        [AutoItemCfg("Multiplier for additional cost of chests spawned by Captain's Brooch.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoItemConfig("Multiplier for additional cost of chests spawned by Captain's Brooch.", AICFlags.None, 0f, float.MaxValue)]
         public float extraCost {get;private set;} = 0.5f;
 
-        [AutoItemCfg("If true, chests spawned by Captain's Brooch will immediately appear at the target position instead of falling nearby, and will not be destroyed after purchase.")]
+        [AutoItemConfig("If true, chests spawned by Captain's Brooch will immediately appear at the target position instead of falling nearby, and will not be destroyed after purchase.")]
         public bool safeMode {get;private set;} = false;
 
-        [AutoItemCfg("If true, Captain's Brooch will spawn chests directly at the player's position if it can't find a suitable spot nearby. If false, it will fail to spawn the chest and refrain from using an equipment charge.")]
+        [AutoItemConfig("If true, Captain's Brooch will spawn chests directly at the player's position if it can't find a suitable spot nearby. If false, it will fail to spawn the chest and refrain from using an equipment charge.")]
         public bool doFallbackSpawn {get;private set;} = false;
 
         private Xoroshiro128Plus BroochRNG;

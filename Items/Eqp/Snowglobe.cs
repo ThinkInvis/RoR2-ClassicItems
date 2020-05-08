@@ -11,21 +11,21 @@ namespace ThinkInvisible.ClassicItems {
     public class Snowglobe : Equipment<Snowglobe> {
         public override string displayName => "Snowglobe";
 
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-        [AutoItemCfg("Percent chance of freezing each individual enemy for every Snowglobe tick.", AICFlags.None, 0f, 100f)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoItemConfig("Percent chance of freezing each individual enemy for every Snowglobe tick.", AICFlags.None, 0f, 100f)]
         public float procRate {get;private set;} = 30f;
 
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken | AICAUEventFlags.InvalidatePickupToken)]
-        [AutoItemCfg("Number of 1-second ticks of Snowglobe duration.", AICFlags.None, 0, int.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken | AutoUpdateEventFlags.InvalidatePickupToken)]
+        [AutoItemConfig("Number of 1-second ticks of Snowglobe duration.", AICFlags.None, 0, int.MaxValue)]
         public int duration {get;private set;} = 8;
 
-        [AutoItemCfg("Duration of freeze applied by Snowglobe.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoItemConfig("Duration of freeze applied by Snowglobe.", AICFlags.None, 0f, float.MaxValue)]
         public float freezeTime {get;private set;} = 1.5f;
 
-        [AutoItemCfg("Duration of slow applied by Snowglobe.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoItemConfig("Duration of slow applied by Snowglobe.", AICFlags.None, 0f, float.MaxValue)]
         public float slowTime {get;private set;} = 3.0f;
 
-        [AutoItemCfg("If true, Snowglobe will slow targets even if they can't be frozen.")]
+        [AutoItemConfig("If true, Snowglobe will slow targets even if they can't be frozen.")]
         public bool slowUnfreezable {get;private set;} = true;
 
         private GameObject snowglobeControllerPrefab;

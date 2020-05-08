@@ -11,19 +11,19 @@ namespace ThinkInvisible.ClassicItems {
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
         public override bool itemAIB {get; protected set;} = true; //TODO: find a way to make fear work on players... random movement and forced sprint? halt movement (root)?
 
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-        [AutoItemCfg("Fraction of max health required as damage taken to trigger Old Box (halved per additional stack).", AICFlags.None, 0f, 1f)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoItemConfig("Fraction of max health required as damage taken to trigger Old Box (halved per additional stack).", AICFlags.None, 0f, 1f)]
         public float healthThreshold {get; private set;} = 0.5f;
 
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-        [AutoItemCfg("AoE radius for Old Box.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoItemConfig("AoE radius for Old Box.", AICFlags.None, 0f, float.MaxValue)]
         public float radius {get; private set;} = 25f;
         
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-        [AutoItemCfg("Duration of fear debuff applied by Old Box.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoItemConfig("Duration of fear debuff applied by Old Box.", AICFlags.None, 0f, float.MaxValue)]
         public float duration {get; private set;} = 2f;
 
-        [AutoItemCfg("If true, damage to shield and barrier (from e.g. Personal Shield Generator, Topaz Brooch) will not count towards triggering Old Box.")]
+        [AutoItemConfig("If true, damage to shield and barrier (from e.g. Personal Shield Generator, Topaz Brooch) will not count towards triggering Old Box.")]
         public bool requireHealth {get; private set;} = true;
         protected override string NewLangName(string langid = null) => displayName;
         protected override string NewLangPickup(string langid = null) => "Chance to fear enemies when attacked.";

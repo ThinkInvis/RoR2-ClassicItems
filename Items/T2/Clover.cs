@@ -11,40 +11,40 @@ namespace ThinkInvisible.ClassicItems {
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
         public override bool itemAIB {get; protected set;} = true;
         
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-        [AutoItemCfg("Percent chance for a Clover drop to happen at first stack -- as such, multiplicative with Rare/Uncommon chances.", AICFlags.None, 0f, 100f)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoItemConfig("Percent chance for a Clover drop to happen at first stack -- as such, multiplicative with Rare/Uncommon chances.", AICFlags.None, 0f, 100f)]
         public float baseChance {get;private set;} = 4f;
         
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-        [AutoItemCfg("Percent chance for a Clover drop to happen per extra stack.", AICFlags.None, 0f, 100f)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoItemConfig("Percent chance for a Clover drop to happen per extra stack.", AICFlags.None, 0f, 100f)]
         public float stackChance {get;private set;} = 1.5f;
         
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-        [AutoItemCfg("Maximum percent chance for a Clover drop on elite kill.", AICFlags.None, 0f, 100f)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoItemConfig("Maximum percent chance for a Clover drop on elite kill.", AICFlags.None, 0f, 100f)]
         public float capChance {get;private set;} = 100f;
         
-        [AutoItemCfg("Percent chance for a Clover drop to become Tier 2 at first stack (if it hasn't already become Tier 3).", AICFlags.None, 0f, 100f)]
+        [AutoItemConfig("Percent chance for a Clover drop to become Tier 2 at first stack (if it hasn't already become Tier 3).", AICFlags.None, 0f, 100f)]
         public float baseUnc {get;private set;} = 1f;
-        [AutoItemCfg("Percent chance for a Clover drop to become Tier 2 per extra stack.", AICFlags.None, 0f, 100f)]
+        [AutoItemConfig("Percent chance for a Clover drop to become Tier 2 per extra stack.", AICFlags.None, 0f, 100f)]
         public float stackUnc {get;private set;} = 0.1f;
         
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-        [AutoItemCfg("Maximum percent chance for a Clover drop to become Tier 2.", AICFlags.None, 0f, 100f)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoItemConfig("Maximum percent chance for a Clover drop to become Tier 2.", AICFlags.None, 0f, 100f)]
         public float capUnc {get;private set;} = 25f;
         
-        [AutoItemCfg("Percent chance for a Clover drop to become Tier 3 at first stack.", AICFlags.None, 0f, 100f)]
+        [AutoItemConfig("Percent chance for a Clover drop to become Tier 3 at first stack.", AICFlags.None, 0f, 100f)]
         public float baseRare {get;private set;} = 0.01f;
-        [AutoItemCfg("Percent chance for a Clover drop to become Tier 3 per extra stack.", AICFlags.None, 0f, 100f)]
+        [AutoItemConfig("Percent chance for a Clover drop to become Tier 3 per extra stack.", AICFlags.None, 0f, 100f)]
         public float stackRare {get;private set;} = 0.001f;
         
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-        [AutoItemCfg("Maximum percent chance for a Clover drop to become Tier 3.", AICFlags.None, 0f, 100f)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoItemConfig("Maximum percent chance for a Clover drop to become Tier 3.", AICFlags.None, 0f, 100f)]
         public float capRare {get;private set;} = 1f;
 
-        [AutoItemCfg("Percent chance for a Tier 1 Clover drop to become Equipment instead.", AICFlags.None, 0f, 100f)]
+        [AutoItemConfig("Percent chance for a Tier 1 Clover drop to become Equipment instead.", AICFlags.None, 0f, 100f)]
         public float baseEqp {get;private set;} = 5f;
 
-        [AutoItemCfg("If true, all clovers across all living players are counted towards item drops. If false, only the killer's items count.")]
+        [AutoItemConfig("If true, all clovers across all living players are counted towards item drops. If false, only the killer's items count.")]
         public bool globalStack {get;private set;} = true;
 
         protected override string NewLangName(string langid = null) => displayName;        

@@ -15,21 +15,21 @@ namespace ThinkInvisible.ClassicItems {
 		public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
 
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-        [AutoItemCfg("Direct additive to percent crit chance per proc per stack of Snake Eyes.", AICFlags.None, 0f, 100f)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoItemConfig("Direct additive to percent crit chance per proc per stack of Snake Eyes.", AICFlags.None, 0f, 100f)]
         public float critAdd {get;private set;} = 8f;
 
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-        [AutoItemCfg("Maximum number of successive failed shrines to count towards increasing Snake Eyes buff.", AICFlags.None, 1, int.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoItemConfig("Maximum number of successive failed shrines to count towards increasing Snake Eyes buff.", AICFlags.None, 1, int.MaxValue)]
         public int stackCap {get;private set;} = 6;
 
-        [AutoItemCfg("If true, any chance shrine activation will trigger Snake Eyes on all living players (matches behavior from RoR1). If false, only the purchaser will be affected.")]
+        [AutoItemConfig("If true, any chance shrine activation will trigger Snake Eyes on all living players (matches behavior from RoR1). If false, only the purchaser will be affected.")]
         public bool affectAll {get;private set;} = true;
 
-        [AutoItemCfg("If true, deployables (e.g. Engineer turrets) with Snake Eyes will gain/lose buff stacks whenever their master does. If false, Snake Eyes will not work on deployables at all.")]
+        [AutoItemConfig("If true, deployables (e.g. Engineer turrets) with Snake Eyes will gain/lose buff stacks whenever their master does. If false, Snake Eyes will not work on deployables at all.")]
         public bool inclDeploys {get;private set;} = true;
 
-        [AutoItemCfg("Set to false to change Snake Eyes' effect from an IL patch to an event hook, which may help if experiencing compatibility issues with another mod. This will change how Snake Eyes interacts with other effects.")]
+        [AutoItemConfig("Set to false to change Snake Eyes' effect from an IL patch to an event hook, which may help if experiencing compatibility issues with another mod. This will change how Snake Eyes interacts with other effects.")]
         public bool useIL {get;private set;} = true;
 
         public BuffIndex snakeEyesBuff {get;private set;}

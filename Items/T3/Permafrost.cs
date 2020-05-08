@@ -10,19 +10,19 @@ namespace ThinkInvisible.ClassicItems {
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
         public override bool itemAIB {get; protected set;} = true;
         
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-        [AutoItemCfg("Percent chance of triggering Permafrost on hit. Affected by proc coefficient; stacks inverse-multiplicatively.", AICFlags.None, 0f, 100f)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoItemConfig("Percent chance of triggering Permafrost on hit. Affected by proc coefficient; stacks inverse-multiplicatively.", AICFlags.None, 0f, 100f)]
         public float procChance {get;private set;} = 6f;
 
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-        [AutoItemCfg("Duration of freeze applied by Permafrost.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoItemConfig("Duration of freeze applied by Permafrost.", AICFlags.None, 0f, float.MaxValue)]
         public float freezeTime {get;private set;} = 1.5f;
         
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-        [AutoItemCfg("Duration of slow applied by Permafrost.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoItemConfig("Duration of slow applied by Permafrost.", AICFlags.None, 0f, float.MaxValue)]
         public float slowTime {get;private set;} = 3.0f;
 
-        [AutoItemCfg("If true, Permafrost will slow targets even if they can't be frozen.")]
+        [AutoItemConfig("If true, Permafrost will slow targets even if they can't be frozen.")]
         public bool slowUnfreezable {get;private set;} = true;
         
         protected override string NewLangName(string langid = null) => displayName;

@@ -12,16 +12,16 @@ namespace ThinkInvisible.ClassicItems {
 		public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
         
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-        [AutoItemCfg("AoE radius for Spikestrip.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoItemConfig("AoE radius for Spikestrip.", AICFlags.None, 0f, float.MaxValue)]
         public float baseRadius {get; private set;} = 5f;
         
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-        [AutoItemCfg("AoE duration for the first stack of Spikestrip, in seconds.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoItemConfig("AoE duration for the first stack of Spikestrip, in seconds.", AICFlags.None, 0f, float.MaxValue)]
         public float baseDuration {get; private set;} = 2f;
         
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-        [AutoItemCfg("AoE duration per additional stack of Spikestrip, in seconds.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoItemConfig("AoE duration per additional stack of Spikestrip, in seconds.", AICFlags.None, 0f, float.MaxValue)]
         public float stackDuration {get; private set;} = 1f;
 
 

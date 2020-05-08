@@ -110,8 +110,8 @@ namespace ThinkInvisible.ClassicItems {
             Debug.Log("ClassicItems: loading item configs...");
             foreach(ItemBoilerplate x in masterItemList) {
                 x.ConfigEntryChanged += (sender, args) => {
-                    if((args.flags & (AICAUEventFlags.InvalidateNameToken | (gLongDesc ? AICAUEventFlags.InvalidateDescToken : AICAUEventFlags.InvalidatePickupToken))) == 0) return;
-                    //args.flags |= AICAUEventFlags.InvalidateModel;
+                    if((args.flags & (AutoUpdateEventFlags.InvalidateNameToken | (gLongDesc ? AutoUpdateEventFlags.InvalidateDescToken : AutoUpdateEventFlags.InvalidatePickupToken))) == 0) return;
+                    //args.flags |= AutoUpdateEventFlags.InvalidateModel;
                     var pind = (x is Item) ? PickupCatalog.FindPickupIndex(((Item)x).regIndex) : PickupCatalog.FindPickupIndex(((Equipment)x).regIndex);
                     var pdef = PickupCatalog.GetPickupDef(pind);
                     if(pdef != null) {

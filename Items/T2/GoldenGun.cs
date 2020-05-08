@@ -13,19 +13,19 @@ namespace ThinkInvisible.ClassicItems {
 		public override ItemTier itemTier => ItemTier.Tier2;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
 
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-        [AutoItemCfg("Maximum multiplier to add to player damage.",AICFlags.None,0f,float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoItemConfig("Maximum multiplier to add to player damage.",AICFlags.None,0f,float.MaxValue)]
         public float damageBoost {get;private set;} = 0.4f;
 
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-        [AutoItemCfg("Gold required for maximum damage. Scales with difficulty level.",AICFlags.None,0,int.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoItemConfig("Gold required for maximum damage. Scales with difficulty level.",AICFlags.None,0,int.MaxValue)]
         public int goldAmt {get;private set;} = 700;
         
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-        [AutoItemCfg("Inverse-exponential multiplier for reduced GoldAmt per stack (higher = more powerful).",AICFlags.None,0f,0.999f)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoItemConfig("Inverse-exponential multiplier for reduced GoldAmt per stack (higher = more powerful).",AICFlags.None,0f,0.999f)]
         public float goldReduc {get;private set;} = 0.5f;
 
-        [AutoItemCfg("If true, deployables (e.g. Engineer turrets) with Golden Gun will benefit from their master's money.")]
+        [AutoItemConfig("If true, deployables (e.g. Engineer turrets) with Golden Gun will benefit from their master's money.")]
         public bool inclDeploys {get;private set;} = true;
 
         private bool ilFailed = false;

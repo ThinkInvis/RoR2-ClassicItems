@@ -11,19 +11,19 @@ namespace ThinkInvisible.ClassicItems {
     public class Prescriptions : Equipment<Prescriptions> {
         public override string displayName => "Prescriptions";
 
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken | AICAUEventFlags.InvalidatePickupToken)]
-        [AutoItemCfg("Duration of the buff applied by Prescriptions.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken | AutoUpdateEventFlags.InvalidatePickupToken)]
+        [AutoItemConfig("Duration of the buff applied by Prescriptions.", AICFlags.None, 0f, float.MaxValue)]
         public float duration {get;private set;} = 11f;
 
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-        [AutoItemCfg("Attack speed added while Prescriptions is active.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoItemConfig("Attack speed added while Prescriptions is active.", AICFlags.None, 0f, float.MaxValue)]
         public float aSpdBoost {get;private set;} = 0.4f;
 
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-        [AutoItemCfg("Base damage added while Prescriptions is active.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoItemConfig("Base damage added while Prescriptions is active.", AICFlags.None, 0f, float.MaxValue)]
         public float dmgBoost {get;private set;} = 10f;
 
-        [AutoItemCfg("Set to false to change Prescriptions' effect from an IL patch to an event hook, which may help if experiencing compatibility issues with another mod. This will change how Prescriptions interacts with other effects.")]
+        [AutoItemConfig("Set to false to change Prescriptions' effect from an IL patch to an event hook, which may help if experiencing compatibility issues with another mod. This will change how Prescriptions interacts with other effects.")]
         public bool useIL {get; private set;}
 
         private bool ilFailed = false;

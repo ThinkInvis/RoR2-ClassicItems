@@ -13,19 +13,19 @@ namespace ThinkInvisible.ClassicItems {
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
         public override bool itemAIB {get; protected set;} = true;
         
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-        [AutoItemCfg("Base percent chance of triggering Telescopic Sight on hit. Affected by proc coefficient.",AICFlags.None,0f,100f)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoItemConfig("Base percent chance of triggering Telescopic Sight on hit. Affected by proc coefficient.",AICFlags.None,0f,100f)]
         public float procChance {get;private set;} = 1f;
         
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-        [AutoItemCfg("Added to ProcChance per extra stack of Telescopic Sight.",AICFlags.None,0f,100f)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoItemConfig("Added to ProcChance per extra stack of Telescopic Sight.",AICFlags.None,0f,100f)]
         public float stackChance {get;private set;} = 0.5f;
         
-        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
-        [AutoItemCfg("Maximum allowed ProcChance for Telescopic Sight.",AICFlags.None,0f,100f)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoItemConfig("Maximum allowed ProcChance for Telescopic Sight.",AICFlags.None,0f,100f)]
         public float capChance {get;private set;} = 3f;
 
-        [AutoItemCfg("If true, Telescopic Sight will not trigger on bosses.")]
+        [AutoItemConfig("If true, Telescopic Sight will not trigger on bosses.")]
         public bool bossImmunity {get;private set;} = false;
 
         protected override string NewLangName(string langid = null) => displayName;
