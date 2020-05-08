@@ -1,70 +1,68 @@
-﻿using BepInEx.Configuration;
-using RoR2;
+﻿using RoR2;
 using System.Collections.ObjectModel;
 using UnityEngine;
-using static ThinkInvisible.ClassicItems.MiscUtil;
 using UnityEngine.Networking;
 using R2API;
-using UnityEngine.Rendering.PostProcessing;
-using RoR2.Orbs;
+using TILER2;
+using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
     public class Lantern : Equipment<Lantern> {
         public override string displayName => "Safeguard Lantern";
 
-        [AutoItemCfg("Duration of the Safeguard Lantern effect.", default, 0f, float.MaxValue)]
+		[AICAUEventInfo(AICAUEventFlags.InvalidateDescToken | AICAUEventFlags.InvalidatePickupToken)]
+        [AutoItemCfg("Duration of the Safeguard Lantern effect.", AICFlags.None, 0f, float.MaxValue)]
         public float duration {get;private set;} = 10f;
-		[AutoItemCfg("Base-player-damage/sec applied by Safeguard Lantern.", default, 0f, float.MaxValue)]
+
+		[AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
+		[AutoItemCfg("Base-player-damage/sec applied by Safeguard Lantern.", AICFlags.None, 0f, float.MaxValue)]
         public float damage {get;private set;} = 0.2f;
-		[AutoItemCfg("Radius of the Safeguard Lantern aura.", default, 0f, float.MaxValue)]
+
+		[AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
+		[AutoItemCfg("Radius of the Safeguard Lantern aura.", AICFlags.None, 0f, float.MaxValue)]
         public float range {get;private set;} = 25f;
 
         private GameObject lanternWardPrefab;
 
-		public override bool eqpIsLunar{get;} = true;
-        
-        public override void SetupAttributesInner() {
-            RegLang(
-                "Drop a lantern that fears and damages enemies for 10 seconds.",
-                "Sets a " + range.ToString("N0") + "-meter, " + duration.ToString("N0") + "-second AoE which <style=cIsUtility>fears enemies</style> and deals <style=cIsDamage>" + Pct(damage) + " damage per second</style>. <style=cIsUtility>Feared enemies will run out of melee</style>, <style=cDeath>but that won't stop them from shooting you.</style>" ,
-                "A relic of times long past (ClassicItems mod)");
-        }
+		public override bool eqpIsLunar{get;} = true;        
+        protected override string NewLangName(string langid = null) => displayName;        
+        protected override string NewLangPickup(string langid = null) => "Drop a lantern that fears and damages enemies for " + duration.ToString("N0") + " seconds.";        
+        protected override string NewLangDesc(string langid = null) => "Sets a " + range.ToString("N0") + "-meter, " + duration.ToString("N0") + "-second AoE which <style=cIsUtility>fears enemies</style> and deals <style=cIsDamage>" + Pct(damage) + " damage per second</style>. <style=cIsUtility>Feared enemies will run out of melee</style>, <style=cDeath>but that won't stop them from shooting you.</style>";        
+        protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
-        public override void SetupBehaviorInner() {
-			var mshPrefab = Resources.Load<GameObject>("Prefabs/NetworkedObjects/WarbannerWard").transform.Find("Indicator");
+		public Lantern() {
+			onAttrib += (tokenIdent, namePrefix) => {
+				var mshPrefab = Resources.Load<GameObject>("Prefabs/NetworkedObjects/WarbannerWard").transform.Find("Indicator");
 
-			var lPrefabPrefab = new GameObject("LanternAuraPrefabPrefab");
-			lPrefabPrefab.AddComponent<TeamFilter>();
-			lPrefabPrefab.AddComponent<MeshFilter>().mesh = mshPrefab.GetComponentInChildren<MeshFilter>().mesh;
-			lPrefabPrefab.AddComponent<MeshRenderer>().material = UnityEngine.Object.Instantiate(mshPrefab.GetComponentInChildren<MeshRenderer>().material);
-			lPrefabPrefab.GetComponent<MeshRenderer>().material.SetVector("_TintColor",new Vector4(0.3f,0.6f,1f,0.5f));
-			var lw = lPrefabPrefab.AddComponent<LanternWard>();
-			lw.rangeIndicator = lPrefabPrefab.GetComponent<MeshRenderer>().transform;
-			lw.interval = 1f;
-			lw.duration = duration;
-			lw.radius = range;
-			lw.damage = 0f;
-			lanternWardPrefab = lPrefabPrefab.InstantiateClone("LanternAuraPrefab");
-			UnityEngine.Object.Destroy(lPrefabPrefab);
-
-            On.RoR2.EquipmentSlot.PerformEquipmentAction += On_ESPerformEquipmentAction;
-        }
-        
-        private bool On_ESPerformEquipmentAction(On.RoR2.EquipmentSlot.orig_PerformEquipmentAction orig, EquipmentSlot slot, EquipmentIndex eqpid) {
-            if(eqpid == regIndex) {
-                if(!slot.characterBody || !slot.characterBody.teamComponent) return false;
-                var ctrlInst = UnityEngine.Object.Instantiate(lanternWardPrefab, slot.characterBody.corePosition, Quaternion.identity);
-				var lw = ctrlInst.GetComponent<LanternWard>();
-				lw.owner = slot.characterBody.gameObject;
-				lw.GetComponent<TeamFilter>().teamIndex = slot.characterBody.teamComponent.teamIndex;
-                NetworkServer.Spawn(ctrlInst);
-				lw.damage = slot.characterBody.damage * damage;
+				var lPrefabPrefab = new GameObject("LanternAuraPrefabPrefab");
+				lPrefabPrefab.AddComponent<TeamFilter>();
+				lPrefabPrefab.AddComponent<MeshFilter>().mesh = mshPrefab.GetComponentInChildren<MeshFilter>().mesh;
+				lPrefabPrefab.AddComponent<MeshRenderer>().material = UnityEngine.Object.Instantiate(mshPrefab.GetComponentInChildren<MeshRenderer>().material);
+				lPrefabPrefab.GetComponent<MeshRenderer>().material.SetVector("_TintColor",new Vector4(0.3f,0.6f,1f,0.5f));
+				var lw = lPrefabPrefab.AddComponent<LanternWard>();
+				lw.rangeIndicator = lPrefabPrefab.GetComponent<MeshRenderer>().transform;
+				lw.interval = 1f;
 				lw.duration = duration;
-                if(Embryo.instance.CheckProc<Lantern>(slot.characterBody)) {
-					lw.duration *= 2;
-                }
-                return true;
-            } else return orig(slot, eqpid);
+				lw.radius = range;
+				lw.damage = 0f;
+				lanternWardPrefab = lPrefabPrefab.InstantiateClone("LanternAuraPrefab");
+				UnityEngine.Object.Destroy(lPrefabPrefab);
+			};
+		}
+
+        protected override bool OnEquipUseInner(EquipmentSlot slot) {
+            if(!slot.characterBody || !slot.characterBody.teamComponent) return false;
+            var ctrlInst = UnityEngine.Object.Instantiate(lanternWardPrefab, slot.characterBody.corePosition, Quaternion.identity);
+			var lw = ctrlInst.GetComponent<LanternWard>();
+			lw.owner = slot.characterBody.gameObject;
+			lw.GetComponent<TeamFilter>().teamIndex = slot.characterBody.teamComponent.teamIndex;
+            NetworkServer.Spawn(ctrlInst);
+			lw.damage = slot.characterBody.damage * damage;
+			lw.duration = duration;
+            if(instance.CheckEmbryoProc(slot.characterBody)) {
+				lw.duration *= 2;
+            }
+            return true;
         }
     }
 

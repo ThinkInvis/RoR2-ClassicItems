@@ -1,10 +1,11 @@
 ﻿using RoR2;
 using UnityEngine;
-using BepInEx.Configuration;
 using MonoMod.Cil;
 using Mono.Cecil.Cil;
 using System;
 using System.Collections.ObjectModel;
+using TILER2;
+using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
     public class GoldenGun : Item<GoldenGun> {
@@ -12,42 +13,55 @@ namespace ThinkInvisible.ClassicItems {
 		public override ItemTier itemTier => ItemTier.Tier2;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
 
-        [AutoItemCfg("Maximum multiplier to add to player damage.",default,0f,float.MaxValue)]
+        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
+        [AutoItemCfg("Maximum multiplier to add to player damage.",AICFlags.None,0f,float.MaxValue)]
         public float damageBoost {get;private set;} = 0.4f;
-        [AutoItemCfg("Gold required for maximum damage. Scales with difficulty level.",default,0,int.MaxValue)]
+
+        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
+        [AutoItemCfg("Gold required for maximum damage. Scales with difficulty level.",AICFlags.None,0,int.MaxValue)]
         public int goldAmt {get;private set;} = 700;
-        [AutoItemCfg("Inverse-exponential multiplier for reduced GoldAmt per stack (higher = more powerful).",default,0f,0.999f)]
+        
+        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
+        [AutoItemCfg("Inverse-exponential multiplier for reduced GoldAmt per stack (higher = more powerful).",AICFlags.None,0f,0.999f)]
         public float goldReduc {get;private set;} = 0.5f;
+
         [AutoItemCfg("If true, deployables (e.g. Engineer turrets) with Golden Gun will benefit from their master's money.")]
         public bool inclDeploys {get;private set;} = true;
 
         private bool ilFailed = false;
         
         public BuffIndex goldenGunBuff {get;private set;}
-
-        public override void SetupAttributesInner() {
-            RegLang(
-            	"More gold, more damage.",
-            	"Deal <style=cIsDamage>bonus damage</style> based on your <style=cIsUtility>money</style>, up to <style=cIsDamage>40% damage</style> at <style=cIsUtility>$700</style> <style=cStack>(cost increases with difficulty, -50% per stack)</style>.",
-            	"A relic of times long past (ClassicItems mod)");
+        protected override string NewLangName(string langid = null) => displayName;
+        protected override string NewLangPickup(string langid = null) => "More gold, more damage.";
+        protected override string NewLangDesc(string langid = null) => "Deal <style=cIsDamage>bonus damage</style> based on your <style=cIsUtility>money</style>, up to <style=cIsDamage>" + Pct(damageBoost) + "</style> at <style=cIsUtility>$" + goldAmt.ToString("N0") + "</style> <style=cStack>(cost increases with difficulty, -" + Pct(goldReduc) + " per stack)</style>.";
+        protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        
+        public GoldenGun() {
+            onAttrib += (tokenIdent, namePrefix) => {
+                var goldenGunBuffDef = new R2API.CustomBuff(new BuffDef {
+                    buffColor = new Color(0.85f, 0.8f, 0.3f),
+                    canStack = true,
+                    isDebuff = false,
+                    name = "GoldenGun",
+                    iconPath = "@ClassicItems:Assets/ClassicItems/icons/" + iconPathName
+                });
+                goldenGunBuff = R2API.BuffAPI.Add(goldenGunBuffDef);
+            };
         }
 
-        public override void SetupBehaviorInner() {
-            var goldenGunBuffDef = new R2API.CustomBuff(new BuffDef {
-                buffColor = new Color(0.85f, 0.8f, 0.3f),
-                canStack = true,
-                isDebuff = false,
-                name = "GoldenGun",
-                iconPath = "@ClassicItems:Assets/ClassicItems/icons/" + iconPathName
-            });
-            goldenGunBuff = R2API.BuffAPI.Add(goldenGunBuffDef);
-
+        protected override void LoadBehavior() {
             IL.RoR2.HealthComponent.TakeDamage += IL_CBTakeDamage;
             if(ilFailed) IL.RoR2.HealthComponent.TakeDamage -= IL_CBTakeDamage;
             else {
                 On.RoR2.CharacterBody.FixedUpdate += On_CBFixedUpdate;
                 On.RoR2.CharacterBody.OnInventoryChanged += On_CBInventoryChanged;
             }
+        }
+
+        protected override void UnloadBehavior() {
+            IL.RoR2.HealthComponent.TakeDamage -= IL_CBTakeDamage;
+            On.RoR2.CharacterBody.FixedUpdate -= On_CBFixedUpdate;
+            On.RoR2.CharacterBody.OnInventoryChanged -= On_CBInventoryChanged;
         }
 
         private void On_CBInventoryChanged(On.RoR2.CharacterBody.orig_OnInventoryChanged orig, CharacterBody self) {

@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace ThinkInvisible.ClassicItems {
     public static class Ext_CharacterBody {
-        private static Action<CharacterBody,BuffIndex,int> _setBuffCount;
+        private static readonly Action<CharacterBody,BuffIndex,int> _setBuffCount;
 
         public static void SetBuffCount(this CharacterBody body, BuffIndex buffType, int newCount) {
             _setBuffCount(body, buffType, newCount);

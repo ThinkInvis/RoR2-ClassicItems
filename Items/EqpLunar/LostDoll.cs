@@ -1,104 +1,101 @@
-﻿using BepInEx.Configuration;
-using RoR2;
+﻿using RoR2;
 using RoR2.Orbs;
 using System.Collections.ObjectModel;
 using UnityEngine;
+using TILER2;
+using static TILER2.MiscUtil;
 
 
 namespace ThinkInvisible.ClassicItems {
     public class LostDoll : Equipment<LostDoll> {
         public override string displayName => "Lost Doll";
 
-        [AutoItemCfg("Fraction of CURRENT health to take from the user when Lost Doll is activated.", default, 0f, 1f)]
+        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
+        [AutoItemCfg("Fraction of CURRENT health to take from the user when Lost Doll is activated.", AICFlags.None, 0f, 1f)]
         public float damageTaken {get;private set;} = 0.25f;
-        [AutoItemCfg("Fraction of MAXIMUM health to deal in damage to the closest enemy when Lost Doll is activated.", default, 0f, float.MaxValue)]
+
+        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
+        [AutoItemCfg("Fraction of MAXIMUM health to deal in damage to the closest enemy when Lost Doll is activated.", AICFlags.None, 0f, float.MaxValue)]
         public float damageGiven {get;private set;} = 5f;
         
 		public override bool eqpIsLunar{get;} = true;
+        protected override string NewLangName(string langid = null) => displayName;
+        protected override string NewLangPickup(string langid = null) => "Harm yourself to instantly kill an enemy.";
+        protected override string NewLangDesc(string langid = null) => "Sacrifices <style=cIsDamage>" + Pct(damageTaken) + "</style> of your <style=cIsDamage>current health</style> to damage the nearest enemy for <style=cIsDamage>" + Pct(damageGiven) + "</style> of your <style=cIsDamage>maximum health</style>.";
+        protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
-        public override void SetupAttributesInner() {
-            RegLang(
-                "Harm yourself to instantly kill an enemy.",
-                "Sacrifices <style=cIsDamage>25%</style> of your <style=cIsDamage>current health</style> to damage the nearest enemy for <style=cIsDamage>500%</style> of your <style=cIsDamage>maximum health</style>.",
-                "A relic of times long past (ClassicItems mod)");
-        }
+        public LostDoll() { }
 
-        public override void SetupBehaviorInner() {
-            On.RoR2.EquipmentSlot.PerformEquipmentAction += On_ESPerformEquipmentAction;
-        }
-        
-        private bool On_ESPerformEquipmentAction(On.RoR2.EquipmentSlot.orig_PerformEquipmentAction orig, EquipmentSlot slot, EquipmentIndex eqpid) {
-            if(eqpid == regIndex) {
-                if(!slot.characterBody || !slot.characterBody.teamComponent) return false;
-                var tpos = slot.characterBody.transform.position;
-			    ReadOnlyCollection<TeamComponent> teamMembers = TeamComponent.GetTeamMembers((TeamIndex.Player | TeamIndex.Neutral | TeamIndex.Monster) & ~slot.characterBody.teamComponent.teamIndex);
-			    float lowestDist = float.MaxValue;
-			    HurtBox result = null;
-                float secondLowestDist = float.MaxValue;
-                HurtBox result2 = null;
-                foreach(TeamComponent tcpt in teamMembers) {
-                    if(!tcpt.body || !tcpt.body.isActiveAndEnabled || !tcpt.body.mainHurtBox) continue;
-				    float currDist = Vector3.SqrMagnitude(tcpt.transform.position - tpos);
-				    if(currDist < lowestDist) {
-                        secondLowestDist = lowestDist;
-                        result2 = result;
+        protected override bool OnEquipUseInner(EquipmentSlot slot) {
+            if(!slot.characterBody || !slot.characterBody.teamComponent) return false;
+            var tpos = slot.characterBody.transform.position;
+			ReadOnlyCollection<TeamComponent> teamMembers = TeamComponent.GetTeamMembers((TeamIndex.Player | TeamIndex.Neutral | TeamIndex.Monster) & ~slot.characterBody.teamComponent.teamIndex);
+			float lowestDist = float.MaxValue;
+			HurtBox result = null;
+            float secondLowestDist = float.MaxValue;
+            HurtBox result2 = null;
+            foreach(TeamComponent tcpt in teamMembers) {
+                if(!tcpt.body || !tcpt.body.isActiveAndEnabled || !tcpt.body.mainHurtBox) continue;
+				float currDist = Vector3.SqrMagnitude(tcpt.transform.position - tpos);
+				if(currDist < lowestDist) {
+                    secondLowestDist = lowestDist;
+                    result2 = result;
 
-					    lowestDist = currDist;
-					    result = tcpt.body.mainHurtBox;
-				    }
-                    if(currDist < secondLowestDist && currDist > lowestDist) {
-                        secondLowestDist = currDist;
-                        result2 = tcpt.body.mainHurtBox;
-                    }
-			    }
-                var myHcpt = slot.characterBody?.healthComponent ?? null;
-                bool didHit = false;
-                if(myHcpt) {
-                    if(result) {
-                        OrbManager.instance.AddOrb(new LostDollOrb {
-                            attacker = slot.characterBody.gameObject,
-                            damageColorIndex = DamageColorIndex.Default,
-                            damageValue = myHcpt.fullCombinedHealth * damageGiven,
-                            isCrit = false,
-                            origin = slot.characterBody.corePosition,
-                            target = result,
-                            procCoefficient = 0f,
-                            procChainMask = default,
-                            scale = 10f
-                        });
-                        didHit = true;
-                    }
-                    if(result2 && Embryo.instance.CheckProc<LostDoll>(slot.characterBody)) {
-                        OrbManager.instance.AddOrb(new LostDollOrb {
-                            attacker = slot.characterBody.gameObject,
-                            damageColorIndex = DamageColorIndex.Default,
-                            damageValue = myHcpt.fullCombinedHealth * damageGiven,
-                            isCrit = false,
-                            origin = slot.characterBody.corePosition,
-                            target = result2,
-                            procCoefficient = 0f,
-                            procChainMask = default,
-                            scale = 10f
-                        });
-                        didHit = true;
-                    }
-                    if(didHit) {                        
-                        myHcpt.TakeDamage(new DamageInfo {
-				            damage = myHcpt.combinedHealth * damageTaken,
-				            position = slot.characterBody.corePosition,
-                            force = Vector3.zero,
-				            damageColorIndex = DamageColorIndex.Default,
-				            crit = false,
-				            attacker = null,
-				            inflictor = null,
-				            damageType = (DamageType.NonLethal | DamageType.BypassArmor | DamageType.BypassOneShotProtection),
-				            procCoefficient = 0f,
-				            procChainMask = default
-                        });
-                    }
+					lowestDist = currDist;
+					result = tcpt.body.mainHurtBox;
+				}
+                if(currDist < secondLowestDist && currDist > lowestDist) {
+                    secondLowestDist = currDist;
+                    result2 = tcpt.body.mainHurtBox;
                 }
-                return didHit;
-            } else return orig(slot, eqpid);
+			}
+            var myHcpt = slot.characterBody?.healthComponent ?? null;
+            bool didHit = false;
+            if(myHcpt) {
+                if(result) {
+                    OrbManager.instance.AddOrb(new LostDollOrb {
+                        attacker = slot.characterBody.gameObject,
+                        damageColorIndex = DamageColorIndex.Default,
+                        damageValue = myHcpt.fullCombinedHealth * damageGiven,
+                        isCrit = false,
+                        origin = slot.characterBody.corePosition,
+                        target = result,
+                        procCoefficient = 0f,
+                        procChainMask = default,
+                        scale = 10f
+                    });
+                    didHit = true;
+                }
+                if(result2 && instance.CheckEmbryoProc(slot.characterBody)) {
+                    OrbManager.instance.AddOrb(new LostDollOrb {
+                        attacker = slot.characterBody.gameObject,
+                        damageColorIndex = DamageColorIndex.Default,
+                        damageValue = myHcpt.fullCombinedHealth * damageGiven,
+                        isCrit = false,
+                        origin = slot.characterBody.corePosition,
+                        target = result2,
+                        procCoefficient = 0f,
+                        procChainMask = default,
+                        scale = 10f
+                    });
+                    didHit = true;
+                }
+                if(didHit) {                        
+                    myHcpt.TakeDamage(new DamageInfo {
+				        damage = myHcpt.combinedHealth * damageTaken,
+				        position = slot.characterBody.corePosition,
+                        force = Vector3.zero,
+				        damageColorIndex = DamageColorIndex.Default,
+				        crit = false,
+				        attacker = null,
+				        inflictor = null,
+				        damageType = (DamageType.NonLethal | DamageType.BypassArmor | DamageType.BypassOneShotProtection),
+				        procCoefficient = 0f,
+				        procChainMask = default
+                    });
+                }
+            }
+            return didHit;
         }
     }
 

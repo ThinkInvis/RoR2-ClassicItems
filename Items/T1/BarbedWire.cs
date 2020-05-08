@@ -1,59 +1,73 @@
 ﻿using RoR2;
 using UnityEngine;
-using static ThinkInvisible.ClassicItems.MiscUtil;
 using UnityEngine.Networking;
 using System.Collections.ObjectModel;
 using R2API;
 using RoR2.Orbs;
+using TILER2;
+using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
     public class BarbedWire : Item<BarbedWire> {
         public override string displayName => "Barbed Wire";
-		
 		public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
 
-		[AutoItemCfg("AoE radius for the first stack of Barbed Wire.", default, 0f, float.MaxValue)]
+		[AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
+		[AutoItemCfg("AoE radius for the first stack of Barbed Wire.", AICFlags.None, 0f, float.MaxValue)]
         public float baseRadius {get; private set;} = 5f;
-		[AutoItemCfg("AoE radius to add per additional stack of Barbed Wire.", default, 0f, float.MaxValue)]
+
+		[AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
+		[AutoItemCfg("AoE radius to add per additional stack of Barbed Wire.", AICFlags.None, 0f, float.MaxValue)]
         public float stackRadius {get; private set;} = 1f;
-		[AutoItemCfg("AoE damage/sec (as fraction of owner base damage) for the first stack of Barbed Wire.", default, 0f, float.MaxValue)]
+
+		[AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
+		[AutoItemCfg("AoE damage/sec (as fraction of owner base damage) for the first stack of Barbed Wire.", AICFlags.None, 0f, float.MaxValue)]
         public float baseDmg {get; private set;} = 0.5f;
-		[AutoItemCfg("AoE damage/sec (as fraction of owner base damage) per additional stack of Barbed Wire.", default, 0f, float.MaxValue)]
+
+		[AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
+		[AutoItemCfg("AoE damage/sec (as fraction of owner base damage) per additional stack of Barbed Wire.", AICFlags.None, 0f, float.MaxValue)]
         public float stackDmg {get; private set;} = 0.15f;
+
 		[AutoItemCfg("If true, Barbed Wire only affects one target at most. If false, Barbed Wire affects every target in range.")]
 		public bool oneOnly {get; private set;} = true;
+
 		[AutoItemCfg("If true, deployables (e.g. Engineer turrets) with Barbed Wire will benefit from their master's damage. Deployables usually have 0 damage stat by default, and will not otherwise be able to use Barbed Wire.")]
         public bool inclDeploys {get;private set;} = true;
 
-		internal static GameObject barbedWardPrefab;
-        
-        public override void SetupAttributesInner() {
-            RegLang(
-            	"Hurt nearby enemies.",
-            	"Deal <style=cIsDamage>" + Pct(baseDmg) + "</style> <style=cStack>(+" + Pct(stackDmg) + " per stack)</style> <style=cIsDamage>damage/sec</style> to enemies within <style=cIsDamage>" + baseRadius.ToString("N1") + " m</style> <style=cStack>(+ " + stackRadius.ToString("N2") + " per stack)</style>",
-            	"A relic of times long past (ClassicItems mod)");
-        }
+		internal static GameObject barbedWardPrefab;        
+        protected override string NewLangName(string langid = null) => displayName;        
+        protected override string NewLangPickup(string langid = null) => "Hurt nearby enemies.";        
+        protected override string NewLangDesc(string langid = null) => "Deal <style=cIsDamage>" + Pct(baseDmg) + "</style> <style=cStack>(+" + Pct(stackDmg) + " per stack)</style> <style=cIsDamage>damage/sec</style> to enemies within <style=cIsDamage>" + baseRadius.ToString("N1") + " m</style> <style=cStack>(+ " + stackRadius.ToString("N2") + " per stack)</style>";        
+        protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
-        public override void SetupBehaviorInner() {
-			var mshPrefab = Resources.Load<GameObject>("Prefabs/NetworkedObjects/MushroomWard");
+		public BarbedWire() {
+			onAttrib += (tokenIdent, namePrefix) => {
+				var mshPrefab = Resources.Load<GameObject>("Prefabs/NetworkedObjects/MushroomWard");
 
-			var bwPrefabPrefab = new GameObject("BarbedWardAuraPrefabPrefab");
-			bwPrefabPrefab.AddComponent<TeamFilter>();
-			bwPrefabPrefab.AddComponent<MeshFilter>().mesh = mshPrefab.GetComponentInChildren<MeshFilter>().mesh;
-			bwPrefabPrefab.AddComponent<MeshRenderer>().material = UnityEngine.Object.Instantiate(mshPrefab.GetComponentInChildren<MeshRenderer>().material);
-			bwPrefabPrefab.GetComponent<MeshRenderer>().material.SetVector("_TintColor",new Vector4(1f,0f,0f,0.5f));
-			bwPrefabPrefab.AddComponent<NetworkedBodyAttachment>().forceHostAuthority = true;
-			var bw = bwPrefabPrefab.AddComponent<BarbedWard>();
-			bw.rangeIndicator = bwPrefabPrefab.GetComponent<MeshRenderer>().transform;
-			bw.interval = 1f;
-			barbedWardPrefab = bwPrefabPrefab.InstantiateClone("BarbedWardAuraPrefab");
-			UnityEngine.Object.Destroy(bwPrefabPrefab);
-			
+				var bwPrefabPrefab = new GameObject("BarbedWardAuraPrefabPrefab");
+				bwPrefabPrefab.AddComponent<TeamFilter>();
+				bwPrefabPrefab.AddComponent<MeshFilter>().mesh = mshPrefab.GetComponentInChildren<MeshFilter>().mesh;
+				bwPrefabPrefab.AddComponent<MeshRenderer>().material = UnityEngine.Object.Instantiate(mshPrefab.GetComponentInChildren<MeshRenderer>().material);
+				bwPrefabPrefab.GetComponent<MeshRenderer>().material.SetVector("_TintColor",new Vector4(1f,0f,0f,0.5f));
+				bwPrefabPrefab.AddComponent<NetworkedBodyAttachment>().forceHostAuthority = true;
+				var bw = bwPrefabPrefab.AddComponent<BarbedWard>();
+				bw.rangeIndicator = bwPrefabPrefab.GetComponent<MeshRenderer>().transform;
+				bw.interval = 1f;
+				barbedWardPrefab = bwPrefabPrefab.InstantiateClone("BarbedWardAuraPrefab");
+				UnityEngine.Object.Destroy(bwPrefabPrefab);
+			};
+		}
+
+        protected override void LoadBehavior() {
             On.RoR2.CharacterBody.OnInventoryChanged += On_CBOnInventoryChanged;
 			if(inclDeploys)
 				On.RoR2.CharacterMaster.AddDeployable += On_CMAddDeployable;
         }
+		protected override void UnloadBehavior() {
+            On.RoR2.CharacterBody.OnInventoryChanged -= On_CBOnInventoryChanged;
+			On.RoR2.CharacterMaster.AddDeployable -= On_CMAddDeployable;
+		}
 
 		//AddDeployable fires after OnInventoryChanged while creating a turret, so Deployable.ownerMaster won't be set in OIC
 		private void On_CMAddDeployable(On.RoR2.CharacterMaster.orig_AddDeployable orig, CharacterMaster self, Deployable depl, DeployableSlot slot) {

@@ -5,30 +5,40 @@ using System;
 using UnityEngine;
 using R2API.Utils;
 using BepInEx.Configuration;
-using static ThinkInvisible.ClassicItems.MiscUtil;
 using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using UnityEngine.Networking;
 using R2API;
+using TILER2;
+using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
+    public static class EmbryoExtensions {
+        public static bool CheckEmbryoProc(this Equipment eqp, CharacterBody body) {
+            return Embryo.instance.enabled && Embryo.instance.subEnableInternalGet[eqp] && Util.CheckRoll(Embryo.instance.GetCount(body)*Embryo.instance.procChance, body.master);
+        }
+    }
     public class Embryo : Item<Embryo> {
         public override string displayName => "Beating Embryo";
 		public override ItemTier itemTier => ItemTier.Tier3;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.EquipmentRelated});
 
-        private ConfigEntry<float> cfgProcChance;
+        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
+        [AutoItemCfg("Percent chance of triggering an equipment twice. Stacks additively.", AICFlags.None, 0f, 100f)]
+        public float procChance {get;private set;} = 30f;
 
-        private Dictionary<EquipmentIndex,ConfigEntry<bool>> cfgSubEnable;
-        private Dictionary<Type,ConfigEntry<bool>> cfgSubEnableInternal;
+        
+        [AutoItemCfg("SubEnable<AIC.DictKey>", "If false, Beating Embryo will not affect <AIC.DictKey>.", AICFlags.BindDict)]
+        private Dictionary<EquipmentIndex,bool> subEnable {get;} = new Dictionary<EquipmentIndex, bool>();
+        public ReadOnlyDictionary<EquipmentIndex,bool> subEnableGet {get;private set;}
 
-        private ConfigEntry<bool> cfgSubEnableModded;
+        [AutoItemCfg("SubEnable<AIC.DictKeyProp." + nameof(Equipment.itemCodeName) + ">","If false, Beating Embryo will not affect <AIC.DictKeyProp." + nameof(Equipment.displayName) + "> (added by ClassicItems).", AICFlags.BindDict)]
+        private Dictionary<Equipment,bool> subEnableInternal {get;} = new Dictionary<Equipment, bool>();
+        public ReadOnlyDictionary<Equipment,bool> subEnableInternalGet {get;private set;}
 
-        public float procChance {get;private set;}
-
-        public ReadOnlyDictionary<EquipmentIndex,bool> subEnable {get;private set;}
-        public ReadOnlyDictionary<Type,bool> subEnableInternal {get;private set;}
+        [AutoItemCfg("If false, Beating Embryo will not affect equipment added by other mods. If true, these items will be triggered twice when Beating Embryo procs, which may not work with some items.")]
+        public bool subEnableModded {get;private set;} = false;
 
         private readonly List<EquipmentIndex> subEnableExt = new List<EquipmentIndex>();
         public void Compat_Register(EquipmentIndex ind) {
@@ -36,9 +46,7 @@ namespace ThinkInvisible.ClassicItems {
             subEnableExt.Add(ind);
         }
 
-        public bool subEnableModded {get;private set;}
-
-        private readonly ReadOnlyCollection<EquipmentIndex> simpleDoubleEqps = new ReadOnlyCollection<EquipmentIndex>(new[] {
+        public readonly ReadOnlyCollection<EquipmentIndex> simpleDoubleEqps = new ReadOnlyCollection<EquipmentIndex>(new[] {
             EquipmentIndex.Fruit,
             EquipmentIndex.Lightning,
             EquipmentIndex.DroneBackup,
@@ -46,47 +54,62 @@ namespace ThinkInvisible.ClassicItems {
             EquipmentIndex.Saw
         });
 
-        private readonly ReadOnlyCollection<EquipmentIndex> unhandledEqps = new ReadOnlyCollection<EquipmentIndex>(new[] {
-            //Affixes
-            EquipmentIndex.AffixBlue, EquipmentIndex.AffixGold, EquipmentIndex.AffixHaunted, EquipmentIndex.AffixPoison, EquipmentIndex.AffixRed, EquipmentIndex.AffixWhite, EquipmentIndex.AffixYellow,
+        public readonly ReadOnlyCollection<EquipmentIndex> handledEqps = new ReadOnlyCollection<EquipmentIndex>(new[] {
+            EquipmentIndex.BFG, EquipmentIndex.Blackhole, EquipmentIndex.Cleanse, EquipmentIndex.CommandMissile, EquipmentIndex.CritOnUse,
+            EquipmentIndex.DroneBackup, EquipmentIndex.FireBallDash, EquipmentIndex.Fruit, EquipmentIndex.GainArmor, EquipmentIndex.Gateway,
+            EquipmentIndex.GoldGat, EquipmentIndex.Jetpack, EquipmentIndex.Lightning, EquipmentIndex.PassiveHealing, EquipmentIndex.Recycle,
+            EquipmentIndex.Saw, EquipmentIndex.Scanner
+        });
+        public readonly ReadOnlyCollection<EquipmentIndex> dftDisableEqps = new ReadOnlyCollection<EquipmentIndex>(new[] {
             //Lunar
-            EquipmentIndex.BurnNearby, EquipmentIndex.CrippleWard, EquipmentIndex.LunarPotion, EquipmentIndex.SoulCorruptor, EquipmentIndex.Tonic,
-            //NYI by game
-            EquipmentIndex.GhostGun, EquipmentIndex.OrbitalLaser, EquipmentIndex.SoulJar, EquipmentIndex.Enigma,
-            //Special
-            EquipmentIndex.Count, EquipmentIndex.None, EquipmentIndex.QuestVolatileBattery
+            EquipmentIndex.BurnNearby, EquipmentIndex.CrippleWard, EquipmentIndex.LunarPotion, EquipmentIndex.SoulCorruptor, EquipmentIndex.Tonic
         });
 
-        private ConfigFile cachedCfl;
-        public override void SetupConfigInner(ConfigFile cfl) {
-            cachedCfl = cfl;
-            cfgProcChance = cfl.Bind<float>(new ConfigDefinition("Items." + itemCodeName, "ProcChance"), 30f, new ConfigDescription(
-                "Percent chance of triggering an equipment twice. Stacks additively.",
-                new AcceptableValueRange<float>(0f,100f)));
-            procChance = cfgProcChance.Value;
+        //prevent future equipments from being added to config until they have defined behavior here or can be added to unhandledEqps. CONTINUOUS TODO: make sure this stays up to date as often as possible
+        const EquipmentIndex currentHighestEquipment = (EquipmentIndex)35;
 
-            cfgSubEnable = new Dictionary<EquipmentIndex,ConfigEntry<bool>>();
-            Dictionary<EquipmentIndex,bool> _subEnable = new Dictionary<EquipmentIndex, bool>();
-            
-            foreach(EquipmentIndex ind in (EquipmentIndex[]) Enum.GetValues(typeof(EquipmentIndex))) {
-                if(unhandledEqps.Contains(ind)) continue;
-                cfgSubEnable.Add(ind, cfl.Bind<bool>(new ConfigDefinition("Items." + itemCodeName, "SubEnable" + ind.ToString()), true, new ConfigDescription(
-                "If false, Beating Embryo will not affect " + ind.ToString() + ".")));
-                _subEnable.Add(ind, cfgSubEnable[ind].Value);
-            }
-            subEnable = new ReadOnlyDictionary<EquipmentIndex,bool>(_subEnable);
+        public Embryo() {
+            preConfig += (cfl) => {
+                foreach(ItemBoilerplate bpl in ClassicItemsPlugin.masterItemList) {
+                    if(!(bpl is Equipment)) continue;
+                    Equipment eqp = (Equipment)bpl;
+                    subEnableInternal.Add(eqp, !eqp.eqpIsLunar);
+                }
+                foreach(EquipmentIndex e in Enum.GetValues(typeof(EquipmentIndex))) {
+                    if(e > currentHighestEquipment) continue;
+                    if(!handledEqps.Contains(e)) continue;
+                    Debug.Log("Adding SubEnable: " + e);
+                    subEnable.Add(e, !dftDisableEqps.Contains(e));
+                }
 
-            cfgSubEnableModded = cfl.Bind<bool>(new ConfigDefinition("Items." + itemCodeName, "SubEnableModded"), false, new ConfigDescription(
-                "If false, Beating Embryo will not affect equipment added by other mods. If true, these items will be triggered twice when Beating Embryo procs, which may not work with some items."));
-            subEnableModded = cfgSubEnableModded.Value;
+                subEnableGet = new ReadOnlyDictionary<EquipmentIndex,bool>(subEnable);
+                subEnableInternalGet = new ReadOnlyDictionary<Equipment,bool>(subEnableInternal);
+            };
+
+            onAttrib += (tokenIdent, namePrefix) => {
+                boostedScannerPrefab = Resources.Load<GameObject>("Prefabs/NetworkedObjects/ChestScanner").InstantiateClone("boostedScannerPrefab");
+                boostedScannerPrefab.GetComponent<ChestRevealer>().revealDuration *= 2f;
+
+                boostedGatewayPrefab = Resources.Load<GameObject>("Prefabs/NetworkedObjects/Zipline").InstantiateClone("boostedGatewayPrefab");
+                var ziplineCtrl = boostedGatewayPrefab.GetComponent<ZiplineController>();
+                ziplineCtrl.ziplineVehiclePrefab = ziplineCtrl.ziplineVehiclePrefab.InstantiateClone("boostedGatewayVehiclePrefab");
+                var zvh = ziplineCtrl.ziplineVehiclePrefab.GetComponent<ZiplineVehicle>();
+                zvh.maxSpeed *= 2f;
+                zvh.acceleration *= 2f;
+
+                var eCptPrefab2 = new GameObject("embryoCptPrefabPrefab");
+                eCptPrefab2.AddComponent<NetworkIdentity>();
+                eCptPrefab2.AddComponent<EmbryoComponent>();
+                eCptPrefab2.AddComponent<NetworkedBodyAttachment>().forceHostAuthority = true;
+                embryoCptPrefab = eCptPrefab2.InstantiateClone("embryoCptPrefab");
+                GameObject.Destroy(eCptPrefab2);
+            };
         }
-        
-        public override void SetupAttributesInner() {
-            RegLang(
-            	"Equipment has a 30% chance to deal double the effect.",
-            	"Upon activating an equipment, adds a <style=cIsUtility>" + Pct(procChance, 0, 1) + "</style> <style=cStack>(+" + Pct(procChance, 0, 1) + " per stack)</style> chance to <style=cIsUtility>double its effects somehow</style>.",
-            	"A relic of times long past (ClassicItems mod)");
-        }
+
+        protected override string NewLangName(string langid = null) => displayName;        
+        protected override string NewLangPickup(string langid = null) => "Equipment has a 30% chance to deal double the effect.";        
+        protected override string NewLangDesc(string langid = null) => "Upon activating an equipment, adds a <style=cIsUtility>" + Pct(procChance, 0, 1) + "</style> <style=cStack>(+" + Pct(procChance, 0, 1) + " per stack)</style> chance to <style=cIsUtility>double its effects somehow</style>.";        
+        protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
         private bool ILFailed = false;
 
@@ -94,37 +117,7 @@ namespace ThinkInvisible.ClassicItems {
         private GameObject boostedGatewayPrefab;
         private GameObject boostedScannerPrefab;
 
-        public override void SetupBehaviorInner() {
-            ///// WARNING: late config setup. is there a safer way to do this? eqpIsLunar and itemIsEquipment are defined during attributes stage
-            Debug.Log("ClassicItems: adding late config for Embryo");
-            cfgSubEnableInternal = new Dictionary<Type,ConfigEntry<bool>>();
-            Dictionary<Type,bool> _subEnableInternal = new Dictionary<Type,bool>();
-            foreach(Equipment bpl in ClassicItemsPlugin.masterItemList.OfType<Equipment>()) {
-                cfgSubEnableInternal.Add(bpl.GetType(), cachedCfl.Bind<bool>(new ConfigDefinition("Items." + itemCodeName, "SubEnable" + bpl.itemCodeName), !bpl.eqpIsLunar, new ConfigDescription(
-                "If false, Beating Embryo will not affect " + bpl.itemCodeName + " (added by CustomItems).")));
-                _subEnableInternal.Add(bpl.GetType(), cfgSubEnableInternal[bpl.GetType()].Value);
-            }
-            subEnableInternal = new ReadOnlyDictionary<Type,bool>(_subEnableInternal);
-            ///// end late config setup
-
-
-            boostedScannerPrefab = Resources.Load<GameObject>("Prefabs/NetworkedObjects/ChestScanner").InstantiateClone("boostedScannerPrefab");
-            boostedScannerPrefab.GetComponent<ChestRevealer>().revealDuration *= 2f;
-
-            boostedGatewayPrefab = Resources.Load<GameObject>("Prefabs/NetworkedObjects/Zipline").InstantiateClone("boostedGatewayPrefab");
-            var ziplineCtrl = boostedGatewayPrefab.GetComponent<ZiplineController>();
-            ziplineCtrl.ziplineVehiclePrefab = ziplineCtrl.ziplineVehiclePrefab.InstantiateClone("boostedGatewayVehiclePrefab");
-            var zvh = ziplineCtrl.ziplineVehiclePrefab.GetComponent<ZiplineVehicle>();
-            zvh.maxSpeed *= 2f;
-            zvh.acceleration *= 2f;
-
-            var eCptPrefab2 = new GameObject("embryoCptPrefabPrefab");
-            eCptPrefab2.AddComponent<NetworkIdentity>();
-            eCptPrefab2.AddComponent<EmbryoComponent>();
-            eCptPrefab2.AddComponent<NetworkedBodyAttachment>().forceHostAuthority = true;
-            embryoCptPrefab = eCptPrefab2.InstantiateClone("embryoCptPrefab");
-            GameObject.Destroy(eCptPrefab2);
-
+        protected override void LoadBehavior() {
             On.RoR2.CharacterBody.OnInventoryChanged += On_CBOnInventoryChanged;
             On.RoR2.EquipmentSlot.PerformEquipmentAction += On_ESPerformEquipmentAction;
 
@@ -132,6 +125,7 @@ namespace ThinkInvisible.ClassicItems {
             IL.RoR2.EquipmentSlot.FixedUpdate += IL_ESFixedUpdate;
 
             if(subEnable[EquipmentIndex.GoldGat]) {
+                ILFailed = false;
                 IL.EntityStates.GoldGat.GoldGatFire.FireBullet += IL_EntGGFFireBullet;
                 if(ILFailed) IL.EntityStates.GoldGat.GoldGatFire.FireBullet -= IL_EntGGFFireBullet;
                 ILFailed = false;
@@ -155,18 +149,26 @@ namespace ThinkInvisible.ClassicItems {
                 ILFailed = false;
             }
         }
+
+        protected override void UnloadBehavior() {
+            On.RoR2.CharacterBody.OnInventoryChanged -= On_CBOnInventoryChanged;
+            On.RoR2.EquipmentSlot.PerformEquipmentAction -= On_ESPerformEquipmentAction;
+            IL.RoR2.EquipmentSlot.PerformEquipmentAction -= IL_ESPerformEquipmentAction;
+            IL.RoR2.EquipmentSlot.FixedUpdate -= IL_ESFixedUpdate;
+            IL.EntityStates.GoldGat.GoldGatFire.FireBullet -= IL_EntGGFFireBullet;
+            IL.RoR2.EquipmentSlot.FireGateway -= IL_ESFireGateway;
+            IL.RoR2.JetpackController.FixedUpdate -= IL_JCFixedUpdate;
+            IL.RoR2.EquipmentSlot.RpcOnClientEquipmentActivationRecieved -= IL_ESRpcOnEquipmentActivationReceived;
+        }
         
-        public bool CheckProc(CharacterBody body) {
-            return enabled && Util.CheckRoll(GetCount(body)*procChance, body.master);
+        public bool CheckEmbryoProc(CharacterBody body) {
+            return instance.enabled && Util.CheckRoll(GetCount(body)*procChance, body.master);
         }
-        public bool CheckProc(EquipmentIndex subind, CharacterBody body) {
-            return subEnable[subind] && CheckProc(body);
-        }
-        public bool CheckProc<T>(CharacterBody body) where T:Equipment {
-            return enabled && subEnableInternal[typeof(T)] && Util.CheckRoll(GetCount(body)*procChance, body.master);
+        public bool CheckEmbryoProc(EquipmentIndex subind, CharacterBody body) {
+            return instance.subEnableGet[subind] && CheckEmbryoProc(body);
         }
 
-        private void On_CBOnInventoryChanged(On.RoR2.CharacterBody.orig_OnInventoryChanged orig, CharacterBody self) {            
+        private void On_CBOnInventoryChanged(On.RoR2.CharacterBody.orig_OnInventoryChanged orig, CharacterBody self) {
             orig(self);
             if(!NetworkServer.active || GetCount(self) < 1) return;
             var cpt = self.GetComponentInChildren<EmbryoComponent>();

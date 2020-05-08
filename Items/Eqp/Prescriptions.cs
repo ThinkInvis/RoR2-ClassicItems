@@ -1,48 +1,55 @@
-﻿using BepInEx.Configuration;
-using Mono.Cecil.Cil;
+﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using R2API.Utils;
 using RoR2;
 using System;
 using UnityEngine;
-using static ThinkInvisible.ClassicItems.MiscUtil;
+using TILER2;
+using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
     public class Prescriptions : Equipment<Prescriptions> {
         public override string displayName => "Prescriptions";
 
-        [AutoItemCfg("Duration of the buff applied by Prescriptions.", default, 0f, float.MaxValue)]
+        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken | AICAUEventFlags.InvalidatePickupToken)]
+        [AutoItemCfg("Duration of the buff applied by Prescriptions.", AICFlags.None, 0f, float.MaxValue)]
         public float duration {get;private set;} = 11f;
-        [AutoItemCfg("Attack speed added while Prescriptions is active.", default, 0f, float.MaxValue)]
+
+        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
+        [AutoItemCfg("Attack speed added while Prescriptions is active.", AICFlags.None, 0f, float.MaxValue)]
         public float aSpdBoost {get;private set;} = 0.4f;
-        [AutoItemCfg("Base damage added while Prescriptions is active.", default, 0f, float.MaxValue)]
+
+        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
+        [AutoItemCfg("Base damage added while Prescriptions is active.", AICFlags.None, 0f, float.MaxValue)]
         public float dmgBoost {get;private set;} = 10f;
+
         [AutoItemCfg("Set to false to change Prescriptions' effect from an IL patch to an event hook, which may help if experiencing compatibility issues with another mod. This will change how Prescriptions interacts with other effects.")]
         public bool useIL {get; private set;}
 
         private bool ilFailed = false;
-        public BuffIndex prescriptionsBuff {get;private set;}
-        
-        public override void SetupAttributesInner() {
-            RegLang(
-                "Increase damage and attack speed for 8 seconds.",
-                "While active, increases <style=cIsDamage>base damage by " + dmgBoost.ToString("N0") + " points</style> and <style=cIsDamage>attack speed by " + Pct(aSpdBoost) + "</style>. Lasts <style=cIsDamage>" + duration.ToString("N0") + " seconds</style>.",
-                "A relic of times long past (ClassicItems mod)");
+        public BuffIndex prescriptionsBuff {get;private set;}        
+        protected override string NewLangName(string langid = null) => displayName;        
+        protected override string NewLangPickup(string langid = null) => "Increase damage and attack speed for " + duration.ToString("N0") + " seconds.";        
+        protected override string NewLangDesc(string langid = null) => "While active, increases <style=cIsDamage>base damage by " + dmgBoost.ToString("N0") + " points</style> and <style=cIsDamage>attack speed by " + Pct(aSpdBoost) + "</style>. Lasts <style=cIsDamage>" + duration.ToString("N0") + " seconds</style>.";        
+        protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
+
+        public Prescriptions() {
+            onAttrib += (tokenIdent, namePrefix) => {
+                
+                var prescriptionsBuffDef = new R2API.CustomBuff(new BuffDef {
+                    buffColor = Color.red,
+                    canStack = true,
+                    isDebuff = false,
+                    name = "Prescriptions",
+                    iconPath = "@ClassicItems:Assets/ClassicItems/icons/" + iconPathName
+                });
+                prescriptionsBuff = R2API.BuffAPI.Add(prescriptionsBuffDef);
+            };
         }
 
-        public override void SetupBehaviorInner() {
-            var prescriptionsBuffDef = new R2API.CustomBuff(new BuffDef {
-                buffColor = Color.red,
-                canStack = true,
-                isDebuff = false,
-                name = "Prescriptions",
-                iconPath = "@ClassicItems:Assets/ClassicItems/icons/" + iconPathName
-            });
-            prescriptionsBuff = R2API.BuffAPI.Add(prescriptionsBuffDef);
-
-            On.RoR2.EquipmentSlot.PerformEquipmentAction += On_ESPerformEquipmentAction;
-            
+        protected override void LoadBehavior() {
             if(useIL) {
+                ilFailed = false;
                 IL.RoR2.CharacterBody.RecalculateStats += IL_CBRecalcStats;
                 if(ilFailed) {
                     IL.RoR2.CharacterBody.RecalculateStats -= IL_CBRecalcStats;
@@ -51,16 +58,18 @@ namespace ThinkInvisible.ClassicItems {
             } else
                 On.RoR2.CharacterBody.RecalculateStats += On_CBRecalcStats;
         }
+        protected override void UnloadBehavior() {
+            IL.RoR2.CharacterBody.RecalculateStats -= IL_CBRecalcStats;
+            On.RoR2.CharacterBody.RecalculateStats -= On_CBRecalcStats;
+        }
         
-        private bool On_ESPerformEquipmentAction(On.RoR2.EquipmentSlot.orig_PerformEquipmentAction orig, EquipmentSlot slot, EquipmentIndex eqpid) {
-            if(eqpid == regIndex) {
-                var sbdy = slot.characterBody;
-                if(!sbdy) return false;
-                sbdy.ClearTimedBuffs(prescriptionsBuff);
-                sbdy.AddTimedBuff(prescriptionsBuff, duration);
-                if(Embryo.instance.CheckProc<Prescriptions>(sbdy)) sbdy.AddTimedBuff(prescriptionsBuff, duration);
-                return true;
-            } else return orig(slot, eqpid);
+        protected override bool OnEquipUseInner(EquipmentSlot slot) {
+            var sbdy = slot.characterBody;
+            if(!sbdy) return false;
+            sbdy.ClearTimedBuffs(prescriptionsBuff);
+            sbdy.AddTimedBuff(prescriptionsBuff, duration);
+            if(instance.CheckEmbryoProc(sbdy)) sbdy.AddTimedBuff(prescriptionsBuff, duration);
+            return true;
         }
         private void IL_CBRecalcStats(ILContext il) {
             var c = new ILCursor(il);

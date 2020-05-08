@@ -1,33 +1,43 @@
 ﻿using RoR2;
 using UnityEngine;
-using static ThinkInvisible.ClassicItems.MiscUtil;
 using System.Collections.ObjectModel;
+using TILER2;
+using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
     public class OldBox : Item<OldBox> {
         public override string displayName => "Old Box";
 		public override ItemTier itemTier => ItemTier.Lunar;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
-        public override bool itemAIBDefault => true;
+        public override bool itemAIB {get; protected set;} = true; //TODO: find a way to make fear work on players... random movement and forced sprint? halt movement (root)?
 
-        [AutoItemCfg("Fraction of max health required as damage taken to trigger Old Box (halved per additional stack).", default, 0f, 1f)]
+        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
+        [AutoItemCfg("Fraction of max health required as damage taken to trigger Old Box (halved per additional stack).", AICFlags.None, 0f, 1f)]
         public float healthThreshold {get; private set;} = 0.5f;
-        [AutoItemCfg("AoE radius for Old Box.", default, 0f, float.MaxValue)]
+
+        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
+        [AutoItemCfg("AoE radius for Old Box.", AICFlags.None, 0f, float.MaxValue)]
         public float radius {get; private set;} = 25f;
-        [AutoItemCfg("Duration of fear debuff applied by Old Box.", default, 0f, float.MaxValue)]
+        
+        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
+        [AutoItemCfg("Duration of fear debuff applied by Old Box.", AICFlags.None, 0f, float.MaxValue)]
         public float duration {get; private set;} = 2f;
+
         [AutoItemCfg("If true, damage to shield and barrier (from e.g. Personal Shield Generator, Topaz Brooch) will not count towards triggering Old Box.")]
         public bool requireHealth {get; private set;} = true;
+        protected override string NewLangName(string langid = null) => displayName;
+        protected override string NewLangPickup(string langid = null) => "Chance to fear enemies when attacked.";
+        protected override string NewLangDesc(string langid = null) => "<style=cDeath>When hit for more than " + Pct(healthThreshold) + " max health</style> <style=cStack>(/2 per stack)</style>, <style=cIsUtility>fear enemies</style> within <style=cIsUtility>" + radius.ToString("N0") + " m</style> for <style=cIsUtility>" + duration.ToString("N1") + " seconds</style>. <style=cIsUtility>Feared enemies will run out of melee</style>, <style=cDeath>but that won't stop them from shooting you.</style>";
+        protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
-        public override void SetupAttributesInner() {
-            RegLang(
-            	"Chance to fear enemies when attacked.",
-            	"<style=cDeath>When hit for more than " + Pct(healthThreshold) + " max health</style> <style=cStack>(/2 per stack)</style>, <style=cIsUtility>fear enemies</style> within <style=cIsUtility>" + radius.ToString("N0") + " m</style> for <style=cIsUtility>" + duration.ToString("N1") + " seconds</style>. <style=cIsUtility>Feared enemies will run out of melee</style>, <style=cDeath>but that won't stop them from shooting you.</style>",
-            	"A relic of times long past (ClassicItems mod)");
+        public OldBox() {}
+
+        protected override void LoadBehavior() {
+			On.RoR2.HealthComponent.TakeDamage += On_HCTakeDamage;
         }
 
-        public override void SetupBehaviorInner() {
-			On.RoR2.HealthComponent.TakeDamage += On_HCTakeDamage;
+        protected override void UnloadBehavior() {
+            On.RoR2.HealthComponent.TakeDamage -= On_HCTakeDamage;
         }
 
         private void On_HCTakeDamage(On.RoR2.HealthComponent.orig_TakeDamage orig, HealthComponent self, DamageInfo di) {

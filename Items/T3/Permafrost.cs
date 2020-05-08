@@ -1,32 +1,43 @@
 ﻿using RoR2;
-using static ThinkInvisible.ClassicItems.MiscUtil;
 using System.Collections.ObjectModel;
+using TILER2;
+using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
     public class Permafrost : Item<Permafrost> {
         public override string displayName => "Permafrost";
 		public override ItemTier itemTier => ItemTier.Tier3;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
-        public override bool itemAIBDefault => true;
-
-        [AutoItemCfg("Percent chance of triggering Permafrost on hit. Affected by proc coefficient; stacks inverse-multiplicatively.", default, 0f, 100f)]
+        public override bool itemAIB {get; protected set;} = true;
+        
+        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
+        [AutoItemCfg("Percent chance of triggering Permafrost on hit. Affected by proc coefficient; stacks inverse-multiplicatively.", AICFlags.None, 0f, 100f)]
         public float procChance {get;private set;} = 6f;
-        [AutoItemCfg("Duration of freeze applied by Permafrost.", default, 0f, float.MaxValue)]
+
+        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
+        [AutoItemCfg("Duration of freeze applied by Permafrost.", AICFlags.None, 0f, float.MaxValue)]
         public float freezeTime {get;private set;} = 1.5f;
-        [AutoItemCfg("Duration of slow applied by Permafrost.", default, 0f, float.MaxValue)]
+        
+        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
+        [AutoItemCfg("Duration of slow applied by Permafrost.", AICFlags.None, 0f, float.MaxValue)]
         public float slowTime {get;private set;} = 3.0f;
+
         [AutoItemCfg("If true, Permafrost will slow targets even if they can't be frozen.")]
         public bool slowUnfreezable {get;private set;} = true;
+        
+        protected override string NewLangName(string langid = null) => displayName;
+        protected override string NewLangPickup(string langid = null) => "Chance to freeze enemies on hit.";
+        protected override string NewLangDesc(string langid = null) => "<style=cIsUtility>" + Pct(procChance,1,1) + "</style> <style=cStack>(+" + Pct(procChance,1,1) + " per stack, inverse-mult.)</style> chance to <style=cIsUtility>freeze and slow</style> an enemy (" + freezeTime.ToString("N1") + " sec, " + slowTime.ToString("N1") + " sec). Affected by proc coefficient.";
+        protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
-        public override void SetupAttributesInner() {
-            RegLang(
-            	"Chance to freeze enemies on hit.",
-            	"<style=cIsUtility>" + Pct(procChance,1,1) + "</style> <style=cStack>(+" + Pct(procChance,1,1) + " per stack, inverse-mult.)</style> chance to <style=cIsUtility>freeze and slow</style> an enemy (" + freezeTime.ToString("N1") + " sec, " + slowTime.ToString("N1") + " sec). Affected by proc coefficient.",
-            	"A relic of times long past (ClassicItems mod)");
+        public Permafrost() {}
+
+        protected override void LoadBehavior() {
+            On.RoR2.SetStateOnHurt.OnTakeDamageServer += On_SSOHOnTakeDamageServer;
         }
 
-        public override void SetupBehaviorInner() {
-            On.RoR2.SetStateOnHurt.OnTakeDamageServer += On_SSOHOnTakeDamageServer;
+        protected override void UnloadBehavior() {
+            On.RoR2.SetStateOnHurt.OnTakeDamageServer -= On_SSOHOnTakeDamageServer;
         }
 
         private void On_SSOHOnTakeDamageServer(On.RoR2.SetStateOnHurt.orig_OnTakeDamageServer orig, SetStateOnHurt self, RoR2.DamageReport damageReport) {

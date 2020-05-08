@@ -1,28 +1,33 @@
 ﻿using RoR2;
 using UnityEngine;
-using static ThinkInvisible.ClassicItems.MiscUtil;
 using System.Collections.ObjectModel;
+using TILER2;
+using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
     public class BoxingGloves : Item<BoxingGloves> {
         public override string displayName => "Boxing Gloves";
 		public override ItemTier itemTier => ItemTier.Tier2;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
-
-        [AutoItemCfg("Percent chance for Boxing Gloves to proc; stacks multiplicatively.", default, 0f, 100f)]
+        
+        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken | AICAUEventFlags.InvalidatePickupToken)]
+        [AutoItemCfg("Percent chance for Boxing Gloves to proc; stacks multiplicatively.", AICFlags.None, 0f, 100f)]
         public float procChance {get;private set;} = 6f;
-        [AutoItemCfg("Multiplier for knockback force.", default, 0f, float.MaxValue)]
+        
+        [AutoItemCfg("Multiplier for knockback force.", AICFlags.None, 0f, float.MaxValue)]
         public float procForce {get;private set;} = 50f;
+        protected override string NewLangName(string langid = null) => displayName;
+        protected override string NewLangPickup(string langid = null) => "Hitting enemies have a " + Pct(procChance,0,1) + " chance to knock them back.";
+        protected override string NewLangDesc(string langid = null) => "<style=cIsUtility>" + Pct(procChance,0,1) + "</style> <style=cStack>(+"+Pct(procChance,0,1)+" per stack, mult.)</style> chance to <style=cIsUtility>knock back</style> an enemy <style=cIsDamage>based on attack damage</style>.";
+        protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
-        public override void SetupAttributesInner() {
-            RegLang(
-            	"Hitting enemies have a " + Pct(procChance,0,1) + " chance to knock them back.",
-            	"<style=cIsUtility>" + Pct(procChance,0,1) + "</style> <style=cStack>(+"+Pct(procChance,0,1)+" per stack, mult.)</style> chance to <style=cIsUtility>knock back</style> an enemy <style=cIsDamage>based on attack damage</style>.",
-            	"A relic of times long past (ClassicItems mod)");
-        }
+        public BoxingGloves() { }
 
-        public override void SetupBehaviorInner() {
+        protected override void LoadBehavior() {
             On.RoR2.HealthComponent.TakeDamage += On_HCTakeDamage;
+        }
+        protected override void UnloadBehavior() {
+            On.RoR2.HealthComponent.TakeDamage -= On_HCTakeDamage;
         }
 
         private void On_HCTakeDamage(On.RoR2.HealthComponent.orig_TakeDamage orig, HealthComponent self, DamageInfo di) {

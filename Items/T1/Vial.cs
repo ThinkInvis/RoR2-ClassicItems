@@ -5,29 +5,32 @@ using Mono.Cecil.Cil;
 using UnityEngine;
 using System;
 using System.Collections.ObjectModel;
+using TILER2;
+using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
     public class Vial : Item<Vial> {
         public override string displayName => "Mysterious Vial";
 		public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Healing});
-
-        [AutoItemCfg("Direct additive to natural health regen per stack of Mysterious Vial.", default, 0f, float.MaxValue)]
+        
+        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
+        [AutoItemCfg("Direct additive to natural health regen per stack of Mysterious Vial.", AICFlags.None, 0f, float.MaxValue)]
         public float addRegen {get;private set;} = 1.4f;
         [AutoItemCfg("Set to false to change Mysterious Vial's effect from an IL patch to an event hook, which may help if experiencing compatibility issues with another mod. This will change how Mysterious Vial interacts with other effects.")]
         public bool useIL {get;private set;} = true;
 
-        private bool ilFailed = false;
-        
-        public override void SetupAttributesInner() {
-            RegLang(
-            	"Increased health regeneration.",
-            	"Increases <style=cIsHealing>health regen by +" + addRegen.ToString("N1") + "/sec</style> <style=cStack>(+" + addRegen.ToString("N1") + "/sec per stack)</style>.",
-            	"A relic of times long past (ClassicItems mod)");
-        }
+        private bool ilFailed = false;        
+        protected override string NewLangName(string langid = null) => displayName;        
+        protected override string NewLangPickup(string langid = null) => "Increased health regeneration.";        
+        protected override string NewLangDesc(string langid = null) => "Increases <style=cIsHealing>health regen by +" + addRegen.ToString("N1") + "/sec</style> <style=cStack>(+" + addRegen.ToString("N1") + "/sec per stack)</style>.";        
+        protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
-        public override void SetupBehaviorInner() {
+        public Vial() {}
+
+        protected override void LoadBehavior() {
             if(useIL) {
+                ilFailed = false;
                 IL.RoR2.CharacterBody.RecalculateStats += IL_CBRecalcStats;
                 if(ilFailed) {
                     IL.RoR2.CharacterBody.RecalculateStats -= IL_CBRecalcStats;
@@ -35,6 +38,10 @@ namespace ThinkInvisible.ClassicItems {
                 }
             } else
                 On.RoR2.CharacterBody.RecalculateStats += On_CBRecalcStats;
+        }
+        protected override void UnloadBehavior() {
+            IL.RoR2.CharacterBody.RecalculateStats -= IL_CBRecalcStats;
+            On.RoR2.CharacterBody.RecalculateStats -= On_CBRecalcStats;
         }
 
         private void On_CBRecalcStats(On.RoR2.CharacterBody.orig_RecalculateStats orig, CharacterBody self) {

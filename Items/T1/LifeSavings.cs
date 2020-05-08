@@ -1,41 +1,54 @@
 ﻿using RoR2;
 using System;
 using UnityEngine;
-using BepInEx.Configuration;
-using System.Collections.Generic;
 using UnityEngine.Networking;
 using System.Collections.ObjectModel;
+using TILER2;
+using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
     public class LifeSavings : Item<LifeSavings> {
         public override string displayName => "Life Savings";
-        public override bool itemAIBDefault => true;
+        public override bool itemAIB {get; protected set;} = true;
         public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
 
-        [AutoItemCfg("Money to add to players per second per Life Savings stack (without taking into account InvertCount).", default, 0f, float.MaxValue)]
+        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
+        [AutoItemCfg("Money to add to players per second per Life Savings stack (without taking into account InvertCount).", AICFlags.None, 0f, float.MaxValue)]
         public float gainPerSec {get;private set;} = 1f;
-        [AutoItemCfg("With <InvertCount stacks, number of stacks affects time per interval instead of multiplying money gained.", default, 0, int.MaxValue)]
+
+        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
+        [AutoItemCfg("With <InvertCount stacks, number of stacks affects time per interval instead of multiplying money gained.", AICFlags.None, 0, int.MaxValue)]
         public int invertCount {get;private set;} = 3;
+
         [AutoItemCfg("If true, Life Savings stacks on deployables (e.g. Engineer turrets) will send money to their master.")]
         public bool inclDeploys {get;private set;} = false;
+
         [AutoItemCfg("If true, Life Savings will continue to work in areas where the run timer is paused (e.g. bazaar).")]
         public bool ignoreTimestop {get;private set;} = false;
 
-        public override void SetupAttributesInner() {
-            RegLang(
-            	"Earn gold over time.",
-            	"Generates <style=cIsUtility>$" + gainPerSec.ToString("N0") + "</style> <style=cStack>(+$" + gainPerSec.ToString("N0") + " per stack)</style> every second. <style=cStack>Generates less below " + invertCount.ToString("N0") + " stacks.</style>",
-            	"A relic of times long past (ClassicItems mod)");
-        }
+        protected override string NewLangName(string langid = null) => displayName;
+        protected override string NewLangPickup(string langid = null) => "Earn gold over time.";
+        protected override string NewLangDesc(string langid = null) => "Generates <style=cIsUtility>$" + gainPerSec.ToString("N0") + "</style> <style=cStack>(+$" + gainPerSec.ToString("N0") + " per stack)</style> every second. <style=cStack>Generates less below " + invertCount.ToString("N0") + " stacks.</style>";
+        protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
-        public override void SetupBehaviorInner() {
+        public LifeSavings() {}
+
+        protected override void LoadBehavior() {
             On.RoR2.CharacterBody.OnInventoryChanged += On_CBOnInventoryChanged;
             On.RoR2.SceneExitController.Begin += On_SECBegin;
             On.EntityStates.SpawnTeleporterState.OnExit += On_EntSTSOnExit;
             On.RoR2.CharacterMaster.AddDeployable += On_CMAddDeployable;
             On.RoR2.CharacterMaster.RemoveDeployable += On_CMRemoveDeployable;
         }
+        protected override void UnloadBehavior() {
+            On.RoR2.CharacterBody.OnInventoryChanged -= On_CBOnInventoryChanged;
+            On.RoR2.SceneExitController.Begin -= On_SECBegin;
+            On.EntityStates.SpawnTeleporterState.OnExit -= On_EntSTSOnExit;
+            On.RoR2.CharacterMaster.AddDeployable -= On_CMAddDeployable;
+            On.RoR2.CharacterMaster.RemoveDeployable -= On_CMRemoveDeployable;
+        }
+
         private void On_EntSTSOnExit(On.EntityStates.SpawnTeleporterState.orig_OnExit orig, EntityStates.SpawnTeleporterState self) {
             orig(self);
             if(!NetworkServer.active) return;

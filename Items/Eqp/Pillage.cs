@@ -1,49 +1,53 @@
-﻿using BepInEx.Configuration;
-using RoR2;
-using System;
+﻿using RoR2;
 using UnityEngine;
 using UnityEngine.Networking;
+using TILER2;
+using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
     public class Pillage : Equipment<Pillage> {
         public override string displayName => "Pillaged Gold";
 
-        [AutoItemCfg("Duration of the buff applied by Pillaged Gold.", default, 0f, float.MaxValue)]
+        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken | AICAUEventFlags.InvalidatePickupToken)]
+        [AutoItemCfg("Duration of the buff applied by Pillaged Gold.", AICFlags.None, 0f, float.MaxValue)]
         public float duration {get;private set;} = 14f;
 
         public BuffIndex pillageBuff {get;private set;}
+        protected override string NewLangName(string langid = null) => displayName;
+        protected override string NewLangPickup(string langid = null) => "For " + duration.ToString("N0") + " seconds, hitting enemies cause them to drop gold.";
+        protected override string NewLangDesc(string langid = null) => "While active, every hit <style=cIsUtility>drops 1 gold</style> (scales with difficulty). Lasts <style=cIsUtility>" + duration.ToString("N0") + " seconds</style>.";
+        protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
-        public override void SetupAttributesInner() {
-            RegLang(
-                "For 14 seconds, hitting enemies cause them to drop gold.",
-                "While active, every hit <style=cIsUtility>drops 1 gold</style> (scales with difficulty). Lasts <style=cIsUtility>" + duration.ToString("N0") + " seconds</style>.",
-                "A relic of times long past (ClassicItems mod)");
+        public Pillage() {
+            onAttrib += (tokenIdent, namePrefix) => {
+                var pillageBuffDef = new R2API.CustomBuff(new BuffDef {
+                    buffColor = new Color(0.85f, 0.8f, 0.3f),
+                    canStack = true,
+                    isDebuff = false,
+                    name = namePrefix + "PillagedGold",
+                    iconPath = "@ClassicItems:Assets/ClassicItems/icons/pillage_icon.png"
+                });
+                pillageBuff = R2API.BuffAPI.Add(pillageBuffDef);
+            };
         }
 
-        public override void SetupBehaviorInner() {
-            var pillageBuffDef = new R2API.CustomBuff(new BuffDef {
-                buffColor = new Color(0.85f, 0.8f, 0.3f),
-                canStack = true,
-                isDebuff = false,
-                name = "PillagedGold",
-                iconPath = "@ClassicItems:Assets/ClassicItems/icons/" + iconPathName
-            });
-            pillageBuff = R2API.BuffAPI.Add(pillageBuffDef);
-
-            On.RoR2.EquipmentSlot.PerformEquipmentAction += On_ESPerformEquipmentAction;
+        protected override void LoadBehavior() {
             On.RoR2.GlobalEventManager.OnHitEnemy += On_GEMOnHitEnemy;
         }
-        
-        private bool On_ESPerformEquipmentAction(On.RoR2.EquipmentSlot.orig_PerformEquipmentAction orig, EquipmentSlot slot, EquipmentIndex eqpid) {
-            if(eqpid == regIndex) {
-                var sbdy = slot.characterBody;
-                if(!sbdy) return false;
-                sbdy.ClearTimedBuffs(pillageBuff);
-                sbdy.AddTimedBuff(pillageBuff, duration);
-                if(Embryo.instance.CheckProc<Pillage>(sbdy)) sbdy.AddTimedBuff(pillageBuff, duration);
-                return true;
-            } else return orig(slot, eqpid);
+
+        protected override void UnloadBehavior() {
+            On.RoR2.GlobalEventManager.OnHitEnemy -= On_GEMOnHitEnemy;
         }
+
+        protected override bool OnEquipUseInner(EquipmentSlot slot) {
+            var sbdy = slot.characterBody;
+            if(!sbdy) return false;
+            sbdy.ClearTimedBuffs(pillageBuff);
+            sbdy.AddTimedBuff(pillageBuff, duration);
+            if(instance.CheckEmbryoProc(sbdy)) sbdy.AddTimedBuff(pillageBuff, duration);
+            return true;
+        }
+
         private void On_GEMOnHitEnemy(On.RoR2.GlobalEventManager.orig_OnHitEnemy orig, GlobalEventManager self, DamageInfo damageInfo, GameObject victim) {
             orig(self, damageInfo, victim);
 			if(!NetworkServer.active || !damageInfo.attacker) return;

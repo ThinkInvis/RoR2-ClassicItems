@@ -1,35 +1,46 @@
 ﻿using RoR2;
 using UnityEngine;
-using static ThinkInvisible.ClassicItems.MiscUtil;
 using System.Collections.ObjectModel;
 using UnityEngine.Networking;
 using RoR2.Orbs;
+using TILER2;
+using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
     public class TeleSight : Item<TeleSight> {
         public override string displayName => "Telescopic Sight";
 		public override ItemTier itemTier => ItemTier.Tier3;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
-        public override bool itemAIBDefault => true;
-
-        [AutoItemCfg("Base percent chance of triggering Telescopic Sight on hit. Affected by proc coefficient.",default,0f,100f)]
+        public override bool itemAIB {get; protected set;} = true;
+        
+        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
+        [AutoItemCfg("Base percent chance of triggering Telescopic Sight on hit. Affected by proc coefficient.",AICFlags.None,0f,100f)]
         public float procChance {get;private set;} = 1f;
-        [AutoItemCfg("Added to ProcChance per extra stack of Telescopic Sight.",default,0f,100f)]
+        
+        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
+        [AutoItemCfg("Added to ProcChance per extra stack of Telescopic Sight.",AICFlags.None,0f,100f)]
         public float stackChance {get;private set;} = 0.5f;
-        [AutoItemCfg("Maximum allowed ProcChance for Telescopic Sight.",default,0f,100f)]
+        
+        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
+        [AutoItemCfg("Maximum allowed ProcChance for Telescopic Sight.",AICFlags.None,0f,100f)]
         public float capChance {get;private set;} = 3f;
+
         [AutoItemCfg("If true, Telescopic Sight will not trigger on bosses.")]
         public bool bossImmunity {get;private set;} = false;
 
-        public override void SetupAttributesInner() {
-            RegLang(
-            	"Chance to instantly kill an enemy.",
-            	"<style=cIsDamage>" + Pct(procChance,1,1) + "</style> <style=cStack>(+" + Pct(stackChance,1,1) + " per stack, up to " + Pct(capChance,1,1) + ")</style> chance to <style=cIsDamage>instantly kill</style> an enemy. Affected by proc coefficient.",
-            	"A relic of times long past (ClassicItems mod)");
+        protected override string NewLangName(string langid = null) => displayName;
+        protected override string NewLangPickup(string langid = null) => "Chance to instantly kill an enemy.";
+        protected override string NewLangDesc(string langid = null) => "<style=cIsDamage>" + Pct(procChance,1,1) + "</style> <style=cStack>(+" + Pct(stackChance,1,1) + " per stack, up to " + Pct(capChance,1,1) + ")</style> chance to <style=cIsDamage>instantly kill</style> an enemy. Affected by proc coefficient.";
+        protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
+
+        public TeleSight() {}
+
+        protected override void LoadBehavior() {
+            On.RoR2.GlobalEventManager.OnHitEnemy += On_GEMOnHitEnemy;
         }
 
-        public override void SetupBehaviorInner() {
-            On.RoR2.GlobalEventManager.OnHitEnemy += On_GEMOnHitEnemy;
+        protected override void UnloadBehavior() {
+            On.RoR2.GlobalEventManager.OnHitEnemy -= On_GEMOnHitEnemy;
         }
 
         private void On_GEMOnHitEnemy(On.RoR2.GlobalEventManager.orig_OnHitEnemy orig, GlobalEventManager self, DamageInfo damageInfo, GameObject victim) {

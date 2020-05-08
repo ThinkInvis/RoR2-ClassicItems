@@ -1,12 +1,13 @@
 ﻿using R2API.Utils;
 using RoR2;
 using UnityEngine;
-using static ThinkInvisible.ClassicItems.MiscUtil;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using TILER2;
+using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
     public class SnakeEyes : Item<SnakeEyes> {
@@ -14,39 +15,47 @@ namespace ThinkInvisible.ClassicItems {
 		public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
 
-        [AutoItemCfg("Direct additive to percent crit chance per proc per stack of Snake Eyes.", default, 0f, 100f)]
+        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
+        [AutoItemCfg("Direct additive to percent crit chance per proc per stack of Snake Eyes.", AICFlags.None, 0f, 100f)]
         public float critAdd {get;private set;} = 8f;
-        [AutoItemCfg("Maximum number of successive failed shrines to count towards increasing Snake Eyes buff.", default, 1, int.MaxValue)]
+
+        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
+        [AutoItemCfg("Maximum number of successive failed shrines to count towards increasing Snake Eyes buff.", AICFlags.None, 1, int.MaxValue)]
         public int stackCap {get;private set;} = 6;
+
         [AutoItemCfg("If true, any chance shrine activation will trigger Snake Eyes on all living players (matches behavior from RoR1). If false, only the purchaser will be affected.")]
         public bool affectAll {get;private set;} = true;
+
         [AutoItemCfg("If true, deployables (e.g. Engineer turrets) with Snake Eyes will gain/lose buff stacks whenever their master does. If false, Snake Eyes will not work on deployables at all.")]
         public bool inclDeploys {get;private set;} = true;
+
         [AutoItemCfg("Set to false to change Snake Eyes' effect from an IL patch to an event hook, which may help if experiencing compatibility issues with another mod. This will change how Snake Eyes interacts with other effects.")]
         public bool useIL {get;private set;} = true;
 
         public BuffIndex snakeEyesBuff {get;private set;}
 
         private bool ilFailed = false;
+        protected override string NewLangName(string langid = null) => displayName;
+        protected override string NewLangPickup(string langid = null) => "Gain increased crit chance on failing a shrine. Removed on succeeding a shrine.";
+        protected override string NewLangDesc(string langid = null) => "Increases <style=cIsDamage>crit chance</style> by <style=cIsDamage>" + Pct(critAdd, 0, 1) + "</style> <style=cStack>(+" + Pct(critAdd, 0, 1) + " per stack, linear)</style> for up to <style=cIsUtility>" + stackCap + "</style> consecutive <style=cIsUtility>chance shrine failures</style>. <style=cIsDamage>Resets to 0</style> on any <style=cIsUtility>chance shrine success</style>.";
+        protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
-        public override void SetupAttributesInner() {
-            RegLang(
-            	"Gain increased crit chance on failing a shrine. Removed on succeeding a shrine.",
-            	"Increases <style=cIsDamage>crit chance</style> by <style=cIsDamage>" + Pct(critAdd, 0, 1) + "</style> <style=cStack>(+" + Pct(critAdd, 0, 1) + " per stack, linear)</style> for up to <style=cIsUtility>" + stackCap + "</style> consecutive <style=cIsUtility>chance shrine failures</style>. <style=cIsDamage>Resets to 0</style> on any <style=cIsUtility>chance shrine success</style>.",
-            	"A relic of times long past (ClassicItems mod)");
+        public SnakeEyes() {
+            onAttrib += (tokenIdent, namePrefix) => {
+                var snakeEyesBuffDef = new R2API.CustomBuff(new BuffDef {
+                    buffColor = Color.red,
+                    canStack = true,
+                    isDebuff = false,
+                    name = "SnakeEyes",
+                    iconPath = "@ClassicItems:Assets/ClassicItems/icons/" + iconPathName
+                });
+                snakeEyesBuff = R2API.BuffAPI.Add(snakeEyesBuffDef);
+            };
         }
 
-        public override void SetupBehaviorInner() {
-            var snakeEyesBuffDef = new R2API.CustomBuff(new BuffDef {
-                buffColor = Color.red,
-                canStack = true,
-                isDebuff = false,
-                name = "SnakeEyes",
-                iconPath = "@ClassicItems:Assets/ClassicItems/icons/" + iconPathName
-            });
-            snakeEyesBuff = R2API.BuffAPI.Add(snakeEyesBuffDef);
-
+        protected override void LoadBehavior() {
             if(useIL) {
+                ilFailed = false;
                 IL.RoR2.CharacterBody.RecalculateStats += IL_CBRecalcStats;
                 if(ilFailed) {
                     IL.RoR2.CharacterBody.RecalculateStats -= IL_CBRecalcStats;
@@ -56,6 +65,11 @@ namespace ThinkInvisible.ClassicItems {
                 On.RoR2.CharacterBody.RecalculateStats += On_CBRecalcStats;
 
             ShrineChanceBehavior.onShrineChancePurchaseGlobal += Evt_SCBOnShrineChancePurchaseGlobal;
+        }
+
+        protected override void UnloadBehavior() {
+            IL.RoR2.CharacterBody.RecalculateStats -= IL_CBRecalcStats;
+            On.RoR2.CharacterBody.RecalculateStats -= On_CBRecalcStats;
         }
 
         private void cbApplyBuff(bool failed, CharacterBody tgtBody) {

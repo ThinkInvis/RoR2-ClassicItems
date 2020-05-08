@@ -1,12 +1,12 @@
-﻿using BepInEx.Configuration;
-using RoR2;
+﻿using RoR2;
 using R2API;
 using System;
 using UnityEngine;
-using static ThinkInvisible.ClassicItems.MiscUtil;
 using MonoMod.Cil;
 using Mono.Cecil.Cil;
 using UnityEngine.Networking;
+using TILER2;
+using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
     public class Brooch : Equipment<Brooch> {
@@ -14,48 +14,55 @@ namespace ThinkInvisible.ClassicItems {
 
         public override float eqpCooldown => 135f;
 
-        [AutoItemCfg("Multiplier for additional cost of chests spawned by Captain's Brooch.", default, 0f, float.MaxValue)]
+        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
+        [AutoItemCfg("Multiplier for additional cost of chests spawned by Captain's Brooch.", AICFlags.None, 0f, float.MaxValue)]
         public float extraCost {get;private set;} = 0.5f;
+
         [AutoItemCfg("If true, chests spawned by Captain's Brooch will immediately appear at the target position instead of falling nearby, and will not be destroyed after purchase.")]
         public bool safeMode {get;private set;} = false;
+
         [AutoItemCfg("If true, Captain's Brooch will spawn chests directly at the player's position if it can't find a suitable spot nearby. If false, it will fail to spawn the chest and refrain from using an equipment charge.")]
         public bool doFallbackSpawn {get;private set;} = false;
 
         private Xoroshiro128Plus BroochRNG;
 
-        internal static InteractableSpawnCard broochPrefab;
-        
-        public override void SetupAttributesInner() {
-            RegLang(
-                "One man's wreckage is another man's treasure.",
-                "Calls down a <style=cIsUtility>low-tier item chest</style> which <style=cIsUtility>costs " + Pct(extraCost) + " more than usual</style>.",
-                "A relic of times long past (ClassicItems mod)");
-        }
-
+        internal static InteractableSpawnCard broochPrefab;        
+        protected override string NewLangName(string langid = null) => displayName;        
+        protected override string NewLangPickup(string langid = null) => "One man's wreckage is another man's treasure.";        
+        protected override string NewLangDesc(string langid = null) => "Calls down a <style=cIsUtility>low-tier item chest</style> which <style=cIsUtility>costs " + Pct(extraCost) + " more than usual</style>.";        
+        protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
         private bool ILFailed = false;
 
-        public override void SetupBehaviorInner() {
+        public Brooch() {
+            onBehav += ()=>{
+                BroochRNG = new Xoroshiro128Plus(0UL);
+
+                broochPrefab = UnityEngine.Object.Instantiate(Resources.Load<InteractableSpawnCard>("SpawnCards/InteractableSpawnCard/iscChest1"));
+                broochPrefab.directorCreditCost = 0;
+                broochPrefab.sendOverNetwork = true;
+                broochPrefab.skipSpawnWhenSacrificeArtifactEnabled = false;
+                broochPrefab.prefab = PrefabAPI.InstantiateClone(broochPrefab.prefab,"chestBrooch");
+
+                if(!safeMode) broochPrefab.prefab.AddComponent<CaptainsBroochDroppod>();
+
+                var pInt = broochPrefab.prefab.GetComponent<PurchaseInteraction>();
+
+                pInt.cost = Mathf.CeilToInt(pInt.cost * (1f + extraCost));
+                pInt.automaticallyScaleCostWithDifficulty = true;
+            };
+        }
+
+        protected override void LoadBehavior() {
+            ILFailed = false;
             IL.RoR2.DirectorCore.TrySpawnObject += IL_DCTrySpawnObject;
             if(ILFailed) safeMode = true;
 
-            BroochRNG = new Xoroshiro128Plus(0UL);
-
-            broochPrefab = UnityEngine.Object.Instantiate(Resources.Load<InteractableSpawnCard>("SpawnCards/InteractableSpawnCard/iscChest1"));
-            broochPrefab.directorCreditCost = 0;
-            broochPrefab.sendOverNetwork = true;
-            broochPrefab.skipSpawnWhenSacrificeArtifactEnabled = false;
-            broochPrefab.prefab = PrefabAPI.InstantiateClone(broochPrefab.prefab,"chestBrooch");
-
-            if(!safeMode) broochPrefab.prefab.AddComponent<CaptainsBroochDroppod>();
-
-            var pInt = broochPrefab.prefab.GetComponent<PurchaseInteraction>();
-
-            pInt.cost = Mathf.CeilToInt(pInt.cost * (1f + extraCost));
-            pInt.automaticallyScaleCostWithDifficulty = true;
-            
             if(!safeMode) On.RoR2.ChestBehavior.Open += On_CBOpen;
-            On.RoR2.EquipmentSlot.PerformEquipmentAction += On_ESPerformEquipmentAction;
+        }
+        protected override void UnloadBehavior() {
+            IL.RoR2.DirectorCore.TrySpawnObject -= IL_DCTrySpawnObject;
+            On.RoR2.ChestBehavior.Open -= On_CBOpen;
         }
 
         private void IL_DCTrySpawnObject(ILContext il) {
@@ -100,15 +107,13 @@ namespace ThinkInvisible.ClassicItems {
                 spawnres.spawnedInstance.GetComponent<CaptainsBroochDroppod>().ServerLaunch();
         }
 
-        private bool On_ESPerformEquipmentAction(On.RoR2.EquipmentSlot.orig_PerformEquipmentAction orig, EquipmentSlot slot, EquipmentIndex eqpid) {
-            if(eqpid == regIndex) {
-                if(!slot.characterBody) return false;
-                if(SceneCatalog.mostRecentSceneDef.baseSceneName == "bazaar") return false;
-                bool s1 = TrySpawnChest(slot.characterBody.transform);
-                bool s2 = false;
-                if(Embryo.instance.CheckProc<Brooch>(slot.characterBody)) s2 = TrySpawnChest(slot.characterBody.transform);
-                return s1 || s2;
-            } else return orig(slot, eqpid);
+        protected override bool OnEquipUseInner(EquipmentSlot slot) {
+            if(!slot.characterBody) return false;
+            if(SceneCatalog.mostRecentSceneDef.baseSceneName == "bazaar") return false;
+            bool s1 = TrySpawnChest(slot.characterBody.transform);
+            bool s2 = false;
+            if(instance.CheckEmbryoProc(slot.characterBody)) s2 = TrySpawnChest(slot.characterBody.transform);
+            return s1 || s2;
         }
 
         private bool TrySpawnChest(Transform trans) {

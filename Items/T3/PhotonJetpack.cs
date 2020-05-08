@@ -1,50 +1,68 @@
 ﻿using RoR2;
 using UnityEngine;
-using BepInEx.Configuration;
-using static ThinkInvisible.ClassicItems.MiscUtil;
 using System.Collections.ObjectModel;
+using TILER2;
+using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
     public class PhotonJetpack : Item<PhotonJetpack> {
         public override string displayName => "Photon Jetpack";
 		public override ItemTier itemTier => ItemTier.Tier3;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
-        public override bool itemAIBDefault => true;
+        public override bool itemAIB {get; protected set;} = true;
 
         public BuffIndex photonFuelBuff {get;private set;}
-
-        [AutoItemCfg("Time in seconds that jump must be released before Photon Jetpack fuel begins recharging.",default,0f,float.MaxValue)]
+        
+        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
+        [AutoItemCfg("Time in seconds that jump must be released before Photon Jetpack fuel begins recharging.",AICFlags.None,0f,float.MaxValue)]
         public float rchDelay {get;private set;} = 1.0f;
-        [AutoItemCfg("Seconds of Photon Jetpack fuel recharged per second realtime.",default,0f,float.MaxValue)]
+
+        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
+        [AutoItemCfg("Seconds of Photon Jetpack fuel recharged per second realtime.",AICFlags.None,0f,float.MaxValue)]
         public float rchRate {get;private set;} = 1.0f;
-        [AutoItemCfg("Seconds of Photon Jetpack fuel capacity at first stack.",default,0f,float.MaxValue)]
+        
+        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
+        [AutoItemCfg("Seconds of Photon Jetpack fuel capacity at first stack.",AICFlags.None,0f,float.MaxValue)]
         public float baseFuel {get;private set;} = 1.6f;
-        [AutoItemCfg("Seconds of Photon Jetpack fuel capacity per additional stack.",default,0f,float.MaxValue)]
+        
+        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
+        [AutoItemCfg("Seconds of Photon Jetpack fuel capacity per additional stack.",AICFlags.None,0f,float.MaxValue)]
         public float stackFuel {get;private set;} = 1.6f;
-        [AutoItemCfg("Multiplier for gravity reduction while Photon Jetpack is active. Effectively the thrust provided by the jetpack -- 0 = no effect, 1 = anti-grav, 2 = negative gravity, etc.",default,0f,float.MaxValue)]
+        
+        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
+        [AutoItemCfg("Multiplier for gravity reduction while Photon Jetpack is active. Effectively the thrust provided by the jetpack -- 0 = no effect, 1 = anti-grav, 2 = negative gravity, etc.",AICFlags.None,0f,float.MaxValue)]
         public float gravMod {get;private set;} = 1.2f;
-        [AutoItemCfg("Added to Photon Jetpack's GravMod while the character is falling (negative vertical velocity) to assist in stopping falls.",default,0f,float.MaxValue)]
+        
+        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
+        [AutoItemCfg("Added to Photon Jetpack's GravMod while the character is falling (negative vertical velocity) to assist in stopping falls.",AICFlags.None,0f,float.MaxValue)]
         public float fallBoost {get;private set;} = 2.0f;
 
-        public override void SetupAttributesInner() {
-            RegLang(
-            	"No hands.",
-            	"Grants <style=cIsUtility>" + baseFuel.ToString("N1") + " second" + NPlur(baseFuel, 1) + "</style> <style=cStack>(+" + stackFuel.ToString("N1") +" s per stack)</style> of <style=cIsUtility>flight</style> at <style=cIsUtility>" + gravMod.ToString("N1") + "g</style> <style=cStack>(+" + fallBoost.ToString("N1") + "g while falling)</style>, usable once you have no double jumps remaining. Fuel <style=cIsUtility>recharges</style> at <style=cIsUtility>" + Pct(rchRate) + " speed</style> after a <style=cIsUtility>delay</style> of <style=cIsUtility>" + rchDelay.ToString("N0") + " second" + NPlur(rchDelay) + "</style>.",
-            	"A relic of times long past (ClassicItems mod)");
+        protected override string NewLangName(string langid = null) => displayName;
+        protected override string NewLangPickup(string langid = null) => "No hands.";
+        protected override string NewLangDesc(string langid = null) => "Grants <style=cIsUtility>" + baseFuel.ToString("N1") + " second" + NPlur(baseFuel, 1) + "</style> <style=cStack>(+" + stackFuel.ToString("N1") +" s per stack)</style> of <style=cIsUtility>flight</style> at <style=cIsUtility>" + gravMod.ToString("N1") + "g</style> <style=cStack>(+" + fallBoost.ToString("N1") + "g while falling)</style>, usable once you have no double jumps remaining. Fuel <style=cIsUtility>recharges</style> at <style=cIsUtility>" + Pct(rchRate) + " speed</style> after a <style=cIsUtility>delay</style> of <style=cIsUtility>" + rchDelay.ToString("N0") + " second" + NPlur(rchDelay) + "</style>.";
+        protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
+
+        public PhotonJetpack() {
+            onAttrib += (tokenIdent, namePrefix) => {
+                var PhotonJetpackBuff = new R2API.CustomBuff(new BuffDef {
+                    buffColor = Color.cyan,
+                    canStack = true,
+                    isDebuff = false,
+                    name = "PhotonFuel",
+                    iconPath = "@ClassicItems:Assets/ClassicItems/icons/" + iconPathName
+                });
+                photonFuelBuff = R2API.BuffAPI.Add(PhotonJetpackBuff);
+            };
         }
 
-        public override void SetupBehaviorInner() {
-            var PhotonJetpackBuff = new R2API.CustomBuff(new BuffDef {
-                buffColor = Color.cyan,
-                canStack = true,
-                isDebuff = false,
-                name = "PhotonFuel",
-                iconPath = "@ClassicItems:Assets/ClassicItems/icons/" + iconPathName
-            });
-            photonFuelBuff = R2API.BuffAPI.Add(PhotonJetpackBuff);
-
+        protected override void LoadBehavior() {
             On.RoR2.CharacterBody.OnInventoryChanged += On_CBInventoryChanged;
             On.RoR2.CharacterBody.FixedUpdate += On_CBFixedUpdate;
+        }
+
+        protected override void UnloadBehavior() {
+            On.RoR2.CharacterBody.OnInventoryChanged -= On_CBInventoryChanged;
+            On.RoR2.CharacterBody.FixedUpdate -= On_CBFixedUpdate;
         }
 
         private void On_CBFixedUpdate(On.RoR2.CharacterBody.orig_FixedUpdate orig, CharacterBody self) {

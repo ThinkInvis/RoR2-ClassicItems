@@ -4,8 +4,9 @@ using R2API.Utils;
 using RoR2;
 using System;
 using UnityEngine;
-using static ThinkInvisible.ClassicItems.MiscUtil;
 using System.Collections.ObjectModel;
+using TILER2;
+using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
     public class BitterRoot : Item<BitterRoot> {
@@ -13,24 +14,28 @@ namespace ThinkInvisible.ClassicItems {
 		public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Healing});
 
-        [AutoItemCfg("Linearly-stacking multiplier for health gained from Bitter Root.", default, 0f, float.MaxValue)]
+        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken | AICAUEventFlags.InvalidatePickupToken)]
+        [AutoItemCfg("Linearly-stacking multiplier for health gained from Bitter Root.", AICFlags.None, 0f, float.MaxValue)]
         public float healthMult {get; private set;} = 0.08f;
-        [AutoItemCfg("Cap for health multiplier gained from Bitter Root.", default, 0f, float.MaxValue)]
+
+        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
+        [AutoItemCfg("Cap for health multiplier gained from Bitter Root.", AICFlags.None, 0f, float.MaxValue)]
         public float healthCap {get; private set;} = 3f;
+
         [AutoItemCfg("Set to false to change Bitter Root's effect from an IL patch to an event hook, which may help if experiencing compatibility issues with another mod. This will change how Bitter Root interacts with other effects.")]
         public bool useIL {get; private set;} = true;
 
-        private bool ilFailed = false;
-        
-        public override void SetupAttributesInner() {
-            RegLang(
-            	"Gain " + Pct(healthMult) + " max hp.",
-            	"Increases <style=cIsHealing>health</style> by <style=cIsHealing>" + Pct(healthMult) + "</style> <style=cStack>(+" +Pct(healthMult)+ " per stack, linear)</style>, up to a <style=cIsHealing>maximum</style> of <style=cIsHealing>+"+Pct(healthCap)+"</style>.",
-            	"A relic of times long past (ClassicItems mod)");
-        }
+        private bool ilFailed = false;        
+        protected override string NewLangName(string langid = null) => displayName;        
+        protected override string NewLangPickup(string langid = null) => "Gain " + Pct(healthMult) + " max hp.";        
+        protected override string NewLangDesc(string langid = null) => "Increases <style=cIsHealing>health</style> by <style=cIsHealing>" + Pct(healthMult) + "</style> <style=cStack>(+" +Pct(healthMult)+ " per stack, linear)</style>, up to a <style=cIsHealing>maximum</style> of <style=cIsHealing>+"+Pct(healthCap)+"</style>.";        
+        protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
-        public override void SetupBehaviorInner() {
+        public BitterRoot() {}
+
+        protected override void LoadBehavior() {
             if(useIL) {
+                ilFailed = false;
                 IL.RoR2.CharacterBody.RecalculateStats += IL_CBRecalcStats;
                 if(ilFailed) {
                     IL.RoR2.CharacterBody.RecalculateStats -= IL_CBRecalcStats;
@@ -38,6 +43,10 @@ namespace ThinkInvisible.ClassicItems {
                 }
             } else
                 On.RoR2.CharacterBody.RecalculateStats += On_CBRecalcStats;
+        }
+        protected override void UnloadBehavior() {
+            IL.RoR2.CharacterBody.RecalculateStats -= IL_CBRecalcStats;
+            On.RoR2.CharacterBody.RecalculateStats -= On_CBRecalcStats;
         }
 
         private void IL_CBRecalcStats(ILContext il) {

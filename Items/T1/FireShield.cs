@@ -1,7 +1,8 @@
 ﻿using RoR2;
 using UnityEngine;
-using static ThinkInvisible.ClassicItems.MiscUtil;
 using System.Collections.ObjectModel;
+using TILER2;
+using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
     public class FireShield : Item<FireShield> {
@@ -9,26 +10,37 @@ namespace ThinkInvisible.ClassicItems {
 		public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
         
-        [AutoItemCfg("Fraction of max health required as damage taken to trigger Fire Shield.", default, 0f, 1f)]
+        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
+        [AutoItemCfg("Fraction of max health required as damage taken to trigger Fire Shield.", AICFlags.None, 0f, 1f)]
         public float healthThreshold {get; private set;} = 0.1f;
-        [AutoItemCfg("AoE radius for Fire Shield.", default, 0f, float.MaxValue)]
+
+        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
+        [AutoItemCfg("AoE radius for Fire Shield.", AICFlags.None, 0f, float.MaxValue)]
         public float baseRadius {get; private set;} = 15f;
-        [AutoItemCfg("AoE damage, based on player base damage, for the first stack of Fire Shield.", default, 0f, float.MaxValue)]
+
+        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
+        [AutoItemCfg("AoE damage, based on player base damage, for the first stack of Fire Shield.", AICFlags.None, 0f, float.MaxValue)]
         public float baseDmg {get; private set;} = 2f;
-        [AutoItemCfg("AoE damage, based on player base damage, per additional stack of Fire Shield.", default, 0f, float.MaxValue)]
+
+        [AICAUEventInfo(AICAUEventFlags.InvalidateDescToken)]
+        [AutoItemCfg("AoE damage, based on player base damage, per additional stack of Fire Shield.", AICFlags.None, 0f, float.MaxValue)]
         public float stackDmg {get; private set;} = 0.5f;
+
         [AutoItemCfg("If true, damage to shield and barrier (from e.g. Personal Shield Generator, Topaz Brooch) will not count towards triggering Fire Shield.")]
         public bool requireHealth {get; private set;} = true;
 
-        public override void SetupAttributesInner() {
-            RegLang(
-            	"Retaliate on taking heavy damage.",
-            	"<style=cDeath>When hit for more than " + Pct(healthThreshold) + " max health</style>, <style=cIsDamage>explode</style> for up to <style=cIsDamage>" + Pct(baseDmg) + "</style> <style=cStack>(+" + Pct(stackDmg) + " per stack)</style> damage to enemies within <style=cIsDamage>" + baseRadius.ToString("N0") + " m</style>.",
-            	"A relic of times long past (ClassicItems mod)");
-        }
+        protected override string NewLangName(string langid = null) => displayName;
+        protected override string NewLangPickup(string langid = null) => "Retaliate on taking heavy damage.";
+        protected override string NewLangDesc(string langid = null) => "<style=cDeath>When hit for more than " + Pct(healthThreshold) + " max health</style>, <style=cIsDamage>explode</style> for up to <style=cIsDamage>" + Pct(baseDmg) + "</style> <style=cStack>(+" + Pct(stackDmg) + " per stack)</style> damage to enemies within <style=cIsDamage>" + baseRadius.ToString("N0") + " m</style>.";
+        protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
-        public override void SetupBehaviorInner() {
+        public FireShield() { }
+
+        protected override void LoadBehavior() {
 			On.RoR2.HealthComponent.TakeDamage += On_HCTakeDamage;
+        }
+        protected override void UnloadBehavior() {
+            On.RoR2.HealthComponent.TakeDamage -= On_HCTakeDamage;
         }
 
         private void On_HCTakeDamage(On.RoR2.HealthComponent.orig_TakeDamage orig, HealthComponent self, DamageInfo di) {

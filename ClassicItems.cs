@@ -1,11 +1,9 @@
 ﻿using BepInEx;
 using MonoMod.Cil;
 using R2API;
-using R2API.AssetPlus;
 using R2API.Utils;
 using RoR2;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using UnityEngine;
 using BepInEx.Configuration;
@@ -15,6 +13,8 @@ using TMPro;
 using UnityEngine.Networking;
 using Path = System.IO.Path;
 using System.Collections.ObjectModel;
+using TILER2;
+using static TILER2.MiscUtil;
 
 //TODO:
 // Add missing documentation in... a whole lotta places... whoops.
@@ -27,9 +27,10 @@ using System.Collections.ObjectModel;
 
 namespace ThinkInvisible.ClassicItems {
     [BepInPlugin(ModGuid, ModName, ModVer)]
-    [BepInDependency(R2API.R2API.PluginGUID)]
+    [BepInDependency(R2API.R2API.PluginGUID, R2API.R2API.PluginVersion)]
+    [BepInDependency(TILER2Plugin.ModGuid, "1.0.0")]
     [BepInDependency("com.funkfrog_sipondo.sharesuite",BepInDependency.DependencyFlags.SoftDependency)]
-    [R2APISubmoduleDependency(nameof(ItemAPI), nameof(LanguageAPI), nameof(ResourcesAPI), nameof(PlayerAPI), nameof(PrefabAPI), nameof(BuffAPI), nameof(CommandHelper))]
+    [R2APISubmoduleDependency(nameof(ItemAPI), nameof(LanguageAPI), nameof(ResourcesAPI), nameof(PlayerAPI), nameof(PrefabAPI), nameof(BuffAPI))]
     public class ClassicItemsPlugin:BaseUnityPlugin {
         public const string ModVer =
             #if DEBUG
@@ -41,7 +42,7 @@ namespace ThinkInvisible.ClassicItems {
 
         private static ConfigFile cfgFile;
         
-        internal static MiscUtil.FilingDictionary<ItemBoilerplate> masterItemList = new MiscUtil.FilingDictionary<ItemBoilerplate>();
+        internal static FilingDictionary<ItemBoilerplate> masterItemList = new FilingDictionary<ItemBoilerplate>();
         
         private static ConfigEntry<bool> gCfgHSV2NoStomp;
         private static ConfigEntry<bool> gCfgAllCards;
@@ -108,6 +109,23 @@ namespace ThinkInvisible.ClassicItems {
 
             Debug.Log("ClassicItems: loading item configs...");
             foreach(ItemBoilerplate x in masterItemList) {
+                x.ConfigEntryChanged += (sender, args) => {
+                    if((args.flags & (AICAUEventFlags.InvalidateNameToken | (gLongDesc ? AICAUEventFlags.InvalidateDescToken : AICAUEventFlags.InvalidatePickupToken))) == 0) return;
+                    //args.flags |= AICAUEventFlags.InvalidateModel;
+                    var pind = (x is Item) ? PickupCatalog.FindPickupIndex(((Item)x).regIndex) : PickupCatalog.FindPickupIndex(((Equipment)x).regIndex);
+                    var pdef = PickupCatalog.GetPickupDef(pind);
+                    if(pdef != null) {
+                        var ctsf = pdef.displayPrefab?.transform;
+                        if(!ctsf) return;
+                        var cfront = ctsf.Find("cardfront");
+                        if(!cfront) return;
+
+                        Debug.Log("updating model");
+
+                        cfront.Find("carddesc").GetComponent<TextMeshPro>().text = gLongDesc ? x.descToken : x.pickupToken;
+                        cfront.Find("cardname").GetComponent<TextMeshPro>().text = x.nameToken;
+                    }
+                };
                 x.SetupConfig(cfgFile);
             }
 
@@ -130,8 +148,6 @@ namespace ThinkInvisible.ClassicItems {
 
                 Debug.Log("CI"+x.itemCodeName + ": " + (x is Equipment ? ("EQP"+((int)((Equipment)x).regIndex).ToString()) : ((int)((Item)x).regIndex).ToString()));
             }
-
-            masterItemList.RemoveWhere(x=>x.enabled==false);
         }
 
         #if DEBUG
@@ -155,15 +171,10 @@ namespace ThinkInvisible.ClassicItems {
         }
         #endif
         
-        internal static Type nodeRefType;
-        internal static Type nodeRefTypeArr;
 
         private void Awake() {
             Debug.Log("ClassicItems: performing plugin setup...");
             
-            CommandHelper.AddToConsoleWhenReady();
-            nodeRefType = typeof(DirectorCore).GetNestedTypes(BindingFlags.NonPublic).First(t=>t.Name == "NodeReference");
-            nodeRefTypeArr = nodeRefType.MakeArrayType();
 
             Debug.Log("ClassicItems: tweaking vanilla stuff...");
 
@@ -256,7 +267,7 @@ namespace ThinkInvisible.ClassicItems {
                     if(!puo.GetComponent<SpinModFlag>() || !NetworkClient.active) return origAngle;
                     var body = PlayerCharacterMasterController.instances[0].master.GetBody();
                     if(!body) return origAngle;
-                    return Util.QuaternionSafeLookRotation(body.coreTransform.position - puo.transform.position).eulerAngles.y
+                    return RoR2.Util.QuaternionSafeLookRotation(body.coreTransform.position - puo.transform.position).eulerAngles.y
                         + (float)Math.Tanh(((origAngle/100.0f) % 6.2832f - 3.1416f) * 2f) * 180f
                         + 180f
                         - (puo.transform.parent?.eulerAngles.y ?? 0f);
@@ -289,8 +300,7 @@ namespace ThinkInvisible.ClassicItems {
                 if(bpl is Equipment) pind = PickupCatalog.FindPickupIndex(((Equipment)bpl).regIndex);
                 else pind = PickupCatalog.FindPickupIndex(((Item)bpl).regIndex);
                 var pickup = PickupCatalog.GetPickupDef(pind);
-                Debug.Log(pickup.internalName);
-                pickup.displayPrefab = pickup.displayPrefab.InstantiateClone(pickup.internalName + "CICardPrefab", false);
+                pickup.displayPrefab = pickup.displayPrefab.InstantiateClone("CI" + bpl.itemCodeName + "PickupCardPrefab", false);
             }
 
             if(gAllCards) {
@@ -315,6 +325,7 @@ namespace ThinkInvisible.ClassicItems {
                         replacedEqps ++;
                     } else if(pickup.interactContextToken == "ITEM_PICKUP_CONTEXT") {
                         if(pickup.itemIndex >= ItemIndex.Count || pickup.itemIndex < 0) continue;
+
                         var item = ItemCatalog.GetItemDef(pickup.itemIndex);
                         switch(item.tier) {
                             case ItemTier.Tier1:
@@ -351,7 +362,7 @@ namespace ThinkInvisible.ClassicItems {
                 var croot = cfront.Find("carddesc");
                 var cnroot = cfront.Find("cardname");
                 var csprite = ctsf.Find("ovrsprite");
-                
+
                 csprite.GetComponent<MeshRenderer>().material.mainTexture = pickup.iconTexture;
 
                 if(gSpinMod)
