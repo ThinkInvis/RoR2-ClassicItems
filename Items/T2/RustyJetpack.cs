@@ -26,7 +26,7 @@ namespace ThinkInvisible.ClassicItems {
         [AutoItemConfig("Set to false to change Rusty Jetpack's effect from an IL patch to an event hook, which may help if experiencing compatibility issues with another mod. This will change how Rusty Jetpack interacts with other effects.")]
         public bool useIL {get;private set;} = true;
 
-        private bool ilFailed = false;        
+        private bool ilFailed = false;
         protected override string NewLangName(string langid = null) => displayName;        
         protected override string NewLangPickup(string langid = null) => "Increase jump height and reduce gravity.";        
         protected override string NewLangDesc(string langid = null) => "<style=cIsUtility>Reduces gravity</style> by <style=cIsUtility>" + Pct(gravMod) + "</style> while <style=cIsUtility>holding jump</style>. Increases <style=cIsUtility>jump power</style> by <style=cIsUtility>" + Pct(jumpMult) + "</style> <style=cStack>(+" + Pct(jumpMult)  + " per stack, linear)</style>.";        
