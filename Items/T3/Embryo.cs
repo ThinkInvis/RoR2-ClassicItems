@@ -78,7 +78,6 @@ namespace ThinkInvisible.ClassicItems {
                 foreach(EquipmentIndex e in Enum.GetValues(typeof(EquipmentIndex))) {
                     if(e > currentHighestEquipment) continue;
                     if(!handledEqps.Contains(e)) continue;
-                    Debug.Log("Adding SubEnable: " + e);
                     subEnable.Add(e, !dftDisableEqps.Contains(e));
                 }
 
