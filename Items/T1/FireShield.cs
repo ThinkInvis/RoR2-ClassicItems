@@ -11,19 +11,19 @@ namespace ThinkInvisible.ClassicItems {
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
         
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Fraction of max health required as damage taken to trigger Fire Shield.", AICFlags.None, 0f, 1f)]
+        [AutoItemConfig("Fraction of max health required as damage taken to trigger Fire Shield.", AutoItemConfigFlags.None, 0f, 1f)]
         public float healthThreshold {get; private set;} = 0.1f;
 
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("AoE radius for Fire Shield.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoItemConfig("AoE radius for Fire Shield.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
         public float baseRadius {get; private set;} = 15f;
 
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("AoE damage, based on player base damage, for the first stack of Fire Shield.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoItemConfig("AoE damage, based on player base damage, for the first stack of Fire Shield.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
         public float baseDmg {get; private set;} = 2f;
 
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("AoE damage, based on player base damage, per additional stack of Fire Shield.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoItemConfig("AoE damage, based on player base damage, per additional stack of Fire Shield.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
         public float stackDmg {get; private set;} = 0.5f;
 
         [AutoItemConfig("If true, damage to shield and barrier (from e.g. Personal Shield Generator, Topaz Brooch) will not count towards triggering Fire Shield.")]

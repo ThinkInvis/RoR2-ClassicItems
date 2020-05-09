@@ -25,15 +25,15 @@ namespace ThinkInvisible.ClassicItems {
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.EquipmentRelated});
 
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Percent chance of triggering an equipment twice. Stacks additively.", AICFlags.None, 0f, 100f)]
+        [AutoItemConfig("Percent chance of triggering an equipment twice. Stacks additively.", AutoItemConfigFlags.None, 0f, 100f)]
         public float procChance {get;private set;} = 30f;
 
         
-        [AutoItemConfig("SubEnable<AIC.DictKey>", "If false, Beating Embryo will not affect <AIC.DictKey>.", AICFlags.BindDict)]
+        [AutoItemConfig("SubEnable<AIC.DictKey>", "If false, Beating Embryo will not affect <AIC.DictKey>.", AutoItemConfigFlags.BindDict)]
         private Dictionary<EquipmentIndex,bool> subEnable {get;} = new Dictionary<EquipmentIndex, bool>();
         public ReadOnlyDictionary<EquipmentIndex,bool> subEnableGet {get;private set;}
 
-        [AutoItemConfig("SubEnable<AIC.DictKeyProp." + nameof(Equipment.itemCodeName) + ">","If false, Beating Embryo will not affect <AIC.DictKeyProp." + nameof(Equipment.displayName) + "> (added by ClassicItems).", AICFlags.BindDict)]
+        [AutoItemConfig("SubEnable<AIC.DictKeyProp." + nameof(Equipment.itemCodeName) + ">","If false, Beating Embryo will not affect <AIC.DictKeyProp." + nameof(Equipment.displayName) + "> (added by ClassicItems).", AutoItemConfigFlags.BindDict)]
         private Dictionary<Equipment,bool> subEnableInternal {get;} = new Dictionary<Equipment, bool>();
         public ReadOnlyDictionary<Equipment,bool> subEnableInternalGet {get;private set;}
 

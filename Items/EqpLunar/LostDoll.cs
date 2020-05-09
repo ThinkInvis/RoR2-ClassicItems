@@ -11,11 +11,11 @@ namespace ThinkInvisible.ClassicItems {
         public override string displayName => "Lost Doll";
 
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Fraction of CURRENT health to take from the user when Lost Doll is activated.", AICFlags.None, 0f, 1f)]
+        [AutoItemConfig("Fraction of CURRENT health to take from the user when Lost Doll is activated.", AutoItemConfigFlags.None, 0f, 1f)]
         public float damageTaken {get;private set;} = 0.25f;
 
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Fraction of MAXIMUM health to deal in damage to the closest enemy when Lost Doll is activated.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoItemConfig("Fraction of MAXIMUM health to deal in damage to the closest enemy when Lost Doll is activated.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
         public float damageGiven {get;private set;} = 5f;
         
 		public override bool eqpIsLunar{get;} = true;

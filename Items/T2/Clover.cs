@@ -12,36 +12,36 @@ namespace ThinkInvisible.ClassicItems {
         public override bool itemAIB {get; protected set;} = true;
         
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Percent chance for a Clover drop to happen at first stack -- as such, multiplicative with Rare/Uncommon chances.", AICFlags.None, 0f, 100f)]
+        [AutoItemConfig("Percent chance for a Clover drop to happen at first stack -- as such, multiplicative with Rare/Uncommon chances.", AutoItemConfigFlags.None, 0f, 100f)]
         public float baseChance {get;private set;} = 4f;
         
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Percent chance for a Clover drop to happen per extra stack.", AICFlags.None, 0f, 100f)]
+        [AutoItemConfig("Percent chance for a Clover drop to happen per extra stack.", AutoItemConfigFlags.None, 0f, 100f)]
         public float stackChance {get;private set;} = 1.5f;
         
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Maximum percent chance for a Clover drop on elite kill.", AICFlags.None, 0f, 100f)]
+        [AutoItemConfig("Maximum percent chance for a Clover drop on elite kill.", AutoItemConfigFlags.None, 0f, 100f)]
         public float capChance {get;private set;} = 100f;
         
-        [AutoItemConfig("Percent chance for a Clover drop to become Tier 2 at first stack (if it hasn't already become Tier 3).", AICFlags.None, 0f, 100f)]
+        [AutoItemConfig("Percent chance for a Clover drop to become Tier 2 at first stack (if it hasn't already become Tier 3).", AutoItemConfigFlags.None, 0f, 100f)]
         public float baseUnc {get;private set;} = 1f;
-        [AutoItemConfig("Percent chance for a Clover drop to become Tier 2 per extra stack.", AICFlags.None, 0f, 100f)]
+        [AutoItemConfig("Percent chance for a Clover drop to become Tier 2 per extra stack.", AutoItemConfigFlags.None, 0f, 100f)]
         public float stackUnc {get;private set;} = 0.1f;
         
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Maximum percent chance for a Clover drop to become Tier 2.", AICFlags.None, 0f, 100f)]
+        [AutoItemConfig("Maximum percent chance for a Clover drop to become Tier 2.", AutoItemConfigFlags.None, 0f, 100f)]
         public float capUnc {get;private set;} = 25f;
         
-        [AutoItemConfig("Percent chance for a Clover drop to become Tier 3 at first stack.", AICFlags.None, 0f, 100f)]
+        [AutoItemConfig("Percent chance for a Clover drop to become Tier 3 at first stack.", AutoItemConfigFlags.None, 0f, 100f)]
         public float baseRare {get;private set;} = 0.01f;
-        [AutoItemConfig("Percent chance for a Clover drop to become Tier 3 per extra stack.", AICFlags.None, 0f, 100f)]
+        [AutoItemConfig("Percent chance for a Clover drop to become Tier 3 per extra stack.", AutoItemConfigFlags.None, 0f, 100f)]
         public float stackRare {get;private set;} = 0.001f;
         
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Maximum percent chance for a Clover drop to become Tier 3.", AICFlags.None, 0f, 100f)]
+        [AutoItemConfig("Maximum percent chance for a Clover drop to become Tier 3.", AutoItemConfigFlags.None, 0f, 100f)]
         public float capRare {get;private set;} = 1f;
 
-        [AutoItemConfig("Percent chance for a Tier 1 Clover drop to become Equipment instead.", AICFlags.None, 0f, 100f)]
+        [AutoItemConfig("Percent chance for a Tier 1 Clover drop to become Equipment instead.", AutoItemConfigFlags.None, 0f, 100f)]
         public float baseEqp {get;private set;} = 5f;
 
         [AutoItemConfig("If true, all clovers across all living players are counted towards item drops. If false, only the killer's items count.")]

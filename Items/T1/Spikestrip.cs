@@ -13,15 +13,15 @@ namespace ThinkInvisible.ClassicItems {
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
         
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("AoE radius for Spikestrip.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoItemConfig("AoE radius for Spikestrip.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
         public float baseRadius {get; private set;} = 5f;
         
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("AoE duration for the first stack of Spikestrip, in seconds.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoItemConfig("AoE duration for the first stack of Spikestrip, in seconds.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
         public float baseDuration {get; private set;} = 2f;
         
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("AoE duration per additional stack of Spikestrip, in seconds.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoItemConfig("AoE duration per additional stack of Spikestrip, in seconds.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
         public float stackDuration {get; private set;} = 1f;
 
 
@@ -70,6 +70,7 @@ namespace ThinkInvisible.ClassicItems {
 			int icnt = GetCount(self.body);
 			if(icnt < 1) return;
 			var cpt = UnityEngine.Object.Instantiate(spikeWardPrefab, self.body.footPosition, Quaternion.identity);
+            cpt.GetComponent<BuffWard>().Networkradius = baseRadius;
 			cpt.GetComponent<TeamFilter>().teamIndex = self.body.teamComponent.teamIndex;
             cpt.AddComponent<DestroyOnTimer>().duration = baseDuration + stackDuration * (icnt - 1);
             NetworkServer.Spawn(cpt);

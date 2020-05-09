@@ -11,10 +11,10 @@ namespace ThinkInvisible.ClassicItems {
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
         
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken | AutoUpdateEventFlags.InvalidatePickupToken)]
-        [AutoItemConfig("Percent chance for Boxing Gloves to proc; stacks multiplicatively.", AICFlags.None, 0f, 100f)]
+        [AutoItemConfig("Percent chance for Boxing Gloves to proc; stacks multiplicatively.", AutoItemConfigFlags.None, 0f, 100f)]
         public float procChance {get;private set;} = 6f;
         
-        [AutoItemConfig("Multiplier for knockback force.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoItemConfig("Multiplier for knockback force.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
         public float procForce {get;private set;} = 50f;
         protected override string NewLangName(string langid = null) => displayName;
         protected override string NewLangPickup(string langid = null) => "Hitting enemies have a " + Pct(procChance,0,1) + " chance to knock them back.";

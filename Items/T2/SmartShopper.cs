@@ -12,7 +12,7 @@ namespace ThinkInvisible.ClassicItems {
         public override bool itemAIB {get; protected set;} = true;
 
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Linear multiplier for money-on-kill increase per stack of Smart Shopper.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoItemConfig("Linear multiplier for money-on-kill increase per stack of Smart Shopper.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
         public float moneyMult {get;private set;} = 0.25f;
 
         protected override string NewLangName(string langid = null) => displayName;

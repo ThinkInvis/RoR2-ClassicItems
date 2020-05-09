@@ -11,15 +11,15 @@ namespace ThinkInvisible.ClassicItems {
         public override string displayName => "Safeguard Lantern";
 
 		[AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken | AutoUpdateEventFlags.InvalidatePickupToken)]
-        [AutoItemConfig("Duration of the Safeguard Lantern effect.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoItemConfig("Duration of the Safeguard Lantern effect.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
         public float duration {get;private set;} = 10f;
 
 		[AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-		[AutoItemConfig("Base-player-damage/sec applied by Safeguard Lantern.", AICFlags.None, 0f, float.MaxValue)]
+		[AutoItemConfig("Base-player-damage/sec applied by Safeguard Lantern.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
         public float damage {get;private set;} = 0.2f;
 
 		[AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-		[AutoItemConfig("Radius of the Safeguard Lantern aura.", AICFlags.None, 0f, float.MaxValue)]
+		[AutoItemConfig("Radius of the Safeguard Lantern aura.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
         public float range {get;private set;} = 25f;
 
         private GameObject lanternWardPrefab;
@@ -59,6 +59,7 @@ namespace ThinkInvisible.ClassicItems {
             NetworkServer.Spawn(ctrlInst);
 			lw.damage = slot.characterBody.damage * damage;
 			lw.duration = duration;
+			lw.radius = range;
             if(instance.CheckEmbryoProc(slot.characterBody)) {
 				lw.duration *= 2;
             }

@@ -14,19 +14,19 @@ namespace ThinkInvisible.ClassicItems {
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
 
 		[AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-		[AutoItemConfig("AoE radius for the first stack of Barbed Wire.", AICFlags.None, 0f, float.MaxValue)]
+		[AutoItemConfig("AoE radius for the first stack of Barbed Wire.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
         public float baseRadius {get; private set;} = 5f;
 
 		[AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-		[AutoItemConfig("AoE radius to add per additional stack of Barbed Wire.", AICFlags.None, 0f, float.MaxValue)]
+		[AutoItemConfig("AoE radius to add per additional stack of Barbed Wire.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
         public float stackRadius {get; private set;} = 1f;
 
 		[AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-		[AutoItemConfig("AoE damage/sec (as fraction of owner base damage) for the first stack of Barbed Wire.", AICFlags.None, 0f, float.MaxValue)]
+		[AutoItemConfig("AoE damage/sec (as fraction of owner base damage) for the first stack of Barbed Wire.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
         public float baseDmg {get; private set;} = 0.5f;
 
 		[AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-		[AutoItemConfig("AoE damage/sec (as fraction of owner base damage) per additional stack of Barbed Wire.", AICFlags.None, 0f, float.MaxValue)]
+		[AutoItemConfig("AoE damage/sec (as fraction of owner base damage) per additional stack of Barbed Wire.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
         public float stackDmg {get; private set;} = 0.15f;
 
 		[AutoItemConfig("If true, Barbed Wire only affects one target at most. If false, Barbed Wire affects every target in range.")]
@@ -63,10 +63,18 @@ namespace ThinkInvisible.ClassicItems {
             On.RoR2.CharacterBody.OnInventoryChanged += On_CBOnInventoryChanged;
 			if(inclDeploys)
 				On.RoR2.CharacterMaster.AddDeployable += On_CMAddDeployable;
+			ConfigEntryChanged += Evt_ConfigEntryChanged;
         }
 		protected override void UnloadBehavior() {
             On.RoR2.CharacterBody.OnInventoryChanged -= On_CBOnInventoryChanged;
 			On.RoR2.CharacterMaster.AddDeployable -= On_CMAddDeployable;
+			ConfigEntryChanged -= Evt_ConfigEntryChanged;
+		}
+
+		private void Evt_ConfigEntryChanged(object sender, AutoUpdateEventArgs args) {
+			AliveList().ForEach(cm => {
+				if(cm.hasBody) updateBarbedWard(cm.GetBody());
+			});
 		}
 
 		//AddDeployable fires after OnInventoryChanged while creating a turret, so Deployable.ownerMaster won't be set in OIC

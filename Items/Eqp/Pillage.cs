@@ -9,7 +9,7 @@ namespace ThinkInvisible.ClassicItems {
         public override string displayName => "Pillaged Gold";
 
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken | AutoUpdateEventFlags.InvalidatePickupToken)]
-        [AutoItemConfig("Duration of the buff applied by Pillaged Gold.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoItemConfig("Duration of the buff applied by Pillaged Gold.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
         public float duration {get;private set;} = 14f;
 
         public BuffIndex pillageBuff {get;private set;}
@@ -33,11 +33,18 @@ namespace ThinkInvisible.ClassicItems {
 
         protected override void LoadBehavior() {
             On.RoR2.GlobalEventManager.OnHitEnemy += On_GEMOnHitEnemy;
+            //ConfigEntryChanged += Evt_ConfigEntryChanged;
         }
 
         protected override void UnloadBehavior() {
             On.RoR2.GlobalEventManager.OnHitEnemy -= On_GEMOnHitEnemy;
+            //ConfigEntryChanged -= Evt_ConfigEntryChanged;
         }
+
+        /*private void Evt_ConfigEntryChanged(object sender, AutoUpdateEventArgs args) {
+            if(args.changedProperty.Name == nameof(duration)) {
+            }
+        }*/ //TODO: update buff timers. will require a lot of reflection
 
         protected override bool OnEquipUseInner(EquipmentSlot slot) {
             var sbdy = slot.characterBody;

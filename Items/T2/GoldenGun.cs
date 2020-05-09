@@ -14,15 +14,15 @@ namespace ThinkInvisible.ClassicItems {
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
 
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Maximum multiplier to add to player damage.",AICFlags.None,0f,float.MaxValue)]
+        [AutoItemConfig("Maximum multiplier to add to player damage.",AutoItemConfigFlags.None,0f,float.MaxValue)]
         public float damageBoost {get;private set;} = 0.4f;
 
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Gold required for maximum damage. Scales with difficulty level.",AICFlags.None,0,int.MaxValue)]
+        [AutoItemConfig("Gold required for maximum damage. Scales with difficulty level.",AutoItemConfigFlags.None,0,int.MaxValue)]
         public int goldAmt {get;private set;} = 700;
         
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Inverse-exponential multiplier for reduced GoldAmt per stack (higher = more powerful).",AICFlags.None,0f,0.999f)]
+        [AutoItemConfig("Inverse-exponential multiplier for reduced GoldAmt per stack (higher = more powerful).",AutoItemConfigFlags.None,0f,0.999f)]
         public float goldReduc {get;private set;} = 0.5f;
 
         [AutoItemConfig("If true, deployables (e.g. Engineer turrets) with Golden Gun will benefit from their master's money.")]
@@ -64,6 +64,12 @@ namespace ThinkInvisible.ClassicItems {
             On.RoR2.CharacterBody.OnInventoryChanged -= On_CBInventoryChanged;
         }
 
+        private void OnConfigEntryChanged(object sender, AutoUpdateEventArgs args) {
+            AliveList().ForEach(cm => {
+                if(cm.hasBody) UpdateGGBuff(cm.GetBody());
+            });
+        }
+
         private void On_CBInventoryChanged(On.RoR2.CharacterBody.orig_OnInventoryChanged orig, CharacterBody self) {
             orig(self);
             var cpt = self.GetComponent<GoldenGunComponent>();
@@ -71,7 +77,7 @@ namespace ThinkInvisible.ClassicItems {
             var newIcnt = GetCount(self);
             if(cpt.cachedIcnt != newIcnt) {
                 cpt.cachedIcnt = newIcnt;
-                updateGGBuff(self);
+                UpdateGGBuff(self);
             }
         }
 
@@ -87,11 +93,11 @@ namespace ThinkInvisible.ClassicItems {
             if(cpt.cachedMoney != newMoney || cpt.cachedDiff != Run.instance.difficultyCoefficient) {
                 cpt.cachedMoney = newMoney;
                 cpt.cachedDiff = Run.instance.difficultyCoefficient;
-                updateGGBuff(self);
+                UpdateGGBuff(self);
             }
         }
 
-        void updateGGBuff(CharacterBody cb) {
+        void UpdateGGBuff(CharacterBody cb) {
             var cpt = cb.GetComponent<GoldenGunComponent>();
             int tgtBuffStacks = (cpt.cachedIcnt<1) ? 0 : Mathf.Clamp(Mathf.FloorToInt(cpt.cachedMoney / (Run.instance.GetDifficultyScaledCost(goldAmt) * Mathf.Pow(goldReduc, cpt.cachedIcnt - 1)) * 100f), 0, 100);
                 

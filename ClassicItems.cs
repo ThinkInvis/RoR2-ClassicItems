@@ -111,19 +111,17 @@ namespace ThinkInvisible.ClassicItems {
             foreach(ItemBoilerplate x in masterItemList) {
                 x.ConfigEntryChanged += (sender, args) => {
                     if((args.flags & (AutoUpdateEventFlags.InvalidateNameToken | (gLongDesc ? AutoUpdateEventFlags.InvalidateDescToken : AutoUpdateEventFlags.InvalidatePickupToken))) == 0) return;
-                    //args.flags |= AutoUpdateEventFlags.InvalidateModel;
-                    var pind = (x is Item) ? PickupCatalog.FindPickupIndex(((Item)x).regIndex) : PickupCatalog.FindPickupIndex(((Equipment)x).regIndex);
-                    var pdef = PickupCatalog.GetPickupDef(pind);
-                    if(pdef != null) {
-                        var ctsf = pdef.displayPrefab?.transform;
+                    if(x.pickupDef != null) {
+                        var ctsf = x.pickupDef.displayPrefab?.transform;
                         if(!ctsf) return;
                         var cfront = ctsf.Find("cardfront");
                         if(!cfront) return;
 
-                        Debug.Log("updating model");
-
-                        cfront.Find("carddesc").GetComponent<TextMeshPro>().text = gLongDesc ? x.descToken : x.pickupToken;
-                        cfront.Find("cardname").GetComponent<TextMeshPro>().text = x.nameToken;
+                        cfront.Find("carddesc").GetComponent<TextMeshPro>().text = Language.GetString(gLongDesc ? x.descToken : x.pickupToken);
+                        cfront.Find("cardname").GetComponent<TextMeshPro>().text = Language.GetString(x.nameToken);
+                    }
+                    if(x.logbookEntry != null) {
+                        x.logbookEntry.modelPrefab = x.pickupDef.displayPrefab;
                     }
                 };
                 x.SetupConfig(cfgFile);
@@ -174,7 +172,6 @@ namespace ThinkInvisible.ClassicItems {
 
         private void Awake() {
             Debug.Log("ClassicItems: performing plugin setup...");
-            
 
             Debug.Log("ClassicItems: tweaking vanilla stuff...");
 

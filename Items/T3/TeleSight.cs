@@ -14,15 +14,15 @@ namespace ThinkInvisible.ClassicItems {
         public override bool itemAIB {get; protected set;} = true;
         
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Base percent chance of triggering Telescopic Sight on hit. Affected by proc coefficient.",AICFlags.None,0f,100f)]
+        [AutoItemConfig("Base percent chance of triggering Telescopic Sight on hit. Affected by proc coefficient.",AutoItemConfigFlags.None,0f,100f)]
         public float procChance {get;private set;} = 1f;
         
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Added to ProcChance per extra stack of Telescopic Sight.",AICFlags.None,0f,100f)]
+        [AutoItemConfig("Added to ProcChance per extra stack of Telescopic Sight.",AutoItemConfigFlags.None,0f,100f)]
         public float stackChance {get;private set;} = 0.5f;
         
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Maximum allowed ProcChance for Telescopic Sight.",AICFlags.None,0f,100f)]
+        [AutoItemConfig("Maximum allowed ProcChance for Telescopic Sight.",AutoItemConfigFlags.None,0f,100f)]
         public float capChance {get;private set;} = 3f;
 
         [AutoItemConfig("If true, Telescopic Sight will not trigger on bosses.")]

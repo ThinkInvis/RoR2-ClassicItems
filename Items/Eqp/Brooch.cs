@@ -15,7 +15,7 @@ namespace ThinkInvisible.ClassicItems {
         public override float eqpCooldown => 135f;
 
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Multiplier for additional cost of chests spawned by Captain's Brooch.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoItemConfig("Multiplier for additional cost of chests spawned by Captain's Brooch.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
         public float extraCost {get;private set;} = 0.5f;
 
         [AutoItemConfig("If true, chests spawned by Captain's Brooch will immediately appear at the target position instead of falling nearby, and will not be destroyed after purchase.")]

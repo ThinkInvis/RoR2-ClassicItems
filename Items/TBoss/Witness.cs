@@ -11,23 +11,23 @@ namespace ThinkInvisible.ClassicItems {
         public override bool itemAIB {get; protected set;} = true;
         
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Duration of on-kill buff applied by the first stack of Burning Witness.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoItemConfig("Duration of on-kill buff applied by the first stack of Burning Witness.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
         public float baseDuration {get; private set;} = 6f;
         
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Duration of on-kill buff applied per additional stack of Burning Witness.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoItemConfig("Duration of on-kill buff applied per additional stack of Burning Witness.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
         public float stackDuration {get; private set;} = 3f;
         
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Move speed bonus from the first stack of Burning Witness, while active.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoItemConfig("Move speed bonus from the first stack of Burning Witness, while active.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
         public float baseSpeed {get; private set;} = 0.05f;
         
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Move speed bonus per additional stack of Burning Witness, while active.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoItemConfig("Move speed bonus per additional stack of Burning Witness, while active.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
         public float stackSpeed {get; private set;} = 0.05f;
         
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Damage bonus applied by Burning Witness, while active.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoItemConfig("Damage bonus applied by Burning Witness, while active.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
         public float damage {get; private set;} = 1f;     
         
         protected override string NewLangName(string langid = null) => displayName;        

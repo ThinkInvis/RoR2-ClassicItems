@@ -9,7 +9,7 @@ namespace ThinkInvisible.ClassicItems {
         public override string displayName => "Skeleton Key";
 
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Radius around the user to search for chests to open when using Skeleton Key.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoItemConfig("Radius around the user to search for chests to open when using Skeleton Key.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
         public float radius {get;private set;} = 50f;
 
 		public override float eqpCooldown{get;} = 90f;        

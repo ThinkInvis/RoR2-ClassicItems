@@ -12,17 +12,18 @@ namespace ThinkInvisible.ClassicItems {
         public override string displayName => "Prescriptions";
 
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken | AutoUpdateEventFlags.InvalidatePickupToken)]
-        [AutoItemConfig("Duration of the buff applied by Prescriptions.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoItemConfig("Duration of the buff applied by Prescriptions.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
         public float duration {get;private set;} = 11f;
 
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Attack speed added while Prescriptions is active.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken | AutoUpdateEventFlags.InvalidateStats)]
+        [AutoItemConfig("Attack speed added while Prescriptions is active.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
         public float aSpdBoost {get;private set;} = 0.4f;
 
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Base damage added while Prescriptions is active.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken | AutoUpdateEventFlags.InvalidateStats)]
+        [AutoItemConfig("Base damage added while Prescriptions is active.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
         public float dmgBoost {get;private set;} = 10f;
 
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateStats)]
         [AutoItemConfig("Set to false to change Prescriptions' effect from an IL patch to an event hook, which may help if experiencing compatibility issues with another mod. This will change how Prescriptions interacts with other effects.")]
         public bool useIL {get; private set;}
 

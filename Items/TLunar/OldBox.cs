@@ -12,15 +12,15 @@ namespace ThinkInvisible.ClassicItems {
         public override bool itemAIB {get; protected set;} = true; //TODO: find a way to make fear work on players... random movement and forced sprint? halt movement (root)?
 
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Fraction of max health required as damage taken to trigger Old Box (halved per additional stack).", AICFlags.None, 0f, 1f)]
+        [AutoItemConfig("Fraction of max health required as damage taken to trigger Old Box (halved per additional stack).", AutoItemConfigFlags.None, 0f, 1f)]
         public float healthThreshold {get; private set;} = 0.5f;
 
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("AoE radius for Old Box.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoItemConfig("AoE radius for Old Box.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
         public float radius {get; private set;} = 25f;
         
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Duration of fear debuff applied by Old Box.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoItemConfig("Duration of fear debuff applied by Old Box.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
         public float duration {get; private set;} = 2f;
 
         [AutoItemConfig("If true, damage to shield and barrier (from e.g. Personal Shield Generator, Topaz Brooch) will not count towards triggering Old Box.")]

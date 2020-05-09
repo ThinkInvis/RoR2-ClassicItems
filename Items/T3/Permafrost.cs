@@ -11,15 +11,15 @@ namespace ThinkInvisible.ClassicItems {
         public override bool itemAIB {get; protected set;} = true;
         
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Percent chance of triggering Permafrost on hit. Affected by proc coefficient; stacks inverse-multiplicatively.", AICFlags.None, 0f, 100f)]
+        [AutoItemConfig("Percent chance of triggering Permafrost on hit. Affected by proc coefficient; stacks inverse-multiplicatively.", AutoItemConfigFlags.None, 0f, 100f)]
         public float procChance {get;private set;} = 6f;
 
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Duration of freeze applied by Permafrost.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoItemConfig("Duration of freeze applied by Permafrost.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
         public float freezeTime {get;private set;} = 1.5f;
         
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Duration of slow applied by Permafrost.", AICFlags.None, 0f, float.MaxValue)]
+        [AutoItemConfig("Duration of slow applied by Permafrost.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
         public float slowTime {get;private set;} = 3.0f;
 
         [AutoItemConfig("If true, Permafrost will slow targets even if they can't be frozen.")]
