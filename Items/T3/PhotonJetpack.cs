@@ -68,7 +68,7 @@ namespace ThinkInvisible.ClassicItems {
         }
 
         private void Evt_ConfigEntryChanged(object sender, AutoUpdateEventArgs args) {
-            if(args.changedProperty.Name == nameof(baseFuel) || args.changedProperty.Name == nameof(stackFuel))
+            if(args.target.boundProperty.Name == nameof(baseFuel) || args.target.boundProperty.Name == nameof(stackFuel))
                 AliveList().ForEach(cm => {
                     if(cm.hasBody) UpdatePhotonFuel(cm.GetBody());
                 });

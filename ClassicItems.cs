@@ -105,7 +105,7 @@ namespace ThinkInvisible.ClassicItems {
             gCoolYourJets = gCfgCoolYourJets.Value;
 
             Debug.Log("ClassicItems: instantiating item classes...");
-            masterItemList = ItemBoilerplate.InitAll();
+            masterItemList = ItemBoilerplate.InitAll("ClassicItems");
 
             Debug.Log("ClassicItems: loading item configs...");
             foreach(ItemBoilerplate x in masterItemList) {
