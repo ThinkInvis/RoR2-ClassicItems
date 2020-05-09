@@ -136,11 +136,8 @@ namespace ThinkInvisible.ClassicItems {
                     : ((Equipment)x).eqpIsLunar ? "LqpCard" : "EqpCard") + ".prefab";
                 var ipnOvr = "@ClassicItems:Assets/ClassicItems/icons/" + x.itemCodeName + "_icon.png";
 
-                typeof(ItemBoilerplate).GetProperty("modelPathName").SetValue(x, mpnOvr);
-                typeof(ItemBoilerplate).GetProperty("iconPathName").SetValue(x, ipnOvr);
-
-                Debug.Log(x.modelPathName);
-                Debug.Log(x.iconPathName);
+                typeof(ItemBoilerplate).GetProperty(nameof(ItemBoilerplate.modelPathName)).SetValue(x, mpnOvr);
+                typeof(ItemBoilerplate).GetProperty(nameof(ItemBoilerplate.iconPathName)).SetValue(x, ipnOvr);
                 
                 x.SetupAttributes("CLASSICITEMS", "CI");
 
