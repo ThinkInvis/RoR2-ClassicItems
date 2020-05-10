@@ -15,15 +15,16 @@ namespace ThinkInvisible.ClassicItems {
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Healing});
 
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken | AutoUpdateEventFlags.InvalidatePickupToken | AutoUpdateEventFlags.InvalidateStats)]
-        [AutoItemConfig("Linearly-stacking multiplier for health gained from Bitter Root.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
+        [AutoItemConfig("Linearly-stacking multiplier for health gained from Bitter Root.", AutoItemConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float healthMult {get; private set;} = 0.08f;
 
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken | AutoUpdateEventFlags.InvalidateStats)]
-        [AutoItemConfig("Cap for health multiplier gained from Bitter Root.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
+        [AutoItemConfig("Cap for health multiplier gained from Bitter Root.", AutoItemConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float healthCap {get; private set;} = 3f;
 
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateStats)]
-        [AutoItemConfig("Set to false to change Bitter Root's effect from an IL patch to an event hook, which may help if experiencing compatibility issues with another mod. This will change how Bitter Root interacts with other effects.")]
+        [AutoItemConfig("Set to false to change Bitter Root's effect from an IL patch to an event hook, which may help if experiencing compatibility issues with another mod. This will change how Bitter Root interacts with other effects.",
+            AutoItemConfigFlags.PreventNetMismatch)]
         public bool useIL {get; private set;} = true;
 
         private bool ilFailed = false;        

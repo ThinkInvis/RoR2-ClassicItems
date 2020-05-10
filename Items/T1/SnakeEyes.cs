@@ -16,7 +16,7 @@ namespace ThinkInvisible.ClassicItems {
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
 
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken | AutoUpdateEventFlags.InvalidateStats)]
-        [AutoItemConfig("Direct additive to percent crit chance per proc per stack of Snake Eyes.", AutoItemConfigFlags.None, 0f, 100f)]
+        [AutoItemConfig("Direct additive to percent crit chance per proc per stack of Snake Eyes.", AutoItemConfigFlags.PreventNetMismatch, 0f, 100f)]
         public float critAdd {get;private set;} = 8f;
 
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
@@ -30,7 +30,8 @@ namespace ThinkInvisible.ClassicItems {
         public bool inclDeploys {get;private set;} = true;
 
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateStats)]
-        [AutoItemConfig("Set to false to change Snake Eyes' effect from an IL patch to an event hook, which may help if experiencing compatibility issues with another mod. This will change how Snake Eyes interacts with other effects.")]
+        [AutoItemConfig("Set to false to change Snake Eyes' effect from an IL patch to an event hook, which may help if experiencing compatibility issues with another mod. This will change how Snake Eyes interacts with other effects.",
+            AutoItemConfigFlags.PreventNetMismatch)]
         public bool useIL {get;private set;} = true;
 
         public BuffIndex snakeEyesBuff {get;private set;}

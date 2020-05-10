@@ -15,15 +15,16 @@ namespace ThinkInvisible.ClassicItems {
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
         
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Multiplier for gravity reduction (0.0 = no effect, 1.0 = full anti-grav).", AutoItemConfigFlags.None, 0f, 0.999f)]
+        [AutoItemConfig("Multiplier for gravity reduction (0.0 = no effect, 1.0 = full anti-grav).", AutoItemConfigFlags.PreventNetMismatch, 0f, 0.999f)]
         public float gravMod {get;private set;} = 0.5f;
         
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken | AutoUpdateEventFlags.InvalidateStats)]
-        [AutoItemConfig("Amount added to jump power per stack.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
+        [AutoItemConfig("Amount added to jump power per stack.", AutoItemConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float jumpMult {get;private set;} = 0.1f;
         
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateStats)]
-        [AutoItemConfig("Set to false to change Rusty Jetpack's effect from an IL patch to an event hook, which may help if experiencing compatibility issues with another mod. This will change how Rusty Jetpack interacts with other effects.")]
+        [AutoItemConfig("Set to false to change Rusty Jetpack's effect from an IL patch to an event hook, which may help if experiencing compatibility issues with another mod. This will change how Rusty Jetpack interacts with other effects.",
+            AutoItemConfigFlags.PreventNetMismatch)]
         public bool useIL {get;private set;} = true;
 
         private bool ilFailed = false;

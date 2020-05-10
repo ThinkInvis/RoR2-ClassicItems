@@ -16,7 +16,7 @@ namespace ThinkInvisible.ClassicItems {
         public float procRate {get;private set;} = 30f;
 
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken | AutoUpdateEventFlags.InvalidatePickupToken)]
-        [AutoItemConfig("Number of 1-second ticks of Snowglobe duration.", AutoItemConfigFlags.None, 0, int.MaxValue)]
+        [AutoItemConfig("Number of 1-second ticks of Snowglobe duration.", AutoItemConfigFlags.PreventNetMismatch, 0, int.MaxValue)]
         public int duration {get;private set;} = 8;
 
         [AutoItemConfig("Duration of freeze applied by Snowglobe.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
@@ -68,6 +68,12 @@ namespace ThinkInvisible.ClassicItems {
 
                 snowglobeControllerPrefab = ctrlPfb2.InstantiateClone("snowglobeControllerPrefab");
                 UnityEngine.Object.Destroy(ctrlPfb2);
+            };
+
+            ConfigEntryChanged += (sender, args) => {
+                if(args.target.boundProperty.Name == nameof(duration)) {
+                    snowglobeControllerPrefab.GetComponentInChildren<PostProcessDuration>().maxDuration = (int)args.newValue;
+                }
             };
         }
 

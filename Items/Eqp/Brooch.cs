@@ -18,7 +18,8 @@ namespace ThinkInvisible.ClassicItems {
         [AutoItemConfig("Multiplier for additional cost of chests spawned by Captain's Brooch.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
         public float extraCost {get;private set;} = 0.5f;
 
-        [AutoItemConfig("If true, chests spawned by Captain's Brooch will immediately appear at the target position instead of falling nearby, and will not be destroyed after purchase.")]
+        [AutoItemConfig("If true, chests spawned by Captain's Brooch will immediately appear at the target position instead of falling nearby, and will not be destroyed after purchase.",
+            AutoItemConfigFlags.PreventNetMismatch)]
         public bool safeMode {get;private set;} = false;
 
         [AutoItemConfig("If true, Captain's Brooch will spawn chests directly at the player's position if it can't find a suitable spot nearby. If false, it will fail to spawn the chest and refrain from using an equipment charge.")]
@@ -35,6 +36,7 @@ namespace ThinkInvisible.ClassicItems {
         private bool ILFailed = false;
 
         public Brooch() {
+            var origCost = 25f;
             onBehav += ()=>{
                 BroochRNG = new Xoroshiro128Plus(0UL);
 
@@ -44,12 +46,22 @@ namespace ThinkInvisible.ClassicItems {
                 broochPrefab.skipSpawnWhenSacrificeArtifactEnabled = false;
                 broochPrefab.prefab = PrefabAPI.InstantiateClone(broochPrefab.prefab,"chestBrooch");
 
-                if(!safeMode) broochPrefab.prefab.AddComponent<CaptainsBroochDroppod>();
+                broochPrefab.prefab.AddComponent<CaptainsBroochDroppod>().enabled = !safeMode;
 
                 var pInt = broochPrefab.prefab.GetComponent<PurchaseInteraction>();
 
-                pInt.cost = Mathf.CeilToInt(pInt.cost * (1f + extraCost));
+                origCost = pInt.cost;
+
+                pInt.cost = Mathf.CeilToInt(origCost  * (1f + extraCost));
                 pInt.automaticallyScaleCostWithDifficulty = true;
+            };
+
+            ConfigEntryChanged += (sender, args) => {
+                if(args.target.boundProperty.Name == nameof(safeMode))
+                    broochPrefab.prefab.GetComponent<CaptainsBroochDroppod>().enabled = !(bool)args.newValue;
+                else if(args.target.boundProperty.Name == nameof(extraCost)) {
+                    broochPrefab.prefab.GetComponent<PurchaseInteraction>().cost = Mathf.CeilToInt(origCost * (1f + extraCost));
+                }
             };
         }
 

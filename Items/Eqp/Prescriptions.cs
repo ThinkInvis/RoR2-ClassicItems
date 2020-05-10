@@ -16,15 +16,16 @@ namespace ThinkInvisible.ClassicItems {
         public float duration {get;private set;} = 11f;
 
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken | AutoUpdateEventFlags.InvalidateStats)]
-        [AutoItemConfig("Attack speed added while Prescriptions is active.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
+        [AutoItemConfig("Attack speed added while Prescriptions is active.", AutoItemConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float aSpdBoost {get;private set;} = 0.4f;
 
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken | AutoUpdateEventFlags.InvalidateStats)]
-        [AutoItemConfig("Base damage added while Prescriptions is active.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
+        [AutoItemConfig("Base damage added while Prescriptions is active.", AutoItemConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float dmgBoost {get;private set;} = 10f;
 
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateStats)]
-        [AutoItemConfig("Set to false to change Prescriptions' effect from an IL patch to an event hook, which may help if experiencing compatibility issues with another mod. This will change how Prescriptions interacts with other effects.")]
+        [AutoItemConfig("Set to false to change Prescriptions' effect from an IL patch to an event hook, which may help if experiencing compatibility issues with another mod. This will change how Prescriptions interacts with other effects.",
+            AutoItemConfigFlags.PreventNetMismatch)]
         public bool useIL {get; private set;}
 
         private bool ilFailed = false;

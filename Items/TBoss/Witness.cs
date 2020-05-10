@@ -19,15 +19,15 @@ namespace ThinkInvisible.ClassicItems {
         public float stackDuration {get; private set;} = 3f;
         
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Move speed bonus from the first stack of Burning Witness, while active.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
+        [AutoItemConfig("Move speed bonus from the first stack of Burning Witness, while active.", AutoItemConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float baseSpeed {get; private set;} = 0.05f;
         
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Move speed bonus per additional stack of Burning Witness, while active.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
+        [AutoItemConfig("Move speed bonus per additional stack of Burning Witness, while active.", AutoItemConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float stackSpeed {get; private set;} = 0.05f;
         
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Damage bonus applied by Burning Witness, while active.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
+        [AutoItemConfig("Damage bonus applied by Burning Witness, while active.", AutoItemConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float damage {get; private set;} = 1f;     
         
         protected override string NewLangName(string langid = null) => displayName;        

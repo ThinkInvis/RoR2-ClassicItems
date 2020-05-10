@@ -14,27 +14,27 @@ namespace ThinkInvisible.ClassicItems {
         public BuffIndex photonFuelBuff {get;private set;}
         
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Time in seconds that jump must be released before Photon Jetpack fuel begins recharging.",AutoItemConfigFlags.None,0f,float.MaxValue)]
+        [AutoItemConfig("Time in seconds that jump must be released before Photon Jetpack fuel begins recharging.",AutoItemConfigFlags.PreventNetMismatch,0f,float.MaxValue)]
         public float rchDelay {get;private set;} = 1.0f;
 
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Seconds of Photon Jetpack fuel recharged per second realtime.",AutoItemConfigFlags.None,0f,float.MaxValue)]
+        [AutoItemConfig("Seconds of Photon Jetpack fuel recharged per second realtime.",AutoItemConfigFlags.PreventNetMismatch,0f,float.MaxValue)]
         public float rchRate {get;private set;} = 1.0f;
         
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Seconds of Photon Jetpack fuel capacity at first stack.",AutoItemConfigFlags.None,0f,float.MaxValue)]
+        [AutoItemConfig("Seconds of Photon Jetpack fuel capacity at first stack.",AutoItemConfigFlags.PreventNetMismatch,0f,float.MaxValue)]
         public float baseFuel {get;private set;} = 1.6f;
         
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Seconds of Photon Jetpack fuel capacity per additional stack.",AutoItemConfigFlags.None,0f,float.MaxValue)]
+        [AutoItemConfig("Seconds of Photon Jetpack fuel capacity per additional stack.",AutoItemConfigFlags.PreventNetMismatch,0f,float.MaxValue)]
         public float stackFuel {get;private set;} = 1.6f;
         
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Multiplier for gravity reduction while Photon Jetpack is active. Effectively the thrust provided by the jetpack -- 0 = no effect, 1 = anti-grav, 2 = negative gravity, etc.",AutoItemConfigFlags.None,0f,float.MaxValue)]
+        [AutoItemConfig("Multiplier for gravity reduction while Photon Jetpack is active. Effectively the thrust provided by the jetpack -- 0 = no effect, 1 = anti-grav, 2 = negative gravity, etc.",AutoItemConfigFlags.PreventNetMismatch,0f,float.MaxValue)]
         public float gravMod {get;private set;} = 1.2f;
         
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Added to Photon Jetpack's GravMod while the character is falling (negative vertical velocity) to assist in stopping falls.",AutoItemConfigFlags.None,0f,float.MaxValue)]
+        [AutoItemConfig("Added to Photon Jetpack's GravMod while the character is falling (negative vertical velocity) to assist in stopping falls.",AutoItemConfigFlags.PreventNetMismatch,0f,float.MaxValue)]
         public float fallBoost {get;private set;} = 2.0f;
 
         protected override string NewLangName(string langid = null) => displayName;

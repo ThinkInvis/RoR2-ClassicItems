@@ -29,15 +29,16 @@ namespace ThinkInvisible.ClassicItems {
         public float procChance {get;private set;} = 30f;
 
         
-        [AutoItemConfig("SubEnable<AIC.DictKey>", "If false, Beating Embryo will not affect <AIC.DictKey>.", AutoItemConfigFlags.BindDict)]
+        [AutoItemConfig("SubEnable<AIC.DictKey>", "If false, Beating Embryo will not affect <AIC.DictKey>.", AutoItemConfigFlags.BindDict | AutoItemConfigFlags.PreventNetMismatch)]
         private Dictionary<EquipmentIndex,bool> subEnable {get;} = new Dictionary<EquipmentIndex, bool>();
         public ReadOnlyDictionary<EquipmentIndex,bool> subEnableGet {get;private set;}
 
-        [AutoItemConfig("SubEnable<AIC.DictKeyProp." + nameof(Equipment.itemCodeName) + ">","If false, Beating Embryo will not affect <AIC.DictKeyProp." + nameof(Equipment.displayName) + "> (added by ClassicItems).", AutoItemConfigFlags.BindDict)]
+        [AutoItemConfig("SubEnable<AIC.DictKeyProp." + nameof(Equipment.itemCodeName) + ">","If false, Beating Embryo will not affect <AIC.DictKeyProp." + nameof(Equipment.displayName) + "> (added by ClassicItems).", AutoItemConfigFlags.BindDict | AutoItemConfigFlags.PreventNetMismatch)]
         private Dictionary<Equipment,bool> subEnableInternal {get;} = new Dictionary<Equipment, bool>();
         public ReadOnlyDictionary<Equipment,bool> subEnableInternalGet {get;private set;}
 
-        [AutoItemConfig("If false, Beating Embryo will not affect equipment added by other mods. If true, these items will be triggered twice when Beating Embryo procs, which may not work with some items.")]
+        [AutoItemConfig("If false, Beating Embryo will not affect equipment added by other mods. If true, these items will be triggered twice when Beating Embryo procs, which may not work with some items.",
+            AutoItemConfigFlags.PreventNetMismatch)]
         public bool subEnableModded {get;private set;} = false;
 
         private readonly List<EquipmentIndex> subEnableExt = new List<EquipmentIndex>();

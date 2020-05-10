@@ -15,11 +15,12 @@ namespace ThinkInvisible.ClassicItems {
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Healing});
         
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken | AutoUpdateEventFlags.InvalidateStats)]
-        [AutoItemConfig("Direct additive to natural health regen per stack of Mysterious Vial.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
+        [AutoItemConfig("Direct additive to natural health regen per stack of Mysterious Vial.", AutoItemConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float addRegen {get;private set;} = 1.4f;
 
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateStats)]
-        [AutoItemConfig("Set to false to change Mysterious Vial's effect from an IL patch to an event hook, which may help if experiencing compatibility issues with another mod. This will change how Mysterious Vial interacts with other effects.")]
+        [AutoItemConfig("Set to false to change Mysterious Vial's effect from an IL patch to an event hook, which may help if experiencing compatibility issues with another mod. This will change how Mysterious Vial interacts with other effects.",
+            AutoItemConfigFlags.PreventNetMismatch)]
         public bool useIL {get;private set;} = true;
 
         private bool ilFailed = false;        
