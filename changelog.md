@@ -1,5 +1,12 @@
 ﻿# ClassicItems Changelog
 
+**4.0.0**
+
+- Loads and loads and loads of behind-the-scenes changes, most of which were moved to a new mod (TILER2).
+- Added Old Box to the default AI blacklist.
+- Several cosmetic fixes.
+- Config mismatches are now automatically resolved (TILER2 NetConfig module).
+
 **3.1.0**
 
 - ADDED ITEMS: Pillaged Gold, Prescriptions, Safeguard Lantern, Old Box!

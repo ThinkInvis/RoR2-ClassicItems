@@ -6,14 +6,6 @@ Adds some items from Risk of Rain 1 which RoR2 thought it was too good for.
 
 For nostalgic purposes only. Here Be Dragons who hoard balance issues, because the numbers are closer to RoR1's than 2's... and, y'know, Brooch+Clover. Will absolutely lead to silly, broken runs, unless you feel like changing the config up -- most aspects of each item are configurable!
 
-
-
-### WARNING: MAKE SURE YOUR CONFIG FILE MATCHES THE HOST'S IN MULTIPLAYER!
-
-By extension, the other clients' configs need to match too. This mod has some settings that are too difficult to change after the game has launched, so it will not automatically sync config with servers.
-
-
-
 ### Current Additions
 #### Tier 1
 - Barbed Wire: "Hurt nearby enemies."
@@ -33,7 +25,7 @@ By extension, the other clients' configs need to match too. This mod has some se
 - Smart Shopper: "Enemies drop more gold."
 #### Tier 3
 - Beating Embryo: "Equipment has a 30% chance to deal double the effect."
-    - Doubles *duration* on: Ocular HUD, Jade Elephant, Milky Chrysalis, Radar Scanner, Snowglobe.
+    - Doubles *duration* on: Ocular HUD, Jade Elephant, Milky Chrysalis, Radar Scanner, Snowglobe, Pillaged Gold, Prescriptions, Safeguard Lantern.
     - Doubles *range* on: Primordial Cube, Blast Shower, Skeleton Key.
     - Doubles *count* on: The Back-up, Captain's Brooch, Sawmerang, Royal Capacitor, Recycler, Lost Doll, Gigantic Amethyst.
     - Doubles *fire rate and count* on: Disposable Missile Launcher.
@@ -68,6 +60,7 @@ By extension, the other clients' configs need to match too. This mod has some se
 
 - Every item added by Classic Items can be individually disabled in the mod's config file.
 - More config options for various aspects of item effects (how much regen a Mysterious Vial provides, which equipments Beating Embryo affects...).
+- Most config options can be changed mid-run by using TILER2's AIC console commands.
 - Descriptions in the logbook match config values.
 - Some vanilla tweaks, also with config options:
     - Disables the H3AD5T V2 stomp move, which is normally triggered by holding jump in midair; this is replaced by the Headstompers item.
@@ -77,17 +70,29 @@ By extension, the other clients' configs need to match too. This mod has some se
 
 - More items are on the way! There's a lot to work with.
 - Stats are set close to RoR1's whenever possible. May eventually set up a config preset which balances items a little more carefully with respect to RoR2's existing content.
-- Beating Embryo has no effect on Lunar equipments (other than Lost Doll). This is a design decision, but disabled-by-default effects are planned.
+- Beating Embryo has no effect on Lunar equipments (other than those added by mods). This is a design decision, but disabled-by-default effects are planned.
 - Color tags on pickup model text are too bright.
 - See the GitHub repo for more!
 
 ## Modder Resources
 
-ClassicItems exposes some members as public for use in compatibility patches in other mods. For details and instructions on applying these, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/modding.md
+ClassicItems exposes some members as public for use in compatibility patches in other mods, including:
+
+- Tools to implement Beating Embryo behavior for other mods' equipment items
+
+For details and instructions on applying these, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/modding.md
 
 ## Changelog
 
 The 5 latest updates are listed below. For a full changelog, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/changelog.md
+
+**4.0.0**
+
+- Loads and loads and loads of behind-the-scenes changes, most of which were moved to a new mod (TILER2).
+- NOTE: some config entries may have different names now (mostly Beating Embryo subenable flags), which will reset them to their default values once. Check to make sure things are still how you want them!
+- Added Old Box to the default AI blacklist.
+- Several cosmetic fixes.
+- Config mismatches are now automatically resolved (TILER2 NetConfig module).
 
 **3.1.0**
 
@@ -126,11 +131,3 @@ The 5 latest updates are listed below. For a full changelog, see: https://github
 - Headstompers no longer deals self damage while Artifact of Chaos is enabled.
 - Added an option (enabled by default) to pause Life Savings while the run timer is paused, e.g. in the bazaar.
 - Greatly improved stability and performance while setting buff count (Golden Gun, Photon Jetpack, Snake Eyes).
-
-**2.3.0**
-
-- ADDED ITEMS: Skeleton Key, Lost Doll, Telescopic Sight, Barbed Wire!
-- Golden Gun now applies a percentile buff displaying damage boost given as a fraction of maximum.
-- Fixed Beating Embryo having a duplicate config named SubEnableSaw instead of one named SubEnableBrooch.
-- Made some event hooks more stable in case of failure (original event is called first where possible).
-- Updated R2API dependency to v2.4.21. ClassicItems now uses the BuffAPI and LanguageAPI submodules.

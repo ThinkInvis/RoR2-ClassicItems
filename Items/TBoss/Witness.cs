@@ -1,4 +1,5 @@
-﻿using RoR2;
+﻿#if DEBUG
+using RoR2;
 using System.Collections.ObjectModel;
 using TILER2;
 using static TILER2.MiscUtil;
@@ -52,3 +53,4 @@ namespace ThinkInvisible.ClassicItems {
         }
     }
 }
+#endif
