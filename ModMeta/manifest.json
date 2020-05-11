@@ -5,6 +5,7 @@
   "description": "Adds items from Risk of Rain 1 which didn't make the cut.",
   "dependencies": [
     "bbepis-BepInExPack-3.2.0",
-    "tristanmcpherson-R2API-2.4.21"
+    "tristanmcpherson-R2API-2.4.21",
+    "ThinkInvis-TILER2-1.0.0"
   ]
 }
