@@ -8,8 +8,8 @@ Adds a bunch of custom items, all based on ones which didn't make the cut from R
 
 Release builds are published to Thunderstore: https://thunderstore.io/package/ThinkInvis/ClassicItems/
 
-**Use of a mod manager is recommended.** If not using a mod manager: extract ThinkInvis-ClassicItems-[version].zip into your BepInEx plugins folder such that the following path exists: `[RoR2 game folder]/BepInEx/Plugins/ThinkInvis-ClassicItems-[version]/ClassicItems.dll`.
-After the next public release, installation of TILER2 (not yet released) will also be required.
+**Use of a mod manager is recommended**. If not using a mod manager: extract ThinkInvis-ClassicItems-[version].zip into your BepInEx plugins folder such that the following path exists: `[RoR2 game folder]/BepInEx/Plugins/ThinkInvis-ClassicItems-[version]/ClassicItems.dll`.
+Installation of TILER2 is also required: https://thunderstore.io/package/ThinkInvis/TILER2/
 
 ## Building
 
