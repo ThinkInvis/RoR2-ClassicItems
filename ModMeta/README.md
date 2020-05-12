@@ -1,5 +1,15 @@
 # Classic Items
 
+## SUPPORT DISCLAIMER
+
+### Use of a mod manager is STRONGLY RECOMMENDED.
+
+Seriously, use a mod manager.
+
+If the versions of ClassicItems or TILER2 (or possibly any other mods) are different between your game and other players' in multiplayer, things WILL break. If TILER2 is causing kicks for "unspecified reason", it's likely due to a mod version mismatch. Ensure that all players in a server, including the host and/or dedicated server, are using the same mod versions before reporting a bug.
+
+**While reporting a bug, make sure to post a console log** (`path/to/RoR2/BepInEx/LogOutput.log`) from a run of the game where the bug happened; this often provides important information about why the bug is happening. If the bug is multiplayer-only, please try to include logs from both server and client.
+
 ## Description
 
 Adds some items from Risk of Rain 1 which RoR2 thought it was too good for.
