@@ -34,6 +34,16 @@ For nostalgic purposes only. Here Be Dragons who hoard balance issues, because t
 - Rusty Jetpack: "Increase jump height and reduce gravity."
 - Smart Shopper: "Enemies drop more gold."
 #### Tier 3
+- Ancient Scepter: "Upgrades your 4th skill."
+    - Commando: Suppressive Fire > Death Blossom (2x shots, fire rate, and accuracy)  -OR-  Grenade > Carpet Bomb (0.5x damage, throw a spread of 8 at once)
+    - Huntress: Arrow Rain > Burning Rain (1.5x duration and radius, burns)  -OR-  Ballista > Rabauld (4x shots and fire rate; 0.5x damage)
+    - MUL-T: Transport Mode > Breach Mode (0.5x incoming damage, 2x duration; after stopping, retaliate with a stunning explosion for 100% of unmodified damage taken)
+    - Engineer: TR12 Gauss Auto-Turret > TR12-C Gauss Compact (+1 stock, +1 placed turret cap)  -OR-  TR58 Carbonizer Turret > TR58-C Carbonizer Mini (+2 stock, +2 placed turret cap)
+    - Artificer: Flamethrower > Dragon's Breath (hits leave lingering fire clouds)  -OR-  Ion Surge > Antimatter Surge (2x damage, 4x radius)
+    - Mercenary: Eviscerate > Massacre (2x duration, kills refresh duration)  -OR-  Slicing Winds > Gale-Force (4x stock and recharge speed, fires all charges at once)
+    - REX: Tangling Growth > Chaotic Growth (2x radius, pulses additional random debuffs)
+    - Loader: Charged Gauntlet > Megaton Gauntlet (2x damage and lunge speed, 7x knockback)  -OR-  Thunder Gauntlet > Thundercrash (3x lightning bolts fired, cone AoE becomes sphere)
+    - Acrid: Epidemic > Plague (victims become walking sources of Plague, chains infinitely)
 - Beating Embryo: "Equipment has a 30% chance to deal double the effect."
     - Doubles *duration* on: Ocular HUD, Jade Elephant, Milky Chrysalis, Radar Scanner, Snowglobe, Pillaged Gold, Prescriptions, Safeguard Lantern.
     - Doubles *range* on: Primordial Cube, Blast Shower, Skeleton Key.
@@ -88,13 +98,17 @@ For nostalgic purposes only. Here Be Dragons who hoard balance issues, because t
 
 ClassicItems exposes some members as public for use in compatibility patches in other mods, including:
 
-- Tools to implement Beating Embryo behavior for other mods' equipment items
+- Tools to implement Beating Embryo and Ancient Scepter behavior for other mods' equipment items
 
 For details and instructions on applying these, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/modding.md
 
 ## Changelog
 
 The 5 latest updates are listed below. For a full changelog, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/changelog.md
+
+**4.1.0**
+
+- ADDED ITEM: Ancient Scepter! Has skill overrides for ALL playable characters, and for each variant per chosen slot, but likely needs a balance pass or two.
 
 **4.0.0**
 
@@ -131,13 +145,3 @@ The 5 latest updates are listed below. For a full changelog, see: https://github
 - Skeleton Key and Captain's Brooch will no longer work in the Bazaar (fixes compatibility with BiggerBazaar).
 - Fixed freeze debuff not having an icon.
 - Added a console command for debugging: evo_setitem adds/removes items in the Artifact of Evolution item pool.
-
-**2.4.0**
-
-- ADDED ITEM: Permafrost!
-- Fixed Barbed Wire VFX having half the intended radius.
-- Fixed Barbed Wire applying damage to the Artifact Reliquary.
-- Lost Doll now has proper team targeting, and should theoretically work for enemies if one manages to pick it up.
-- Headstompers no longer deals self damage while Artifact of Chaos is enabled.
-- Added an option (enabled by default) to pause Life Savings while the run timer is paused, e.g. in the bazaar.
-- Greatly improved stability and performance while setting buff count (Golden Gun, Photon Jetpack, Snake Eyes).

@@ -1,5 +1,9 @@
 ﻿# ClassicItems Changelog
 
+**4.1.0**
+
+- ADDED ITEM: Ancient Scepter! Has skill overrides for ALL playable characters, and for each variant per chosen slot, but likely needs a balance pass or two.
+
 **4.0.0**
 
 - Loads and loads and loads of behind-the-scenes changes, most of which were moved to a new mod (TILER2).
