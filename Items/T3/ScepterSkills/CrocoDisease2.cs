@@ -37,7 +37,7 @@ namespace ThinkInvisible.ClassicItems {
 			dwPrefabPrefab.AddComponent<TeamFilter>();
 			dwPrefabPrefab.AddComponent<MeshFilter>().mesh = mshPrefab.GetComponentInChildren<MeshFilter>().mesh;
 			dwPrefabPrefab.AddComponent<MeshRenderer>().material = UnityEngine.Object.Instantiate(mshPrefab.GetComponentInChildren<MeshRenderer>().material);
-			dwPrefabPrefab.GetComponent<MeshRenderer>().material.SetVector("_TintColor",new Vector4(1.5f,0.3f,1f,2f));
+			dwPrefabPrefab.GetComponent<MeshRenderer>().material.SetVector("_TintColor",new Vector4(1.5f,0.3f,1f,0.3f));
 			dwPrefabPrefab.AddComponent<NetworkedBodyAttachment>().forceHostAuthority = true;
 			var dw = dwPrefabPrefab.AddComponent<DiseaseWard>();
 			dw.rangeIndicator = dwPrefabPrefab.GetComponent<MeshRenderer>().transform;
