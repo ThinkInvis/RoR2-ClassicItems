@@ -1,0 +1,94 @@
+﻿using UnityEngine;
+using RoR2.Skills;
+using static TILER2.MiscUtil;
+using R2API.Utils;
+using RoR2;
+using R2API;
+
+namespace ThinkInvisible.ClassicItems {
+    public static class ToolbotDash2 {
+        public static SkillDef myDef {get; private set;}
+        internal static void SetupAttributes() {
+            var oldDef = Resources.Load<SkillDef>("skilldefs/toolbotbody/ToolbotBodyToolbotDash");
+            myDef = CloneSkillDef(oldDef);
+
+            var nametoken = "CLASSICITEMS_SCEPTOOLBOT_DASHNAME";
+            var desctoken = "CLASSICITEMS_SCEPTOOLBOT_DASHDESC";
+            var namestr = "Breach Mode";
+            LanguageAPI.Add(nametoken, namestr);
+            LanguageAPI.Add(desctoken, Language.GetString(oldDef.skillDescriptionToken) + "\n<color=#d299ff>SCEPTER: Halves incoming damage (stacks with armor), double duration. After stopping: retaliate and stun for 200% of unmodified damage taken with a huge explosion.</color>");
+
+            myDef.skillName = namestr;
+            myDef.skillNameToken = nametoken;
+            myDef.skillDescriptionToken = desctoken;
+            myDef.icon = Resources.Load<Sprite>("@ClassicItems:Assets/ClassicItems/icons/scepter/toolbot_dashicon.png");
+
+            LoadoutAPI.AddSkillDef(myDef);
+        }
+
+        internal static void LoadBehavior() {
+            On.EntityStates.Toolbot.ToolbotDash.OnEnter += On_ToolbotDashEnter;
+            On.EntityStates.Toolbot.ToolbotDash.OnExit += On_ToolbotDashExit;
+            On.RoR2.HealthComponent.TakeDamage += On_HCTakeDamage;
+        }
+
+        internal static void UnloadBehavior() {
+            On.EntityStates.Toolbot.ToolbotDash.OnEnter -= On_ToolbotDashEnter;
+            On.EntityStates.Toolbot.ToolbotDash.OnExit -= On_ToolbotDashExit;
+            On.RoR2.HealthComponent.TakeDamage -= On_HCTakeDamage;
+        }
+        
+        private static void On_HCTakeDamage(On.RoR2.HealthComponent.orig_TakeDamage orig, HealthComponent self, DamageInfo damageInfo) {
+            if(!self.body) {orig(self, damageInfo);return;}
+            var cpt = self.body.GetComponent<ScepterToolbotDashTracker>();
+            if(!cpt || !cpt.enabled) {orig(self, damageInfo);return;}
+            cpt.trackedDamageTaken += damageInfo.damage;
+            damageInfo.damage /= 2f;
+            orig(self, damageInfo);
+        }
+
+        private static void On_ToolbotDashEnter(On.EntityStates.Toolbot.ToolbotDash.orig_OnEnter orig, EntityStates.Toolbot.ToolbotDash self) {
+            orig(self);
+            if(!self.outer.commonComponents.characterBody) return;
+            if(Scepter.instance.GetCount(self.outer.commonComponents.characterBody) == 0) return;
+            var cpt = self.outer.commonComponents.characterBody.GetComponent<ScepterToolbotDashTracker>();
+            if(!cpt) cpt = self.outer.commonComponents.characterBody.gameObject.AddComponent<ScepterToolbotDashTracker>();
+            cpt.enabled = true;
+            cpt.trackedDamageTaken = 0f;
+            self.baseDuration *= 2f;
+        }
+
+        private static void On_ToolbotDashExit(On.EntityStates.Toolbot.ToolbotDash.orig_OnExit orig, EntityStates.Toolbot.ToolbotDash self) {
+            orig(self);
+            var cpt = self.outer.commonComponents.characterBody.GetComponent<ScepterToolbotDashTracker>();
+            if(!cpt) return;
+            new BlastAttack {
+                attacker = self.outer.commonComponents.characterBody.gameObject,
+                attackerFiltering = AttackerFiltering.NeverHit,
+                baseDamage = cpt.trackedDamageTaken * 2f,
+                baseForce = 1000f,
+                bonusForce = Vector3.up * 500f,
+                crit = self.outer.commonComponents.characterBody.RollCrit(),
+                damageColorIndex = default,
+                damageType = DamageType.Stun1s,
+                falloffModel = BlastAttack.FalloffModel.Linear,
+                losType = BlastAttack.LoSType.None,
+                position = self.outer.commonComponents.transform.position,
+                procCoefficient = 1f,
+                radius = 20f,
+                teamIndex = self.outer.commonComponents.teamComponent?.teamIndex ?? default
+            }.Fire();
+            EffectManager.SpawnEffect(Resources.Load<GameObject>("prefabs/effects/omnieffect/OmniExplosionVFX"),
+                new EffectData {
+                    origin = self.outer.commonComponents.transform.position,
+                    scale = 20f
+                }, true);
+
+            cpt.enabled = false;
+        }
+
+        public class ScepterToolbotDashTracker : MonoBehaviour {
+            public float trackedDamageTaken;
+        }
+    }
+}

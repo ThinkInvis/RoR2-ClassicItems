@@ -66,6 +66,9 @@
       <HintPath>..\REF\Managed\UnityEngine.Networking.dll</HintPath>
       <Private>false</Private>
     </Reference>
+    <Reference Include="UnityEngine.ParticleSystemModule">
+      <HintPath>lib\UnityEngine.ParticleSystemModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.PhysicsModule">
       <HintPath>..\REF\Managed\UnityEngine.PhysicsModule.dll</HintPath>
       <Private>false</Private>
