@@ -115,11 +115,11 @@ namespace ThinkInvisible.ClassicItems {
                 if(!Util.CheckRoll(Snowglobe.instance.procRate)) continue;
                 var ssoh = tcpt.gameObject.GetComponent<SetStateOnHurt>();
                 var hcpt = tcpt.gameObject.GetComponent<HealthComponent>();
-                if(ssoh.canBeFrozen && ssoh) {
+                if(ssoh?.canBeFrozen == true) {
                     hcpt.body.AddTimedBuff(ClassicItemsPlugin.freezeBuff, Snowglobe.instance.freezeTime);
                     ssoh.SetFrozen(Snowglobe.instance.freezeTime);
                 }
-                if(((ssoh?.canBeFrozen ?? false) || Snowglobe.instance.slowUnfreezable) && hcpt) {
+                if((ssoh?.canBeFrozen == true || Snowglobe.instance.slowUnfreezable) && hcpt) {
                     hcpt.body.AddTimedBuff(BuffIndex.Slow60, Snowglobe.instance.slowTime);
                 }
 			}

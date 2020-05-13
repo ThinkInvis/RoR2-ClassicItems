@@ -40,7 +40,7 @@ namespace ThinkInvisible.ClassicItems {
             On.RoR2.SetStateOnHurt.OnTakeDamageServer -= On_SSOHOnTakeDamageServer;
         }
 
-        private void On_SSOHOnTakeDamageServer(On.RoR2.SetStateOnHurt.orig_OnTakeDamageServer orig, SetStateOnHurt self, RoR2.DamageReport damageReport) {
+        private void On_SSOHOnTakeDamageServer(On.RoR2.SetStateOnHurt.orig_OnTakeDamageServer orig, SetStateOnHurt self, DamageReport damageReport) {
             orig(self, damageReport);
             int icnt = GetCount(damageReport.attackerMaster);
             if(icnt < 1) return;
