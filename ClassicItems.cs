@@ -291,8 +291,9 @@ namespace ThinkInvisible.ClassicItems {
 
             foreach(ItemBoilerplate bpl in masterItemList) {
                 PickupIndex pind;
-                if(bpl is Equipment) pind = PickupCatalog.FindPickupIndex(((Equipment)bpl).regIndex);
-                else pind = PickupCatalog.FindPickupIndex(((Item)bpl).regIndex);
+                if(bpl is Equipment equipment) pind = PickupCatalog.FindPickupIndex(equipment.regIndex);
+                else if(bpl is Item item) pind = PickupCatalog.FindPickupIndex(item.regIndex);
+                else continue;
                 var pickup = PickupCatalog.GetPickupDef(pind);
                 pickup.displayPrefab = pickup.displayPrefab.InstantiateClone("CI" + bpl.itemCodeName + "PickupCardPrefab", false);
             }
