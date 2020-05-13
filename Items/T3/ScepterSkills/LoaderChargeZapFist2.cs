@@ -21,7 +21,7 @@ namespace ThinkInvisible.ClassicItems {
             var desctoken = "CLASSICITEMS_SCEPLOADER_CHARGEZAPFISTDESC";
             var namestr = "Thundercrash";
             LanguageAPI.Add(nametoken, namestr);
-            LanguageAPI.Add(desctoken, Language.GetString(oldDef.skillDescriptionToken) + "\n<color=#d299ff>SCEPTER: Triple radius, triple lightning bolts. AoE is omnidirectional.</color>");
+            LanguageAPI.Add(desctoken, Language.GetString(oldDef.skillDescriptionToken) + "\n<color=#d299ff>SCEPTER: Triple omnidirectional lightning bolts.</color>");
 
             myDef.skillName = namestr;
             myDef.skillNameToken = nametoken;
@@ -34,7 +34,6 @@ namespace ThinkInvisible.ClassicItems {
             var proxb = projReplacer.GetComponent<ProjectileProximityBeamController>();
             proxb.attackFireCount *= 3;
             proxb.maxAngleFilter = 180f;
-            proxb.attackRange *= 3f;
             projReplacer.transform.Find("Effect").localScale *= 3f;
 
             ProjectileCatalog.getAdditionalEntries += (list) => list.Add(projReplacer);
