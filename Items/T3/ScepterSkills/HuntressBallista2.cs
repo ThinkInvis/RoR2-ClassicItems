@@ -19,7 +19,7 @@ namespace ThinkInvisible.ClassicItems {
             var desctoken = "CLASSICITEMS_SCEPHUNTRESS_BALLISTADESC";
             var namestr = "Rabauld";
             LanguageAPI.Add(nametoken, namestr);
-            LanguageAPI.Add(desctoken, Language.GetString(oldDef.skillDescriptionToken) + "\n<color=#d299ff>SCEPTER: Quadruple shot count and fire rate, half damage. Every shot has intense bonus knockback.</color>");
+            LanguageAPI.Add(desctoken, Language.GetString(oldDef.skillDescriptionToken) + "\n<color=#d299ff>SCEPTER: Quadruple shot count and fire rate, half damage.</color>");
 
             myDef.skillName = namestr;
             myDef.skillNameToken = nametoken;
@@ -49,7 +49,6 @@ namespace ThinkInvisible.ClassicItems {
         private static void On_FireArrowSnipeModify(On.EntityStates.Huntress.Weapon.FireArrowSnipe.orig_ModifyBullet orig, EntityStates.Huntress.Weapon.FireArrowSnipe self, BulletAttack bulletAttack) {
             orig(self, bulletAttack);
             if(Scepter.instance.GetCount(self.outer.commonComponents.characterBody) > 0) {
-                bulletAttack.force *= 4f;
                 bulletAttack.damage /= 2f;
             }
         }
