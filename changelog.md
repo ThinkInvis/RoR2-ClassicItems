@@ -1,5 +1,10 @@
 ﻿# ClassicItems Changelog
 
+**4.1.2**
+
+- Ancient Scepter: Non-upgraded Eviscerate no longer resets duration on kill.
+- Ancient Scepter: Fixed several other cases where having negative item count could cause skills to act like their scepter replacements.
+
 **4.1.1**
 
 - Ancient Scepter: Skill lookup is now more stable. It should no longer replace the wrong skill if another mod switches slots around, e.g. by adding a new passive variant.

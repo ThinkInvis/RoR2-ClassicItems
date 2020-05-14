@@ -106,6 +106,11 @@ For details and instructions on applying these, see: https://github.com/ThinkInv
 
 The 5 latest updates are listed below. For a full changelog, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/changelog.md
 
+**4.1.2**
+
+- Ancient Scepter: Non-upgraded Eviscerate no longer resets duration on kill.
+- Ancient Scepter: Fixed several other cases where having negative item count could cause skills to act like their scepter replacements.
+
 **4.1.1**
 
 - Ancient Scepter: Skill lookup is now more stable. It should no longer replace the wrong skill if another mod switches slots around, e.g. by adding a new passive variant.
@@ -138,10 +143,3 @@ Late notes as of next version:
 - Fixed Snake Eyes not working in multiplayer, and not applying to enemies if in AffectAll mode.
 - Added a few failsafes to Boxing Gloves and Snowglobe, which were possibly conflicting with other mods.
 - Beating Embryo now exposes a Compat_Register method for stopping default proc behavior on modded equipments.
-
-**3.0.1**
-
-- Fixed Fire Shield not having a pickup model.
-- Beating Embryo now doubles the uptime of the display model of Ocular HUD.
-- Behind-the-scenes: item instantiation is MUCH easier to keep track of now.
-- Fixed internal item names not being set up correctly. This will reset logbook entries again (hopefully for the last time).
