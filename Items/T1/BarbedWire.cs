@@ -60,13 +60,13 @@ namespace ThinkInvisible.ClassicItems {
 		}
 
         protected override void LoadBehavior() {
-            On.RoR2.CharacterBody.OnInventoryChanged += On_CBOnInventoryChanged;
+            On.RoR2.CharacterBody.RecalculateStats += On_CBRecalcStats;
 			if(inclDeploys)
 				On.RoR2.CharacterMaster.AddDeployable += On_CMAddDeployable;
 			ConfigEntryChanged += Evt_ConfigEntryChanged;
         }
 		protected override void UnloadBehavior() {
-            On.RoR2.CharacterBody.OnInventoryChanged -= On_CBOnInventoryChanged;
+            On.RoR2.CharacterBody.RecalculateStats -= On_CBRecalcStats;
 			On.RoR2.CharacterMaster.AddDeployable -= On_CMAddDeployable;
 			ConfigEntryChanged -= Evt_ConfigEntryChanged;
 		}
@@ -85,7 +85,7 @@ namespace ThinkInvisible.ClassicItems {
 			if(body) updateBarbedWard(body);
 		}
 
-        private void On_CBOnInventoryChanged(On.RoR2.CharacterBody.orig_OnInventoryChanged orig, CharacterBody self) {
+        private void On_CBRecalcStats(On.RoR2.CharacterBody.orig_RecalculateStats orig, CharacterBody self) {
 			orig(self);
 
 			if(!NetworkServer.active || (!inclDeploys && self.master?.GetComponent<Deployable>())) return;
@@ -98,7 +98,8 @@ namespace ThinkInvisible.ClassicItems {
 			var icnt = GetCount(body);
 			var idmg = body.damage;
 			if(inclDeploys) idmg += body.master?.GetComponent<Deployable>()?.ownerMaster?.GetBody()?.damage ?? 0;
-			if(icnt == 0 || idmg == 0) {
+			Debug.Log(body.name + ": " + idmg + "/" + icnt);
+			if(icnt < 1 || idmg <= 0) {
 				if(cpt) UnityEngine.Object.Destroy(cpt);
 			} else {
 				if(!cpt) {
