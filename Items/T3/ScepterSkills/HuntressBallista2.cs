@@ -53,7 +53,7 @@ namespace ThinkInvisible.ClassicItems {
 
         private static void On_FireArrowSnipeFire(On.EntityStates.Huntress.Weapon.FireArrowSnipe.orig_FireBullet orig, FireArrowSnipe self, Ray aimRay) {
             orig(self, aimRay);
-            if(Scepter.instance.GetCount(self.outer.commonComponents.characterBody) == 0) return;
+            if(Scepter.instance.GetCount(self.outer.commonComponents.characterBody) < 1) return;
 
             for(var i = 1; i < 6; i++) {
                 var sprRay = new Ray(aimRay.origin, aimRay.direction);

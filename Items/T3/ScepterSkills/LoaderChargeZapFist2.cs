@@ -50,7 +50,7 @@ namespace ThinkInvisible.ClassicItems {
         
         private static void On_BaseChargeFistEnter(On.EntityStates.Loader.BaseChargeFist.orig_OnEnter orig, BaseChargeFist self) {
             orig(self);
-            if(!(self is ChargeZapFist) || Scepter.instance.GetCount(self.outer.commonComponents.characterBody) == 0) return;
+            if(!(self is ChargeZapFist) || Scepter.instance.GetCount(self.outer.commonComponents.characterBody) < 1) return;
 			var mTsf = self.outer.commonComponents.modelLocator?.modelTransform?.GetComponent<ChildLocator>()?.FindChild(BaseChargeFist.chargeVfxChildLocatorName);
             EffectManager.SpawnEffect(Resources.Load<GameObject>("prefabs/effects/MageLightningBombExplosion"),
                 new EffectData {
@@ -66,7 +66,7 @@ namespace ThinkInvisible.ClassicItems {
             if(ilFound) {
                 c.Emit(OpCodes.Ldarg_0);
                 c.EmitDelegate<Func<GameObject, SwingZapFist, GameObject>>((origProj, state) => {
-                    if(Scepter.instance.GetCount(state.outer.commonComponents.characterBody) == 0) return origProj;
+                    if(Scepter.instance.GetCount(state.outer.commonComponents.characterBody) < 1) return origProj;
 			        var mTsf = state.outer.commonComponents.modelLocator?.modelTransform?.GetComponent<ChildLocator>()?.FindChild(state.swingEffectMuzzleString);
                     EffectManager.SpawnEffect(Resources.Load<GameObject>("prefabs/effects/ImpactEffects/LightningStrikeImpact"),
                         new EffectData {

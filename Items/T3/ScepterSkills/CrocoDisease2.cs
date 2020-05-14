@@ -55,7 +55,7 @@ namespace ThinkInvisible.ClassicItems {
 
         private static void On_LightningOrbArrival(On.RoR2.Orbs.LightningOrb.orig_OnArrival orig, LightningOrb self) {
             orig(self);
-            if(self.lightningType != LightningOrb.LightningType.CrocoDisease || Scepter.instance.GetCount(self.attacker?.GetComponent<CharacterBody>()) == 0) return;
+            if(self.lightningType != LightningOrb.LightningType.CrocoDisease || Scepter.instance.GetCount(self.attacker?.GetComponent<CharacterBody>()) < 1) return;
             if(!self.target || !self.target.healthComponent) return;
 
             var cpt = self.target.healthComponent.gameObject.GetComponentInChildren<DiseaseWard>()?.gameObject;

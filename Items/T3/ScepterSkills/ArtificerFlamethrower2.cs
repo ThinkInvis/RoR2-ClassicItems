@@ -87,7 +87,7 @@ namespace ThinkInvisible.ClassicItems {
             if(ilFound) {
                 c.Emit(OpCodes.Ldarg_0);
                 c.EmitDelegate<Func<BulletAttack,EntityStates.Mage.Weapon.Flamethrower,BulletAttack>>((origAttack,state) => {
-                    if(Scepter.instance.GetCount(state.outer.commonComponents.characterBody) == 0) return origAttack;
+                    if(Scepter.instance.GetCount(state.outer.commonComponents.characterBody) < 1) return origAttack;
                     origAttack.hitCallback = (ref BulletAttack.BulletHit h) => {
                         ProjectileManager.instance.FireProjectile(new FireProjectileInfo {
                             crit = false,

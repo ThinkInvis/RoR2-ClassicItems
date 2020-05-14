@@ -50,7 +50,7 @@ namespace ThinkInvisible.ClassicItems {
         private static void On_ToolbotDashEnter(On.EntityStates.Toolbot.ToolbotDash.orig_OnEnter orig, EntityStates.Toolbot.ToolbotDash self) {
             orig(self);
             if(!self.outer.commonComponents.characterBody) return;
-            if(Scepter.instance.GetCount(self.outer.commonComponents.characterBody) == 0) return;
+            if(Scepter.instance.GetCount(self.outer.commonComponents.characterBody) < 1) return;
             var cpt = self.outer.commonComponents.characterBody.GetComponent<ScepterToolbotDashTracker>();
             if(!cpt) cpt = self.outer.commonComponents.characterBody.gameObject.AddComponent<ScepterToolbotDashTracker>();
             cpt.enabled = true;
@@ -61,7 +61,7 @@ namespace ThinkInvisible.ClassicItems {
         private static void On_ToolbotDashExit(On.EntityStates.Toolbot.ToolbotDash.orig_OnExit orig, EntityStates.Toolbot.ToolbotDash self) {
             orig(self);
             var cpt = self.outer.commonComponents.characterBody.GetComponent<ScepterToolbotDashTracker>();
-            if(!cpt) return;
+            if(!cpt || !cpt.enabled) return;
             new BlastAttack {
                 attacker = self.outer.commonComponents.characterBody.gameObject,
                 attackerFiltering = AttackerFiltering.NeverHit,
