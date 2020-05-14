@@ -6,6 +6,10 @@
 - Ancient Scepter/Gale-Force: now works as described, instead of only firing one charge at a time.
 - Ancient Scepter/Rabauld: now fires bursts of 6 shots with three-tenths damage on all but the first, instead of having 4x manual fire rate and count but half damage.
 
+Late notes as of next version:
+
+- Public API change: Parameter `skillSlot` in method `Scepter.RegisterScepterSlot` now takes a RoR2.SkillSlot instead of an int.
+
 **4.1.0**
 
 - ADDED ITEM: Ancient Scepter! Has skill overrides for ALL playable characters, and for each variant per chosen slot, but likely needs a balance pass or two.
