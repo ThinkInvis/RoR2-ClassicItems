@@ -36,7 +36,7 @@ For nostalgic purposes only. Here Be Dragons who hoard balance issues, because t
 #### Tier 3
 - Ancient Scepter: "Upgrades your 4th skill."
     - Commando: Suppressive Fire > Death Blossom (2x shots, fire rate, and accuracy)  -OR-  Grenade > Carpet Bomb (0.5x damage, throw a spread of 8 at once)
-    - Huntress: Arrow Rain > Burning Rain (1.5x duration and radius, burns)  -OR-  Ballista > Rabauld (4x shots and fire rate; 0.5x damage)
+    - Huntress: Arrow Rain > Burning Rain (1.5x duration and radius, burns)  -OR-  Ballista > Rabauld (5 extra weaker projectiles per shot, for 2.5x TOTAL damage)
     - MUL-T: Transport Mode > Breach Mode (0.5x incoming damage, 2x duration; after stopping, retaliate with a stunning explosion for 100% of unmodified damage taken)
     - Engineer: TR12 Gauss Auto-Turret > TR12-C Gauss Compact (+1 stock, +1 placed turret cap)  -OR-  TR58 Carbonizer Turret > TR58-C Carbonizer Mini (+2 stock, +2 placed turret cap)
     - Artificer: Flamethrower > Dragon's Breath (hits leave lingering fire clouds)  -OR-  Ion Surge > Antimatter Surge (2x damage, 4x radius)
@@ -106,6 +106,12 @@ For details and instructions on applying these, see: https://github.com/ThinkInv
 
 The 5 latest updates are listed below. For a full changelog, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/changelog.md
 
+**4.1.1**
+
+- Ancient Scepter: Skill lookup is now more stable. It should no longer replace the wrong skill if another mod switches slots around, e.g. by adding a new passive variant.
+- Ancient Scepter/Gale-Force: now works as described, instead of only firing one charge at a time.
+- Ancient Scepter/Rabauld: now fires bursts of 6 shots with three-tenths damage on all but the first, instead of having 4x manual fire rate and count but half damage.
+
 **4.1.0**
 
 - ADDED ITEM: Ancient Scepter! Has skill overrides for ALL playable characters, and for each variant per chosen slot, but likely needs a balance pass or two.
@@ -135,13 +141,3 @@ The 5 latest updates are listed below. For a full changelog, see: https://github
 - Beating Embryo now doubles the uptime of the display model of Ocular HUD.
 - Behind-the-scenes: item instantiation is MUCH easier to keep track of now.
 - Fixed internal item names not being set up correctly. This will reset logbook entries again (hopefully for the last time).
-
-**3.0.0**
-
-- ADDED ITEMS: Snowglobe, Spikestrip, Gigantic Amethyst, Fire Shield!
-- Fancy new textures for item pickup models! These also use meshes instead of sprites and should look better in general.
-- New disabled-by-default option to replace vanilla item pickup models with trading cards too.
-- Beating Embryo now works on Milky Chrysalis (2x duration), Eccentric Vase (2x speed), Radar Scanner (2x duration), and Recycler (2x count).
-- Skeleton Key and Captain's Brooch will no longer work in the Bazaar (fixes compatibility with BiggerBazaar).
-- Fixed freeze debuff not having an icon.
-- Added a console command for debugging: evo_setitem adds/removes items in the Artifact of Evolution item pool.
