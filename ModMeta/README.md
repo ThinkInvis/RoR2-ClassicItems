@@ -110,6 +110,7 @@ The 5 latest updates are listed below. For a full changelog, see: https://github
 
 - Ancient Scepter: Non-upgraded Eviscerate no longer resets duration on kill.
 - Ancient Scepter: Fixed several other cases where having negative item count could cause skills to act like their scepter replacements.
+- Gigantic Amethyst: restored cooldown to 8s from incorrect 45s.
 
 **4.1.1**
 
