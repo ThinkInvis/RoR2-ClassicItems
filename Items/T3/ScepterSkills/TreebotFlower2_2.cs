@@ -6,6 +6,7 @@ using RoR2;
 using R2API;
 using System.Collections.Generic;
 using EntityStates.Treebot.TreebotFlower;
+using RoR2.Projectile;
 
 namespace ThinkInvisible.ClassicItems {
     public static class TreebotFlower2_2 {
@@ -39,8 +40,9 @@ namespace ThinkInvisible.ClassicItems {
         }
         
         private static void On_TreebotFlower2Enter(On.EntityStates.Treebot.TreebotFlower.TreebotFlower2Projectile.orig_OnEnter orig, TreebotFlower2Projectile self) {
+			var owner = self.outer.GetComponent<ProjectileController>()?.owner;
             var origRadius = TreebotFlower2Projectile.radius;
-            if(Scepter.instance.GetCount(self.GetFieldValue<GameObject>("owner")?.GetComponent<CharacterBody>()) > 0) TreebotFlower2Projectile.radius *= 2f;
+            if(Scepter.instance.GetCount(owner.GetComponent<CharacterBody>()) > 0) TreebotFlower2Projectile.radius *= 2f;
             orig(self);
             TreebotFlower2Projectile.radius = origRadius;
         }
