@@ -46,6 +46,9 @@ namespace ThinkInvisible.ClassicItems {
 
         [AutoItemConfig("If true, all clovers across all living players are counted towards item drops. If false, only the killer's items count.")]
         public bool globalStack {get;private set;} = true;
+        
+		[AutoItemConfig("If true, deployables (e.g. Engineer turrets) with 56 Leaf Clover will count towards globalStack.")]
+        public bool inclDeploys {get;private set;} = false;
 
         protected override string NewLangName(string langid = null) => displayName;        
         protected override string NewLangPickup(string langid = null) => "Elite mobs have a chance to drop items.";        
@@ -71,6 +74,7 @@ namespace ThinkInvisible.ClassicItems {
             int numberOfClovers = 0;
             if(globalStack)
                 foreach(CharacterMaster chrm in AliveList()) {
+			        if(!inclDeploys && chrm.GetComponent<Deployable>()) continue;
                     numberOfClovers += chrm?.inventory?.GetItemCount(regIndex) ?? 0;
                 }
             else
