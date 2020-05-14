@@ -18,11 +18,28 @@ namespace ThinkInvisible.ClassicItems {
         protected override string NewLangPickup(string langid = null) => "Upgrades one of your skills.";
         protected override string NewLangDesc(string langid = null) => "While held, one of your selected character's <style=cIsUtility>skills</style> <style=cStack>(unique per character)</style> becomes a <style=cIsUtility>more powerful version</style>.";
         protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        
+        [AutoItemConfig("If true, TR12-C Gauss Compact will recharge faster to match the additional stock.")]
+        public bool engiTurretAdjustCooldown {get; private set;} = false;
 
-        public SkillDef replCommandoSuppFire {get; private set;}
-        public SkillDef replCommandoGrenade {get; private set;}
+        [AutoItemConfig("If true, TR58-C Carbonizer Mini will recharge faster to match the additional stock.")]
+        public bool engiWalkerAdjustCooldown {get; private set;} = false;
 
         public Scepter() {
+            ConfigEntryChanged += (sender, args) => {
+                switch(args.target.boundProperty.Name) {
+                    case nameof(engiTurretAdjustCooldown):
+                        EngiTurret2.myDef.baseRechargeInterval = EngiTurret2.oldDef.baseRechargeInterval * (((bool)args.newValue) ? 2f/3f : 1f);
+                        GlobalUpdateSkillDef(EngiTurret2.myDef);
+                        break;
+                    case nameof(engiWalkerAdjustCooldown):
+                        EngiWalker2.myDef.baseRechargeInterval = EngiWalker2.oldDef.baseRechargeInterval / (((bool)args.newValue) ? 2f : 1f);
+                        GlobalUpdateSkillDef(EngiWalker2.myDef);
+                        break;
+                    default:
+                        break;
+                }
+            };
 
             onAttrib += (tokenIdent, namePrefix) => {
 			    Language.SetCurrentLanguage(Language.currentLanguage);

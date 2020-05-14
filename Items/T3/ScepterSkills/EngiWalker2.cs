@@ -7,8 +7,10 @@ using RoR2;
 namespace ThinkInvisible.ClassicItems {
     public static class EngiWalker2 {
         public static SkillDef myDef {get; private set;}
+        internal static SkillDef oldDef {get; private set;}
+
         internal static void SetupAttributes() {
-            var oldDef = Resources.Load<SkillDef>("skilldefs/engibody/EngiBodyPlaceWalkerTurret");
+            oldDef = Resources.Load<SkillDef>("skilldefs/engibody/EngiBodyPlaceWalkerTurret");
             myDef = CloneSkillDef(oldDef);
 
             var nametoken = "CLASSICITEMS_SCEPENGI_WALKERNAME";
