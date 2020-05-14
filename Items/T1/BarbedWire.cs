@@ -98,7 +98,6 @@ namespace ThinkInvisible.ClassicItems {
 			var icnt = GetCount(body);
 			var idmg = body.damage;
 			if(inclDeploys) idmg += body.master?.GetComponent<Deployable>()?.ownerMaster?.GetBody()?.damage ?? 0;
-			Debug.Log(body.name + ": " + idmg + "/" + icnt);
 			if(icnt < 1 || idmg <= 0) {
 				if(cpt) UnityEngine.Object.Destroy(cpt);
 			} else {
