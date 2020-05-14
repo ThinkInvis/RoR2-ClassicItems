@@ -39,7 +39,8 @@ namespace ThinkInvisible.ClassicItems {
         }
         private static void Evt_GEMOnCharacterDeathGlobal(DamageReport rep) {
             var attackerState = rep.attackerBody?.GetComponent<EntityStateMachine>()?.state;
-            if(attackerState is Evis && Scepter.instance.GetCount(rep.attackerBody) > 0)
+            if(attackerState is Evis && Scepter.instance.GetCount(rep.attackerBody) > 0
+                && Vector3.Distance(rep.attackerBody.transform.position, rep.victim.transform.position) < Evis.maxRadius)
                 typeof(Evis).GetFieldCached("stopwatch").SetValue(attackerState, 0f);
         }
 
