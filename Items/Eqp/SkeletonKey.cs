@@ -12,7 +12,7 @@ namespace ThinkInvisible.ClassicItems {
         [AutoItemConfig("Radius around the user to search for chests to open when using Skeleton Key.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
         public float radius {get;private set;} = 50f;
 
-		public override float eqpCooldown{get;} = 90f;        
+		public override float eqpCooldown {get;protected set;} = 90f;        
         protected override string NewLangName(string langid = null) => displayName;        
         protected override string NewLangPickup(string langid = null) => "Open all nearby chests.";        
         protected override string NewLangDesc(string langid = null) => "Opens all <style=cIsUtility>chests</style> within <style=cIsUtility>" + radius.ToString("N0") + " m</style> for <style=cIsUtility>no cost</style>.";        

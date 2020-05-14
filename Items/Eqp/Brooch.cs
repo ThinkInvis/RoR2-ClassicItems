@@ -12,7 +12,7 @@ namespace ThinkInvisible.ClassicItems {
     public class Brooch : Equipment<Brooch> {
         public override string displayName => "Captain's Brooch";
 
-        public override float eqpCooldown => 135f;
+        public override float eqpCooldown {get;protected set;} = 135f;
 
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
         [AutoItemConfig("Multiplier for additional cost of chests spawned by Captain's Brooch.", AutoItemConfigFlags.None, 0f, float.MaxValue)]

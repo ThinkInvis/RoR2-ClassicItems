@@ -7,7 +7,7 @@ namespace ThinkInvisible.ClassicItems {
     public class Amethyst : Equipment<Amethyst> {
         public override string displayName => "Gigantic Amethyst";
 
-        public override float eqpCooldown => 8f;
+        public override float eqpCooldown {get;protected set;} = 8f;
 
         protected override string NewLangName(string langid = null) => displayName;
         protected override string NewLangPickup(string langid = null) => "Resets all your cooldowns.";
