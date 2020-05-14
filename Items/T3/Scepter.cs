@@ -43,21 +43,21 @@ namespace ThinkInvisible.ClassicItems {
                 ToolbotDash2.SetupAttributes();
                 TreebotFlower2_2.SetupAttributes();
 
-                RegisterScepterSkill(ArtificerFlamethrower2.myDef, "MageBody", 3, 0);
-                RegisterScepterSkill(ArtificerFlyUp2.myDef, "MageBody", 3, 1);
-                RegisterScepterSkill(CommandoBarrage2.myDef, "CommandoBody", 3, 0);
-                RegisterScepterSkill(CommandoGrenade2.myDef, "CommandoBody", 3, 1);
-                RegisterScepterSkill(CrocoDisease2.myDef, "CrocoBody", 4, 0);
-                RegisterScepterSkill(EngiTurret2.myDef, "EngiBody", 3, 0);
-                RegisterScepterSkill(EngiWalker2.myDef, "EngiBody", 3, 1);
-                RegisterScepterSkill(HuntressRain2.myDef, "HuntressBody", 3, 0);
-                RegisterScepterSkill(HuntressBallista2.myDef, "HuntressBody", 3, 1);
-                RegisterScepterSkill(LoaderChargeFist2.myDef, "LoaderBody", 2, 0);
-                RegisterScepterSkill(LoaderChargeZapFist2.myDef, "LoaderBody", 2, 1);
-                RegisterScepterSkill(MercEvis2.myDef, "MercBody", 3, 0);
-                RegisterScepterSkill(MercEvisProjectile2.myDef, "MercBody", 3, 1);
-                RegisterScepterSkill(ToolbotDash2.myDef, "ToolbotBody", 3, 0);
-                RegisterScepterSkill(TreebotFlower2_2.myDef, "TreebotBody", 3, 0);
+                RegisterScepterSkill(ArtificerFlamethrower2.myDef, "MageBody", SkillSlot.Special, 0);
+                RegisterScepterSkill(ArtificerFlyUp2.myDef, "MageBody", SkillSlot.Special, 1);
+                RegisterScepterSkill(CommandoBarrage2.myDef, "CommandoBody", SkillSlot.Special, 0);
+                RegisterScepterSkill(CommandoGrenade2.myDef, "CommandoBody", SkillSlot.Special, 1);
+                RegisterScepterSkill(CrocoDisease2.myDef, "CrocoBody", SkillSlot.Special, 0);
+                RegisterScepterSkill(EngiTurret2.myDef, "EngiBody", SkillSlot.Special, 0);
+                RegisterScepterSkill(EngiWalker2.myDef, "EngiBody", SkillSlot.Special, 1);
+                RegisterScepterSkill(HuntressRain2.myDef, "HuntressBody", SkillSlot.Special, 0);
+                RegisterScepterSkill(HuntressBallista2.myDef, "HuntressBody", SkillSlot.Special, 1);
+                RegisterScepterSkill(LoaderChargeFist2.myDef, "LoaderBody", SkillSlot.Utility, 0);
+                RegisterScepterSkill(LoaderChargeZapFist2.myDef, "LoaderBody", SkillSlot.Utility, 1);
+                RegisterScepterSkill(MercEvis2.myDef, "MercBody", SkillSlot.Special, 0);
+                RegisterScepterSkill(MercEvisProjectile2.myDef, "MercBody", SkillSlot.Special, 1);
+                RegisterScepterSkill(ToolbotDash2.myDef, "ToolbotBody", SkillSlot.Utility, 0);
+                RegisterScepterSkill(TreebotFlower2_2.myDef, "TreebotBody", SkillSlot.Special, 0);
             };
         }
 
@@ -75,6 +75,7 @@ namespace ThinkInvisible.ClassicItems {
             LoaderChargeFist2.LoadBehavior();
             LoaderChargeZapFist2.LoadBehavior();
             MercEvis2.LoadBehavior();
+            MercEvisProjectile2.LoadBehavior();
             ToolbotDash2.LoadBehavior();
             TreebotFlower2_2.LoadBehavior();
         }
@@ -98,6 +99,7 @@ namespace ThinkInvisible.ClassicItems {
             LoaderChargeFist2.UnloadBehavior();
             LoaderChargeZapFist2.UnloadBehavior();
             MercEvis2.UnloadBehavior();
+            MercEvisProjectile2.UnloadBehavior();
             ToolbotDash2.UnloadBehavior();
             TreebotFlower2_2.UnloadBehavior();
         }
@@ -116,19 +118,15 @@ namespace ThinkInvisible.ClassicItems {
 
         private class ScepterReplacer {
             public string bodyName;
-            public int slotIndex;
+            public SkillSlot slotIndex;
             public int variantIndex;
             public SkillDef replDef;
         }
 
         private readonly List<ScepterReplacer> scepterReplacers = new List<ScepterReplacer>();
-        private readonly Dictionary<string, int> scepterSlots = new Dictionary<string, int>();
+        private readonly Dictionary<string, SkillSlot> scepterSlots = new Dictionary<string, SkillSlot>();
 
-        public bool RegisterScepterSkill(SkillDef replacingDef, string targetBodyName, int targetSlot, int targetVariant) {
-            if(targetSlot > 4 || targetSlot < 0) {
-                Debug.LogError("ClassicItems: Can't register a scepter skill to invalid slot index " + targetSlot);
-                return false;
-            }
+        public bool RegisterScepterSkill(SkillDef replacingDef, string targetBodyName, SkillSlot targetSlot, int targetVariant) {
             if(targetVariant < 0) {
                 Debug.LogError("ClassicItems: Can't register a scepter skill to negative variant index");
                 return false;
@@ -153,10 +151,11 @@ namespace ThinkInvisible.ClassicItems {
 
                 var repl = scepterReplacers.FindAll(x => x.bodyName == bodyName);
                 if(repl.Count > 0) {
-                    int targetSlot = scepterSlots[bodyName];
-                    var targetSkill = self.skillLocator.GetSkillAtIndex(targetSlot);
+                    SkillSlot targetSlot = scepterSlots[bodyName];
+                    var targetSkill = self.skillLocator.GetSkill(targetSlot);
+                    var targetSlotIndex = self.skillLocator.GetSkillSlotIndex(targetSkill);
                     if(!targetSkill) return;
-                    var targetVariant = self.master.loadout.bodyLoadoutManager.GetSkillVariant(self.bodyIndex, targetSlot);
+                    var targetVariant = self.master.loadout.bodyLoadoutManager.GetSkillVariant(self.bodyIndex, targetSlotIndex);
                     var replVar = repl.Find(x => x.variantIndex == targetVariant);
                     if(replVar == null) return;
                     if(GetCount(self) > 0 && !forceOff)
