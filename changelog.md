@@ -1,5 +1,14 @@
 ﻿# ClassicItems Changelog
 
+**4.1.3**
+
+- Barbed Wire: Fixed aura being removed after stage changes.
+- 56 Leaf Clover: Now has a disabled-by-default option to allow deployables to count towards global Clover stacks.
+- Ancient Scepter/Massacre: Now filters kills by maximum Eviscerate range. Kills farther than this range will not refresh Massacre duration.
+- Ancient Scepter/Chaotic Growth: Fixed range indicator's radius not being changed.
+- Ancient Scepter/both Engi skills: Now has a disabled-by-default option to decrease cooldown to match the additional stock (such that total recharge remains unchanged).
+- (From TILER2 update to v1.1.1) All equipments now have configurable cooldown.
+
 **4.1.2**
 
 - Ancient Scepter: Non-upgraded Eviscerate no longer resets duration on kill.
@@ -14,7 +23,7 @@
 
 Late notes as of next version:
 
-- Public API change: Parameter `skillSlot` in method `Scepter.RegisterScepterSlot` now takes a RoR2.SkillSlot instead of an int.
+- Public API change: Parameter `skillSlot` in method `Scepter.RegisterScepterSkill` now takes a RoR2.SkillSlot instead of an int.
 
 **4.1.0**
 

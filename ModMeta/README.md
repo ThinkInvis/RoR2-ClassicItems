@@ -106,6 +106,15 @@ For details and instructions on applying these, see: https://github.com/ThinkInv
 
 The 5 latest updates are listed below. For a full changelog, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/changelog.md
 
+**4.1.3**
+
+- Barbed Wire: Fixed aura being removed after stage changes.
+- 56 Leaf Clover: Now has a disabled-by-default option to allow deployables to count towards global Clover stacks.
+- Ancient Scepter/Massacre: Now filters kills by maximum Eviscerate range. Kills farther than this range will not refresh Massacre duration.
+- Ancient Scepter/Chaotic Growth: Fixed range indicator's radius not being changed.
+- Ancient Scepter/both Engi skills: Now has a disabled-by-default option to decrease cooldown to match the additional stock (such that total recharge remains unchanged).
+- (From TILER2 update to v1.1.1) All equipments now have configurable cooldown.
+
 **4.1.2**
 
 - Ancient Scepter: Non-upgraded Eviscerate no longer resets duration on kill.
@@ -120,7 +129,7 @@ The 5 latest updates are listed below. For a full changelog, see: https://github
 
 Late notes as of next version:
 
-- Public API change: Parameter `skillSlot` in method `Scepter.RegisterScepterSlot` now takes a RoR2.SkillSlot instead of an int.
+- Public API change: Parameter `skillSlot` in method `Scepter.RegisterScepterSkill` now takes a RoR2.SkillSlot instead of an int.
 
 **4.1.0**
 
@@ -133,14 +142,3 @@ Late notes as of next version:
 - Added Old Box to the default AI blacklist.
 - Several cosmetic fixes.
 - Config mismatches are now automatically resolved (TILER2 NetConfig module).
-
-**3.1.0**
-
-- ADDED ITEMS: Pillaged Gold, Prescriptions, Safeguard Lantern, Old Box!
-- Pickup models now have dynamically generated name/description text instead of an unreadable blur. This can be disabled for performance on low-end systems.
-- Pickup models now also have a modified spin animation (so the new text stays still long enough to read).
-- Improved appearance of pickup models in general.
-- Lunar Equipment cards now look different from normal Equipment.
-- Fixed Snake Eyes not working in multiplayer, and not applying to enemies if in AffectAll mode.
-- Added a few failsafes to Boxing Gloves and Snowglobe, which were possibly conflicting with other mods.
-- Beating Embryo now exposes a Compat_Register method for stopping default proc behavior on modded equipments.
