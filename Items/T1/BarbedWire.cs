@@ -6,6 +6,7 @@ using R2API;
 using RoR2.Orbs;
 using TILER2;
 using static TILER2.MiscUtil;
+using System.Collections.Generic;
 
 namespace ThinkInvisible.ClassicItems {
     public class BarbedWire : Item<BarbedWire> {
@@ -168,10 +169,13 @@ namespace ThinkInvisible.ClassicItems {
 
 		[Server]
 		private void ServerProc() {
-			var tind = TeamIndex.Monster | TeamIndex.Neutral | TeamIndex.Player;
-			tind &= ~teamFilter.teamIndex;
-			ReadOnlyCollection<TeamComponent> teamMembers = TeamComponent.GetTeamMembers(tind);
+			List<TeamComponent> teamMembers = new List<TeamComponent>();
+			bool isFF = FriendlyFireManager.friendlyFireMode != FriendlyFireManager.FriendlyFireMode.Off;
+			if(isFF || teamFilter.teamIndex != TeamIndex.Monster) teamMembers.AddRange(TeamComponent.GetTeamMembers(TeamIndex.Monster));
+			if(isFF || teamFilter.teamIndex != TeamIndex.Neutral) teamMembers.AddRange(TeamComponent.GetTeamMembers(TeamIndex.Neutral));
+			if(isFF || teamFilter.teamIndex != TeamIndex.Player) teamMembers.AddRange(TeamComponent.GetTeamMembers(TeamIndex.Player));
 			float sqrad = radius * radius;
+			teamMembers.Remove(owner.GetComponent<TeamComponent>());
 			foreach(TeamComponent tcpt in teamMembers) {
 				if ((tcpt.transform.position - transform.position).sqrMagnitude <= sqrad) {
 					if (tcpt.body && tcpt.body.mainHurtBox && tcpt.body.isActiveAndEnabled && damage > 0f) {

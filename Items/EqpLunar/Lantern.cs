@@ -5,6 +5,7 @@ using UnityEngine.Networking;
 using R2API;
 using TILER2;
 using static TILER2.MiscUtil;
+using System.Collections.Generic;
 
 namespace ThinkInvisible.ClassicItems {
     public class Lantern : Equipment<Lantern> {
@@ -120,13 +121,15 @@ namespace ThinkInvisible.ClassicItems {
 
 		[Server]
 		private void ServerProc() {
-			var tind = TeamIndex.Monster | TeamIndex.Neutral | TeamIndex.Player;
-			if(FriendlyFireManager.friendlyFireMode == FriendlyFireManager.FriendlyFireMode.Off) tind &= ~teamFilter.teamIndex;
-			ReadOnlyCollection<TeamComponent> teamMembers = TeamComponent.GetTeamMembers(tind);
+			List<TeamComponent> teamMembers = new List<TeamComponent>();
+			bool isFF = FriendlyFireManager.friendlyFireMode != FriendlyFireManager.FriendlyFireMode.Off;
+			if(isFF || teamFilter.teamIndex != TeamIndex.Monster) teamMembers.AddRange(TeamComponent.GetTeamMembers(TeamIndex.Monster));
+			if(isFF || teamFilter.teamIndex != TeamIndex.Neutral) teamMembers.AddRange(TeamComponent.GetTeamMembers(TeamIndex.Neutral));
+			if(isFF || teamFilter.teamIndex != TeamIndex.Player) teamMembers.AddRange(TeamComponent.GetTeamMembers(TeamIndex.Player));
 			float sqrad = radius * radius;
 			foreach(TeamComponent tcpt in teamMembers) {
 				if ((tcpt.transform.position - transform.position).sqrMagnitude <= sqrad) {
-					if (tcpt.body && tcpt.body.isActiveAndEnabled && tcpt.body.healthComponent && tcpt.body.mainHurtBox && owner != tcpt.body.gameObject) {
+					if (tcpt.body && tcpt.body.isActiveAndEnabled && tcpt.body.healthComponent && tcpt.body.mainHurtBox) {
 						tcpt.body.AddTimedBuff(ClassicItemsPlugin.fearBuff, duration-lifeStopwatch);
 						tcpt.body.healthComponent?.TakeDamage(new DamageInfo {
 							attacker = owner,

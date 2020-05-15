@@ -6,6 +6,7 @@ using R2API;
 using UnityEngine.Rendering.PostProcessing;
 using TILER2;
 using static TILER2.MiscUtil;
+using System.Collections.Generic;
 
 namespace ThinkInvisible.ClassicItems {
     public class Snowglobe : Equipment<Snowglobe> {
@@ -108,9 +109,11 @@ namespace ThinkInvisible.ClassicItems {
         }
 
         private void DoFreeze() {
-            var tind = TeamIndex.Monster | TeamIndex.Neutral | TeamIndex.Player;
-			tind &= ~myTeam;
-			ReadOnlyCollection<TeamComponent> teamMembers = TeamComponent.GetTeamMembers(tind);
+			List<TeamComponent> teamMembers = new List<TeamComponent>();
+			bool isFF = FriendlyFireManager.friendlyFireMode != FriendlyFireManager.FriendlyFireMode.Off;
+			if(isFF || myTeam != TeamIndex.Monster) teamMembers.AddRange(TeamComponent.GetTeamMembers(TeamIndex.Monster));
+			if(isFF || myTeam != TeamIndex.Neutral) teamMembers.AddRange(TeamComponent.GetTeamMembers(TeamIndex.Neutral));
+			if(isFF || myTeam != TeamIndex.Player) teamMembers.AddRange(TeamComponent.GetTeamMembers(TeamIndex.Player));
 			foreach(TeamComponent tcpt in teamMembers) {
                 if(!Util.CheckRoll(Snowglobe.instance.procRate)) continue;
                 var ssoh = tcpt.gameObject.GetComponent<SetStateOnHurt>();
