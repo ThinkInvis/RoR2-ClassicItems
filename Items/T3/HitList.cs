@@ -9,23 +9,24 @@ using R2API;
 using MonoMod.Cil;
 using Mono.Cecil.Cil;
 using System;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace ThinkInvisible.ClassicItems {
     public class HitList : Item<HitList> {
         public override string displayName => "The Hit List";
 		public override ItemTier itemTier => ItemTier.Tier3;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
-        public override bool itemAIB {get; protected set;} = true;
         
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
         [AutoItemConfig("Time per batch of marked enemies.",AutoItemConfigFlags.None,0f,float.MaxValue)]
         public float cooldown {get;private set;} = 10f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken | AutoUpdateEventFlags.InvalidateStats)]
         [AutoItemConfig("Additive bonus to base damage per marked enemy killed.",AutoItemConfigFlags.PreventNetMismatch,0f,float.MaxValue)]
         public float procDamage {get;private set;} = 0.5f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken | AutoUpdateEventFlags.InvalidateStats)]
         [AutoItemConfig("Maximum damage bonus from The Hit List.",AutoItemConfigFlags.PreventNetMismatch,0f,float.MaxValue)]
         public float maxDamage {get;private set;} = 20f;
 
@@ -78,19 +79,45 @@ namespace ThinkInvisible.ClassicItems {
 
             stopwatch = cooldown;
             var alive = AliveList();
-            int totalCount = 0;
+            int[] totalVsTeam = {0, 0, 0};
+            int totalVsAll = 0;
             foreach(var cm in alive) {
-                totalCount += GetCount(cm);
+                var icnt = GetCount(cm);
+                if(FriendlyFireManager.friendlyFireMode != FriendlyFireManager.FriendlyFireMode.Off) {
+                    totalVsAll += icnt;
+                }  else {
+                    if(cm.teamIndex != TeamIndex.Neutral) totalVsTeam[0] += icnt;
+                    if(cm.teamIndex != TeamIndex.Player) totalVsTeam[1] += icnt;
+                    if(cm.teamIndex != TeamIndex.Monster) totalVsTeam[2] += icnt;
+                }
             }
-            if(totalCount <= 0) return;
-            for(var i = 0; i < totalCount; i++) {
-                if(alive.Count <= 0) break;
-                var next = itemRng.NextElementUniform(alive);
-                if(next.hasBody)
-                    next.GetBody().AddTimedBuff(markDebuff, cooldown);
-                else
-                    i--;
-                alive.Remove(next);
+            if(totalVsAll > 0) {
+                for(var i = 0; i < totalVsAll; i++) {
+                    if(alive.Count <= 0) break;
+                    var next = itemRng.NextElementUniform(alive);
+                    if(next.hasBody)
+                        next.GetBody().AddTimedBuff(markDebuff, cooldown);
+                    else
+                        i--;
+                    alive.Remove(next);
+                }
+            } else {
+                List<CharacterMaster>[] aliveTeam = {
+                    alive.Where(cm => cm.teamIndex == TeamIndex.Neutral).ToList(),
+                    alive.Where(cm => cm.teamIndex == TeamIndex.Player).ToList(),
+                    alive.Where(cm => cm.teamIndex == TeamIndex.Monster).ToList()
+                };
+                for(var list = 0; list <= 2; list++) {
+                    for(var i = 0; i < totalVsTeam[list]; i++) {                        
+                        if(aliveTeam[list].Count <= 0) break;
+                        var next = itemRng.NextElementUniform(aliveTeam[list]);
+                        if(next.hasBody)
+                            next.GetBody().AddTimedBuff(markDebuff, cooldown);
+                        else
+                            i--;
+                        aliveTeam[list].Remove(next);
+                    }
+                }
             }
         }
         
