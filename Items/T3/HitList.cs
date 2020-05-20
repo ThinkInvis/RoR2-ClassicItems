@@ -37,17 +37,27 @@ namespace ThinkInvisible.ClassicItems {
 
         public ItemIndex hitListTally {get; private set;}
         public BuffIndex markDebuff {get; private set;}
+        public BuffIndex tallyBuff {get; private set;}
 
         public HitList() {
             onAttrib += (tokenIdent, namePrefix) => {
                 var markDebuffDef = new CustomBuff(new BuffDef {
-                    buffColor = new Color(0.85f, 0.8f, 0.3f),
-                    canStack = true,
-                    isDebuff = false,
+                    buffColor = Color.yellow,
+                    canStack = false,
+                    isDebuff = true,
                     name = "CIHitListDebuff",
                     iconPath = "@ClassicItems:Assets/ClassicItems/icons/hitlist_debuff_icon.png"
                 });
                 markDebuff = BuffAPI.Add(markDebuffDef);
+                
+                var tallyBuffDef = new CustomBuff(new BuffDef {
+                    buffColor = Color.yellow,
+                    canStack = true,
+                    isDebuff = false,
+                    name = "CIHitListBuff",
+                    iconPath = "@ClassicItems:Assets/ClassicItems/icons/hitlist_buff_icon.png"
+                });
+                tallyBuff = BuffAPI.Add(tallyBuffDef);
 
                 var hitListTallyDef = new CustomItem(new ItemDef {
                     hidden = true,
@@ -137,7 +147,9 @@ namespace ThinkInvisible.ClassicItems {
                 c.Emit(OpCodes.Ldarg_0);
                 c.EmitDelegate<Func<float,CharacterBody,float>>((baseDamage, cb) => {
                     var ret = baseDamage;
-                    ret += Math.Min(procDamage * (cb.inventory?.GetItemCount(hitListTally) ?? 0), maxDamage);
+                    var add = Mathf.Clamp(procDamage * (cb.inventory?.GetItemCount(hitListTally) ?? 0), 0f, maxDamage);
+                    ret += add;
+                    cb.SetBuffCount(tallyBuff, Mathf.FloorToInt(add/procDamage));
                     return ret;
                 });
             } else {
