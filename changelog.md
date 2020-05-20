@@ -1,5 +1,11 @@
 ﻿# ClassicItems Changelog
 
+**4.2.0**
+
+- ADDED ITEMS: Taser, Filial Imprinting, The Hit List!
+- Fixed an issue where Barbed Wire, Snowglobe, and Safeguard Lantern were not performing team filtering correctly. This caused these items to fail to work properly when used by non-players, or by anyone if Artifact of Chaos was enabled.
+- (From TILER2 update to v1.2.1) All relevant items now use run-seeded RNG instead of always using the same seed (0).
+
 **4.1.3**
 
 - Barbed Wire: Fixed aura being removed after stage changes.

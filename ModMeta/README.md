@@ -27,9 +27,12 @@ For nostalgic purposes only. Here Be Dragons who hoard balance issues, because t
 - Mysterious Vial: "Increased health regeneration."
 - Spikestrip: "Drop spikestrips on being hit, slowing enemies."
     - Diff. from RoR1: provides 50% slow instead of 20% to compensate for enemy ability to path around spikestrips.
+- Taser: "Chance to snare on hit."
 #### Tier 2
 - 56 Leaf Clover: "Elite mobs have a chance to drop items."
 - Boxing Gloves: "Hitting enemies have a 6% chance to knock them back."
+- Filial Imprinting: "Hatch a strange creature who drops buffs periodically."
+    - Diff. from RoR1: now provides buffs instantly, instead of on-ground drops from pets.
 - Golden Gun: "More gold, more damage."
 - Rusty Jetpack: "Increase jump height and reduce gravity."
 - Smart Shopper: "Enemies drop more gold."
@@ -60,6 +63,7 @@ For nostalgic purposes only. Here Be Dragons who hoard balance issues, because t
     - Provides flight while holding jump, using limited recharging fuel.
     - Diff. from RoR1: only provides flight after using all double jumps.
 - Telescopic Sight: "Chance to instantly kill an enemy."
+- The Hit List: "Killing marked enemies permanently increases damage."
 #### Lunar
 - Old Box: "Chance to fear enemies when attacked."
 #### Equipment
@@ -106,6 +110,12 @@ For details and instructions on applying these, see: https://github.com/ThinkInv
 
 The 5 latest updates are listed below. For a full changelog, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/changelog.md
 
+**4.2.0**
+
+- ADDED ITEMS: Taser, Filial Imprinting, The Hit List!
+- Fixed an issue where Barbed Wire, Snowglobe, and Safeguard Lantern were not performing team filtering correctly. This caused these items to fail to work properly when used by non-players, or by anyone if Artifact of Chaos was enabled.
+- (From TILER2 update to v1.2.1) All relevant items now use run-seeded RNG instead of always using the same seed (0).
+
 **4.1.3**
 
 - Barbed Wire: Fixed aura being removed after stage changes.
@@ -134,11 +144,3 @@ Late notes as of next version:
 **4.1.0**
 
 - ADDED ITEM: Ancient Scepter! Has skill overrides for ALL playable characters, and for each variant per chosen slot, but likely needs a balance pass or two.
-
-**4.0.0**
-
-- Loads and loads and loads of behind-the-scenes changes, most of which were moved to a new mod (TILER2).
-- NOTE: some config entries may have different names now (mostly Beating Embryo subenable flags), which will reset them to their default values once. Check to make sure things are still how you want them!
-- Added Old Box to the default AI blacklist.
-- Several cosmetic fixes.
-- Config mismatches are now automatically resolved (TILER2 NetConfig module).
