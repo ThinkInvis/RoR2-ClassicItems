@@ -99,9 +99,8 @@ namespace ThinkInvisible.ClassicItems {
                     else
                         tier = 0;
                 }
-                SpawnItemFromBody(victimBody, tier);
+                SpawnItemFromBody(victimBody, tier, itemRng);
             }
-
         }
     }
 }

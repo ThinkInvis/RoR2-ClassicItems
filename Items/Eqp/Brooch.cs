@@ -25,8 +25,6 @@ namespace ThinkInvisible.ClassicItems {
         [AutoItemConfig("If true, Captain's Brooch will spawn chests directly at the player's position if it can't find a suitable spot nearby. If false, it will fail to spawn the chest and refrain from using an equipment charge.")]
         public bool doFallbackSpawn {get;private set;} = false;
 
-        private Xoroshiro128Plus BroochRNG;
-
         internal static InteractableSpawnCard broochPrefab;        
         protected override string NewLangName(string langid = null) => displayName;        
         protected override string NewLangPickup(string langid = null) => "One man's wreckage is another man's treasure.";        
@@ -38,8 +36,6 @@ namespace ThinkInvisible.ClassicItems {
         public Brooch() {
             var origCost = 25f;
             onBehav += ()=>{
-                BroochRNG = new Xoroshiro128Plus(0UL);
-
                 broochPrefab = UnityEngine.Object.Instantiate(Resources.Load<InteractableSpawnCard>("SpawnCards/InteractableSpawnCard/iscChest1"));
                 broochPrefab.directorCreditCost = 0;
                 broochPrefab.sendOverNetwork = true;
@@ -135,7 +131,7 @@ namespace ThinkInvisible.ClassicItems {
                 placementMode = DirectorPlacementRule.PlacementMode.Approximate,
                 position = trans.position,
                 preventOverhead = true
-            }, BroochRNG);
+            }, itemRng);
 
             dsr.onSpawnedServer += Evt_BroochChestSpawnServer;
 
@@ -147,7 +143,7 @@ namespace ThinkInvisible.ClassicItems {
                     var dsrFallback = new DirectorSpawnRequest(broochPrefab, new DirectorPlacementRule {
                         placementMode = DirectorPlacementRule.PlacementMode.Direct,
                         position = trans.position
-                    }, BroochRNG);
+                    }, itemRng);
                     dsrFallback.onSpawnedServer += Evt_BroochChestSpawnServer;
                     broochPrefab.DoSpawn(trans.position, trans.rotation, dsrFallback);
                     return true;

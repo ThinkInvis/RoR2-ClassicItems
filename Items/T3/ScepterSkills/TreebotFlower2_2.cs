@@ -47,8 +47,6 @@ namespace ThinkInvisible.ClassicItems {
             TreebotFlower2Projectile.radius = origRadius;
         }
 
-        private static Xoroshiro128Plus treebotFlowerRNG = new Xoroshiro128Plus(0);
-
         private static void On_TreebotFlower2RootPulse(On.EntityStates.Treebot.TreebotFlower.TreebotFlower2Projectile.orig_RootPulse orig, TreebotFlower2Projectile self) {
             var owner = self.GetFieldValue<GameObject>("owner");
             var isBoosted = Scepter.instance.GetCount(owner?.GetComponent<CharacterBody>()) > 0;
@@ -59,7 +57,7 @@ namespace ThinkInvisible.ClassicItems {
             if(!isBoosted) return;
             var rb = self.GetFieldValue<List<CharacterBody>>("rootedBodies");
             rb.ForEach(cb => {
-                var nbi = treebotFlowerRNG.NextElementUniform(new[] {
+                var nbi = Scepter.instance.itemRng.NextElementUniform(new[] {
                     BuffIndex.Bleeding,
                     BuffIndex.ClayGoo,
                     BuffIndex.Cripple,
