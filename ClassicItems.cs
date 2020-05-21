@@ -129,18 +129,20 @@ namespace ThinkInvisible.ClassicItems {
             Debug.Log("ClassicItems: registering item attributes...");
 
             foreach(ItemBoilerplate x in masterItemList) {
-                var mpnOvr = "@ClassicItems:Assets/ClassicItems/models/" +
-                    (x is Item
-                    ? modelNameMap[((Item)x).itemTier]
-                    : ((Equipment)x).eqpIsLunar ? "LqpCard" : "EqpCard") + ".prefab";
+                string mpnOvr = null;
+                if(x is Item item) mpnOvr = "@ClassicItems:Assets/ClassicItems/models/" + [modelNameMap[item.itemTier]] + ".prefab";
+                else if(x is Equipment eqp) mpnOvr = "@ClassicItems:Assets/ClassicItems/models/" + (eqp.eqpIsLunar ? "LqpCard.prefab" : "EqpCard.prefab");
                 var ipnOvr = "@ClassicItems:Assets/ClassicItems/icons/" + x.itemCodeName + "_icon.png";
 
-                typeof(ItemBoilerplate).GetProperty(nameof(ItemBoilerplate.modelPathName)).SetValue(x, mpnOvr);
-                typeof(ItemBoilerplate).GetProperty(nameof(ItemBoilerplate.iconPathName)).SetValue(x, ipnOvr);
+                if(mpnOvr != null) {
+                    typeof(ItemBoilerplate).GetProperty(nameof(ItemBoilerplate.modelPathName)).SetValue(x, mpnOvr);
+                    typeof(ItemBoilerplate).GetProperty(nameof(ItemBoilerplate.iconPathName)).SetValue(x, ipnOvr);
+                }
                 
                 x.SetupAttributes("CLASSICITEMS", "CI");
 
-                Debug.Log("CI"+x.itemCodeName + ": " + (x is Equipment ? ("EQP"+((int)((Equipment)x).regIndex).ToString()) : ((int)((Item)x).regIndex).ToString()));
+                if(mpnOvr != null)
+                    Debug.Log("CI"+x.itemCodeName + ": " + (x is Equipment ? ("EQP"+((int)((Equipment)x).regIndex).ToString()) : ((int)((Item)x).regIndex).ToString()));
             }
         }
 
