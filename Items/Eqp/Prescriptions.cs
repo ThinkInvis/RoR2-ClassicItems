@@ -42,7 +42,7 @@ namespace ThinkInvisible.ClassicItems {
                     buffColor = Color.red,
                     canStack = true,
                     isDebuff = false,
-                    name = "Prescriptions",
+                    name = namePrefix + "Prescriptions",
                     iconPath = "@ClassicItems:Assets/ClassicItems/icons/Prescriptions_icon.png"
                 });
                 prescriptionsBuff = R2API.BuffAPI.Add(prescriptionsBuffDef);

@@ -43,7 +43,7 @@ namespace ThinkInvisible.ClassicItems {
                     buffColor = new Color(0.85f, 0.8f, 0.3f),
                     canStack = true,
                     isDebuff = false,
-                    name = "GoldenGun",
+                    name = namePrefix + "GoldenGun",
                     iconPath = "@ClassicItems:Assets/ClassicItems/icons/GoldenGun_icon.png"
                 });
                 goldenGunBuff = R2API.BuffAPI.Add(goldenGunBuffDef);

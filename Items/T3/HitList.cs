@@ -45,7 +45,7 @@ namespace ThinkInvisible.ClassicItems {
                     buffColor = Color.yellow,
                     canStack = false,
                     isDebuff = true,
-                    name = "CIHitListDebuff",
+                    name = namePrefix + "HitListDebuff",
                     iconPath = "@ClassicItems:Assets/ClassicItems/icons/hitlist_debuff_icon.png"
                 });
                 markDebuff = BuffAPI.Add(markDebuffDef);
@@ -54,14 +54,14 @@ namespace ThinkInvisible.ClassicItems {
                     buffColor = Color.yellow,
                     canStack = true,
                     isDebuff = false,
-                    name = "CIHitListBuff",
+                    name = namePrefix + "HitListBuff",
                     iconPath = "@ClassicItems:Assets/ClassicItems/icons/hitlist_buff_icon.png"
                 });
                 tallyBuff = BuffAPI.Add(tallyBuffDef);
 
                 var hitListTallyDef = new CustomItem(new ItemDef {
                     hidden = true,
-                    name = "CIINTERNALTally",
+                    name = namePrefix + "INTERNALTally",
                     tier = ItemTier.NoTier,
                     canRemove = false
                 }, new ItemDisplayRuleDict(null));

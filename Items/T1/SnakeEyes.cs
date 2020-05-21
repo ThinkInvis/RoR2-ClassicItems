@@ -48,7 +48,7 @@ namespace ThinkInvisible.ClassicItems {
                     buffColor = Color.red,
                     canStack = true,
                     isDebuff = false,
-                    name = "SnakeEyes",
+                    name = namePrefix + "SnakeEyes",
                     iconPath = "@ClassicItems:Assets/ClassicItems/icons/SnakeEyes_icon.png"
                 });
                 snakeEyesBuff = R2API.BuffAPI.Add(snakeEyesBuffDef);

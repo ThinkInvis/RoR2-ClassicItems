@@ -52,7 +52,7 @@ namespace ThinkInvisible.ClassicItems {
                     buffColor = Color.red,
                     canStack = false,
                     isDebuff = false,
-                    name = "ImprintAttack",
+                    name = namePrefix + "ImprintAttack",
                     iconPath = "@ClassicItems:Assets/ClassicItems/icons/Imprint_icon.png"
                 });
                 attackBuff = R2API.BuffAPI.Add(attackBuffDef);
@@ -60,7 +60,7 @@ namespace ThinkInvisible.ClassicItems {
                     buffColor = Color.cyan,
                     canStack = false,
                     isDebuff = false,
-                    name = "ImprintSpeed",
+                    name = namePrefix + "ImprintSpeed",
                     iconPath = "@ClassicItems:Assets/ClassicItems/icons/Imprint_icon.png"
                 });
                 speedBuff = R2API.BuffAPI.Add(speedBuffDef);
@@ -68,7 +68,7 @@ namespace ThinkInvisible.ClassicItems {
                     buffColor = Color.green,
                     canStack = false,
                     isDebuff = false,
-                    name = "ImprintHeal",
+                    name = namePrefix + "ImprintHeal",
                     iconPath = "@ClassicItems:Assets/ClassicItems/icons/Imprint_icon.png"
                 });
                 healBuff = R2API.BuffAPI.Add(healBuffDef);

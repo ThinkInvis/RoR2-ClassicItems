@@ -48,7 +48,7 @@ namespace ThinkInvisible.ClassicItems {
                     buffColor = Color.cyan,
                     canStack = true,
                     isDebuff = false,
-                    name = "PhotonFuel",
+                    name = namePrefix + "PhotonFuel",
                     iconPath = "@ClassicItems:Assets/ClassicItems/icons/PhotonJetpack_icon.png"
                 });
                 photonFuelBuff = R2API.BuffAPI.Add(PhotonJetpackBuff);
