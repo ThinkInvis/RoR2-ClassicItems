@@ -75,15 +75,15 @@ namespace ThinkInvisible.ClassicItems {
 
         protected override void LoadBehavior() {
             On.RoR2.CharacterBody.OnInventoryChanged += On_CBInventoryChanged;
-            OnPreRecalcStats += Evt_TILER2OnPreRecalcStats;
+            GetStatCoefficients += Evt_TILER2GetStatCoefficients;
         }
 
         protected override void UnloadBehavior() {
             On.RoR2.CharacterBody.OnInventoryChanged -= On_CBInventoryChanged;
-            OnPreRecalcStats -= Evt_TILER2OnPreRecalcStats;
+            GetStatCoefficients -= Evt_TILER2GetStatCoefficients;
         }
 
-        private void Evt_TILER2OnPreRecalcStats(CharacterBody sender, StatHookEventArgs args) {
+        private void Evt_TILER2GetStatCoefficients(CharacterBody sender, StatHookEventArgs args) {
             if(sender.HasBuff(healBuff)) args.regenMultAdd += regenMod;
             if(sender.HasBuff(attackBuff)) args.attackSpeedMultAdd += attackMod;
             if(sender.HasBuff(speedBuff)) args.moveSpeedMultAdd += speedMod;

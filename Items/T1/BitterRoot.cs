@@ -27,13 +27,13 @@ namespace ThinkInvisible.ClassicItems {
         public BitterRoot() {}
 
         protected override void LoadBehavior() {
-            OnPreRecalcStats += Evt_TILER2OnPreRecalcStats;
+            GetStatCoefficients += Evt_TILER2GetStatCoefficients;
         }
         protected override void UnloadBehavior() {
-            OnPreRecalcStats -= Evt_TILER2OnPreRecalcStats;
+            GetStatCoefficients -= Evt_TILER2GetStatCoefficients;
         }
 
-        private void Evt_TILER2OnPreRecalcStats(CharacterBody sender, StatHookEventArgs args) {
+        private void Evt_TILER2GetStatCoefficients(CharacterBody sender, StatHookEventArgs args) {
             args.healthMultAdd += Math.Min(GetCount(sender) * healthMult, healthCap);
         }
     }

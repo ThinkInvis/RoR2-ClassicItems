@@ -68,13 +68,13 @@ namespace ThinkInvisible.ClassicItems {
         protected override void LoadBehavior() {
             GlobalEventManager.onCharacterDeathGlobal += Evt_GEMOnCharacterDeathGlobal;
             On.RoR2.Run.FixedUpdate += On_RunFixedUpdate;
-            OnPreRecalcStats += Evt_TILER2OnPreRecalcStats;
+            GetStatCoefficients += Evt_TILER2GetStatCoefficients;
         }
 
         protected override void UnloadBehavior() {
             GlobalEventManager.onCharacterDeathGlobal -= Evt_GEMOnCharacterDeathGlobal;
             On.RoR2.Run.FixedUpdate -= On_RunFixedUpdate;
-            OnPreRecalcStats -= Evt_TILER2OnPreRecalcStats;
+            GetStatCoefficients -= Evt_TILER2GetStatCoefficients;
         }
 
         private float stopwatch = 0f;
@@ -132,7 +132,7 @@ namespace ThinkInvisible.ClassicItems {
                 rep.attackerBody.inventory.GiveItem(hitListTally);
         }
         
-        private void Evt_TILER2OnPreRecalcStats(CharacterBody sender, StatHookEventArgs args) {
+        private void Evt_TILER2GetStatCoefficients(CharacterBody sender, StatHookEventArgs args) {
             var add = Mathf.Clamp(procDamage * (sender.inventory?.GetItemCount(hitListTally) ?? 0), 0f, maxDamage);
             args.baseDamageAdd += add;
             sender.SetBuffCount(tallyBuff, Mathf.FloorToInt(add/procDamage));

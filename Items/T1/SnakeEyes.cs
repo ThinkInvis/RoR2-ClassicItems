@@ -48,12 +48,12 @@ namespace ThinkInvisible.ClassicItems {
         }
 
         protected override void LoadBehavior() {
-            OnPreRecalcStats += Evt_TILER2OnPreRecalcStats;
+            GetStatCoefficients += Evt_TILER2GetStatCoefficients;
             ShrineChanceBehavior.onShrineChancePurchaseGlobal += Evt_SCBOnShrineChancePurchaseGlobal;
         }
 
         protected override void UnloadBehavior() {
-            OnPreRecalcStats -= Evt_TILER2OnPreRecalcStats;
+            GetStatCoefficients -= Evt_TILER2GetStatCoefficients;
             ShrineChanceBehavior.onShrineChancePurchaseGlobal -= Evt_SCBOnShrineChancePurchaseGlobal;
         }
 
@@ -89,7 +89,7 @@ namespace ThinkInvisible.ClassicItems {
             }
         }
         
-        private void Evt_TILER2OnPreRecalcStats(CharacterBody sender, StatHookEventArgs args) {
+        private void Evt_TILER2GetStatCoefficients(CharacterBody sender, StatHookEventArgs args) {
             args.critAdd += sender.GetBuffCount(snakeEyesBuff) * GetCount(sender) * critAdd;
         }
     }

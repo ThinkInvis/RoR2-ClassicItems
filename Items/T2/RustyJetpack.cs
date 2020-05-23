@@ -27,16 +27,16 @@ namespace ThinkInvisible.ClassicItems {
         public RustyJetpack() {}
 
         protected override void LoadBehavior() {
-            OnPreRecalcStats += Evt_TILER2OnPreRecalcStats;
+            GetStatCoefficients += Evt_TILER2GetStatCoefficients;
             On.RoR2.CharacterBody.FixedUpdate += On_CBFixedUpdate;
         }
 
         protected override void UnloadBehavior() {
-            OnPreRecalcStats -= Evt_TILER2OnPreRecalcStats;
+            GetStatCoefficients -= Evt_TILER2GetStatCoefficients;
             On.RoR2.CharacterBody.FixedUpdate -= On_CBFixedUpdate;
         }
         
-        private void Evt_TILER2OnPreRecalcStats(CharacterBody sender, StatHookEventArgs args) {
+        private void Evt_TILER2GetStatCoefficients(CharacterBody sender, StatHookEventArgs args) {
             args.jumpPowerMultAdd += GetCount(sender) * jumpMult;
         }
 

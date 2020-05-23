@@ -41,14 +41,14 @@ namespace ThinkInvisible.ClassicItems {
         }
 
         protected override void LoadBehavior() {
-            OnPreRecalcStats += Evt_TILER2OnPreRecalcStats;
+            GetStatCoefficients += Evt_TILER2GetStatCoefficients;
         }
         protected override void UnloadBehavior() {
-            OnPreRecalcStats -= Evt_TILER2OnPreRecalcStats;
+            GetStatCoefficients -= Evt_TILER2GetStatCoefficients;
         }
         
 
-        private void Evt_TILER2OnPreRecalcStats(CharacterBody sender, StatHookEventArgs args) {
+        private void Evt_TILER2GetStatCoefficients(CharacterBody sender, StatHookEventArgs args) {
             if(sender.HasBuff(prescriptionsBuff)) {
                 args.baseDamageAdd += dmgBoost;
                 args.attackSpeedMultAdd += sender.GetBuffCount(prescriptionsBuff) * aSpdBoost;
