@@ -1,8 +1,5 @@
 ﻿using RoR2;
 using UnityEngine;
-using MonoMod.Cil;
-using Mono.Cecil.Cil;
-using System;
 using System.Collections.ObjectModel;
 using TILER2;
 using static TILER2.MiscUtil;

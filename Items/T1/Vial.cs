@@ -1,12 +1,6 @@
-﻿using R2API.Utils;
-using RoR2;
-using MonoMod.Cil;
-using Mono.Cecil.Cil;
-using UnityEngine;
-using System;
+﻿using RoR2;
 using System.Collections.ObjectModel;
 using TILER2;
-using static TILER2.MiscUtil;
 using static TILER2.StatHooks;
 
 namespace ThinkInvisible.ClassicItems {

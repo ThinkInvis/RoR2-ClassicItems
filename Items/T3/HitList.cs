@@ -1,14 +1,9 @@
 ﻿using RoR2;
 using UnityEngine;
 using System.Collections.ObjectModel;
-using UnityEngine.Networking;
-using RoR2.Orbs;
 using TILER2;
 using static TILER2.MiscUtil;
 using R2API;
-using MonoMod.Cil;
-using Mono.Cecil.Cil;
-using System;
 using System.Linq;
 using System.Collections.Generic;
 using static TILER2.StatHooks;

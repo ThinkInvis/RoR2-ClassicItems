@@ -1,8 +1,4 @@
-﻿using Mono.Cecil.Cil;
-using MonoMod.Cil;
-using R2API.Utils;
-using RoR2;
-using System;
+﻿using RoR2;
 using UnityEngine;
 using TILER2;
 using static TILER2.MiscUtil;
