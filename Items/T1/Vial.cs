@@ -27,8 +27,8 @@ namespace ThinkInvisible.ClassicItems {
             GetStatCoefficients -= Evt_TILER2GetStatCoefficients;
         }
 
-            args.regenMultAdd += GetCount(sender) * addRegen;
         private void Evt_TILER2GetStatCoefficients(CharacterBody sender, StatHookEventArgs args) {
+            args.baseRegenAdd += GetCount(sender) * addRegen;
         }
     }
 }
