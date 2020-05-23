@@ -1,5 +1,14 @@
 ﻿# ClassicItems Changelog
 
+**4.2.1**
+
+- Logbook setup stage no longer completely breaks if an item (in ANY mod) has no model.
+- Mysterious Vial: fixed buff being applied during the wrong part of calculations (multiplier instead of base value).
+- Index dump during game startup is now much prettier.
+- Internal buff names are now consistent with item names and with each other.
+- Migrated most RecalculateStats IL patches to TILER2, as well as some extension methods. Most UseIL config settings have been removed as a consequence, possibly temporarily.
+- GitHub repo is now licensed (GNU GPL3).
+
 **4.2.0**
 
 - ADDED ITEMS: Taser, Filial Imprinting, The Hit List!

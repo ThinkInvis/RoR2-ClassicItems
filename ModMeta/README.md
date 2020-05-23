@@ -110,6 +110,15 @@ For details and instructions on applying these, see: https://github.com/ThinkInv
 
 The 5 latest updates are listed below. For a full changelog, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/changelog.md
 
+**4.2.1**
+
+- Logbook setup stage no longer completely breaks if an item (in ANY mod) has no model.
+- Mysterious Vial: fixed buff being applied during the wrong part of calculations (multiplier instead of base value).
+- Index dump during game startup is now much prettier.
+- Internal buff names are now consistent with item names and with each other.
+- Migrated most RecalculateStats IL patches to TILER2, as well as some extension methods. Most UseIL config settings have been removed as a consequence, possibly temporarily.
+- GitHub repo is now licensed (GNU GPL3).
+
 **4.2.0**
 
 - ADDED ITEMS: Taser, Filial Imprinting, The Hit List!
@@ -140,7 +149,3 @@ The 5 latest updates are listed below. For a full changelog, see: https://github
 Late notes as of next version:
 
 - Public API change: Parameter `skillSlot` in method `Scepter.RegisterScepterSkill` now takes a RoR2.SkillSlot instead of an int.
-
-**4.1.0**
-
-- ADDED ITEM: Ancient Scepter! Has skill overrides for ALL playable characters, and for each variant per chosen slot, but likely needs a balance pass or two.
