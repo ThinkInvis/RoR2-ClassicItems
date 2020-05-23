@@ -130,7 +130,7 @@ namespace ThinkInvisible.ClassicItems {
 
             foreach(ItemBoilerplate x in masterItemList) {
                 string mpnOvr = null;
-                if(x is Item item) mpnOvr = "@ClassicItems:Assets/ClassicItems/models/" + [modelNameMap[item.itemTier]] + ".prefab";
+                if(x is Item item) mpnOvr = "@ClassicItems:Assets/ClassicItems/models/" + modelNameMap[item.itemTier] + ".prefab";
                 else if(x is Equipment eqp) mpnOvr = "@ClassicItems:Assets/ClassicItems/models/" + (eqp.eqpIsLunar ? "LqpCard.prefab" : "EqpCard.prefab");
                 var ipnOvr = "@ClassicItems:Assets/ClassicItems/icons/" + x.itemCodeName + "_icon.png";
 
