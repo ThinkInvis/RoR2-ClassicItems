@@ -446,6 +446,7 @@ namespace ThinkInvisible.ClassicItems {
             int replacedModels = 0;
             foreach(RoR2.UI.LogBook.Entry e in retv) {
                 if(!(e.extraData is PickupIndex)) continue;
+                if(e.modelPrefab == null) continue;
                 if(e.modelPrefab.transform.Find("cardfront")) {
                     e.modelPrefab = PickupCatalog.GetPickupDef((PickupIndex)e.extraData).displayPrefab;
                     replacedModels++;
