@@ -127,7 +127,8 @@ namespace ThinkInvisible.ClassicItems {
             }
 
             Debug.Log("ClassicItems: registering item attributes...");
-
+            
+            int longestName = 0;
             foreach(ItemBoilerplate x in masterItemList) {
                 string mpnOvr = null;
                 if(x is Item item) mpnOvr = "@ClassicItems:Assets/ClassicItems/models/" + modelNameMap[item.itemTier] + ".prefab";
@@ -140,9 +141,19 @@ namespace ThinkInvisible.ClassicItems {
                 }
                 
                 x.SetupAttributes("CLASSICITEMS", "CI");
-
-                if(mpnOvr != null)
-                    Debug.Log("CI"+x.itemCodeName + ": " + (x is Equipment ? ("EQP"+((int)((Equipment)x).regIndex).ToString()) : ((int)((Item)x).regIndex).ToString()));
+                if(x.itemCodeName.Length > longestName) longestName = x.itemCodeName.Length;
+            }
+            
+            Debug.Log("ClassicItems: index dump follows (pairs of name / index):");
+            foreach(ItemBoilerplate x in masterItemList) {
+                if(x is Equipment eqp)
+                    Debug.Log("Equipment CI"+x.itemCodeName.PadRight(longestName) + " / "+((int)eqp.regIndex).ToString());
+                else if(x is Item item)
+                    Debug.Log("     Item CI"+x.itemCodeName.PadRight(longestName) + " / "+((int)item.regIndex).ToString());
+                else if(x is Artifact afct)
+                    Debug.Log(" Artifact CI"+x.itemCodeName.PadRight(longestName) + " / "+((int)afct.regIndex).ToString());
+                else
+                    Debug.Log("    Other CI"+x.itemCodeName.PadRight(longestName) + " / N/A");
             }
         }
 
