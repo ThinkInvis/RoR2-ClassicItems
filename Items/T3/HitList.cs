@@ -11,6 +11,7 @@ using Mono.Cecil.Cil;
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using static TILER2.StatHooks;
 
 namespace ThinkInvisible.ClassicItems {
     public class HitList : Item<HitList> {
@@ -72,13 +73,13 @@ namespace ThinkInvisible.ClassicItems {
         protected override void LoadBehavior() {
             GlobalEventManager.onCharacterDeathGlobal += Evt_GEMOnCharacterDeathGlobal;
             On.RoR2.Run.FixedUpdate += On_RunFixedUpdate;
-            IL.RoR2.CharacterBody.RecalculateStats += IL_CBRecalcStats;
+            OnPreRecalcStats += Evt_TILER2OnPreRecalcStats;
         }
 
         protected override void UnloadBehavior() {
             GlobalEventManager.onCharacterDeathGlobal -= Evt_GEMOnCharacterDeathGlobal;
             On.RoR2.Run.FixedUpdate -= On_RunFixedUpdate;
-            IL.RoR2.CharacterBody.RecalculateStats -= IL_CBRecalcStats;
+            OnPreRecalcStats -= Evt_TILER2OnPreRecalcStats;
         }
 
         private float stopwatch = 0f;
@@ -135,26 +136,11 @@ namespace ThinkInvisible.ClassicItems {
             if((rep.victimBody?.HasBuff(markDebuff) ?? false) && GetCount(rep.attackerBody) > 0)
                 rep.attackerBody.inventory.GiveItem(hitListTally);
         }
-
-        private void IL_CBRecalcStats(ILContext il) {
-            var c = new ILCursor(il);
-
-            bool ILFound = c.TryGotoNext(MoveType.After,
-                x=>x.MatchLdarg(0),
-                x=>x.MatchLdfld<CharacterBody>("baseDamage"));
-
-            if(ILFound) {
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<float,CharacterBody,float>>((baseDamage, cb) => {
-                    var ret = baseDamage;
-                    var add = Mathf.Clamp(procDamage * (cb.inventory?.GetItemCount(hitListTally) ?? 0), 0f, maxDamage);
-                    ret += add;
-                    cb.SetBuffCount(tallyBuff, Mathf.FloorToInt(add/procDamage));
-                    return ret;
-                });
-            } else {
-                Debug.LogError("ClassicItems: failed to apply The Hit List IL patch (base damage modifier)");
-            }
+        
+        private void Evt_TILER2OnPreRecalcStats(CharacterBody sender, StatHookEventArgs args) {
+            var add = Mathf.Clamp(procDamage * (sender.inventory?.GetItemCount(hitListTally) ?? 0), 0f, maxDamage);
+            args.baseDamageAdd += add;
+            sender.SetBuffCount(tallyBuff, Mathf.FloorToInt(add/procDamage));
         }
     }
 }

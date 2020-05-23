@@ -6,6 +6,7 @@ using System;
 using System.Collections.ObjectModel;
 using TILER2;
 using static TILER2.MiscUtil;
+using static TILER2.StatHooks;
 
 namespace ThinkInvisible.ClassicItems {
     public class Imprint : Item<Imprint> {
@@ -77,12 +78,18 @@ namespace ThinkInvisible.ClassicItems {
 
         protected override void LoadBehavior() {
             On.RoR2.CharacterBody.OnInventoryChanged += On_CBInventoryChanged;
-            IL.RoR2.CharacterBody.RecalculateStats += IL_CBRecalcStats;
+            OnPreRecalcStats += Evt_TILER2OnPreRecalcStats;
         }
 
         protected override void UnloadBehavior() {
             On.RoR2.CharacterBody.OnInventoryChanged -= On_CBInventoryChanged;
-            IL.RoR2.CharacterBody.RecalculateStats -= IL_CBRecalcStats;
+            OnPreRecalcStats -= Evt_TILER2OnPreRecalcStats;
+        }
+
+        private void Evt_TILER2OnPreRecalcStats(CharacterBody sender, StatHookEventArgs args) {
+            if(sender.HasBuff(healBuff)) args.regenMultAdd += regenMod;
+            if(sender.HasBuff(attackBuff)) args.attackSpeedMultAdd += attackMod;
+            if(sender.HasBuff(speedBuff)) args.moveSpeedMultAdd += speedMod;
         }
         
         private void On_CBInventoryChanged(On.RoR2.CharacterBody.orig_OnInventoryChanged orig, CharacterBody self) {
@@ -91,72 +98,6 @@ namespace ThinkInvisible.ClassicItems {
             if(!cpt) cpt = self.gameObject.AddComponent<ImprintComponent>();
             cpt.count = GetCount(self);
             cpt.ownerBody = self;
-        }
-
-        private void IL_CBRecalcStats(ILContext il) {
-            var c = new ILCursor(il);
-
-            bool ILFound = c.TryGotoNext(MoveType.After,
-                x=>x.MatchLdfld<CharacterBody>("baseRegen"),
-                x=>x.MatchLdarg(0),
-                x=>x.MatchLdfld<CharacterBody>("levelRegen"),
-                x=>x.MatchLdloc(out _),
-                x=>x.MatchMul(),
-                x=>x.MatchAdd(),
-                x=>x.MatchLdcR4(out _));
-
-            if(ILFound) {
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<float,CharacterBody,float>>((regenMult, cb) => {
-                    var ret = regenMult;
-                    if(cb.HasBuff(healBuff)) ret += regenMod;
-                    return ret;
-                });
-            } else {
-                Debug.LogError("ClassicItems: failed to apply Filial Imprinting IL patch (health regen modifier)");
-            }
-
-            ILFound = c.TryGotoNext(MoveType.After,
-                x=>x.MatchLdfld<CharacterBody>("baseMoveSpeed"),
-                x=>x.MatchLdarg(0),
-                x=>x.MatchLdfld<CharacterBody>("levelMoveSpeed"),
-                x=>x.MatchLdloc(out _),
-                x=>x.MatchMul(),
-                x=>x.MatchAdd(),
-                x=>x.MatchStloc(out _),
-                x=>x.MatchLdcR4(out _));
-
-            if(ILFound) {
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<float,CharacterBody,float>>((speedMult, cb) => {
-                    var ret = speedMult;
-                    if(cb.HasBuff(speedBuff)) ret += speedMod;
-                    return ret;
-                });
-            } else {
-                Debug.LogError("ClassicItems: failed to apply Filial Imprinting IL patch (move speed modifier)");
-            }
-
-            ILFound = c.TryGotoNext(MoveType.After,
-                x=>x.MatchLdfld<CharacterBody>("baseAttackSpeed"),
-                x=>x.MatchLdarg(0),
-                x=>x.MatchLdfld<CharacterBody>("levelAttackSpeed"),
-                x=>x.MatchLdloc(out _),
-                x=>x.MatchMul(),
-                x=>x.MatchAdd(),
-                x=>x.MatchStloc(out _),
-                x=>x.MatchLdcR4(out _));
-
-            if(ILFound) {
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<float,CharacterBody,float>>((attackMult, cb) => {
-                    var ret = attackMult;
-                    if(cb.HasBuff(attackBuff)) ret += attackMod;
-                    return ret;
-                });
-            } else {
-                Debug.LogError("ClassicItems: failed to apply Filial Imprinting IL patch (attack speed modifier)");
-            }
         }
     }
 

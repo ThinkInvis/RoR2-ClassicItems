@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using TILER2;
 using static TILER2.MiscUtil;
+using static TILER2.StatHooks;
 
 namespace ThinkInvisible.ClassicItems {
     public class SnakeEyes : Item<SnakeEyes> {
@@ -29,14 +30,8 @@ namespace ThinkInvisible.ClassicItems {
         [AutoItemConfig("If true, deployables (e.g. Engineer turrets) with Snake Eyes will gain/lose buff stacks whenever their master does. If false, Snake Eyes will not work on deployables at all.")]
         public bool inclDeploys {get;private set;} = true;
 
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateStats)]
-        [AutoItemConfig("Set to false to change Snake Eyes' effect from an IL patch to an event hook, which may help if experiencing compatibility issues with another mod. This will change how Snake Eyes interacts with other effects.",
-            AutoItemConfigFlags.PreventNetMismatch)]
-        public bool useIL {get;private set;} = true;
-
         public BuffIndex snakeEyesBuff {get;private set;}
 
-        private bool ilFailed = false;
         protected override string NewLangName(string langid = null) => displayName;
         protected override string NewLangPickup(string langid = null) => "Gain increased crit chance on failing a shrine. Removed on succeeding a shrine.";
         protected override string NewLangDesc(string langid = null) => "Increases <style=cIsDamage>crit chance</style> by <style=cIsDamage>" + Pct(critAdd, 0, 1) + "</style> <style=cStack>(+" + Pct(critAdd, 0, 1) + " per stack, linear)</style> for up to <style=cIsUtility>" + stackCap + "</style> consecutive <style=cIsUtility>chance shrine failures</style>. <style=cIsDamage>Resets to 0</style> on any <style=cIsUtility>chance shrine success</style>.";
@@ -56,22 +51,13 @@ namespace ThinkInvisible.ClassicItems {
         }
 
         protected override void LoadBehavior() {
-            if(useIL) {
-                ilFailed = false;
-                IL.RoR2.CharacterBody.RecalculateStats += IL_CBRecalcStats;
-                if(ilFailed) {
-                    IL.RoR2.CharacterBody.RecalculateStats -= IL_CBRecalcStats;
-                    On.RoR2.CharacterBody.RecalculateStats += On_CBRecalcStats;
-                }
-            } else
-                On.RoR2.CharacterBody.RecalculateStats += On_CBRecalcStats;
-
+            OnPreRecalcStats += Evt_TILER2OnPreRecalcStats;
             ShrineChanceBehavior.onShrineChancePurchaseGlobal += Evt_SCBOnShrineChancePurchaseGlobal;
         }
 
         protected override void UnloadBehavior() {
-            IL.RoR2.CharacterBody.RecalculateStats -= IL_CBRecalcStats;
-            On.RoR2.CharacterBody.RecalculateStats -= On_CBRecalcStats;
+            OnPreRecalcStats -= Evt_TILER2OnPreRecalcStats;
+            ShrineChanceBehavior.onShrineChancePurchaseGlobal -= Evt_SCBOnShrineChancePurchaseGlobal;
         }
 
         private void cbApplyBuff(bool failed, CharacterBody tgtBody) {
@@ -105,63 +91,9 @@ namespace ThinkInvisible.ClassicItems {
                 cbApplyBuff(failed, tgt.GetComponent<CharacterBody>());
             }
         }
-
-        private void On_CBRecalcStats(On.RoR2.CharacterBody.orig_RecalculateStats orig, CharacterBody self) {
-            orig(self);
-
-            float CritIncrement = self.GetBuffCount(snakeEyesBuff) * GetCount(self) * critAdd;
-            Reflection.SetPropertyValue(self, "crit", self.crit + CritIncrement);
-        }
-
-        private void IL_CBRecalcStats(ILContext il) {
-            var c = new ILCursor(il);
-            //Add another local variable to store Snake Eyes itemcount
-            c.IL.Body.Variables.Add(new VariableDefinition(c.IL.Body.Method.Module.TypeSystem.Int32));
-            int locItemCount = c.IL.Body.Variables.Count-1;
-            c.Emit(OpCodes.Ldc_I4_0);
-            c.Emit(OpCodes.Stloc, locItemCount);
-
-            bool ILFound;
-                    
-            ILFound = c.TryGotoNext(MoveType.After,
-                x=>x.MatchCallOrCallvirt<CharacterBody>("get_inventory"),
-                x=>x.MatchCallOrCallvirt<UnityEngine.Object>("op_Implicit"),
-                x=>x.OpCode==OpCodes.Brfalse);
-
-            if(ILFound) {
-                c.Emit(OpCodes.Ldarg_0);
-                c.Emit(OpCodes.Call,typeof(CharacterBody).GetMethod("get_inventory"));
-                c.Emit(OpCodes.Ldc_I4, (int)regIndex);
-                c.Emit(OpCodes.Callvirt,typeof(Inventory).GetMethod("GetItemCount"));
-                c.Emit(OpCodes.Stloc, locItemCount);
-            } else {
-                ilFailed = true;
-                Debug.LogError("ClassicItems: failed to apply Snake Eyes IL patch (inventory load), falling back to event hook");
-                return;
-            }
-
-            //Find: num53 += (float)num8 * 10f
-
-
-            int locOrigCrit = -1;
-            ILFound = c.TryGotoNext(
-                x=>x.MatchLdarg(0),
-                x=>x.MatchLdloc(out locOrigCrit),
-                x=>x.MatchCallOrCallvirt<CharacterBody>("set_crit"));
-
-            if(ILFound) {
-                c.Emit(OpCodes.Ldloc, locOrigCrit);
-                c.Emit(OpCodes.Ldloc, locItemCount);
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<float,int,CharacterBody,float>>((crit, icnt, body) => {
-                    return crit + icnt * critAdd * body.GetBuffCount(snakeEyesBuff);
-                });
-                c.Emit(OpCodes.Stloc, locOrigCrit);
-            } else {
-                ilFailed = true;
-                Debug.LogError("ClassicItems: failed to apply Snake Eyes IL patch (crit modifier), falling back to event hook");
-                return;
-            }
+        
+        private void Evt_TILER2OnPreRecalcStats(CharacterBody sender, StatHookEventArgs args) {
+            args.critAdd += sender.GetBuffCount(snakeEyesBuff) * GetCount(sender) * critAdd;
         }
     }
 }
