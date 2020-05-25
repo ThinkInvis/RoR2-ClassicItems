@@ -120,7 +120,7 @@ namespace ThinkInvisible.ClassicItems {
             
             if(!ILFound) {
                 ilFailed = true;
-                Debug.LogError("ClassicItems: failed to apply Golden Gun IL patch (damage var read), item will not work; target instructions not found");
+                ClassicItemsPlugin._logger.LogError("Failed to apply Golden Gun IL patch (damage var read), item will not work; target instructions not found");
                 return;
             }
 
@@ -151,7 +151,7 @@ namespace ThinkInvisible.ClassicItems {
                 c.Emit(OpCodes.Stloc, locDmg);
             } else {
                 ilFailed = true;
-                Debug.LogError("ClassicItems: failed to apply Golden Gun IL patch (damage var write), item will not work; target instructions not found");
+                ClassicItemsPlugin._logger.LogError("Failed to apply Golden Gun IL patch (damage var write), item will not work; target instructions not found");
                 return;
             }
         }

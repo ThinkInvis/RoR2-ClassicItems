@@ -145,11 +145,11 @@ namespace ThinkInvisible.ClassicItems {
 
         public bool RegisterScepterSkill(SkillDef replacingDef, string targetBodyName, SkillSlot targetSlot, int targetVariant) {
             if(targetVariant < 0) {
-                Debug.LogError("ClassicItems: Can't register a scepter skill to negative variant index");
+                ClassicItemsPlugin._logger.LogError("Can't register a scepter skill to negative variant index");
                 return false;
             }
             if(scepterReplacers.Exists(x => x.bodyName == targetBodyName && (x.slotIndex != targetSlot || x.variantIndex == targetVariant))) {
-                Debug.LogError("ClassicItems: A scepter skill already exists for this character; can't add multiple for different slots nor for the same variant");
+                ClassicItemsPlugin._logger.LogError("A scepter skill already exists for this character; can't add multiple for different slots nor for the same variant");
                 return false;
             }
             scepterReplacers.Add(new ScepterReplacer {bodyName = targetBodyName, slotIndex = targetSlot, variantIndex = targetVariant, replDef = replacingDef});

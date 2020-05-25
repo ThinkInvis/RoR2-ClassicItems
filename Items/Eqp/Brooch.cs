@@ -99,7 +99,7 @@ namespace ThinkInvisible.ClassicItems {
                     if(cpt) cpt.mapNode = ind;
                 });
             } else {
-                Debug.LogError("ClassicItems: failed to apply Captain's Brooch IL patch. SafeMode will be enabled (no animations, no opened chest cleanup).");
+                ClassicItemsPlugin._logger.LogError("Failed to apply Captain's Brooch IL patch. SafeMode will be enabled (no animations, no opened chest cleanup).");
                 ILFailed = true;
             }
         }
@@ -139,7 +139,7 @@ namespace ThinkInvisible.ClassicItems {
             //broochPrefab.DoSpawn(trans.position, trans.rotation, dsr);
             if(spawnobj == null) {
                 if(doFallbackSpawn) {
-                    Debug.LogWarning("Captain's Brooch: spawn failed, using fallback position. This may be caused by too many objects nearby/no suitable ground.");
+                    ClassicItemsPlugin._logger.LogWarning("Captain's Brooch: spawn failed, using fallback position. This may be caused by too many objects nearby/no suitable ground.");
                     var dsrFallback = new DirectorSpawnRequest(broochPrefab, new DirectorPlacementRule {
                         placementMode = DirectorPlacementRule.PlacementMode.Direct,
                         position = trans.position
@@ -148,7 +148,7 @@ namespace ThinkInvisible.ClassicItems {
                     broochPrefab.DoSpawn(trans.position, trans.rotation, dsrFallback);
                     return true;
                 } else {
-                    Debug.LogWarning("Captain's Brooch: spawn failed, not triggering equipment. This may be caused by too many objects nearby/no suitable ground.");
+                    ClassicItemsPlugin._logger.LogWarning("Captain's Brooch: spawn failed, not triggering equipment. This may be caused by too many objects nearby/no suitable ground.");
                     return false;
                 }
             } else return true;

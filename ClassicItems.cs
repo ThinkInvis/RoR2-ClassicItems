@@ -68,11 +68,14 @@ namespace ThinkInvisible.ClassicItems {
             {ItemTier.Tier3, "RareCard"}
         });
 
+        internal static BepInEx.Logging.ManualLogSource _logger;
+
         private ClassicItemsPlugin() {
+            _logger = Logger;
             #if DEBUG
-            Debug.LogWarning("ClassicItems: running test build with debug enabled! If you're seeing this after downloading the mod from Thunderstore, please panic.");
+            Logger.LogWarning("Running test build with debug enabled! If you're seeing this after downloading the mod from Thunderstore, please panic.");
             #endif
-            Debug.Log("ClassicItems: loading assets...");
+            Logger.LogDebug("Loading assets...");
             using(var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("ClassicItems.classicitems_assets")) {
                 var bundle = AssetBundle.LoadFromStream(stream);
                 var provider = new AssetBundleResourcesProvider("@ClassicItems", bundle);
@@ -81,7 +84,7 @@ namespace ThinkInvisible.ClassicItems {
             cfgFile = new ConfigFile(Path.Combine(Paths.ConfigPath, ModGuid + ".cfg"), true);
             
 
-            Debug.Log("ClassicItems: loading global configs...");
+            Logger.LogDebug("Loading global configs...");
 
             gCfgHSV2NoStomp = cfgFile.Bind(new ConfigDefinition("Global.VanillaTweaks", "NoHeadStompV2"), true, new ConfigDescription(
                 "If true, removes the hold-space-to-stomp functionality of H3AD-5T V2 (due to overlap in functionality with ClassicItems Headstompers). H3AD-5T V2 will still increase jump height and prevent fall damage."));   
@@ -103,10 +106,10 @@ namespace ThinkInvisible.ClassicItems {
             gSpinMod = gCfgSpinMod.Value;
             gCoolYourJets = gCfgCoolYourJets.Value;
 
-            Debug.Log("ClassicItems: instantiating item classes...");
+            Logger.LogDebug("Instantiating item classes...");
             masterItemList = ItemBoilerplate.InitAll("ClassicItems");
 
-            Debug.Log("ClassicItems: loading item configs...");
+            Logger.LogDebug("Loading item configs...");
             foreach(ItemBoilerplate x in masterItemList) {
                 x.ConfigEntryChanged += (sender, args) => {
                     if((args.flags & (AutoUpdateEventFlags.InvalidateNameToken | (gLongDesc ? AutoUpdateEventFlags.InvalidateDescToken : AutoUpdateEventFlags.InvalidatePickupToken))) == 0) return;
@@ -126,7 +129,7 @@ namespace ThinkInvisible.ClassicItems {
                 x.SetupConfig(cfgFile);
             }
 
-            Debug.Log("ClassicItems: registering item attributes...");
+            Logger.LogDebug("Registering item attributes...");
             
             int longestName = 0;
             foreach(ItemBoilerplate x in masterItemList) {
@@ -144,16 +147,16 @@ namespace ThinkInvisible.ClassicItems {
                 if(x.itemCodeName.Length > longestName) longestName = x.itemCodeName.Length;
             }
             
-            Debug.Log("ClassicItems: index dump follows (pairs of name / index):");
+            Logger.LogMessage("Index dump follows (pairs of name / index):");
             foreach(ItemBoilerplate x in masterItemList) {
                 if(x is Equipment eqp)
-                    Debug.Log("Equipment CI"+x.itemCodeName.PadRight(longestName) + " / "+((int)eqp.regIndex).ToString());
+                    Logger.LogMessage("Equipment CI"+x.itemCodeName.PadRight(longestName) + " / "+((int)eqp.regIndex).ToString());
                 else if(x is Item item)
-                    Debug.Log("     Item CI"+x.itemCodeName.PadRight(longestName) + " / "+((int)item.regIndex).ToString());
+                    Logger.LogMessage("     Item CI"+x.itemCodeName.PadRight(longestName) + " / "+((int)item.regIndex).ToString());
                 else if(x is Artifact afct)
-                    Debug.Log(" Artifact CI"+x.itemCodeName.PadRight(longestName) + " / "+((int)afct.regIndex).ToString());
+                    Logger.LogMessage(" Artifact CI"+x.itemCodeName.PadRight(longestName) + " / "+((int)afct.regIndex).ToString());
                 else
-                    Debug.Log("    Other CI"+x.itemCodeName.PadRight(longestName) + " / N/A");
+                    Logger.LogMessage("    Other CI"+x.itemCodeName.PadRight(longestName) + " / N/A");
             }
         }
 
@@ -180,19 +183,20 @@ namespace ThinkInvisible.ClassicItems {
         
 
         private void Awake() {
-            Debug.Log("ClassicItems: performing plugin setup...");
+            Logger.LogDebug("Performing plugin setup...");
 
-            Debug.Log("ClassicItems: tweaking vanilla stuff...");
+            Logger.LogDebug("Tweaking vanilla stuff...");
 
             //Remove the H3AD-5T V2 state transition from idle to stomp, as Headstompers has similar functionality
             if(gHSV2NoStomp)
                 IL.EntityStates.Headstompers.HeadstompersIdle.FixedUpdate += IL_ESHeadstompersIdleFixedUpdate;
+
             On.RoR2.PickupCatalog.Init += On_PickupCatalogInit;
             On.RoR2.UI.LogBook.LogBookController.BuildPickupEntries += On_LogbookBuildPickupEntries;
             if(gSpinMod)
                 IL.RoR2.PickupDisplay.Update += IL_PickupDisplayUpdate;
 
-            Debug.Log("ClassicItems: registering shared buffs...");
+            Logger.LogDebug("Registering shared buffs...");
             //used only for purposes of Death Mark; applied by Permafrost and Snowglobe
             var freezeBuffDef = new CustomBuff(new BuffDef {
                 buffColor = Color.cyan,
@@ -213,13 +217,13 @@ namespace ThinkInvisible.ClassicItems {
             fearBuff = BuffAPI.Add(fearBuffDef);
             IL.EntityStates.AI.Walker.Combat.FixedUpdate += IL_ESAIWalkerCombatFixedUpdate;
 
-            Debug.Log("ClassicItems: registering item behaviors...");
+            Logger.LogDebug("Registering item behaviors...");
 
             foreach(ItemBoilerplate x in masterItemList) {
                 x.SetupBehavior();
             }
 
-            Debug.Log("ClassicItems: done!");
+            Logger.LogDebug("Initial setup done!");
         }
 
         private void IL_ESAIWalkerCombatFixedUpdate(ILContext il) {
@@ -242,7 +246,7 @@ namespace ThinkInvisible.ClassicItems {
                 });
                 c.Emit(OpCodes.Stloc_S, (byte)locMoveState);
             } else {
-                Debug.LogError("ClassicItems: failed to apply shared buff IL patch (CIFear)");
+                Logger.LogError("Failed to apply shared buff IL patch (CIFear)");
             }
         }
 
@@ -258,7 +262,7 @@ namespace ThinkInvisible.ClassicItems {
                     puo=x;
                 });
             } else {
-                Debug.LogError("ClassicItems: failed to apply vanilla IL patch (pickup model spin modifier)");
+                Logger.LogError("Failed to apply vanilla IL patch (pickup model spin modifier)");
                 return;
             }
 
@@ -279,7 +283,7 @@ namespace ThinkInvisible.ClassicItems {
                         - (puo.transform.parent?.eulerAngles.y ?? 0f);
                 });
             } else {
-                Debug.LogError("ClassicItems: failed to apply vanilla IL patch (pickup model spin modifier)");
+                Logger.LogError("Failed to apply vanilla IL patch (pickup model spin modifier)");
             }
 
         }
@@ -293,13 +297,13 @@ namespace ThinkInvisible.ClassicItems {
             if(ILFound) {
                 c.RemoveRange(4);
             } else {
-                Debug.LogError("ClassicItems: failed to apply vanilla IL patch (HSV2NoStomp)");
+                Logger.LogError("Failed to apply vanilla IL patch (HSV2NoStomp)");
             }
         }
         private void On_PickupCatalogInit(On.RoR2.PickupCatalog.orig_Init orig) {
             orig();
 
-            Debug.Log("ClassicItems: processing pickup models...");
+            Logger.LogDebug("Processing pickup models...");
 
             foreach(ItemBoilerplate bpl in masterItemList) {
                 PickupIndex pind;
@@ -353,7 +357,7 @@ namespace ThinkInvisible.ClassicItems {
                     pickup.displayPrefab = npfb.InstantiateClone(pickup.internalName + "CICardPrefab", false);
                 }
 
-                Debug.Log("ClassicItems: replaced " + replacedItems + " item models and " + replacedEqps + " equipment models.");
+                Logger.LogDebug("Replaced " + replacedItems + " item models and " + replacedEqps + " equipment models.");
             }
 
             int replacedDescs = 0;
@@ -437,12 +441,12 @@ namespace ThinkInvisible.ClassicItems {
                 }
                 replacedDescs ++;
             }
-            Debug.Log("ClassicItems: " + (gHideDesc ? "destroyed " : "inserted ") + replacedDescs + " pickup model descriptions.");
+            Logger.LogDebug((gHideDesc ? "Destroyed " : "Inserted ") + replacedDescs + " pickup model descriptions.");
         }
 
         private RoR2.UI.LogBook.Entry[] On_LogbookBuildPickupEntries(On.RoR2.UI.LogBook.LogBookController.orig_BuildPickupEntries orig) {
             var retv = orig();
-            Debug.Log("ClassicItems: processing logbook models...");
+            Logger.LogDebug("Processing logbook models...");
             int replacedModels = 0;
             foreach(RoR2.UI.LogBook.Entry e in retv) {
                 if(!(e.extraData is PickupIndex)) continue;
@@ -452,7 +456,7 @@ namespace ThinkInvisible.ClassicItems {
                     replacedModels++;
                 }
             }
-            Debug.Log("ClassicItems: modified " + replacedModels + " logbook models.");
+            Logger.LogDebug("Modified " + replacedModels + " logbook models.");
             return retv;
         }
     }

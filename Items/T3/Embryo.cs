@@ -211,13 +211,13 @@ namespace ThinkInvisible.ClassicItems {
             ILFound = c.TryGotoNext(
                 x=>x.MatchSwitch(out swarr));
             if(!ILFound) {
-                Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch (ALL EQUIPMENTS): couldn't find switch!");
+                ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch (ALL EQUIPMENTS): couldn't find switch!");
                 return;
             }
 
             //CommandMissile: double number of missiles fired in the same timespan
             if((int)EquipmentIndex.CommandMissile >= swarr.Length)
-                Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: CommandMissile (PerformEquipmentAction); not in switch");
+                ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch: CommandMissile (PerformEquipmentAction); not in switch");
             else if(subEnable[EquipmentIndex.CommandMissile]) {
                 //Find: default missile increment (+= (int)12)
                 c.GotoLabel(swarr[(int)EquipmentIndex.CommandMissile]);
@@ -235,13 +235,13 @@ namespace ThinkInvisible.ClassicItems {
                         return (sbyte)(boost ? origMissiles*2 : origMissiles);
                     });
                 } else {
-                    Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: CommandMissile (PerformEquipmentAction); target instructions not found");
+                    ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch: CommandMissile (PerformEquipmentAction); target instructions not found");
                 }
             }
 
             //Blackhole: double yoink radius
             if((int)EquipmentIndex.CommandMissile >= swarr.Length)
-                Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: Blackhole; not in switch");
+                ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch: Blackhole; not in switch");
             else if(subEnable[EquipmentIndex.Blackhole]) {
                 //Find: string "Prefabs/Projectiles/GravSphere", ldloc 15 (Vector3 position)
                 c.GotoLabel(swarr[(int)EquipmentIndex.Blackhole]);
@@ -258,13 +258,13 @@ namespace ThinkInvisible.ClassicItems {
                         return newobj;
                     });
                 } else {
-                    Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: Blackhole; target instructions not found");
+                    ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch: Blackhole; target instructions not found");
                 }
             }
 
             //CritOnUse: double duration
             if((int)EquipmentIndex.CritOnUse >= swarr.Length)
-                Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: CritOnUse; not in switch");
+                ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch: CritOnUse; not in switch");
             else if(subEnable[EquipmentIndex.CritOnUse]) {
                 //Find: AddTimedBuff(BuffIndex.FullCrit, 8f)
                 c.GotoLabel(swarr[(int)EquipmentIndex.CritOnUse]);
@@ -283,13 +283,13 @@ namespace ThinkInvisible.ClassicItems {
                         return boost ? origBuffTime*2 : origBuffTime;
                     });
                 } else {
-                    Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: CritOnUse; target instructions not found");
+                    ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch: CritOnUse; target instructions not found");
                 }
             }
 
             //Gateway: double speed
             if((int)EquipmentIndex.Gateway >= swarr.Length)
-                Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: Gateway; not in switch");
+                ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch: Gateway; not in switch");
             else if(subEnable[EquipmentIndex.Gateway]) {
                 //Find: start of Gateway label
                 c.GotoLabel(swarr[(int)EquipmentIndex.Gateway]);
@@ -303,7 +303,7 @@ namespace ThinkInvisible.ClassicItems {
 
             //Scanner: double duration
             if((int)EquipmentIndex.Scanner >= swarr.Length)
-                Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: Scanner; not in switch");
+                ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch: Scanner; not in switch");
             else if(subEnable[EquipmentIndex.Scanner]) {
                 //Find: loading of prefab
                 c.GotoLabel(swarr[(int)EquipmentIndex.Scanner]);
@@ -319,13 +319,13 @@ namespace ThinkInvisible.ClassicItems {
                         else return origObj;
                     });
                 } else {
-                    Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: Scanner; target instructions not found");
+                    ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch: Scanner; target instructions not found");
                 }
             }
 
             //BFG: double impact damage
             if((int)EquipmentIndex.BFG >= swarr.Length)
-                Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: BFG; not in switch");
+                ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch: BFG; not in switch");
             else if(subEnable[EquipmentIndex.BFG]) {
                 //Find: loading of (int)2 into EquipmentSlot.bfgChargeTimer
                 c.GotoLabel(swarr[(int)EquipmentIndex.BFG]);
@@ -340,13 +340,13 @@ namespace ThinkInvisible.ClassicItems {
                         if(boost && cpt) cpt.boostedBFGs++;
                     });
                 } else {
-                    Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: BFG (PerformEquipmentAction); target instructions not found");
+                    ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch: BFG (PerformEquipmentAction); target instructions not found");
                 }
             }
 
             //Jetpack: double duration
             if((int)EquipmentIndex.Jetpack >= swarr.Length)
-                Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: Jetpack; not in switch");
+                ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch: Jetpack; not in switch");
             else if(subEnable[EquipmentIndex.Jetpack]) {
                 //Find: start of Jetpack label
                 c.GotoLabel(swarr[(int)EquipmentIndex.Jetpack]);
@@ -362,7 +362,7 @@ namespace ThinkInvisible.ClassicItems {
 
             //FireBallDash: double speed and damage
             if((int)EquipmentIndex.FireBallDash >= swarr.Length)
-                Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: FireBallDash; not in switch");
+                ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch: FireBallDash; not in switch");
             else if(subEnable[EquipmentIndex.FireBallDash]) {
                 //Find: string "Prefabs/NetworkedObjects/FireballVehicle"
                 //Then find: instantiation of the prefab
@@ -387,13 +387,13 @@ namespace ThinkInvisible.ClassicItems {
                         }
                     });
                 } else {
-                    Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: FireBallDash; target instructions not found");
+                    ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch: FireBallDash; target instructions not found");
                 }
             }
 
             //GainArmor: double duration
             if((int)EquipmentIndex.GainArmor >= swarr.Length)
-                Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: GainArmor; not in switch");
+                ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch: GainArmor; not in switch");
             else if(subEnable[EquipmentIndex.GainArmor]) {
                 //Find: AddTimedBuff(BuffIndex.ElephantArmorBoost, 5f)
                 c.GotoLabel(swarr[(int)EquipmentIndex.GainArmor]);
@@ -412,13 +412,13 @@ namespace ThinkInvisible.ClassicItems {
                         return boost?2*origBuffTime:origBuffTime;
                     });
                 } else {
-                    Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: GainArmor; target instructions not found");
+                    ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch: GainArmor; target instructions not found");
                 }
             }
 
             //Cleanse: double projectile delete radius
             if((int)EquipmentIndex.Cleanse >= swarr.Length)
-                Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: Cleanse; not in switch");
+                ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch: Cleanse; not in switch");
             else if(subEnable[EquipmentIndex.Cleanse]) {
                 //Find: num3 = 6f; num4 = num3 * num3;
                 float origRadius = 6f;
@@ -436,13 +436,13 @@ namespace ThinkInvisible.ClassicItems {
                         return boost?2*ofl:ofl;
                     });
                 } else {
-                    Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: Cleanse; target instructions not found");
+                    ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch: Cleanse; target instructions not found");
                 }
             }
             
             //Recycle: double recycle count
             if((int)EquipmentIndex.Recycle >= swarr.Length)
-                Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: Recycle; not in switch");
+                ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch: Recycle; not in switch");
             else if(subEnable[EquipmentIndex.Recycle]) {
                 c.GotoLabel(swarr[(int)EquipmentIndex.Recycle]);
                 ILFound = c.TryGotoNext(
@@ -462,7 +462,7 @@ namespace ThinkInvisible.ClassicItems {
                         return true;
                     });
                 } else {
-                    Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: Recycle; target instructions not found");
+                    ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch: Recycle; target instructions not found");
                 }
             }
         }
@@ -496,7 +496,7 @@ namespace ThinkInvisible.ClassicItems {
                         return origCooldown;
                     });
                 } else {
-                    Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: CommandMissile (FixedUpdate)");
+                    ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch: CommandMissile (FixedUpdate)");
                 }
             }
 
@@ -524,7 +524,7 @@ namespace ThinkInvisible.ClassicItems {
                         return origDamage;
                     });
                 } else {
-                    Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: BFG (FixedUpdate)");
+                    ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch: BFG (FixedUpdate)");
                 }
             }
         }
@@ -554,7 +554,7 @@ namespace ThinkInvisible.ClassicItems {
                     }
                 });
             } else {
-                Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: Gateway (FireGateway)");
+                ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch: Gateway (FireGateway)");
             }
         }
 
@@ -581,7 +581,7 @@ namespace ThinkInvisible.ClassicItems {
                     return boost ? origFreq*2 : origFreq;
                 });
             } else {
-                Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: GoldGat (FireBullet); target instructions not found");
+                ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch: GoldGat (FireBullet); target instructions not found");
                 ILFailed = true;
             }
         }
@@ -604,7 +604,7 @@ namespace ThinkInvisible.ClassicItems {
                     return 0f;
                 });
             } else {
-                Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: Jetpack (FixedUpdate); target instructions not found");
+                ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch: Jetpack (FixedUpdate); target instructions not found");
                 ILFailed = true;
             }
         }
@@ -622,7 +622,7 @@ namespace ThinkInvisible.ClassicItems {
                     return (slot.characterBody?.GetComponentInChildren<EmbryoComponent>()?.lastCOUBoosted == true) ? origValue * 2f : origValue;
                 });
             } else {
-                Debug.LogError("ClassicItems: failed to apply Beating Embryo IL patch: CritOnUse VFX (RpcOnEquipmentActivationReceived); target instructions not found");
+                ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch: CritOnUse VFX (RpcOnEquipmentActivationReceived); target instructions not found");
                 ILFailed = true;
             }
         }
