@@ -16,6 +16,10 @@ namespace ThinkInvisible.ClassicItems {
         
         [AutoItemConfig("Multiplier for knockback force.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
         public float procForce {get;private set;} = 50f;
+        
+        [AutoItemConfig("If false, Boxing Gloves will not proc on bosses.", AutoItemConfigFlags.None)]
+        public bool affectBosses {get;private set;} = false;
+
         protected override string NewLangName(string langid = null) => displayName;
         protected override string NewLangPickup(string langid = null) => "Hitting enemies have a " + Pct(procChance,0,1) + " chance to knock them back.";
         protected override string NewLangDesc(string langid = null) => "<style=cIsUtility>" + Pct(procChance,0,1) + "</style> <style=cStack>(+"+Pct(procChance,0,1)+" per stack, mult.)</style> chance to <style=cIsUtility>knock back</style> an enemy <style=cIsDamage>based on attack damage</style>.";
@@ -31,7 +35,7 @@ namespace ThinkInvisible.ClassicItems {
         }
 
         private void On_HCTakeDamage(On.RoR2.HealthComponent.orig_TakeDamage orig, HealthComponent self, DamageInfo di) {
-            if(di?.attacker) {
+            if(di?.attacker && (affectBosses || (!self.body?.isBoss ?? false))) {
                 var cb = di.attacker.GetComponent<CharacterBody>();
                 if(cb) {
                     var pChance = (1f-Mathf.Pow(1-procChance/100f,GetCount(cb)))*100f;
