@@ -110,6 +110,12 @@ For details and instructions on applying these, see: https://github.com/ThinkInv
 
 The 5 latest updates are listed below. For a full changelog, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/changelog.md
 
+**4.2.2**
+
+- Boxing Gloves now has an option to disable affecting bosses.
+- Made Golden Gun's second IL patch target slightly more lenient (fixes compatibility with GeneralFixes mod).
+- Now uses plugin-specific console logger.
+
 **4.2.1**
 
 - Logbook setup stage no longer completely breaks if an item (in ANY mod) has no model.
@@ -139,13 +145,3 @@ The 5 latest updates are listed below. For a full changelog, see: https://github
 - Ancient Scepter: Non-upgraded Eviscerate no longer resets duration on kill.
 - Ancient Scepter: Fixed several other cases where having negative item count could cause skills to act like their scepter replacements.
 - Gigantic Amethyst: restored cooldown to 8s from incorrect 45s.
-
-**4.1.1**
-
-- Ancient Scepter: Skill lookup is now more stable. It should no longer replace the wrong skill if another mod switches slots around, e.g. by adding a new passive variant.
-- Ancient Scepter/Gale-Force: now works as described, instead of only firing one charge at a time.
-- Ancient Scepter/Rabauld: now fires bursts of 6 shots with three-tenths damage on all but the first, instead of having 4x manual fire rate and count but half damage.
-
-Late notes as of next version:
-
-- Public API change: Parameter `skillSlot` in method `Scepter.RegisterScepterSkill` now takes a RoR2.SkillSlot instead of an int.

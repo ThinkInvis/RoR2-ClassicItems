@@ -1,5 +1,11 @@
 ﻿# ClassicItems Changelog
 
+**4.2.2**
+
+- Boxing Gloves now has an option to disable affecting bosses.
+- Made Golden Gun's second IL patch target slightly more lenient (fixes compatibility with GeneralFixes mod).
+- Now uses plugin-specific console logger.
+
 **4.2.1**
 
 - Logbook setup stage no longer completely breaks if an item (in ANY mod) has no model.
