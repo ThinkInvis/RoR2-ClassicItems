@@ -128,9 +128,7 @@ namespace ThinkInvisible.ClassicItems {
             ILFound = c.TryGotoNext(
                 x=>x.MatchLdloc(out locChrm),
                 x=>x.MatchCallOrCallvirt<CharacterMaster>("get_inventory"),
-                x=>x.MatchLdcI4((int)ItemIndex.Crowbar),
-                x=>x.MatchCallOrCallvirt<Inventory>("GetItemCount"),
-                x=>x.OpCode == OpCodes.Stloc_S)
+                x=>x.MatchLdcI4((int)ItemIndex.Crowbar))
             && c.TryGotoPrev(MoveType.After,
                 x=>x.OpCode == OpCodes.Brfalse);
 
