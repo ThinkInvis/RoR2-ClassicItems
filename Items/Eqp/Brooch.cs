@@ -63,45 +63,12 @@ namespace ThinkInvisible.ClassicItems {
 
         protected override void LoadBehavior() {
             ILFailed = false;
-            IL.RoR2.DirectorCore.TrySpawnObject += IL_DCTrySpawnObject;
             if(ILFailed) safeMode = true;
 
             if(!safeMode) On.RoR2.ChestBehavior.Open += On_CBOpen;
         }
         protected override void UnloadBehavior() {
-            IL.RoR2.DirectorCore.TrySpawnObject -= IL_DCTrySpawnObject;
             On.RoR2.ChestBehavior.Open -= On_CBOpen;
-        }
-
-        private void IL_DCTrySpawnObject(ILContext il) {
-            ILCursor c = new ILCursor(il);
-
-            
-            ILLabel[] swarr = new ILLabel[]{};
-            int instind = -1;
-
-            bool ILFound = c.TryGotoNext(
-                x=>x.MatchSwitch(out swarr))
-            && c.TryGotoNext(
-                x=>x.MatchLdfld<SpawnCard.SpawnResult>("spawnedInstance")
-                && x.Offset > swarr[(int)DirectorPlacementRule.PlacementMode.Approximate].Target.Offset
-                && x.Offset < swarr[(int)DirectorPlacementRule.PlacementMode.Approximate+1].Target.Offset,
-                x=>x.MatchStloc(out instind)
-                )
-            && c.TryGotoNext(
-                x=>x.MatchCallOrCallvirt<DirectorCore>("AddOccupiedNode")
-                && x.Offset < swarr[(int)DirectorPlacementRule.PlacementMode.Approximate+1].Target.Offset);
-            if(ILFound) {
-                c.Emit(OpCodes.Dup);
-                c.Emit(OpCodes.Ldloc, instind);
-                c.EmitDelegate<Action<RoR2.Navigation.NodeGraph.NodeIndex, GameObject>>((ind,res)=>{
-                    var cpt = res.GetComponent<CaptainsBroochDroppod>();
-                    if(cpt) cpt.mapNode = ind;
-                });
-            } else {
-                ClassicItemsPlugin._logger.LogError("Failed to apply Captain's Brooch IL patch. SafeMode will be enabled (no animations, no opened chest cleanup).");
-                ILFailed = true;
-            }
         }
 
         private void On_CBOpen(On.RoR2.ChestBehavior.orig_Open orig, ChestBehavior self) {
@@ -165,8 +132,6 @@ namespace ThinkInvisible.ClassicItems {
         Vector3 destination;
         [SyncVar]
         Vector3 source;
-
-        public RoR2.Navigation.NodeGraph.NodeIndex mapNode;
 
         [ClientRpc]
         private void RpcLaunch() {
@@ -259,9 +224,7 @@ namespace ThinkInvisible.ClassicItems {
                 this.gameObject.transform.position = Vector3.Lerp(destination, source, 1f-Math.Max(droptimer/2f, 0f));
                 if(droptimer <= 0f) {
                     if(NetworkServer.active)
-                        DirectorCore.instance.RemoveOccupiedNode(
-                            SceneInfo.instance.GetNodeGraph(Brooch.broochPrefab.nodeGraphType),
-                            mapNode);
+                        DirectorCore.instance.RemoveAllOccupiedNodes(this.gameObject);
                     Destroy(this.gameObject);
                 }
             }
