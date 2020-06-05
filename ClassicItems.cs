@@ -43,23 +43,38 @@ namespace ThinkInvisible.ClassicItems {
         
         internal static FilingDictionary<ItemBoilerplate> masterItemList = new FilingDictionary<ItemBoilerplate>();
         
-        private static ConfigEntry<bool> gCfgHSV2NoStomp;
-        private static ConfigEntry<bool> gCfgAllCards;
-        private static ConfigEntry<bool> gCfgHideDesc;
-        private static ConfigEntry<bool> gCfgLongDesc;
-        private static ConfigEntry<bool> gCfgSpinMod;
-        private static ConfigEntry<bool> gCfgCoolYourJets;
+        public class GlobalConfig:AutoItemConfigContainer {
+            [AutoItemConfig("If true, removes the hold-space-to-stomp functionality of H3AD-5T V2 (due to overlap in functionality with ClassicItems Headstompers). H3AD-5T V2 will still increase jump height and prevent fall damage.",
+                AutoItemConfigFlags.PreventNetMismatch)]
+            public bool hSV2NoStomp {get;private set;} = true;
+            internal bool hSV2Bound = false;
+
+            [AutoItemConfig("If true, replaces the pickup models for most vanilla items and equipments with trading cards.",
+                AutoItemConfigFlags.DeferForever)]
+            public bool allCards {get; private set;} = false;
+
+            [AutoItemConfig("If true, hides the dynamic description text on trading card-style pickup models. Enabling this may slightly improve performance.",
+                AutoItemConfigFlags.DeferForever)]
+            public bool hideDesc {get; private set;} = false;
+            
+            [AutoItemConfig("If true, descriptions on trading card-style pickup models will be the (typically longer) description text of the item. If false, pickup text will be used instead.",
+                AutoItemConfigFlags.DeferForever)]
+            public bool longDesc {get; private set;} = true;
+
+            [AutoItemConfig("If true, trading card-style pickup models will have customized spin behavior which makes descriptions more readable. Disabling this may slightly improve compatibility and performance.",
+                AutoItemConfigFlags.DeferForever)]
+            public bool spinMod {get; private set;} = true;
+            
+            [AutoItemConfig("If true, disables the Rusty Jetpack gravity reduction while Photon Jetpack is active. If false, there shall be yeet.",
+                AutoItemConfigFlags.PreventNetMismatch)]
+            public bool coolYourJets {get; private set;} = true;
+        }
+
+        public static readonly GlobalConfig globalConfig = new GlobalConfig();
 
         public static BuffIndex freezeBuff {get;private set;}
         public static BuffIndex fearBuff {get;private set;}
 
-        public static bool gHSV2NoStomp {get;private set;}
-        public static bool gAllCards {get;private set;}
-        public static bool gHideDesc {get;private set;}
-        public static bool gLongDesc {get;private set;}
-        public static bool gSpinMod {get;private set;}
-        public static bool gCoolYourJets {get;private set;}
-        
         private static readonly ReadOnlyDictionary<ItemTier, string> modelNameMap = new ReadOnlyDictionary<ItemTier,string>(new Dictionary<ItemTier, string>{
             {ItemTier.Boss, "BossCard"},
             {ItemTier.Lunar, "LunarCard"},
@@ -113,25 +128,17 @@ namespace ThinkInvisible.ClassicItems {
 
             Logger.LogDebug("Loading global configs...");
 
-            gCfgHSV2NoStomp = cfgFile.Bind(new ConfigDefinition("Global.VanillaTweaks", "NoHeadStompV2"), true, new ConfigDescription(
-                "If true, removes the hold-space-to-stomp functionality of H3AD-5T V2 (due to overlap in functionality with ClassicItems Headstompers). H3AD-5T V2 will still increase jump height and prevent fall damage."));   
-            gCfgAllCards = cfgFile.Bind(new ConfigDefinition("Global.VanillaTweaks", "AllCards"), false, new ConfigDescription(
-                "If true, replaces the pickup models for most vanilla items and equipments with trading cards."));
-            gCfgHideDesc = cfgFile.Bind(new ConfigDefinition("Global.Cosmetic", "HideDesc"), false, new ConfigDescription(
-                "If true, hides the dynamic description text on trading card-style pickup models. Enabling this may slightly improve performance."));
-            gCfgLongDesc = cfgFile.Bind(new ConfigDefinition("Global.Cosmetic", "LongDesc"), true, new ConfigDescription(
-                "If true, descriptions on trading card-style pickup models will be the (typically longer) description text of the item. If false, pickup text will be used instead."));
-            gCfgSpinMod = cfgFile.Bind(new ConfigDefinition("Global.Cosmetic", "SpinMod"), true, new ConfigDescription(
-                "If true, trading card-style pickup models will have customized spin behavior which makes descriptions more readable. Disabling this may slightly improve compatibility and performance."));
-            gCfgCoolYourJets = cfgFile.Bind(new ConfigDefinition("Global.Interaction", "CoolYourJets"), true, new ConfigDescription(
-                "If true, disables the Rusty Jetpack gravity reduction while Photon Jetpack is active. If false, there shall be yeet."));
-
-            gHSV2NoStomp = gCfgHSV2NoStomp.Value;
-            gAllCards = gCfgAllCards.Value;
-            gHideDesc = gCfgHideDesc.Value;
-            gLongDesc = gCfgLongDesc.Value;
-            gSpinMod = gCfgSpinMod.Value;
-            gCoolYourJets = gCfgCoolYourJets.Value;
+            globalConfig.BindAll(cfgFile, "ClassicItems", "Global");
+            globalConfig.ConfigEntryChanged += (sender, args) => {
+                if(args.target.boundProperty.Name == nameof(globalConfig.hSV2NoStomp)) {
+                    var toBind = (bool)args.newValue == true;
+                    if(toBind && !globalConfig.hSV2Bound) {
+                        IL.EntityStates.Headstompers.HeadstompersIdle.FixedUpdate += IL_ESHeadstompersIdleFixedUpdate;
+                    } else if(!toBind) {
+                        IL.EntityStates.Headstompers.HeadstompersIdle.FixedUpdate -= IL_ESHeadstompersIdleFixedUpdate;
+                    }
+                }
+            };
 
             Logger.LogDebug("Instantiating item classes...");
             masterItemList = ItemBoilerplate.InitAll("ClassicItems");
@@ -139,14 +146,14 @@ namespace ThinkInvisible.ClassicItems {
             Logger.LogDebug("Loading item configs...");
             foreach(ItemBoilerplate x in masterItemList) {
                 x.ConfigEntryChanged += (sender, args) => {
-                    if((args.flags & (AutoUpdateEventFlags.InvalidateNameToken | (gLongDesc ? AutoUpdateEventFlags.InvalidateDescToken : AutoUpdateEventFlags.InvalidatePickupToken))) == 0) return;
+                    if((args.flags & (AutoUpdateEventFlags.InvalidateNameToken | (globalConfig.longDesc ? AutoUpdateEventFlags.InvalidateDescToken : AutoUpdateEventFlags.InvalidatePickupToken))) == 0) return;
                     if(x.pickupDef != null) {
                         var ctsf = x.pickupDef.displayPrefab?.transform;
                         if(!ctsf) return;
                         var cfront = ctsf.Find("cardfront");
                         if(!cfront) return;
 
-                        cfront.Find("carddesc").GetComponent<TextMeshPro>().text = Language.GetString(gLongDesc ? x.descToken : x.pickupToken);
+                        cfront.Find("carddesc").GetComponent<TextMeshPro>().text = Language.GetString(globalConfig.longDesc ? x.descToken : x.pickupToken);
                         cfront.Find("cardname").GetComponent<TextMeshPro>().text = Language.GetString(x.nameToken);
                     }
                     if(x.logbookEntry != null) {
@@ -189,12 +196,15 @@ namespace ThinkInvisible.ClassicItems {
             Logger.LogDebug("Tweaking vanilla stuff...");
 
             //Remove the H3AD-5T V2 state transition from idle to stomp, as Headstompers has similar functionality
-            if(gHSV2NoStomp)
+            if(globalConfig.hSV2NoStomp && !globalConfig.hSV2Bound) {
+                globalConfig.hSV2Bound = true;
                 IL.EntityStates.Headstompers.HeadstompersIdle.FixedUpdate += IL_ESHeadstompersIdleFixedUpdate;
+            }
 
             On.RoR2.PickupCatalog.Init += On_PickupCatalogInit;
             On.RoR2.UI.LogBook.LogBookController.BuildPickupEntries += On_LogbookBuildPickupEntries;
-            if(gSpinMod)
+
+            if(globalConfig.spinMod)
                 IL.RoR2.PickupDisplay.Update += IL_PickupDisplayUpdate;
 
             Logger.LogDebug("Registering shared buffs...");
@@ -315,7 +325,7 @@ namespace ThinkInvisible.ClassicItems {
                 pickup.displayPrefab = pickup.displayPrefab.InstantiateClone("CI" + bpl.itemCodeName + "PickupCardPrefab", false);
             }
 
-            if(gAllCards) {
+            if(globalConfig.allCards) {
                 var eqpCardPrefab = Resources.Load<GameObject>("@ClassicItems:Assets/ClassicItems/models/VOvr/EqpCard.prefab");
                 var lunarCardPrefab = Resources.Load<GameObject>("@ClassicItems:Assets/ClassicItems/models/VOvr/LunarCard.prefab");
                 var lunEqpCardPrefab = Resources.Load<GameObject>("@ClassicItems:Assets/ClassicItems/models/VOvr/LqpCard.prefab");
@@ -377,7 +387,7 @@ namespace ThinkInvisible.ClassicItems {
 
                 csprite.GetComponent<MeshRenderer>().material.mainTexture = pickup.iconTexture;
 
-                if(gSpinMod)
+                if(globalConfig.spinMod)
                     pickup.displayPrefab.AddComponent<SpinModFlag>();
 
                 string pname;
@@ -387,13 +397,13 @@ namespace ThinkInvisible.ClassicItems {
                     var eqp = EquipmentCatalog.GetEquipmentDef(pickup.equipmentIndex);
                     if(eqp == null) continue;
                     pname = Language.GetString(eqp.nameToken);
-                    pdesc = Language.GetString(gLongDesc ? eqp.descriptionToken : eqp.pickupToken);
+                    pdesc = Language.GetString(globalConfig.longDesc ? eqp.descriptionToken : eqp.pickupToken);
                     prar = new Color(1f, 0.7f, 0.4f);
                 } else if(pickup.interactContextToken == "ITEM_PICKUP_CONTEXT") {
                     var item = ItemCatalog.GetItemDef(pickup.itemIndex);
                     if(item == null) continue;
                     pname = Language.GetString(item.nameToken);
-                    pdesc = Language.GetString(gLongDesc ? item.descriptionToken : item.pickupToken);
+                    pdesc = Language.GetString(globalConfig.longDesc ? item.descriptionToken : item.pickupToken);
                     switch(item.tier) {
                         case ItemTier.Boss: prar = new Color(1f, 1f, 0f); break;
                         case ItemTier.Lunar: prar = new Color(0f, 0.6f, 1f); break;
@@ -403,7 +413,7 @@ namespace ThinkInvisible.ClassicItems {
                     }
                 } else continue;
 
-                if(gHideDesc) {
+                if(globalConfig.hideDesc) {
                     Destroy(croot.gameObject);
                     Destroy(cnroot.gameObject);
                 } else {
@@ -442,7 +452,7 @@ namespace ThinkInvisible.ClassicItems {
                 }
                 replacedDescs ++;
             }
-            Logger.LogDebug((gHideDesc ? "Destroyed " : "Inserted ") + replacedDescs + " pickup model descriptions.");
+            Logger.LogDebug((globalConfig.hideDesc ? "Destroyed " : "Inserted ") + replacedDescs + " pickup model descriptions.");
         }
 
         private RoR2.UI.LogBook.Entry[] On_LogbookBuildPickupEntries(On.RoR2.UI.LogBook.LogBookController.orig_BuildPickupEntries orig) {

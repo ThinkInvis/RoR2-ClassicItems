@@ -45,7 +45,7 @@ namespace ThinkInvisible.ClassicItems {
             if(!self.characterMotor) return;
             if(GetCount(self) > 0 && self.inputBank.jump.down && (
                     !PhotonJetpack.instance.enabled
-                    || !ClassicItemsPlugin.gCoolYourJets
+                    || !ClassicItemsPlugin.globalConfig.coolYourJets
                     || (self.GetComponent<PhotonJetpackComponent>()?.fuel ?? 0f) <= 0f))
                 self.characterMotor.velocity.y -= Time.fixedDeltaTime * Physics.gravity.y * gravMod;
         }
