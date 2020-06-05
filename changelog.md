@@ -1,5 +1,11 @@
 ﻿# ClassicItems Changelog
 
+**4.2.3**
+
+- Main plugin now uses TILER2.AutoItemConfig for global configs. Note that **these config entries will reset to defaults once after updating ClassicItems** (names/categories have changed).
+- Moved some Captain's Brooch code (nodegraph cleanup) into TILER2.
+- (From TILER2 update to v1.4.0) Fixed some items applying incorrect types of damage bonus.
+
 **4.2.2**
 
 - Boxing Gloves now has an option to disable affecting bosses.

@@ -110,6 +110,12 @@ For details and instructions on applying these, see: https://github.com/ThinkInv
 
 The 5 latest updates are listed below. For a full changelog, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/changelog.md
 
+**4.2.3**
+
+- Main plugin now uses AutoItemConfig for global configs. Note that **these config entries will reset to defaults once after updating ClassicItems** (names/categories have changed).
+- Moved some Captain's Brooch code (nodegraph cleanup) into TILER2.
+- (From TILER2 update to v1.4.0) Fixed some items applying incorrect types of damage bonus.
+
 **4.2.2**
 
 - Boxing Gloves now has an option to disable affecting bosses.
@@ -139,9 +145,3 @@ The 5 latest updates are listed below. For a full changelog, see: https://github
 - Ancient Scepter/Chaotic Growth: Fixed range indicator's radius not being changed.
 - Ancient Scepter/both Engi skills: Now has a disabled-by-default option to decrease cooldown to match the additional stock (such that total recharge remains unchanged).
 - (From TILER2 update to v1.1.1) All equipments now have configurable cooldown.
-
-**4.1.2**
-
-- Ancient Scepter: Non-upgraded Eviscerate no longer resets duration on kill.
-- Ancient Scepter: Fixed several other cases where having negative item count could cause skills to act like their scepter replacements.
-- Gigantic Amethyst: restored cooldown to 8s from incorrect 45s.
