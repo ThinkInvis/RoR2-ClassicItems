@@ -70,11 +70,38 @@ namespace ThinkInvisible.ClassicItems {
 
         internal static BepInEx.Logging.ManualLogSource _logger;
 
-        private ClassicItemsPlugin() {
+        #if DEBUG
+        public void Update() {
+            var i3 = Input.GetKeyDown(KeyCode.F3);
+            var i4 = Input.GetKeyDown(KeyCode.F4);
+            var i5 = Input.GetKeyDown(KeyCode.F5);
+            var i6 = Input.GetKeyDown(KeyCode.F6);
+            var i7 = Input.GetKeyDown(KeyCode.F7);
+            if (i3 || i4 || i5 || i6 || i7) {
+                var trans = PlayerCharacterMasterController.instances[0].master.GetBodyObject().transform;
+
+                List<PickupIndex> spawnList;
+                if(i3) spawnList = Run.instance.availableTier1DropList;
+                else if(i4) spawnList = Run.instance.availableTier2DropList;
+                else if(i5) spawnList = Run.instance.availableTier3DropList;
+                else if(i6) spawnList = Run.instance.availableEquipmentDropList;
+                else spawnList = Run.instance.availableLunarDropList;
+
+                PickupDropletController.CreatePickupDroplet(spawnList[Run.instance.spawnRng.RangeInt(0,spawnList.Count)], trans.position, new Vector3(0f, -5f, 0f));
+            }
+        }
+        #endif
+        
+
+        private void Awake() {
             _logger = Logger;
+
+            Logger.LogDebug("Performing plugin setup...");
+
             #if DEBUG
             Logger.LogWarning("Running test build with debug enabled! If you're seeing this after downloading the mod from Thunderstore, please panic.");
             #endif
+
             Logger.LogDebug("Loading assets...");
             using(var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("ClassicItems.classicitems_assets")) {
                 var bundle = AssetBundle.LoadFromStream(stream);
@@ -158,32 +185,6 @@ namespace ThinkInvisible.ClassicItems {
                 else
                     Logger.LogMessage("    Other CI"+x.itemCodeName.PadRight(longestName) + " / N/A");
             }
-        }
-
-        #if DEBUG
-        public void Update() {
-            var i3 = Input.GetKeyDown(KeyCode.F3);
-            var i4 = Input.GetKeyDown(KeyCode.F4);
-            var i5 = Input.GetKeyDown(KeyCode.F5);
-            var i6 = Input.GetKeyDown(KeyCode.F6);
-            var i7 = Input.GetKeyDown(KeyCode.F7);
-            if (i3 || i4 || i5 || i6 || i7) {
-                var trans = PlayerCharacterMasterController.instances[0].master.GetBodyObject().transform;
-
-                List<PickupIndex> spawnList;
-                if(i3) spawnList = Run.instance.availableTier1DropList;
-                else if(i4) spawnList = Run.instance.availableTier2DropList;
-                else if(i5) spawnList = Run.instance.availableTier3DropList;
-                else if(i6) spawnList = Run.instance.availableEquipmentDropList;
-                else spawnList = Run.instance.availableLunarDropList;
-                PickupDropletController.CreatePickupDroplet(spawnList[Run.instance.spawnRng.RangeInt(0,spawnList.Count)], trans.position, new Vector3(0f, -5f, 0f));
-            }
-        }
-        #endif
-        
-
-        private void Awake() {
-            Logger.LogDebug("Performing plugin setup...");
 
             Logger.LogDebug("Tweaking vanilla stuff...");
 
