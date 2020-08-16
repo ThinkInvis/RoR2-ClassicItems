@@ -226,7 +226,7 @@ namespace ThinkInvisible.ClassicItems {
                 iconPath = "textures/miscicons/texSprintIcon"
             });
             fearBuff = BuffAPI.Add(fearBuffDef);
-            IL.EntityStates.AI.Walker.Combat.FixedUpdate += IL_ESAIWalkerCombatFixedUpdate;
+            IL.EntityStates.AI.Walker.Combat.UpdateAI += IL_ESAIWalkerCombatUpdateAI;
 
             Logger.LogDebug("Registering item behaviors...");
 
@@ -237,7 +237,7 @@ namespace ThinkInvisible.ClassicItems {
             Logger.LogDebug("Initial setup done!");
         }
 
-        private void IL_ESAIWalkerCombatFixedUpdate(ILContext il) {
+        private void IL_ESAIWalkerCombatUpdateAI(ILContext il) {
             ILCursor c = new ILCursor(il);
 
             int locMoveState = 0;
