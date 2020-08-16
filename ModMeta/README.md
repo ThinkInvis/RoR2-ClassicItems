@@ -49,7 +49,7 @@ For nostalgic purposes only. Here Be Dragons who hoard balance issues, because t
     - Acrid: Epidemic > Plague (victims become walking sources of Plague, chains infinitely)
 - Beating Embryo: "Equipment has a 30% chance to deal double the effect."
     - Doubles *duration* on: Ocular HUD, Jade Elephant, Milky Chrysalis, Radar Scanner, Snowglobe, Pillaged Gold, Prescriptions, Safeguard Lantern.
-    - Doubles *range* on: Primordial Cube, Blast Shower, Skeleton Key.
+    - Doubles *range* on: Primordial Cube, Blast Shower (broken), Skeleton Key.
     - Doubles *count* on: The Back-up, Captain's Brooch, Sawmerang, Royal Capacitor, Recycler, Lost Doll, Gigantic Amethyst.
     - Doubles *fire rate and count* on: Disposable Missile Launcher.
     - Doubles *fire rate* on: The Crowdfunder.
@@ -96,6 +96,10 @@ For nostalgic purposes only. Here Be Dragons who hoard balance issues, because t
 - Stats are set close to RoR1's whenever possible. May eventually set up a config preset which balances items a little more carefully with respect to RoR2's existing content.
 - Beating Embryo has no effect on Lunar equipments (other than those added by mods). This is a design decision, but disabled-by-default effects are planned.
 - Color tags on pickup model text are too bright.
+- Other bugs may be lurking with the 1.0 release. Extensive testing hasn't been performed yet, just some patches for immediately critical issues. Known 1.0-related issues:
+    - Beating Embryo has no effect on Blast Shower. Its behavior was changed in 1.0 and will require a more extensive patch.
+    - Beating Embryo has no effect on any of the new equipments from 1.0.
+    - Captain does not benefit from Ancient Scepter.
 - See the GitHub repo for more!
 
 ## Modder Resources
@@ -109,6 +113,11 @@ For details and instructions on applying these, see: https://github.com/ThinkInv
 ## Changelog
 
 The 5 latest updates are listed below. For a full changelog, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/changelog.md
+
+**4.3.0**
+
+- Patches critical bugs for RoR2 1.0. Fixes item models not being setup properly and Milky Chrysalis not working with Beating Embryo.
+- Temporarily removed code for Blast Shower's Beating Embryo patch, as it needs to be rewritten entirely.
 
 **4.2.3**
 
@@ -136,12 +145,3 @@ The 5 latest updates are listed below. For a full changelog, see: https://github
 - ADDED ITEMS: Taser, Filial Imprinting, The Hit List!
 - Fixed an issue where Barbed Wire, Snowglobe, and Safeguard Lantern were not performing team filtering correctly. This caused these items to fail to work properly when used by non-players, or by anyone if Artifact of Chaos was enabled.
 - (From TILER2 update to v1.2.1) All relevant items now use run-seeded RNG instead of always using the same seed (0).
-
-**4.1.3**
-
-- Barbed Wire: Fixed aura being removed after stage changes.
-- 56 Leaf Clover: Now has a disabled-by-default option to allow deployables to count towards global Clover stacks.
-- Ancient Scepter/Massacre: Now filters kills by maximum Eviscerate range. Kills farther than this range will not refresh Massacre duration.
-- Ancient Scepter/Chaotic Growth: Fixed range indicator's radius not being changed.
-- Ancient Scepter/both Engi skills: Now has a disabled-by-default option to decrease cooldown to match the additional stock (such that total recharge remains unchanged).
-- (From TILER2 update to v1.1.1) All equipments now have configurable cooldown.

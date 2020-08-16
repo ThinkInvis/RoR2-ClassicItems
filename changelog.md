@@ -1,5 +1,10 @@
 ﻿# ClassicItems Changelog
 
+**4.3.0**
+
+- Patches critical bugs for RoR2 1.0. Fixes item models not being setup properly and Milky Chrysalis not working with Beating Embryo.
+- Temporarily removed code for Blast Shower's Beating Embryo patch, as it needs to be rewritten entirely.
+
 **4.2.3**
 
 - Main plugin now uses TILER2.AutoItemConfig for global configs. Note that **these config entries will reset to defaults once after updating ClassicItems** (names/categories have changed).
