@@ -598,7 +598,7 @@ namespace ThinkInvisible.ClassicItems {
                 c.Index++;
                 c.Emit(OpCodes.Ldarg_0);
                 c.EmitDelegate<Func<float,JetpackController,float>>((origDecr,jpc)=>{
-                    EmbryoComponent cpt = jpc.NetworktargetObject?.GetComponentInChildren<EmbryoComponent>();
+                    EmbryoComponent cpt = jpc.GetFieldValue<CharacterBody>("targetBody").GetComponentInChildren<EmbryoComponent>();
                     if(!cpt || cpt.boostedJetTime <= 0) return origDecr;
                     cpt.boostedJetTime -= origDecr;
                     return 0f;
