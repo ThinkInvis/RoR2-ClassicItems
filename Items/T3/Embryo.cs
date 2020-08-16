@@ -56,7 +56,7 @@ namespace ThinkInvisible.ClassicItems {
         });
 
         public readonly ReadOnlyCollection<EquipmentIndex> handledEqps = new ReadOnlyCollection<EquipmentIndex>(new[] {
-            EquipmentIndex.BFG, EquipmentIndex.Blackhole, EquipmentIndex.Cleanse, EquipmentIndex.CommandMissile, EquipmentIndex.CritOnUse,
+            EquipmentIndex.BFG, EquipmentIndex.Blackhole, EquipmentIndex.CommandMissile, EquipmentIndex.CritOnUse, //EquipmentIndex.Cleanse, 
             EquipmentIndex.DroneBackup, EquipmentIndex.FireBallDash, EquipmentIndex.Fruit, EquipmentIndex.GainArmor, EquipmentIndex.Gateway,
             EquipmentIndex.GoldGat, EquipmentIndex.Jetpack, EquipmentIndex.Lightning, EquipmentIndex.PassiveHealing, EquipmentIndex.Recycle,
             EquipmentIndex.Saw, EquipmentIndex.Scanner
@@ -417,7 +417,7 @@ namespace ThinkInvisible.ClassicItems {
             }
 
             //Cleanse: double projectile delete radius
-            if((int)EquipmentIndex.Cleanse >= swarr.Length)
+            /*if((int)EquipmentIndex.Cleanse >= swarr.Length)
                 ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch: Cleanse; not in switch");
             else if(subEnable[EquipmentIndex.Cleanse]) {
                 //Find: num3 = 6f; num4 = num3 * num3;
@@ -438,7 +438,7 @@ namespace ThinkInvisible.ClassicItems {
                 } else {
                     ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch: Cleanse; target instructions not found");
                 }
-            }
+            }*/
             
             //Recycle: double recycle count
             if((int)EquipmentIndex.Recycle >= swarr.Length)
