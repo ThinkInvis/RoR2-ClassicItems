@@ -42,7 +42,7 @@ namespace ThinkInvisible.ClassicItems {
             };
 
             onAttrib += (tokenIdent, namePrefix) => {
-			    Language.SetCurrentLanguage(Language.currentLanguage);
+			    //Language.SetCurrentLanguage(Language.currentLanguage);
 
                 ArtificerFlamethrower2.SetupAttributes();
                 ArtificerFlyUp2.SetupAttributes();
