@@ -47,7 +47,7 @@ namespace ThinkInvisible.ClassicItems {
         public class GlobalConfig:AutoItemConfigContainer {
             [AutoItemConfig("If true, removes the hold-space-to-stomp functionality of H3AD-5T V2 (due to overlap in functionality with ClassicItems Headstompers). H3AD-5T V2 will still increase jump height and prevent fall damage.",
                 AutoItemConfigFlags.PreventNetMismatch)]
-            public bool hSV2NoStomp {get;private set;} = true;
+            public bool hSV2NoStomp {get;private set;} = false;
             internal bool hSV2Bound = false;
 
             [AutoItemConfig("If true, replaces the pickup models for most vanilla items and equipments with trading cards.",
