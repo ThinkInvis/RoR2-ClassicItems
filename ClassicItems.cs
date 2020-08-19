@@ -286,10 +286,12 @@ namespace ThinkInvisible.ClassicItems {
                 x=>x.MatchMul());
             if(ILFound) {
                 c.EmitDelegate<Func<float,float>>((origAngle) => {
-                    if(!puo.GetComponent<SpinModFlag>() || !NetworkClient.active) return origAngle;
+                    if(!puo || !puo.GetComponent<SpinModFlag>() || !NetworkClient.active || PlayerCharacterMasterController.instances.Count == 0) return origAngle;
                     var body = PlayerCharacterMasterController.instances[0].master.GetBody();
                     if(!body) return origAngle;
-                    return RoR2.Util.QuaternionSafeLookRotation(body.coreTransform.position - puo.transform.position).eulerAngles.y
+                    var btsf = body.coreTransform;
+                    if(!btsf) btsf = body.transform;
+                    return RoR2.Util.QuaternionSafeLookRotation(btsf.position - puo.transform.position).eulerAngles.y
                         + (float)Math.Tanh(((origAngle/100.0f) % 6.2832f - 3.1416f) * 2f) * 180f
                         + 180f
                         - (puo.transform.parent?.eulerAngles.y ?? 0f);
