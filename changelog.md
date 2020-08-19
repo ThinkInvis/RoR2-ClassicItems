@@ -1,5 +1,11 @@
 ﻿# ClassicItems Changelog
 
+**4.3.1**
+
+- Fixed Beating Embryo causing infinite Milky Chrysalis and errorspam in console when used.
+- Added new Blast Shower patch for Beating Embryo.
+- Bumped R2API dependency version to 2.5.6.
+
 **4.3.0**
 
 - Patches critical bugs for RoR2 1.0. Fixes item models not being setup properly and Milky Chrysalis not working with Beating Embryo.

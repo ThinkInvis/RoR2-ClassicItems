@@ -49,7 +49,7 @@ For nostalgic purposes only. Here Be Dragons who hoard balance issues, because t
     - Acrid: Epidemic > Plague (victims become walking sources of Plague, chains infinitely)
 - Beating Embryo: "Equipment has a 30% chance to deal double the effect."
     - Doubles *duration* on: Ocular HUD, Jade Elephant, Milky Chrysalis, Radar Scanner, Snowglobe, Pillaged Gold, Prescriptions, Safeguard Lantern.
-    - Doubles *range* on: Primordial Cube, Blast Shower (broken), Skeleton Key.
+    - Doubles *range* on: Primordial Cube, Blast Shower, Skeleton Key.
     - Doubles *count* on: The Back-up, Captain's Brooch, Sawmerang, Royal Capacitor, Recycler, Lost Doll, Gigantic Amethyst.
     - Doubles *fire rate and count* on: Disposable Missile Launcher.
     - Doubles *fire rate* on: The Crowdfunder.
@@ -97,7 +97,6 @@ For nostalgic purposes only. Here Be Dragons who hoard balance issues, because t
 - Beating Embryo has no effect on Lunar equipments (other than those added by mods). This is a design decision, but disabled-by-default effects are planned.
 - Color tags on pickup model text are too bright.
 - Other bugs may be lurking with the 1.0 release. Extensive testing hasn't been performed yet, just some patches for immediately critical issues. Known 1.0-related issues:
-    - Beating Embryo has no effect on Blast Shower. Its behavior was changed in 1.0 and will require a more extensive patch.
     - Beating Embryo has no effect on any of the new equipments from 1.0.
     - Captain does not benefit from Ancient Scepter.
 - See the GitHub repo for more!
@@ -106,13 +105,19 @@ For nostalgic purposes only. Here Be Dragons who hoard balance issues, because t
 
 ClassicItems exposes some members as public for use in compatibility patches in other mods, including:
 
-- Tools to implement Beating Embryo and Ancient Scepter behavior for other mods' equipment items
+- Tools to implement Beating Embryo and Ancient Scepter behavior for other mods' equipment items and characters
 
 For details and instructions on applying these, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/modding.md
 
 ## Changelog
 
 The 5 latest updates are listed below. For a full changelog, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/changelog.md
+
+**4.3.1**
+
+- Fixed Beating Embryo causing infinite Milky Chrysalis and errorspam in console when used.
+- Added new Blast Shower patch for Beating Embryo.
+- Bumped R2API dependency version to 2.5.6.
 
 **4.3.0**
 
@@ -139,9 +144,3 @@ The 5 latest updates are listed below. For a full changelog, see: https://github
 - Internal buff names are now consistent with item names and with each other.
 - Migrated most RecalculateStats IL patches to TILER2, as well as some extension methods. Most UseIL config settings have been removed as a consequence, possibly temporarily.
 - GitHub repo is now licensed (GNU GPL3).
-
-**4.2.0**
-
-- ADDED ITEMS: Taser, Filial Imprinting, The Hit List!
-- Fixed an issue where Barbed Wire, Snowglobe, and Safeguard Lantern were not performing team filtering correctly. This caused these items to fail to work properly when used by non-players, or by anyone if Artifact of Chaos was enabled.
-- (From TILER2 update to v1.2.1) All relevant items now use run-seeded RNG instead of always using the same seed (0).
