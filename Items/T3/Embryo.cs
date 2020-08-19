@@ -56,7 +56,7 @@ namespace ThinkInvisible.ClassicItems {
         });
 
         public readonly ReadOnlyCollection<EquipmentIndex> handledEqps = new ReadOnlyCollection<EquipmentIndex>(new[] {
-            EquipmentIndex.BFG, EquipmentIndex.Blackhole, EquipmentIndex.CommandMissile, EquipmentIndex.CritOnUse, //EquipmentIndex.Cleanse, 
+            EquipmentIndex.BFG, EquipmentIndex.Blackhole, EquipmentIndex.CommandMissile, EquipmentIndex.CritOnUse, EquipmentIndex.Cleanse, 
             EquipmentIndex.DroneBackup, EquipmentIndex.FireBallDash, EquipmentIndex.Fruit, EquipmentIndex.GainArmor, EquipmentIndex.Gateway,
             EquipmentIndex.GoldGat, EquipmentIndex.Jetpack, EquipmentIndex.Lightning, EquipmentIndex.PassiveHealing, EquipmentIndex.Recycle,
             EquipmentIndex.Saw, EquipmentIndex.Scanner
@@ -148,7 +148,14 @@ namespace ThinkInvisible.ClassicItems {
                 if(ILFailed) IL.RoR2.EquipmentSlot.RpcOnClientEquipmentActivationRecieved -= IL_ESRpcOnEquipmentActivationReceived;
                 ILFailed = false;
             }
+
+            if(subEnable[EquipmentIndex.Cleanse]) {
+                IL.RoR2.Util.CleanseBody += IL_UtilCleanseBody;
+                if(ILFailed) IL.RoR2.Util.CleanseBody -= IL_UtilCleanseBody;
+                ILFailed = false;
+            }
         }
+
 
         protected override void UnloadBehavior() {
             On.RoR2.CharacterBody.OnInventoryChanged -= On_CBOnInventoryChanged;
@@ -417,28 +424,13 @@ namespace ThinkInvisible.ClassicItems {
             }
 
             //Cleanse: double projectile delete radius
-            /*if((int)EquipmentIndex.Cleanse >= swarr.Length)
+            if((int)EquipmentIndex.Cleanse >= swarr.Length)
                 ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch: Cleanse; not in switch");
             else if(subEnable[EquipmentIndex.Cleanse]) {
-                //Find: num3 = 6f; num4 = num3 * num3;
-                float origRadius = 6f;
-                c.GotoLabel(swarr[(int)EquipmentIndex.Cleanse]);
-                ILFound = c.TryGotoNext(
-                    x=>x.MatchCallOrCallvirt<SetStateOnHurt>("Cleanse"),
-                    x=>x.MatchLdcR4(out origRadius),
-                    x=>x.MatchDup(),
-                    x=>x.MatchMul(),
-                    x=>x.OpCode == OpCodes.Stloc_S);
-
-                if(ILFound) {
-                    c.Index+=2;
-                    c.EmitDelegate<Func<float,float>>((ofl)=>{
-                        return boost?2*ofl:ofl;
-                    });
-                } else {
-                    ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch: Cleanse; target instructions not found");
-                }
-            }*/
+                c.EmitDelegate<Action>(()=>{
+                    if(cpt) cpt.lastCleanseBoosted = boost;
+                });
+            }
             
             //Recycle: double recycle count
             if((int)EquipmentIndex.Recycle >= swarr.Length)
@@ -626,6 +618,26 @@ namespace ThinkInvisible.ClassicItems {
                 ILFailed = true;
             }
         }
+
+        private void IL_UtilCleanseBody(ILContext il) {
+            ILCursor c = new ILCursor(il);
+
+            bool ILFound = c.TryGotoNext(
+                x=>x.MatchCall<Vector3>("get_sqrMagnitude"),
+                x=>x.MatchLdloc(out _),
+                x=>x.MatchBgeUn(out _));
+
+            if(ILFound) {
+                c.Index += 2;
+                c.Emit(OpCodes.Ldarg_0);
+                c.EmitDelegate<Func<float,CharacterBody,float>>((origValue, body)=>{
+                    return (body.GetComponentInChildren<EmbryoComponent>()?.lastCleanseBoosted == true) ? origValue * 2f : origValue;
+                });
+            } else {
+                ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch: Blast Shower (Util.CleanseBody); target instructions not found");
+                ILFailed = true;
+            }
+        }
     }
 
     public class EmbryoRecycleFlag : MonoBehaviour {}
@@ -639,6 +651,8 @@ namespace ThinkInvisible.ClassicItems {
         public float boostedJetTime;
         [SyncVar]
         public bool lastCOUBoosted = false;
+        [SyncVar]
+        public bool lastCleanseBoosted = false;
 
         public void Awake() {
             boostedGates = 0;
