@@ -10,22 +10,31 @@ using System;
 using EntityStates.Loader;
 
 namespace ThinkInvisible.ClassicItems {
-    public static class LoaderChargeZapFist2 {
+    public class LoaderChargeZapFist2 : ScepterSkill {
         private static GameObject projReplacer;
-        public static SkillDef myDef {get; private set;}
-        internal static void SetupAttributes() {
+        public override SkillDef myDef {get; protected set;}
+
+        public override string oldDescToken {get; protected set;}
+        public override string newDescToken {get; protected set;}
+        public override string overrideStr => "\n<color=#d299ff>SCEPTER: Triple omnidirectional lightning bolts.</color>";
+        
+        public override string targetBody => "LoaderBody";
+        public override SkillSlot targetSlot => SkillSlot.Utility;
+        public override int targetVariantIndex => 1;
+
+        internal override void SetupAttributes() {
             var oldDef = Resources.Load<SkillDef>("skilldefs/loaderbody/ChargeZapFist");
             myDef = CloneSkillDef(oldDef);
 
             var nametoken = "CLASSICITEMS_SCEPLOADER_CHARGEZAPFISTNAME";
-            var desctoken = "CLASSICITEMS_SCEPLOADER_CHARGEZAPFISTDESC";
+            newDescToken = "CLASSICITEMS_SCEPLOADER_CHARGEZAPFISTDESC";
+            oldDescToken = oldDef.skillDescriptionToken;
             var namestr = "Thundercrash";
             LanguageAPI.Add(nametoken, namestr);
-            LanguageAPI.Add(desctoken, Language.GetString(oldDef.skillDescriptionToken) + "\n<color=#d299ff>SCEPTER: Triple omnidirectional lightning bolts.</color>");
 
             myDef.skillName = namestr;
             myDef.skillNameToken = nametoken;
-            myDef.skillDescriptionToken = desctoken;
+            myDef.skillDescriptionToken = newDescToken;
             myDef.icon = Resources.Load<Sprite>("@ClassicItems:Assets/ClassicItems/icons/scepter/loader_chargezapfisticon.png");
 
             LoadoutAPI.AddSkillDef(myDef);
@@ -39,16 +48,16 @@ namespace ThinkInvisible.ClassicItems {
             ProjectileCatalog.getAdditionalEntries += (list) => list.Add(projReplacer);
         }
 
-        internal static void LoadBehavior() {
+        internal override void LoadBehavior() {
             IL.EntityStates.Loader.SwingZapFist.OnMeleeHitAuthority += IL_SwingZapFistMeleeHit;
             On.EntityStates.Loader.BaseChargeFist.OnEnter += On_BaseChargeFistEnter;
         }
 
-        internal static void UnloadBehavior() {
+        internal override void UnloadBehavior() {
             IL.EntityStates.Loader.SwingZapFist.OnMeleeHitAuthority -= IL_SwingZapFistMeleeHit;
         }
         
-        private static void On_BaseChargeFistEnter(On.EntityStates.Loader.BaseChargeFist.orig_OnEnter orig, BaseChargeFist self) {
+        private void On_BaseChargeFistEnter(On.EntityStates.Loader.BaseChargeFist.orig_OnEnter orig, BaseChargeFist self) {
             orig(self);
             if(!(self is ChargeZapFist) || Scepter.instance.GetCount(self.outer.commonComponents.characterBody) < 1) return;
 			var mTsf = self.outer.commonComponents.modelLocator?.modelTransform?.GetComponent<ChildLocator>()?.FindChild(BaseChargeFist.chargeVfxChildLocatorName);
@@ -59,7 +68,7 @@ namespace ThinkInvisible.ClassicItems {
                 }, true);
         }
 
-        private static void IL_SwingZapFistMeleeHit(ILContext il) {
+        private void IL_SwingZapFistMeleeHit(ILContext il) {
             ILCursor c = new ILCursor(il);
             bool ilFound = c.TryGotoNext(
                 x => x.MatchStfld<FireProjectileInfo>(nameof(FireProjectileInfo.projectilePrefab)));

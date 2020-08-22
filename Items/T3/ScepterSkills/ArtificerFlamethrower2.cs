@@ -9,22 +9,31 @@ using RoR2.Projectile;
 using Mono.Cecil.Cil;
 
 namespace ThinkInvisible.ClassicItems {
-    public static class ArtificerFlamethrower2 {
-        private static GameObject projCloud;
-        public static SkillDef myDef {get; private set;}
-        internal static void SetupAttributes() {
+    public class ArtificerFlamethrower2 : ScepterSkill {
+        private GameObject projCloud;
+        public override SkillDef myDef {get; protected set;}
+
+        public override string oldDescToken {get; protected set;}
+        public override string newDescToken {get; protected set;}
+        public override string overrideStr => "\n<color=#d299ff>SCEPTER: Hits leave behind a lingering fire cloud.</color>";
+
+        public override string targetBody => "MageBody";
+        public override SkillSlot targetSlot => SkillSlot.Special;
+        public override int targetVariantIndex => 0;
+
+        internal override void SetupAttributes() {
             var oldDef = Resources.Load<SkillDef>("skilldefs/magebody/MageBodyFlamethrower");
             myDef = CloneSkillDef(oldDef);
 
             var nametoken = "CLASSICITEMS_SCEPMAGE_FLAMETHROWERNAME";
-            var desctoken = "CLASSICITEMS_SCEPMAGE_FLAMETHROWERDESC";
+            newDescToken = "CLASSICITEMS_SCEPMAGE_FLAMETHROWERDESC";
+            oldDescToken = oldDef.skillDescriptionToken;
             var namestr = "Dragon's Breath";
             LanguageAPI.Add(nametoken, namestr);
-            LanguageAPI.Add(desctoken, Language.GetString(oldDef.skillDescriptionToken) + "\n<color=#d299ff>SCEPTER: Hits leave behind a lingering fire cloud.</color>");
 
             myDef.skillName = namestr;
             myDef.skillNameToken = nametoken;
-            myDef.skillDescriptionToken = desctoken;
+            myDef.skillDescriptionToken = newDescToken;
             myDef.icon = Resources.Load<Sprite>("@ClassicItems:Assets/ClassicItems/icons/scepter/mage_flamethrowericon.png");
 
             LoadoutAPI.AddSkillDef(myDef);
@@ -71,15 +80,15 @@ namespace ThinkInvisible.ClassicItems {
             ProjectileCatalog.getAdditionalEntries += (list) => list.Add(projCloud);
         }
 
-        internal static void LoadBehavior() {
+        internal override void LoadBehavior() {
             IL.EntityStates.Mage.Weapon.Flamethrower.FireGauntlet += IL_FlamethrowerFireGauntlet;
         }
 
-        internal static void UnloadBehavior() {
+        internal override void UnloadBehavior() {
             IL.EntityStates.Mage.Weapon.Flamethrower.FireGauntlet -= IL_FlamethrowerFireGauntlet;
         }
 
-        private static void IL_FlamethrowerFireGauntlet(ILContext il) {
+        private void IL_FlamethrowerFireGauntlet(ILContext il) {
             ILCursor c = new ILCursor(il);
 
             bool ilFound = c.TryGotoNext(

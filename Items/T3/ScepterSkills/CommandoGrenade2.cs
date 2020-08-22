@@ -8,23 +8,31 @@ using EntityStates.Commando.CommandoWeapon;
 using R2API.Utils;
 
 namespace ThinkInvisible.ClassicItems {
-    public static class CommandoGrenade2 {
+    public class CommandoGrenade2 : ScepterSkill {
         private static GameObject projReplacer;
-        public static SkillDef myDef {get; private set;}
+        public override SkillDef myDef {get; protected set;}
 
-        internal static void SetupAttributes() {
+        public override string oldDescToken {get; protected set;}
+        public override string newDescToken {get; protected set;}
+        public override string overrideStr => "\n<color=#d299ff>SCEPTER: Half damage and knockback; throw eight at once.</color>";
+        
+        public override string targetBody => "CommandoBody";
+        public override SkillSlot targetSlot => SkillSlot.Special;
+        public override int targetVariantIndex => 1;
+
+        internal override void SetupAttributes() {
             var oldDef = Resources.Load<SkillDef>("skilldefs/commandobody/ThrowGrenade");
             myDef = CloneSkillDef(oldDef);
 
             var nametoken = "CLASSICITEMS_SCEPCOMMANDO_GRENADENAME";
-            var desctoken = "CLASSICITEMS_SCEPCOMMANDO_GRENADEDESC";
+            newDescToken = "CLASSICITEMS_SCEPCOMMANDO_GRENADEDESC";
+            oldDescToken = oldDef.skillDescriptionToken;
             var namestr = "Carpet Bomb";
             LanguageAPI.Add(nametoken, namestr);
-            LanguageAPI.Add(desctoken, Language.GetString(oldDef.skillDescriptionToken) + "\n<color=#d299ff>SCEPTER: Half damage and knockback; throw eight at once.</color>");
             
             myDef.skillName = namestr;
             myDef.skillNameToken = nametoken;
-            myDef.skillDescriptionToken = desctoken;
+            myDef.skillDescriptionToken = newDescToken;
             myDef.icon = Resources.Load<Sprite>("@ClassicItems:Assets/ClassicItems/icons/scepter/commando_grenadeicon.png");
 
             LoadoutAPI.AddSkillDef(myDef);
@@ -37,15 +45,15 @@ namespace ThinkInvisible.ClassicItems {
             ProjectileCatalog.getAdditionalEntries += (list) => list.Add(projReplacer);
         }
         
-        internal static void LoadBehavior() {
+        internal override void LoadBehavior() {
             On.EntityStates.Commando.CommandoWeapon.FireFMJ.Fire += On_FireFMJFire;
         }
 
-        internal static void UnloadBehavior() {
+        internal override void UnloadBehavior() {
             On.EntityStates.Commando.CommandoWeapon.FireFMJ.Fire -= On_FireFMJFire;
         }
 
-        private static void On_FireFMJFire(On.EntityStates.Commando.CommandoWeapon.FireFMJ.orig_Fire orig, FireFMJ self) {
+        private void On_FireFMJFire(On.EntityStates.Commando.CommandoWeapon.FireFMJ.orig_Fire orig, FireFMJ self) {
             var cc = self.outer.commonComponents;
             bool isBoosted = self is ThrowGrenade
                 && Util.HasEffectiveAuthority(self.outer.networkIdentity)

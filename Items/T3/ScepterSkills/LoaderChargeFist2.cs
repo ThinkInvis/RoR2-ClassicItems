@@ -7,36 +7,45 @@ using R2API;
 using EntityStates.Loader;
 
 namespace ThinkInvisible.ClassicItems {
-    public static class LoaderChargeFist2 {
-        public static SkillDef myDef {get; private set;}
-        internal static void SetupAttributes() {
+    public class LoaderChargeFist2 : ScepterSkill {
+        public override SkillDef myDef {get; protected set;}
+
+        public override string oldDescToken {get; protected set;}
+        public override string newDescToken {get; protected set;}
+        public override string overrideStr => "\n<color=#d299ff>SCEPTER: Double damage and lunge speed. Utterly ridiculous knockback.</color>";
+        
+        public override string targetBody => "LoaderBody";
+        public override SkillSlot targetSlot => SkillSlot.Utility;
+        public override int targetVariantIndex => 0;
+
+        internal override void SetupAttributes() {
             var oldDef = Resources.Load<SkillDef>("skilldefs/loaderbody/ChargeFist");
             myDef = CloneSkillDef(oldDef);
 
             var nametoken = "CLASSICITEMS_SCEPLOADER_CHARGEFISTNAME";
-            var desctoken = "CLASSICITEMS_SCEPLOADER_CHARGEFISTDESC";
+            newDescToken = "CLASSICITEMS_SCEPLOADER_CHARGEFISTDESC";
+            oldDescToken = oldDef.skillDescriptionToken;
             var namestr = "Megaton Punch";
             LanguageAPI.Add(nametoken, namestr);
-            LanguageAPI.Add(desctoken, Language.GetString(oldDef.skillDescriptionToken) + "\n<color=#d299ff>SCEPTER: Double damage and lunge speed. Utterly ridiculous knockback.</color>");
 
             myDef.skillName = namestr;
             myDef.skillNameToken = nametoken;
-            myDef.skillDescriptionToken = desctoken;
+            myDef.skillDescriptionToken = newDescToken;
             myDef.icon = Resources.Load<Sprite>("@ClassicItems:Assets/ClassicItems/icons/scepter/loader_chargefisticon.png");
 
             LoadoutAPI.AddSkillDef(myDef);
         }
 
-        internal static void LoadBehavior() {
+        internal override void LoadBehavior() {
             On.EntityStates.Loader.BaseSwingChargedFist.OnEnter += on_BaseSwingChargedFistEnter;
             On.EntityStates.Loader.BaseSwingChargedFist.OnMeleeHitAuthority += BaseSwingChargedFist_OnMeleeHitAuthority;
         }
-        internal static void UnloadBehavior() {
+        internal override void UnloadBehavior() {
             On.EntityStates.Loader.BaseSwingChargedFist.OnEnter -= on_BaseSwingChargedFistEnter;
             On.EntityStates.Loader.BaseSwingChargedFist.OnMeleeHitAuthority -= BaseSwingChargedFist_OnMeleeHitAuthority;
         }
 
-        private static void on_BaseSwingChargedFistEnter(On.EntityStates.Loader.BaseSwingChargedFist.orig_OnEnter orig, BaseSwingChargedFist self) {
+        private void on_BaseSwingChargedFistEnter(On.EntityStates.Loader.BaseSwingChargedFist.orig_OnEnter orig, BaseSwingChargedFist self) {
             orig(self);
             if(!(self is SwingChargedFist)) return;
             if(Scepter.instance.GetCount(self.outer.commonComponents.characterBody) > 0) {
@@ -48,7 +57,7 @@ namespace ThinkInvisible.ClassicItems {
             }
         }
 
-        private static void BaseSwingChargedFist_OnMeleeHitAuthority(On.EntityStates.Loader.BaseSwingChargedFist.orig_OnMeleeHitAuthority orig, BaseSwingChargedFist self) {
+        private void BaseSwingChargedFist_OnMeleeHitAuthority(On.EntityStates.Loader.BaseSwingChargedFist.orig_OnMeleeHitAuthority orig, BaseSwingChargedFist self) {
             if(Scepter.instance.GetCount(self.outer.commonComponents.characterBody) < 1) return;
 			var mTsf = self.outer.commonComponents.modelLocator?.modelTransform?.GetComponent<ChildLocator>()?.FindChild(self.swingEffectMuzzleString);
             EffectManager.SpawnEffect(Resources.Load<GameObject>("prefabs/effects/omnieffect/OmniExplosionVFXCommandoGrenade"),

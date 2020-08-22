@@ -9,24 +9,32 @@ using MonoMod.Cil;
 using System;
 
 namespace ThinkInvisible.ClassicItems {
-    public static class CaptainAirstrike2 {
-        public static SkillDef myDef {get; private set;}
+    public class CaptainAirstrike2 : ScepterSkill {
+        public override SkillDef myDef {get; protected set;}
         public static SkillDef myCallDef {get; private set;}
         public static GameObject airstrikePrefab {get; private set;}
+        
+        public override string oldDescToken {get; protected set;}
+        public override string newDescToken {get; protected set;}
+        public override string overrideStr => "\n<color=#d299ff>SCEPTER: Hold to call down one continuous barrage for 21x500% damage.</color>";
 
-        internal static void SetupAttributes() {
+        public override string targetBody => "CaptainBody";
+        public override SkillSlot targetSlot => SkillSlot.Utility;
+        public override int targetVariantIndex => 0;
+
+        internal override void SetupAttributes() {
             var oldDef = Resources.Load<SkillDef>("skilldefs/captainbody/PrepAirstrike");
             myDef = CloneSkillDef(oldDef);
 
             var nametoken = "CLASSICITEMS_SCEPCAPTAIN_AIRSTRIKENAME";
-            var desctoken = "CLASSICITEMS_SCEPCAPTAIN_AIRSTRIKEDESC";
+            newDescToken = "CLASSICITEMS_SCEPCAPTAIN_AIRSTRIKEDESC";
+            oldDescToken = oldDef.skillDescriptionToken;
             var namestr = "21-Probe Salute";
             LanguageAPI.Add(nametoken, namestr);
-            LanguageAPI.Add(desctoken, Language.GetString(oldDef.skillDescriptionToken) + "\n<color=#d299ff>SCEPTER: Hold to call down one continuous barrage for 21x500% damage.</color>");
 
             myDef.skillName = namestr;
             myDef.skillNameToken = nametoken;
-            myDef.skillDescriptionToken = desctoken;
+            myDef.skillDescriptionToken = newDescToken;
             myDef.icon = Resources.Load<Sprite>("@ClassicItems:Assets/ClassicItems/icons/scepter/captain_airstrikeicon.png");
 
             LoadoutAPI.AddSkillDef(myDef);
@@ -43,7 +51,7 @@ namespace ThinkInvisible.ClassicItems {
             LoadoutAPI.AddSkillDef(myCallDef);
         }
 
-        internal static void LoadBehavior() {
+        internal override void LoadBehavior() {
             On.EntityStates.Captain.Weapon.SetupAirstrike.OnEnter += On_SetupAirstrikeStateEnter;
             On.EntityStates.Captain.Weapon.SetupAirstrike.OnExit += On_SetupAirstrikeStateExit;
             On.EntityStates.Captain.Weapon.CallAirstrikeBase.OnEnter += On_CallAirstrikeBaseEnter;
@@ -51,7 +59,7 @@ namespace ThinkInvisible.ClassicItems {
             IL.EntityStates.Captain.Weapon.CallAirstrikeEnter.OnEnter += IL_CallAirstrikeEnterEnter;
         }
 
-        internal static void UnloadBehavior() {
+        internal override void UnloadBehavior() {
             On.EntityStates.Captain.Weapon.SetupAirstrike.OnEnter -= On_SetupAirstrikeStateEnter;
             On.EntityStates.Captain.Weapon.SetupAirstrike.OnExit -= On_SetupAirstrikeStateExit;
             On.EntityStates.Captain.Weapon.CallAirstrikeBase.OnEnter -= On_CallAirstrikeBaseEnter;
@@ -59,7 +67,7 @@ namespace ThinkInvisible.ClassicItems {
             IL.EntityStates.Captain.Weapon.CallAirstrikeEnter.OnEnter -= IL_CallAirstrikeEnterEnter;
         }
         
-        private static void IL_CallAirstrikeEnterEnter(ILContext il) {
+        private void IL_CallAirstrikeEnterEnter(ILContext il) {
             var c = new ILCursor(il);
             c.GotoNext(MoveType.After, x => x.MatchCallOrCallvirt<GenericSkill>("get_stock"));
             c.EmitDelegate<Func<int, int>>((origStock) => {
@@ -68,19 +76,19 @@ namespace ThinkInvisible.ClassicItems {
             });
         }
 
-        private static void GenericSkill_RestockSteplike(On.RoR2.GenericSkill.orig_RestockSteplike orig, GenericSkill self) {
+        private void GenericSkill_RestockSteplike(On.RoR2.GenericSkill.orig_RestockSteplike orig, GenericSkill self) {
             if(self.skillDef == myCallDef) return;
             orig(self);
         }
 
-        private static void On_CallAirstrikeBaseEnter(On.EntityStates.Captain.Weapon.CallAirstrikeBase.orig_OnEnter orig, CallAirstrikeBase self) {
+        private void On_CallAirstrikeBaseEnter(On.EntityStates.Captain.Weapon.CallAirstrikeBase.orig_OnEnter orig, CallAirstrikeBase self) {
             orig(self);
             if(Scepter.instance.GetCount(self.outer.commonComponents.characterBody) > 0) {
                 self.damageCoefficient = 5f;
             }
         }
 
-        private static void On_SetupAirstrikeStateEnter(On.EntityStates.Captain.Weapon.SetupAirstrike.orig_OnEnter orig, EntityStates.Captain.Weapon.SetupAirstrike self) {
+        private void On_SetupAirstrikeStateEnter(On.EntityStates.Captain.Weapon.SetupAirstrike.orig_OnEnter orig, EntityStates.Captain.Weapon.SetupAirstrike self) {
             var origOverride = SetupAirstrike.primarySkillDef;
             if(Scepter.instance.GetCount(self.outer.commonComponents.characterBody) > 0) {
                 SetupAirstrike.primarySkillDef = myCallDef;
@@ -89,7 +97,7 @@ namespace ThinkInvisible.ClassicItems {
             SetupAirstrike.primarySkillDef = origOverride;
         }
 
-        private static void On_SetupAirstrikeStateExit(On.EntityStates.Captain.Weapon.SetupAirstrike.orig_OnExit orig, EntityStates.Captain.Weapon.SetupAirstrike self) {
+        private void On_SetupAirstrikeStateExit(On.EntityStates.Captain.Weapon.SetupAirstrike.orig_OnExit orig, EntityStates.Captain.Weapon.SetupAirstrike self) {
             var pSS = self.GetFieldValue<GenericSkill>("primarySkillSlot");
             if(pSS)
                 pSS.UnsetSkillOverride(self, myCallDef, GenericSkill.SkillOverridePriority.Contextual);

@@ -9,37 +9,46 @@ using EntityStates.Treebot.TreebotFlower;
 using RoR2.Projectile;
 
 namespace ThinkInvisible.ClassicItems {
-    public static class TreebotFlower2_2 {
-        public static SkillDef myDef {get; private set;}
-        internal static void SetupAttributes() {
+    public class TreebotFlower2_2 : ScepterSkill {
+        public override SkillDef myDef {get; protected set;}
+
+        public override string oldDescToken {get; protected set;}
+        public override string newDescToken {get; protected set;}
+        public override string overrideStr => "\n<color=#d299ff>SCEPTER: Double radius. Pulses random debuffs.</color>";
+        
+        public override string targetBody => "TreebotBody";
+        public override SkillSlot targetSlot => SkillSlot.Special;
+        public override int targetVariantIndex => 0;
+
+        internal override void SetupAttributes() {
             var oldDef = Resources.Load<SkillDef>("skilldefs/treebotbody/TreebotBodyFireFlower2");
             myDef = CloneSkillDef(oldDef);
 
             var nametoken = "CLASSICITEMS_SCEPTREEBOT_FLOWER2NAME";
-            var desctoken = "CLASSICITEMS_SCEPTREEBOT_FLOWER2DESC";
+            newDescToken = "CLASSICITEMS_SCEPTREEBOT_FLOWER2DESC";
+            oldDescToken = oldDef.skillDescriptionToken;
             var namestr = "Chaotic Growth";
             LanguageAPI.Add(nametoken, namestr);
-            LanguageAPI.Add(desctoken, Language.GetString(oldDef.skillDescriptionToken) + "\n<color=#d299ff>SCEPTER: Double radius. Pulses random debuffs.</color>");
 
             myDef.skillName = namestr;
             myDef.skillNameToken = nametoken;
-            myDef.skillDescriptionToken = desctoken;
+            myDef.skillDescriptionToken = newDescToken;
             myDef.icon = Resources.Load<Sprite>("@ClassicItems:Assets/ClassicItems/icons/scepter/treebot_entangleicon.png");
 
             LoadoutAPI.AddSkillDef(myDef);
         }
 
-        internal static void LoadBehavior() {
+        internal override void LoadBehavior() {
             On.EntityStates.Treebot.TreebotFlower.TreebotFlower2Projectile.RootPulse += On_TreebotFlower2RootPulse;
             On.EntityStates.Treebot.TreebotFlower.TreebotFlower2Projectile.OnEnter += On_TreebotFlower2Enter;
         }
 
-        internal static void UnloadBehavior() {
+        internal override void UnloadBehavior() {
             On.EntityStates.Treebot.TreebotFlower.TreebotFlower2Projectile.RootPulse -= On_TreebotFlower2RootPulse;
             On.EntityStates.Treebot.TreebotFlower.TreebotFlower2Projectile.OnEnter -= On_TreebotFlower2Enter;
         }
         
-        private static void On_TreebotFlower2Enter(On.EntityStates.Treebot.TreebotFlower.TreebotFlower2Projectile.orig_OnEnter orig, TreebotFlower2Projectile self) {
+        private void On_TreebotFlower2Enter(On.EntityStates.Treebot.TreebotFlower.TreebotFlower2Projectile.orig_OnEnter orig, TreebotFlower2Projectile self) {
 			var owner = self.outer.GetComponent<ProjectileController>()?.owner;
             var origRadius = TreebotFlower2Projectile.radius;
             if(Scepter.instance.GetCount(owner.GetComponent<CharacterBody>()) > 0) TreebotFlower2Projectile.radius *= 2f;
@@ -47,7 +56,7 @@ namespace ThinkInvisible.ClassicItems {
             TreebotFlower2Projectile.radius = origRadius;
         }
 
-        private static void On_TreebotFlower2RootPulse(On.EntityStates.Treebot.TreebotFlower.TreebotFlower2Projectile.orig_RootPulse orig, TreebotFlower2Projectile self) {
+        private void On_TreebotFlower2RootPulse(On.EntityStates.Treebot.TreebotFlower.TreebotFlower2Projectile.orig_RootPulse orig, TreebotFlower2Projectile self) {
             var owner = self.GetFieldValue<GameObject>("owner");
             var isBoosted = Scepter.instance.GetCount(owner?.GetComponent<CharacterBody>()) > 0;
             var origRadius = TreebotFlower2Projectile.radius;

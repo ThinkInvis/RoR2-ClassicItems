@@ -6,8 +6,23 @@ using static TILER2.MiscUtil;
 using RoR2.Skills;
 using EntityStates;
 using System.Collections.Generic;
+using R2API;
+using System.Linq;
 
 namespace ThinkInvisible.ClassicItems {
+    public abstract class ScepterSkill {
+        public abstract SkillDef myDef {get; protected set;}
+        public abstract string oldDescToken {get; protected set;}
+        public abstract string newDescToken {get; protected set;}
+        public abstract string overrideStr {get;}
+        internal abstract void SetupAttributes();
+        internal virtual void LoadBehavior() { }
+        internal virtual void UnloadBehavior() { }
+        public abstract string targetBody {get;}
+        public abstract SkillSlot targetSlot {get;}
+        public abstract int targetVariantIndex {get;}
+    }
+
     public class Scepter : Item<Scepter> {
         public override string displayName => "Ancient Scepter";
 		public override ItemTier itemTier => ItemTier.Tier3;
@@ -24,17 +39,44 @@ namespace ThinkInvisible.ClassicItems {
 
         [AutoItemConfig("If true, TR58-C Carbonizer Mini will recharge faster to match the additional stock.")]
         public bool engiWalkerAdjustCooldown {get; private set;} = false;
+        
+        public void PatchLang() {
+            foreach(var skill in skills) {
+                LanguageAPI.Add(skill.newDescToken, Language.GetString(skill.oldDescToken) + skill.overrideStr);
+            }
+        }
+
+        internal List<ScepterSkill> skills = new List<ScepterSkill>();
 
         public Scepter() {
+            skills.Add(new ArtificerFlamethrower2());
+            skills.Add(new ArtificerFlyUp2());
+            skills.Add(new CaptainAirstrike2());
+            skills.Add(new CommandoBarrage2());
+            skills.Add(new CommandoGrenade2());
+            skills.Add(new CrocoDisease2());
+            skills.Add(new EngiTurret2());
+            skills.Add(new EngiWalker2());
+            skills.Add(new HuntressBallista2());
+            skills.Add(new HuntressRain2());
+            skills.Add(new LoaderChargeFist2());
+            skills.Add(new LoaderChargeZapFist2());
+            skills.Add(new MercEvis2());
+            skills.Add(new MercEvisProjectile2());
+            skills.Add(new ToolbotDash2());
+            skills.Add(new TreebotFlower2_2());
+
             ConfigEntryChanged += (sender, args) => {
                 switch(args.target.boundProperty.Name) {
                     case nameof(engiTurretAdjustCooldown):
-                        EngiTurret2.myDef.baseRechargeInterval = EngiTurret2.oldDef.baseRechargeInterval * (((bool)args.newValue) ? 2f/3f : 1f);
-                        GlobalUpdateSkillDef(EngiTurret2.myDef);
+                        var engiSkill = skills.First(x => x is EngiTurret2);
+                        engiSkill.myDef.baseRechargeInterval = EngiTurret2.oldDef.baseRechargeInterval * (((bool)args.newValue) ? 2f/3f : 1f);
+                        GlobalUpdateSkillDef(engiSkill.myDef);
                         break;
                     case nameof(engiWalkerAdjustCooldown):
-                        EngiWalker2.myDef.baseRechargeInterval = EngiWalker2.oldDef.baseRechargeInterval / (((bool)args.newValue) ? 2f : 1f);
-                        GlobalUpdateSkillDef(EngiWalker2.myDef);
+                        var engiSkill2 = skills.First(x => x is EngiWalker2);
+                        engiSkill2.myDef.baseRechargeInterval = EngiWalker2.oldDef.baseRechargeInterval / (((bool)args.newValue) ? 2f : 1f);
+                        GlobalUpdateSkillDef(engiSkill2.myDef);
                         break;
                     default:
                         break;
@@ -42,62 +84,20 @@ namespace ThinkInvisible.ClassicItems {
             };
 
             onAttrib += (tokenIdent, namePrefix) => {
-			    //Language.SetCurrentLanguage(Language.currentLanguage);
-
-                ArtificerFlamethrower2.SetupAttributes();
-                ArtificerFlyUp2.SetupAttributes();
-                CaptainAirstrike2.SetupAttributes();
-                CommandoBarrage2.SetupAttributes();
-                CommandoGrenade2.SetupAttributes();
-                CrocoDisease2.SetupAttributes();
-                EngiTurret2.SetupAttributes();
-                EngiWalker2.SetupAttributes();
-                HuntressBallista2.SetupAttributes();
-                HuntressRain2.SetupAttributes();
-                LoaderChargeFist2.SetupAttributes();
-                LoaderChargeZapFist2.SetupAttributes();
-                MercEvis2.SetupAttributes();
-                MercEvisProjectile2.SetupAttributes();
-                ToolbotDash2.SetupAttributes();
-                TreebotFlower2_2.SetupAttributes();
-
-                RegisterScepterSkill(ArtificerFlamethrower2.myDef, "MageBody", SkillSlot.Special, 0);
-                RegisterScepterSkill(ArtificerFlyUp2.myDef, "MageBody", SkillSlot.Special, 1);
-                RegisterScepterSkill(CaptainAirstrike2.myDef, "CaptainBody", SkillSlot.Utility, 0);
-                RegisterScepterSkill(CommandoBarrage2.myDef, "CommandoBody", SkillSlot.Special, 0);
-                RegisterScepterSkill(CommandoGrenade2.myDef, "CommandoBody", SkillSlot.Special, 1);
-                RegisterScepterSkill(CrocoDisease2.myDef, "CrocoBody", SkillSlot.Special, 0);
-                RegisterScepterSkill(EngiTurret2.myDef, "EngiBody", SkillSlot.Special, 0);
-                RegisterScepterSkill(EngiWalker2.myDef, "EngiBody", SkillSlot.Special, 1);
-                RegisterScepterSkill(HuntressRain2.myDef, "HuntressBody", SkillSlot.Special, 0);
-                RegisterScepterSkill(HuntressBallista2.myDef, "HuntressBody", SkillSlot.Special, 1);
-                RegisterScepterSkill(LoaderChargeFist2.myDef, "LoaderBody", SkillSlot.Utility, 0);
-                RegisterScepterSkill(LoaderChargeZapFist2.myDef, "LoaderBody", SkillSlot.Utility, 1);
-                RegisterScepterSkill(MercEvis2.myDef, "MercBody", SkillSlot.Special, 0);
-                RegisterScepterSkill(MercEvisProjectile2.myDef, "MercBody", SkillSlot.Special, 1);
-                RegisterScepterSkill(ToolbotDash2.myDef, "ToolbotBody", SkillSlot.Utility, 0);
-                RegisterScepterSkill(TreebotFlower2_2.myDef, "TreebotBody", SkillSlot.Special, 0);
+                foreach(var skill in skills) {
+                    skill.SetupAttributes();
+                    RegisterScepterSkill(skill.myDef, skill.targetBody, skill.targetSlot, skill.targetVariantIndex);
+                }
             };
         }
 
         protected override void LoadBehavior() {
             On.RoR2.CharacterBody.OnInventoryChanged += On_CBOnInventoryChanged;
             On.RoR2.CharacterMaster.GetDeployableSameSlotLimit += On_CMGetDeployableSameSlotLimit;
-
-            ArtificerFlamethrower2.LoadBehavior();
-            ArtificerFlyUp2.LoadBehavior();
-            CaptainAirstrike2.LoadBehavior();
-            CommandoBarrage2.LoadBehavior();
-            CommandoGrenade2.LoadBehavior();
-            CrocoDisease2.LoadBehavior();
-            HuntressBallista2.LoadBehavior();
-            HuntressRain2.LoadBehavior();
-            LoaderChargeFist2.LoadBehavior();
-            LoaderChargeZapFist2.LoadBehavior();
-            MercEvis2.LoadBehavior();
-            MercEvisProjectile2.LoadBehavior();
-            ToolbotDash2.LoadBehavior();
-            TreebotFlower2_2.LoadBehavior();
+            
+            foreach(var skill in skills) {
+                skill.LoadBehavior();
+            }
         }
 
         protected override void UnloadBehavior() {
@@ -108,21 +108,10 @@ namespace ThinkInvisible.ClassicItems {
                 if(!cm.hasBody) continue;
                 HandleScepterSkill(cm.GetBody(), true);
             }
-
-            ArtificerFlamethrower2.UnloadBehavior();
-            ArtificerFlyUp2.UnloadBehavior();
-            CaptainAirstrike2.UnloadBehavior();
-            CommandoBarrage2.UnloadBehavior();
-            CommandoGrenade2.UnloadBehavior();
-            CrocoDisease2.UnloadBehavior();
-            HuntressBallista2.UnloadBehavior();
-            HuntressRain2.UnloadBehavior();
-            LoaderChargeFist2.UnloadBehavior();
-            LoaderChargeZapFist2.UnloadBehavior();
-            MercEvis2.UnloadBehavior();
-            MercEvisProjectile2.UnloadBehavior();
-            ToolbotDash2.UnloadBehavior();
-            TreebotFlower2_2.UnloadBehavior();
+            
+            foreach(var skill in skills) {
+                skill.UnloadBehavior();
+            }
         }
 
         private int On_CMGetDeployableSameSlotLimit(On.RoR2.CharacterMaster.orig_GetDeployableSameSlotLimit orig, CharacterMaster self, DeployableSlot slot) {
@@ -130,9 +119,9 @@ namespace ThinkInvisible.ClassicItems {
             if(slot != DeployableSlot.EngiTurret) return retv;
             var sp = self.GetBody()?.skillLocator?.special;
             if(!sp) return retv;
-            if(sp.skillDef == EngiTurret2.myDef)
+            if(sp.skillDef == skills.First(x => x is EngiTurret2).myDef)
                 return retv + 1;
-            if(sp.skillDef == EngiWalker2.myDef)
+            if(sp.skillDef == skills.First(x => x is EngiWalker2).myDef)
                 return retv + 2;
             return retv;
         }

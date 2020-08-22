@@ -9,22 +9,30 @@ using RoR2.Projectile;
 using EntityStates.Huntress.Weapon;
 
 namespace ThinkInvisible.ClassicItems {
-    public static class HuntressBallista2 {
-        public static SkillDef myDef {get; private set;}
+    public class HuntressBallista2 : ScepterSkill {
+        public override SkillDef myDef {get; protected set;}
         public static SkillDef myCtxDef {get; private set;}
-        internal static void SetupAttributes() {
+
+        public override string oldDescToken {get; protected set;}
+        public override string newDescToken {get; protected set;}
+        public override string overrideStr => "\n<color=#d299ff>SCEPTER: Fires quick bursts of five extra projectiles for 2.5x TOTAL damage.</color>";
+        
+        public override string targetBody => "HuntressBody";
+        public override SkillSlot targetSlot => SkillSlot.Special;
+        public override int targetVariantIndex => 0;
+
+        internal override void SetupAttributes() {
             var oldDef = Resources.Load<SkillDef>("skilldefs/huntressbody/AimArrowSnipe");
             myDef = CloneSkillDef(oldDef);
 
             var nametoken = "CLASSICITEMS_SCEPHUNTRESS_BALLISTANAME";
-            var desctoken = "CLASSICITEMS_SCEPHUNTRESS_BALLISTADESC";
+            newDescToken = "CLASSICITEMS_SCEPHUNTRESS_BALLISTADESC";
             var namestr = "Rabauld";
             LanguageAPI.Add(nametoken, namestr);
-            LanguageAPI.Add(desctoken, Language.GetString(oldDef.skillDescriptionToken) + "\n<color=#d299ff>SCEPTER: Fires quick bursts of five extra projectiles for 2.5x TOTAL damage.</color>");
 
             myDef.skillName = namestr;
             myDef.skillNameToken = nametoken;
-            myDef.skillDescriptionToken = desctoken;
+            myDef.skillDescriptionToken = newDescToken;
             myDef.icon = Resources.Load<Sprite>("@ClassicItems:Assets/ClassicItems/icons/scepter/huntress_ballistaicon.png");
 
             LoadoutAPI.AddSkillDef(myDef);
@@ -34,24 +42,24 @@ namespace ThinkInvisible.ClassicItems {
 
             myCtxDef.skillName = namestr;
             myCtxDef.skillNameToken = nametoken;
-            myCtxDef.skillDescriptionToken = desctoken;
+            myCtxDef.skillDescriptionToken = newDescToken;
             myCtxDef.icon = Resources.Load<Sprite>("@ClassicItems:Assets/ClassicItems/icons/scepter/huntress_ballistaicon.png");
 
             LoadoutAPI.AddSkillDef(myCtxDef);
         }
 
-        internal static void LoadBehavior() {
+        internal override void LoadBehavior() {
             On.EntityStates.Huntress.AimArrowSnipe.OnEnter += On_AimArrowSnipeEnter;
             On.EntityStates.Huntress.AimArrowSnipe.OnExit += On_AimArrowSnipeExit;
             On.EntityStates.Huntress.Weapon.FireArrowSnipe.FireBullet += On_FireArrowSnipeFire;
         }
-        internal static void UnloadBehavior() {
+        internal override void UnloadBehavior() {
             On.EntityStates.Huntress.AimArrowSnipe.OnEnter -= On_AimArrowSnipeEnter;
             On.EntityStates.Huntress.AimArrowSnipe.OnExit -= On_AimArrowSnipeExit;
             On.EntityStates.Huntress.Weapon.FireArrowSnipe.FireBullet -= On_FireArrowSnipeFire;
         }
 
-        private static void On_FireArrowSnipeFire(On.EntityStates.Huntress.Weapon.FireArrowSnipe.orig_FireBullet orig, FireArrowSnipe self, Ray aimRay) {
+        private void On_FireArrowSnipeFire(On.EntityStates.Huntress.Weapon.FireArrowSnipe.orig_FireBullet orig, FireArrowSnipe self, Ray aimRay) {
             orig(self, aimRay);
             if(Scepter.instance.GetCount(self.outer.commonComponents.characterBody) < 1) return;
 
@@ -69,7 +77,7 @@ namespace ThinkInvisible.ClassicItems {
             }
         }
 
-        private static void On_AimArrowSnipeEnter(On.EntityStates.Huntress.AimArrowSnipe.orig_OnEnter orig, AimArrowSnipe self) {
+        private void On_AimArrowSnipeEnter(On.EntityStates.Huntress.AimArrowSnipe.orig_OnEnter orig, AimArrowSnipe self) {
             orig(self);
             var sloc = self.outer.commonComponents.skillLocator;
             if(!sloc || !sloc.primary) return;
@@ -79,7 +87,7 @@ namespace ThinkInvisible.ClassicItems {
             }
         }
 
-        private static void On_AimArrowSnipeExit(On.EntityStates.Huntress.AimArrowSnipe.orig_OnExit orig, AimArrowSnipe self) {
+        private void On_AimArrowSnipeExit(On.EntityStates.Huntress.AimArrowSnipe.orig_OnExit orig, AimArrowSnipe self) {
             orig(self);
             var sloc = self.outer.commonComponents.skillLocator;
             if(!sloc || !sloc.primary) return;

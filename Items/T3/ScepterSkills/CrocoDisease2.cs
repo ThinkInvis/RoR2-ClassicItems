@@ -10,23 +10,32 @@ using RoR2.Orbs;
 using System.Collections.Generic;
 
 namespace ThinkInvisible.ClassicItems {
-    public static class CrocoDisease2 {
+    public class CrocoDisease2 : ScepterSkill {
 		private static GameObject diseaseWardPrefab;
 
-        public static SkillDef myDef {get; private set;}
-        internal static void SetupAttributes() {
+        public override SkillDef myDef {get; protected set;}
+
+        public override string oldDescToken {get; protected set;}
+        public override string newDescToken {get; protected set;}
+        public override string overrideStr => "\n<color=#d299ff>SCEPTER: Victims become walking sources of Plague.</color>";
+		
+        public override string targetBody => "CrocoBody";
+        public override SkillSlot targetSlot => SkillSlot.Special;
+        public override int targetVariantIndex => 0;
+
+        internal override void SetupAttributes() {
             var oldDef = Resources.Load<SkillDef>("skilldefs/crocobody/CrocoDisease");
             myDef = CloneSkillDef(oldDef);
 
             var nametoken = "CLASSICITEMS_SCEPCROCO_DISEASENAME";
-            var desctoken = "CLASSICITEMS_SCEPCROCO_DISEASEDESC";
+            newDescToken = "CLASSICITEMS_SCEPCROCO_DISEASEDESC";
+			oldDescToken = oldDef.skillDescriptionToken;
             var namestr = "Plague";
             LanguageAPI.Add(nametoken, namestr);
-            LanguageAPI.Add(desctoken, Language.GetString(oldDef.skillDescriptionToken) + "\n<color=#d299ff>SCEPTER: Victims become walking sources of Plague.</color>");
 
             myDef.skillName = namestr;
             myDef.skillNameToken = nametoken;
-            myDef.skillDescriptionToken = desctoken;
+            myDef.skillDescriptionToken = newDescToken;
             myDef.icon = Resources.Load<Sprite>("@ClassicItems:Assets/ClassicItems/icons/scepter/croco_firediseaseicon.png");
 
             LoadoutAPI.AddSkillDef(myDef);
@@ -46,14 +55,14 @@ namespace ThinkInvisible.ClassicItems {
 			UnityEngine.Object.Destroy(dwPrefabPrefab);
         }
 
-        internal static void LoadBehavior() {
+        internal override void LoadBehavior() {
             On.RoR2.Orbs.LightningOrb.OnArrival += On_LightningOrbArrival;
         }
-        internal static void UnloadBehavior() {
+        internal override void UnloadBehavior() {
             On.RoR2.Orbs.LightningOrb.OnArrival -= On_LightningOrbArrival;
         }
 
-        private static void On_LightningOrbArrival(On.RoR2.Orbs.LightningOrb.orig_OnArrival orig, LightningOrb self) {
+        private void On_LightningOrbArrival(On.RoR2.Orbs.LightningOrb.orig_OnArrival orig, LightningOrb self) {
             orig(self);
             if(self.lightningType != LightningOrb.LightningType.CrocoDisease || Scepter.instance.GetCount(self.attacker?.GetComponent<CharacterBody>()) < 1) return;
             if(!self.target || !self.target.healthComponent) return;

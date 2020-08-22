@@ -8,43 +8,52 @@ using RoR2;
 using R2API.Utils;
 
 namespace ThinkInvisible.ClassicItems {
-    public static class MercEvis2 {
-        public static SkillDef myDef {get; private set;}
-        internal static void SetupAttributes() {
+    public class MercEvis2 : ScepterSkill {
+        public override SkillDef myDef {get; protected set;}
+
+        public override string oldDescToken {get; protected set;}
+        public override string newDescToken {get; protected set;}
+        public override string overrideStr => "\n<color=#d299ff>SCEPTER: Double duration. Kills reset duration.</color>";
+        
+        public override string targetBody => "MercBody";
+        public override SkillSlot targetSlot => SkillSlot.Special;
+        public override int targetVariantIndex => 0;
+
+        internal override void SetupAttributes() {
             var oldDef = Resources.Load<SkillDef>("skilldefs/mercbody/MercBodyEvis");
             myDef = CloneSkillDef(oldDef);
 
             var nametoken = "CLASSICITEMS_SCEPMERC_EVISNAME";
-            var desctoken = "CLASSICITEMS_SCEPMERC_EVISDESC";
+            newDescToken = "CLASSICITEMS_SCEPMERC_EVISDESC";
+            oldDescToken = oldDef.skillDescriptionToken;
             var namestr = "Massacre";
             LanguageAPI.Add(nametoken, namestr);
-            LanguageAPI.Add(desctoken, Language.GetString(oldDef.skillDescriptionToken) + "\n<color=#d299ff>SCEPTER: Double duration. Kills reset duration.</color>");
             
             myDef.skillName = namestr;
             myDef.skillNameToken = nametoken;
-            myDef.skillDescriptionToken = desctoken;
+            myDef.skillDescriptionToken = newDescToken;
             myDef.icon = Resources.Load<Sprite>("@ClassicItems:Assets/ClassicItems/icons/scepter/merc_evisicon.png");
 
             LoadoutAPI.AddSkillDef(myDef);
         }
 
-        internal static void LoadBehavior() {
+        internal override void LoadBehavior() {
             GlobalEventManager.onCharacterDeathGlobal += Evt_GEMOnCharacterDeathGlobal;
             On.EntityStates.Merc.Evis.FixedUpdate += On_EvisFixedUpdate;
         }
 
-        internal static void UnloadBehavior() {
+        internal override void UnloadBehavior() {
             GlobalEventManager.onCharacterDeathGlobal -= Evt_GEMOnCharacterDeathGlobal;
             On.EntityStates.Merc.Evis.FixedUpdate -= On_EvisFixedUpdate;
         }
-        private static void Evt_GEMOnCharacterDeathGlobal(DamageReport rep) {
+        private void Evt_GEMOnCharacterDeathGlobal(DamageReport rep) {
             var attackerState = rep.attackerBody?.GetComponent<EntityStateMachine>()?.state;
             if(attackerState is Evis && Scepter.instance.GetCount(rep.attackerBody) > 0
                 && Vector3.Distance(rep.attackerBody.transform.position, rep.victim.transform.position) < Evis.maxRadius)
                 typeof(Evis).GetFieldCached("stopwatch").SetValue(attackerState, 0f);
         }
 
-        private static void On_EvisFixedUpdate(On.EntityStates.Merc.Evis.orig_FixedUpdate orig, Evis self) {
+        private void On_EvisFixedUpdate(On.EntityStates.Merc.Evis.orig_FixedUpdate orig, Evis self) {
             var origDuration = Evis.duration;
             if(Scepter.instance.GetCount(self.outer.commonComponents.characterBody) > 0) Evis.duration *= 2f;
             orig(self);

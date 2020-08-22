@@ -8,22 +8,31 @@ using R2API;
 using RoR2.Projectile;
 
 namespace ThinkInvisible.ClassicItems {
-    public static class HuntressRain2 {
+    public class HuntressRain2 : ScepterSkill {
         private static GameObject projReplacer;
-        public static SkillDef myDef {get; private set;}
-        internal static void SetupAttributes() {
+        public override SkillDef myDef {get; protected set;}
+
+        public override string oldDescToken {get; protected set;}
+        public override string newDescToken {get; protected set;}
+        public override string overrideStr => "\n<color=#d299ff>SCEPTER: +50% radius and duration. Inflicts burn.</color>";
+        
+        public override string targetBody => "HuntressBody";
+        public override SkillSlot targetSlot => SkillSlot.Special;
+        public override int targetVariantIndex => 1;
+
+        internal override void SetupAttributes() {
             var oldDef = Resources.Load<SkillDef>("skilldefs/huntressbody/HuntressBodyArrowRain");
             myDef = CloneSkillDef(oldDef);
 
             var nametoken = "CLASSICITEMS_SCEPHUNTRESS_RAINNAME";
-            var desctoken = "CLASSICITEMS_SCEPHUNTRESS_RAINDESC";
+            newDescToken = "CLASSICITEMS_SCEPHUNTRESS_RAINDESC";
+            oldDescToken = oldDef.skillDescriptionToken;
             var namestr = "Burning Rain";
             LanguageAPI.Add(nametoken, namestr);
-            LanguageAPI.Add(desctoken, Language.GetString(oldDef.skillDescriptionToken) + "\n<color=#d299ff>SCEPTER: +50% radius and duration. Inflicts burn.</color>");
 
             myDef.skillName = namestr;
             myDef.skillNameToken = nametoken;
-            myDef.skillDescriptionToken = desctoken;
+            myDef.skillDescriptionToken = newDescToken;
             myDef.icon = Resources.Load<Sprite>("@ClassicItems:Assets/ClassicItems/icons/scepter/huntress_arrowrainicon.png");
 
             LoadoutAPI.AddSkillDef(myDef);
@@ -51,15 +60,15 @@ namespace ThinkInvisible.ClassicItems {
             ProjectileCatalog.getAdditionalEntries += (list) => list.Add(projReplacer);
         }
 
-        internal static void LoadBehavior() {
+        internal override void LoadBehavior() {
             On.EntityStates.Huntress.ArrowRain.DoFireArrowRain += On_ArrowRain_DoFireArrowRain;
         }
 
-        internal static void UnloadBehavior() {
+        internal override void UnloadBehavior() {
             On.EntityStates.Huntress.ArrowRain.DoFireArrowRain -= On_ArrowRain_DoFireArrowRain;
         }
 
-        private static void On_ArrowRain_DoFireArrowRain(On.EntityStates.Huntress.ArrowRain.orig_DoFireArrowRain orig, ArrowRain self) {
+        private void On_ArrowRain_DoFireArrowRain(On.EntityStates.Huntress.ArrowRain.orig_DoFireArrowRain orig, ArrowRain self) {
             var origPrefab = ArrowRain.projectilePrefab;
             if(Scepter.instance.GetCount(self.outer.commonComponents.characterBody) > 0) ArrowRain.projectilePrefab = projReplacer;
             orig(self);

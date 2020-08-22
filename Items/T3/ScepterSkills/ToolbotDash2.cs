@@ -6,39 +6,48 @@ using RoR2;
 using R2API;
 
 namespace ThinkInvisible.ClassicItems {
-    public static class ToolbotDash2 {
-        public static SkillDef myDef {get; private set;}
-        internal static void SetupAttributes() {
+    public class ToolbotDash2 : ScepterSkill {
+        public override SkillDef myDef {get; protected set;}
+
+        public override string oldDescToken {get; protected set;}
+        public override string newDescToken {get; protected set;}
+        public override string overrideStr => "\n<color=#d299ff>SCEPTER: Halves incoming damage (stacks with armor), double duration. After stopping: retaliate and stun for 200% of unmodified damage taken with a huge explosion.</color>";
+        
+        public override string targetBody => "ToolbotBody";
+        public override SkillSlot targetSlot => SkillSlot.Utility;
+        public override int targetVariantIndex => 0;
+
+        internal override void SetupAttributes() {
             var oldDef = Resources.Load<SkillDef>("skilldefs/toolbotbody/ToolbotBodyToolbotDash");
             myDef = CloneSkillDef(oldDef);
 
             var nametoken = "CLASSICITEMS_SCEPTOOLBOT_DASHNAME";
-            var desctoken = "CLASSICITEMS_SCEPTOOLBOT_DASHDESC";
+            newDescToken = "CLASSICITEMS_SCEPTOOLBOT_DASHDESC";
+            oldDescToken = oldDef.skillDescriptionToken;
             var namestr = "Breach Mode";
             LanguageAPI.Add(nametoken, namestr);
-            LanguageAPI.Add(desctoken, Language.GetString(oldDef.skillDescriptionToken) + "\n<color=#d299ff>SCEPTER: Halves incoming damage (stacks with armor), double duration. After stopping: retaliate and stun for 200% of unmodified damage taken with a huge explosion.</color>");
 
             myDef.skillName = namestr;
             myDef.skillNameToken = nametoken;
-            myDef.skillDescriptionToken = desctoken;
+            myDef.skillDescriptionToken = newDescToken;
             myDef.icon = Resources.Load<Sprite>("@ClassicItems:Assets/ClassicItems/icons/scepter/toolbot_dashicon.png");
 
             LoadoutAPI.AddSkillDef(myDef);
         }
 
-        internal static void LoadBehavior() {
+        internal override void LoadBehavior() {
             On.EntityStates.Toolbot.ToolbotDash.OnEnter += On_ToolbotDashEnter;
             On.EntityStates.Toolbot.ToolbotDash.OnExit += On_ToolbotDashExit;
             On.RoR2.HealthComponent.TakeDamage += On_HCTakeDamage;
         }
 
-        internal static void UnloadBehavior() {
+        internal override void UnloadBehavior() {
             On.EntityStates.Toolbot.ToolbotDash.OnEnter -= On_ToolbotDashEnter;
             On.EntityStates.Toolbot.ToolbotDash.OnExit -= On_ToolbotDashExit;
             On.RoR2.HealthComponent.TakeDamage -= On_HCTakeDamage;
         }
         
-        private static void On_HCTakeDamage(On.RoR2.HealthComponent.orig_TakeDamage orig, HealthComponent self, DamageInfo damageInfo) {
+        private void On_HCTakeDamage(On.RoR2.HealthComponent.orig_TakeDamage orig, HealthComponent self, DamageInfo damageInfo) {
             if(!self.body) {orig(self, damageInfo);return;}
             var cpt = self.body.GetComponent<ScepterToolbotDashTracker>();
             if(!cpt || !cpt.enabled) {orig(self, damageInfo);return;}
@@ -47,7 +56,7 @@ namespace ThinkInvisible.ClassicItems {
             orig(self, damageInfo);
         }
 
-        private static void On_ToolbotDashEnter(On.EntityStates.Toolbot.ToolbotDash.orig_OnEnter orig, EntityStates.Toolbot.ToolbotDash self) {
+        private void On_ToolbotDashEnter(On.EntityStates.Toolbot.ToolbotDash.orig_OnEnter orig, EntityStates.Toolbot.ToolbotDash self) {
             orig(self);
             if(!self.outer.commonComponents.characterBody) return;
             if(Scepter.instance.GetCount(self.outer.commonComponents.characterBody) < 1) return;
@@ -58,7 +67,7 @@ namespace ThinkInvisible.ClassicItems {
             self.baseDuration *= 2f;
         }
 
-        private static void On_ToolbotDashExit(On.EntityStates.Toolbot.ToolbotDash.orig_OnExit orig, EntityStates.Toolbot.ToolbotDash self) {
+        private void On_ToolbotDashExit(On.EntityStates.Toolbot.ToolbotDash.orig_OnExit orig, EntityStates.Toolbot.ToolbotDash self) {
             orig(self);
             var cpt = self.outer.commonComponents.characterBody.GetComponent<ScepterToolbotDashTracker>();
             if(!cpt || !cpt.enabled) return;

@@ -36,7 +36,7 @@ namespace ThinkInvisible.ClassicItems {
             #if DEBUG
                 "0." +
             #endif
-            "4.3.1";
+            "4.4.0";
         public const string ModName = "ClassicItems";
         public const string ModGuid = "com.ThinkInvisible.ClassicItems";
 
@@ -108,11 +108,12 @@ namespace ThinkInvisible.ClassicItems {
         }
         #endif
         
+        internal static Language cachedLang;
 
         private void Awake() {
             _logger = Logger;
 
-            Logger.LogDebug("Performing plugin setup...");
+            Logger.LogDebug("Performing plugin setup:");
 
             #if DEBUG
             Logger.LogWarning("Running test build with debug enabled! If you're seeing this after downloading the mod from Thunderstore, please panic.");
@@ -124,9 +125,14 @@ namespace ThinkInvisible.ClassicItems {
                 var provider = new AssetBundleResourcesProvider("@ClassicItems", bundle);
                 ResourcesAPI.AddProvider(provider);
             }
+
+            Language.CCLanguageReload(new ConCommandArgs());
+            cachedLang = Language.currentLanguage;
+            cachedLang = Language.english;
+            Debug.Log(cachedLang);
+
             cfgFile = new ConfigFile(Path.Combine(Paths.ConfigPath, ModGuid + ".cfg"), true);
             
-
             Logger.LogDebug("Loading global configs...");
 
             globalConfig.BindAll(cfgFile, "ClassicItems", "Global");
@@ -154,8 +160,8 @@ namespace ThinkInvisible.ClassicItems {
                         var cfront = ctsf.Find("cardfront");
                         if(!cfront) return;
 
-                        cfront.Find("carddesc").GetComponent<TextMeshPro>().text = Language.GetString(globalConfig.longDesc ? x.descToken : x.pickupToken);
-                        cfront.Find("cardname").GetComponent<TextMeshPro>().text = Language.GetString(x.nameToken);
+                        cfront.Find("carddesc").GetComponent<TextMeshPro>().text = ClassicItemsPlugin.cachedLang.GetLocalizedStringByToken(globalConfig.longDesc ? x.descToken : x.pickupToken);
+                        cfront.Find("cardname").GetComponent<TextMeshPro>().text = ClassicItemsPlugin.cachedLang.GetLocalizedStringByToken(x.nameToken);
                     }
                     if(x.logbookEntry != null) {
                         x.logbookEntry.modelPrefab = x.pickupDef.displayPrefab;
@@ -236,6 +242,13 @@ namespace ThinkInvisible.ClassicItems {
             }
 
             Logger.LogDebug("Initial setup done!");
+        }
+
+        private void Start() {
+            Logger.LogDebug("Performing late setup:");
+            Logger.LogDebug("Setting up lang token overrides...");
+            Scepter.instance.PatchLang();
+            Logger.LogDebug("Late setup done!");
         }
 
         private void IL_ESAIWalkerCombatUpdateAI(ILContext il) {
@@ -399,14 +412,14 @@ namespace ThinkInvisible.ClassicItems {
                 if(pickup.interactContextToken == "EQUIPMENT_PICKUP_CONTEXT") {
                     var eqp = EquipmentCatalog.GetEquipmentDef(pickup.equipmentIndex);
                     if(eqp == null) continue;
-                    pname = Language.GetString(eqp.nameToken);
-                    pdesc = Language.GetString(globalConfig.longDesc ? eqp.descriptionToken : eqp.pickupToken);
+                    pname = ClassicItemsPlugin.cachedLang.GetLocalizedStringByToken(eqp.nameToken);
+                    pdesc = ClassicItemsPlugin.cachedLang.GetLocalizedStringByToken(globalConfig.longDesc ? eqp.descriptionToken : eqp.pickupToken);
                     prar = new Color(1f, 0.7f, 0.4f);
                 } else if(pickup.interactContextToken == "ITEM_PICKUP_CONTEXT") {
                     var item = ItemCatalog.GetItemDef(pickup.itemIndex);
                     if(item == null) continue;
-                    pname = Language.GetString(item.nameToken);
-                    pdesc = Language.GetString(globalConfig.longDesc ? item.descriptionToken : item.pickupToken);
+                    pname = ClassicItemsPlugin.cachedLang.GetLocalizedStringByToken(item.nameToken);
+                    pdesc = ClassicItemsPlugin.cachedLang.GetLocalizedStringByToken(globalConfig.longDesc ? item.descriptionToken : item.pickupToken);
                     switch(item.tier) {
                         case ItemTier.Boss: prar = new Color(1f, 1f, 0f); break;
                         case ItemTier.Lunar: prar = new Color(0f, 0.6f, 1f); break;

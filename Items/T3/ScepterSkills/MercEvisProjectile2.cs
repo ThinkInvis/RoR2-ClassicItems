@@ -6,21 +6,30 @@ using RoR2;
 using R2API.Utils;
 
 namespace ThinkInvisible.ClassicItems {
-    public static class MercEvisProjectile2 {
-        public static SkillDef myDef {get; private set;}
-        internal static void SetupAttributes() {
+    public class MercEvisProjectile2 : ScepterSkill {
+        public override SkillDef myDef {get; protected set;}
+
+        public override string oldDescToken {get; protected set;}
+        public override string newDescToken {get; protected set;}
+        public override string overrideStr => "\n<color=#d299ff>SCEPTER: Charges four times faster. Hold and fire up to four charges at once.</color>";
+        
+        public override string targetBody => "MercBody";
+        public override SkillSlot targetSlot => SkillSlot.Special;
+        public override int targetVariantIndex => 1;
+
+        internal override void SetupAttributes() {
             var oldDef = Resources.Load<SkillDef>("skilldefs/mercbody/MercBodyEvisProjectile");
             myDef = CloneSkillDef(oldDef);
 
             var nametoken = "CLASSICITEMS_SCEPMERC_EVISPROJNAME";
-            var desctoken = "CLASSICITEMS_SCEPMERC_EVISPROJDESC";
+            newDescToken = "CLASSICITEMS_SCEPMERC_EVISPROJDESC";
+            oldDescToken = oldDef.skillDescriptionToken;
             var namestr = "Gale-Force";
             LanguageAPI.Add(nametoken, namestr);
-            LanguageAPI.Add(desctoken, Language.GetString(oldDef.skillDescriptionToken) + "\n<color=#d299ff>SCEPTER: Charges four times faster. Hold and fire up to four charges at once.</color>");
             
             myDef.skillName = namestr;
             myDef.skillNameToken = nametoken;
-            myDef.skillDescriptionToken = desctoken;
+            myDef.skillDescriptionToken = newDescToken;
             myDef.icon = Resources.Load<Sprite>("@ClassicItems:Assets/ClassicItems/icons/scepter/merc_evisprojectileicon.png");
             myDef.baseMaxStock *= 4;
             myDef.baseRechargeInterval /= 4f;
@@ -28,15 +37,15 @@ namespace ThinkInvisible.ClassicItems {
             LoadoutAPI.AddSkillDef(myDef);
         }
 
-        internal static void LoadBehavior() {
+        internal override void LoadBehavior() {
             On.EntityStates.Commando.CommandoWeapon.FireFMJ.OnEnter += On_FireFMJEnter;
         }
 
-        internal static void UnloadBehavior() {
+        internal override void UnloadBehavior() {
             On.EntityStates.Commando.CommandoWeapon.FireFMJ.OnEnter -= On_FireFMJEnter;
         }
 
-        private static void On_FireFMJEnter(On.EntityStates.Commando.CommandoWeapon.FireFMJ.orig_OnEnter orig, EntityStates.Commando.CommandoWeapon.FireFMJ self) {
+        private void On_FireFMJEnter(On.EntityStates.Commando.CommandoWeapon.FireFMJ.orig_OnEnter orig, EntityStates.Commando.CommandoWeapon.FireFMJ self) {
             orig(self);
             if(!(self is EntityStates.Commando.CommandoWeapon.ThrowEvisProjectile) || Scepter.instance.GetCount(self.outer.commonComponents.characterBody) < 1) return;
             if(!self.outer.commonComponents.skillLocator?.special) return;
