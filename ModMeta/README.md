@@ -47,10 +47,11 @@ For nostalgic purposes only. Here Be Dragons who hoard balance issues, because t
     - REX: Tangling Growth > Chaotic Growth (2x radius, pulses additional random debuffs)
     - Loader: Charged Gauntlet > Megaton Gauntlet (2x damage and lunge speed, 7x knockback)  -OR-  Thunder Gauntlet > Thundercrash (3x lightning bolts fired, cone AoE becomes sphere)
     - Acrid: Epidemic > Plague (victims become walking sources of Plague, chains infinitely)
+    - Captain: Orbital Probe > 21-Probe Salute (1/3 damage, 7x shots, hold primary to fire continuously)
 - Beating Embryo: "Equipment has a 30% chance to deal double the effect."
-    - Doubles *duration* on: Ocular HUD, Jade Elephant, Milky Chrysalis, Radar Scanner, Snowglobe, Pillaged Gold, Prescriptions, Safeguard Lantern.
+    - Doubles *duration* on: Ocular HUD, Jade Elephant, Milky Chrysalis, Radar Scanner, Snowglobe, Pillaged Gold, Prescriptions, Safeguard Lantern, Super Massive Leech, Gorag's Opus.
     - Doubles *range* on: Primordial Cube, Blast Shower, Skeleton Key.
-    - Doubles *count* on: The Back-up, Captain's Brooch, Sawmerang, Royal Capacitor, Recycler, Lost Doll, Gigantic Amethyst.
+    - Doubles *count* on: The Back-up, Captain's Brooch, Sawmerang, Royal Capacitor, Recycler, Lost Doll, Gigantic Amethyst, Forgive Me Please.
     - Doubles *fire rate and count* on: Disposable Missile Launcher.
     - Doubles *fire rate* on: The Crowdfunder.
     - Doubles *damage* on: Preon Accumulator.
@@ -96,9 +97,6 @@ For nostalgic purposes only. Here Be Dragons who hoard balance issues, because t
 - Stats are set close to RoR1's whenever possible. May eventually set up a config preset which balances items a little more carefully with respect to RoR2's existing content.
 - Beating Embryo has no effect on Lunar equipments (other than those added by mods). This is a design decision, but disabled-by-default effects are planned.
 - Color tags on pickup model text are too bright.
-- Other bugs may be lurking with the 1.0 release. Extensive testing hasn't been performed yet, just some patches for immediately critical issues. Known 1.0-related issues:
-    - Beating Embryo has no effect on any of the new equipments from 1.0.
-    - Captain does not benefit from Ancient Scepter.
 - See the GitHub repo for more!
 
 ## Modder Resources
@@ -112,6 +110,17 @@ For details and instructions on applying these, see: https://github.com/ThinkInv
 ## Changelog
 
 The 5 latest updates are listed below. For a full changelog, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/changelog.md
+
+**4.4.0**
+
+- Added Ancient Scepter skill for Captain: 21-Probe Salute.
+- Added Beating Embryo patches for Forgive Me Please, Super Massive Leech, Gorag's Opus.
+- Boxing Gloves now scales based on damage fraction of max health, mass, and flying status (used to only scale by raw damage).
+- Fixed language token appends (mostly relevant for Ancient Scepter).
+- Added some additional safety checks to card model spinmod.
+- Bumped R2API dependency version to 2.5.7.
+- Switched from reflection to publicized assembly in many cases (should slightly improve performance).
+- Refactored Ancient Scepter skill overrides (main Scepter class is now neater).
 
 **4.3.1**
 
@@ -135,12 +144,3 @@ The 5 latest updates are listed below. For a full changelog, see: https://github
 - Boxing Gloves now has an option to disable affecting bosses.
 - Made Golden Gun's second IL patch target slightly more lenient (fixes compatibility with GeneralFixes mod).
 - Now uses plugin-specific console logger.
-
-**4.2.1**
-
-- Logbook setup stage no longer completely breaks if an item (in ANY mod) has no model.
-- Mysterious Vial: fixed buff being applied during the wrong part of calculations (multiplier instead of base value).
-- Index dump during game startup is now much prettier.
-- Internal buff names are now consistent with item names and with each other.
-- Migrated most RecalculateStats IL patches to TILER2, as well as some extension methods. Most UseIL config settings have been removed as a consequence, possibly temporarily.
-- GitHub repo is now licensed (GNU GPL3).

@@ -1,5 +1,16 @@
 ﻿# ClassicItems Changelog
 
+**4.4.0**
+
+- Added Ancient Scepter skill for Captain: 21-Probe Salute.
+- Added Beating Embryo patches for Forgive Me Please, Super Massive Leech, Gorag's Opus.
+- Boxing Gloves now scales based on damage fraction of max health, mass, and flying status (used to only scale by raw damage).
+- Fixed language token appends (mostly relevant for Ancient Scepter).
+- Added some additional safety checks to card model spinmod.
+- Bumped R2API dependency version to 2.5.7.
+- Switched from reflection to publicized assembly in many cases (should slightly improve performance).
+- Refactored Ancient Scepter skill overrides (main Scepter class is now neater).
+
 **4.3.1**
 
 - Fixed Beating Embryo causing infinite Milky Chrysalis and errorspam in console when used.
