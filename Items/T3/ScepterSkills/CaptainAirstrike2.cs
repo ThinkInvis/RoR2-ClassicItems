@@ -44,8 +44,8 @@ namespace ThinkInvisible.ClassicItems {
             myCallDef.baseMaxStock = 21;
             myCallDef.mustKeyPress = false;
             myCallDef.isBullets = true;
-            myCallDef.shootDelay = 0.1f;
-            myCallDef.baseRechargeInterval = 0.1f;
+            myCallDef.shootDelay = 0.07f;
+            myCallDef.baseRechargeInterval = 0.07f;
             myCallDef.icon = Resources.Load<Sprite>("@ClassicItems:Assets/ClassicItems/icons/scepter/captain_airstrikeicon.png");
 
             LoadoutAPI.AddSkillDef(myCallDef);
@@ -57,6 +57,7 @@ namespace ThinkInvisible.ClassicItems {
             On.EntityStates.Captain.Weapon.CallAirstrikeBase.OnEnter += On_CallAirstrikeBaseEnter;
             On.RoR2.GenericSkill.RestockSteplike += GenericSkill_RestockSteplike;
             IL.EntityStates.Captain.Weapon.CallAirstrikeEnter.OnEnter += IL_CallAirstrikeEnterEnter;
+            On.EntityStates.Captain.Weapon.CallAirstrikeBase.KeyIsDown += On_CallAirstrikeBaseKeyIsDown;
         }
 
         internal override void UnloadBehavior() {
@@ -65,8 +66,14 @@ namespace ThinkInvisible.ClassicItems {
             On.EntityStates.Captain.Weapon.CallAirstrikeBase.OnEnter -= On_CallAirstrikeBaseEnter;
             On.RoR2.GenericSkill.RestockSteplike -= GenericSkill_RestockSteplike;
             IL.EntityStates.Captain.Weapon.CallAirstrikeEnter.OnEnter -= IL_CallAirstrikeEnterEnter;
+            On.EntityStates.Captain.Weapon.CallAirstrikeBase.KeyIsDown -= On_CallAirstrikeBaseKeyIsDown;
         }
         
+        private bool On_CallAirstrikeBaseKeyIsDown(On.EntityStates.Captain.Weapon.CallAirstrikeBase.orig_KeyIsDown orig, CallAirstrikeBase self) {
+            if(Scepter.instance.GetCount(self.outer.commonComponents.characterBody) > 0) return false;
+            return orig(self);
+        }
+
         private void IL_CallAirstrikeEnterEnter(ILContext il) {
             var c = new ILCursor(il);
             c.GotoNext(MoveType.After, x => x.MatchCallOrCallvirt<GenericSkill>("get_stock"));
@@ -85,6 +92,7 @@ namespace ThinkInvisible.ClassicItems {
             orig(self);
             if(Scepter.instance.GetCount(self.outer.commonComponents.characterBody) > 0) {
                 self.damageCoefficient = 5f;
+                self.AddRecoil(-2f, 2f, -2f, 2f);
             }
         }
 
