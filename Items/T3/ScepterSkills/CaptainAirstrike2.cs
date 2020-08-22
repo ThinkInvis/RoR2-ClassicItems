@@ -91,7 +91,7 @@ namespace ThinkInvisible.ClassicItems {
             orig(self);
             if(Scepter.instance.GetCount(self.outer.commonComponents.characterBody) > 0) {
                 self.damageCoefficient = 5f;
-                self.AddRecoil(-2f, 2f, -2f, 2f);
+                self.AddRecoil(-1f, 1f, -1f, 1f);
             }
         }
 
