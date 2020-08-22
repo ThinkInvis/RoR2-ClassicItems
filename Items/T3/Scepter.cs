@@ -46,6 +46,7 @@ namespace ThinkInvisible.ClassicItems {
 
                 ArtificerFlamethrower2.SetupAttributes();
                 ArtificerFlyUp2.SetupAttributes();
+                CaptainAirstrike2.SetupAttributes();
                 CommandoBarrage2.SetupAttributes();
                 CommandoGrenade2.SetupAttributes();
                 CrocoDisease2.SetupAttributes();
@@ -62,6 +63,7 @@ namespace ThinkInvisible.ClassicItems {
 
                 RegisterScepterSkill(ArtificerFlamethrower2.myDef, "MageBody", SkillSlot.Special, 0);
                 RegisterScepterSkill(ArtificerFlyUp2.myDef, "MageBody", SkillSlot.Special, 1);
+                RegisterScepterSkill(CaptainAirstrike2.myDef, "CaptainBody", SkillSlot.Utility, 0);
                 RegisterScepterSkill(CommandoBarrage2.myDef, "CommandoBody", SkillSlot.Special, 0);
                 RegisterScepterSkill(CommandoGrenade2.myDef, "CommandoBody", SkillSlot.Special, 1);
                 RegisterScepterSkill(CrocoDisease2.myDef, "CrocoBody", SkillSlot.Special, 0);
@@ -84,6 +86,7 @@ namespace ThinkInvisible.ClassicItems {
 
             ArtificerFlamethrower2.LoadBehavior();
             ArtificerFlyUp2.LoadBehavior();
+            CaptainAirstrike2.LoadBehavior();
             CommandoBarrage2.LoadBehavior();
             CommandoGrenade2.LoadBehavior();
             CrocoDisease2.LoadBehavior();
@@ -108,6 +111,7 @@ namespace ThinkInvisible.ClassicItems {
 
             ArtificerFlamethrower2.UnloadBehavior();
             ArtificerFlyUp2.UnloadBehavior();
+            CaptainAirstrike2.UnloadBehavior();
             CommandoBarrage2.UnloadBehavior();
             CommandoGrenade2.UnloadBehavior();
             CrocoDisease2.UnloadBehavior();
