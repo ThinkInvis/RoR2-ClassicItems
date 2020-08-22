@@ -52,14 +52,15 @@ namespace ThinkInvisible.ClassicItems {
             EquipmentIndex.Lightning,
             EquipmentIndex.DroneBackup,
             EquipmentIndex.PassiveHealing,
-            EquipmentIndex.Saw
+            EquipmentIndex.Saw,
+            EquipmentIndex.DeathProjectile
         });
 
         public readonly ReadOnlyCollection<EquipmentIndex> handledEqps = new ReadOnlyCollection<EquipmentIndex>(new[] {
             EquipmentIndex.BFG, EquipmentIndex.Blackhole, EquipmentIndex.CommandMissile, EquipmentIndex.CritOnUse, EquipmentIndex.Cleanse, 
             EquipmentIndex.DroneBackup, EquipmentIndex.FireBallDash, EquipmentIndex.Fruit, EquipmentIndex.GainArmor, EquipmentIndex.Gateway,
-            EquipmentIndex.GoldGat, EquipmentIndex.Jetpack, EquipmentIndex.Lightning, EquipmentIndex.PassiveHealing, EquipmentIndex.Recycle,
-            EquipmentIndex.Saw, EquipmentIndex.Scanner
+            EquipmentIndex.GoldGat, EquipmentIndex.LifestealOnHit, EquipmentIndex.Jetpack, EquipmentIndex.Lightning, EquipmentIndex.PassiveHealing,
+            EquipmentIndex.Recycle, EquipmentIndex.Saw, EquipmentIndex.Scanner, EquipmentIndex.TeamWarCry
         });
         public readonly ReadOnlyCollection<EquipmentIndex> dftDisableEqps = new ReadOnlyCollection<EquipmentIndex>(new[] {
             //Lunar
@@ -455,6 +456,56 @@ namespace ThinkInvisible.ClassicItems {
                     });
                 } else {
                     ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch: Recycle; target instructions not found");
+                }
+            }
+
+            //LifestealOnHit: double buff duration
+            if((int)EquipmentIndex.LifestealOnHit >= swarr.Length)
+                ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch: LifestealOnHit; not in switch");
+            else if(subEnable[EquipmentIndex.LifestealOnHit]) {
+                c.GotoLabel(swarr[(int)EquipmentIndex.LifestealOnHit]);
+                ILFound = c.TryGotoNext(MoveType.After,
+                    x=>x.MatchLdcI4((int)BuffIndex.LifeSteal),
+                    x=>x.MatchLdcR4(out _));
+
+                if(ILFound) {
+                    c.EmitDelegate<Func<float,float>>((origBuffTime) => {
+                        return boost?2*origBuffTime:origBuffTime;
+                    });
+                } else {
+                    ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch: LifestealOnHit; target instructions not found");
+                }
+            }
+
+            //TeamWarCry: double buff duration
+            if((int)EquipmentIndex.TeamWarCry >= swarr.Length)
+                ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch: TeamWarCry; not in switch");
+            else if(subEnable[EquipmentIndex.TeamWarCry]) {
+                c.GotoLabel(swarr[(int)EquipmentIndex.TeamWarCry]);
+                ILFound = c.TryGotoNext(MoveType.After,
+                    x=>x.MatchLdcI4((int)BuffIndex.TeamWarCry),
+                    x=>x.MatchLdcR4(out _),
+                    x=>x.MatchCallOrCallvirt<CharacterBody>("AddTimedBuff"));
+
+                if(ILFound) {
+                    c.EmitDelegate<Func<float,float>>((origBuffTime) => {
+                        return boost?2*origBuffTime:origBuffTime;
+                    });
+                } else {
+                    ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch: TeamWarCry; target instructions not found (first buff time replacement)");
+                }
+
+                ILFound = c.TryGotoNext(MoveType.After,
+                    x=>x.MatchLdcI4((int)BuffIndex.TeamWarCry),
+                    x=>x.MatchLdcR4(out _),
+                    x=>x.MatchCallOrCallvirt<CharacterBody>("AddTimedBuff"));
+
+                if(ILFound) {
+                    c.EmitDelegate<Func<float,float>>((origBuffTime) => {
+                        return boost?2*origBuffTime:origBuffTime;
+                    });
+                } else {
+                    ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch: TeamWarCry; target instructions not found (second buff time replacement)");
                 }
             }
         }
