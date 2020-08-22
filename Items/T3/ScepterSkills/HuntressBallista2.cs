@@ -27,6 +27,7 @@ namespace ThinkInvisible.ClassicItems {
 
             var nametoken = "CLASSICITEMS_SCEPHUNTRESS_BALLISTANAME";
             newDescToken = "CLASSICITEMS_SCEPHUNTRESS_BALLISTADESC";
+            oldDescToken = oldDef.skillDescriptionToken;
             var namestr = "Rabauld";
             LanguageAPI.Add(nametoken, namestr);
 

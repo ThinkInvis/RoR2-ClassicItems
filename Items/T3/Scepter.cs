@@ -42,6 +42,10 @@ namespace ThinkInvisible.ClassicItems {
         
         public void PatchLang() {
             foreach(var skill in skills) {
+                if(skill.oldDescToken == null) {
+                    ClassicItemsPlugin._logger.LogError(skill.GetType().Name + " oldDescToken is null!");
+                    continue;
+                }
                 LanguageAPI.Add(skill.newDescToken, Language.GetString(skill.oldDescToken) + skill.overrideStr);
             }
         }
