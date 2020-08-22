@@ -462,9 +462,11 @@ namespace ThinkInvisible.ClassicItems {
                 c.GotoLabel(swarr[(int)EquipmentIndex.LifestealOnHit]);
                 ILFound = c.TryGotoNext(MoveType.After,
                     x=>x.MatchLdcI4((int)BuffIndex.LifeSteal),
-                    x=>x.MatchLdcR4(out _));
+                    x=>x.MatchLdcR4(out _),
+                    x=>x.MatchCallOrCallvirt<CharacterBody>("AddTimedBuff"));
 
                 if(ILFound) {
+                    c.Index--;
                     c.EmitDelegate<Func<float,float>>((origBuffTime) => {
                         return boost?2*origBuffTime:origBuffTime;
                     });
@@ -484,6 +486,7 @@ namespace ThinkInvisible.ClassicItems {
                     x=>x.MatchCallOrCallvirt<CharacterBody>("AddTimedBuff"));
 
                 if(ILFound) {
+                    c.Index--;
                     c.EmitDelegate<Func<float,float>>((origBuffTime) => {
                         return boost?2*origBuffTime:origBuffTime;
                     });
@@ -497,6 +500,7 @@ namespace ThinkInvisible.ClassicItems {
                     x=>x.MatchCallOrCallvirt<CharacterBody>("AddTimedBuff"));
 
                 if(ILFound) {
+                    c.Index--;
                     c.EmitDelegate<Func<float,float>>((origBuffTime) => {
                         return boost?2*origBuffTime:origBuffTime;
                     });
