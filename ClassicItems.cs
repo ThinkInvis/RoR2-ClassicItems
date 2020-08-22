@@ -241,6 +241,7 @@ namespace ThinkInvisible.ClassicItems {
             Logger.LogDebug("Performing late setup:");
             Logger.LogDebug("Setting up lang token overrides...");
             Scepter.instance.PatchLang();
+            Language.CCLanguageReload(new ConCommandArgs());
             Logger.LogDebug("Late setup done!");
         }
 

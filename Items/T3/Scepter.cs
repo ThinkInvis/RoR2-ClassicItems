@@ -46,7 +46,7 @@ namespace ThinkInvisible.ClassicItems {
                     ClassicItemsPlugin._logger.LogError(skill.GetType().Name + " oldDescToken is null!");
                     continue;
                 }
-                LanguageAPI.Add(skill.newDescToken, Language.GetString(skill.oldDescToken) + skill.overrideStr);
+                LanguageAPI.Add(skill.newDescToken, Language.GetString(skill.oldDescToken) + skill.overrideStr, Language.currentLanguageName);
             }
         }
 
