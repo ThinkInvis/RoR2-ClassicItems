@@ -67,9 +67,6 @@ namespace ThinkInvisible.ClassicItems {
             EquipmentIndex.BurnNearby, EquipmentIndex.CrippleWard, EquipmentIndex.LunarPotion, EquipmentIndex.SoulCorruptor, EquipmentIndex.Tonic
         });
 
-        //prevent future equipments from being added to config until they have defined behavior here or can be added to unhandledEqps. CONTINUOUS TODO: make sure this stays up to date as often as possible
-        const EquipmentIndex currentHighestEquipment = (EquipmentIndex)35;
-
         public Embryo() {
             preConfig += (cfl) => {
                 foreach(ItemBoilerplate bpl in ClassicItemsPlugin.masterItemList) {
@@ -78,7 +75,6 @@ namespace ThinkInvisible.ClassicItems {
                     subEnableInternal.Add(eqp, !eqp.eqpIsLunar);
                 }
                 foreach(EquipmentIndex e in Enum.GetValues(typeof(EquipmentIndex))) {
-                    if(e > currentHighestEquipment) continue;
                     if(!handledEqps.Contains(e)) continue;
                     subEnable.Add(e, !dftDisableEqps.Contains(e));
                 }
