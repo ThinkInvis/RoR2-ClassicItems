@@ -107,8 +107,6 @@ namespace ThinkInvisible.ClassicItems {
             }
         }
         #endif
-        
-        internal static Language cachedLang;
 
         private void Awake() {
             _logger = Logger;
@@ -125,11 +123,6 @@ namespace ThinkInvisible.ClassicItems {
                 var provider = new AssetBundleResourcesProvider("@ClassicItems", bundle);
                 ResourcesAPI.AddProvider(provider);
             }
-
-            Language.CCLanguageReload(new ConCommandArgs());
-            cachedLang = Language.currentLanguage;
-            cachedLang = Language.english;
-            Debug.Log(cachedLang);
 
             cfgFile = new ConfigFile(Path.Combine(Paths.ConfigPath, ModGuid + ".cfg"), true);
             
@@ -160,8 +153,8 @@ namespace ThinkInvisible.ClassicItems {
                         var cfront = ctsf.Find("cardfront");
                         if(!cfront) return;
 
-                        cfront.Find("carddesc").GetComponent<TextMeshPro>().text = ClassicItemsPlugin.cachedLang.GetLocalizedStringByToken(globalConfig.longDesc ? x.descToken : x.pickupToken);
-                        cfront.Find("cardname").GetComponent<TextMeshPro>().text = ClassicItemsPlugin.cachedLang.GetLocalizedStringByToken(x.nameToken);
+                        cfront.Find("carddesc").GetComponent<TextMeshPro>().text = Language.GetString(globalConfig.longDesc ? x.descToken : x.pickupToken);
+                        cfront.Find("cardname").GetComponent<TextMeshPro>().text = Language.GetString(x.nameToken);
                     }
                     if(x.logbookEntry != null) {
                         x.logbookEntry.modelPrefab = x.pickupDef.displayPrefab;
@@ -412,14 +405,14 @@ namespace ThinkInvisible.ClassicItems {
                 if(pickup.interactContextToken == "EQUIPMENT_PICKUP_CONTEXT") {
                     var eqp = EquipmentCatalog.GetEquipmentDef(pickup.equipmentIndex);
                     if(eqp == null) continue;
-                    pname = ClassicItemsPlugin.cachedLang.GetLocalizedStringByToken(eqp.nameToken);
-                    pdesc = ClassicItemsPlugin.cachedLang.GetLocalizedStringByToken(globalConfig.longDesc ? eqp.descriptionToken : eqp.pickupToken);
+                    pname = Language.GetString(eqp.nameToken);
+                    pdesc = Language.GetString(globalConfig.longDesc ? eqp.descriptionToken : eqp.pickupToken);
                     prar = new Color(1f, 0.7f, 0.4f);
                 } else if(pickup.interactContextToken == "ITEM_PICKUP_CONTEXT") {
                     var item = ItemCatalog.GetItemDef(pickup.itemIndex);
                     if(item == null) continue;
-                    pname = ClassicItemsPlugin.cachedLang.GetLocalizedStringByToken(item.nameToken);
-                    pdesc = ClassicItemsPlugin.cachedLang.GetLocalizedStringByToken(globalConfig.longDesc ? item.descriptionToken : item.pickupToken);
+                    pname = Language.GetString(item.nameToken);
+                    pdesc = Language.GetString(globalConfig.longDesc ? item.descriptionToken : item.pickupToken);
                     switch(item.tier) {
                         case ItemTier.Boss: prar = new Color(1f, 1f, 0f); break;
                         case ItemTier.Lunar: prar = new Color(0f, 0.6f, 1f); break;
