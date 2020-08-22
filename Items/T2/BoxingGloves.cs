@@ -15,7 +15,7 @@ namespace ThinkInvisible.ClassicItems {
         public float procChance {get;private set;} = 6f;
         
         [AutoItemConfig("Multiplier for knockback force.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
-        public float procForce {get;private set;} = 50f;
+        public float procForce {get;private set;} = 1000f;
         
         [AutoItemConfig("If false, Boxing Gloves will not proc on bosses.", AutoItemConfigFlags.None)]
         public bool affectBosses {get;private set;} = false;
@@ -41,7 +41,8 @@ namespace ThinkInvisible.ClassicItems {
                     var pChance = (1f-Mathf.Pow(1-procChance/100f,GetCount(cb)))*100f;
                     var proc = cb.master ? Util.CheckRoll(pChance,cb.master) : Util.CheckRoll(pChance);
                     if(proc) {
-                        var prcf = di.damage * procForce;
+                        //var prcf = di.damage * procForce;
+                        var prcf = (di.damage / self.fullCombinedHealth) * procForce;
                         if(di.force == Vector3.zero)
                             di.force += Vector3.Normalize(di.position - cb.corePosition) * prcf;
                         else di.force += Vector3.Normalize(di.force) * prcf;
