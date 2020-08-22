@@ -14,8 +14,11 @@ namespace ThinkInvisible.ClassicItems {
         [AutoItemConfig("Percent chance for Boxing Gloves to proc; stacks multiplicatively.", AutoItemConfigFlags.None, 0f, 100f)]
         public float procChance {get;private set;} = 6f;
         
-        [AutoItemConfig("Multiplier for knockback force.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
-        public float procForce {get;private set;} = 1000f;
+        [AutoItemConfig("Multiplier for knockback force vs. grounded targets.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
+        public float procForceGrounded {get;private set;} = 90f;
+
+        [AutoItemConfig("Multiplier for knockback force vs. flying targets.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
+        public float procForceFlying {get;private set;} = 30f;
         
         [AutoItemConfig("If false, Boxing Gloves will not proc on bosses.", AutoItemConfigFlags.None)]
         public bool affectBosses {get;private set;} = false;
@@ -41,11 +44,12 @@ namespace ThinkInvisible.ClassicItems {
                     var pChance = (1f-Mathf.Pow(1-procChance/100f,GetCount(cb)))*100f;
                     var proc = cb.master ? Util.CheckRoll(pChance,cb.master) : Util.CheckRoll(pChance);
                     if(proc) {
+                        var mass = self.body.characterMotor?.mass ?? (self.body.rigidbody?.mass ?? 1f);
                         //var prcf = di.damage * procForce;
-                        var prcf = (di.damage / self.fullCombinedHealth) * procForce;
+                        var prcf = (di.damage / self.fullCombinedHealth) * (self.body.isFlying ? procForceFlying : procForceGrounded);
                         if(di.force == Vector3.zero)
-                            di.force += Vector3.Normalize(di.position - cb.corePosition) * prcf;
-                        else di.force += Vector3.Normalize(di.force) * prcf;
+                            di.force += Vector3.Normalize(di.position - cb.corePosition) * prcf * mass;
+                        else di.force += Vector3.Normalize(di.force) * prcf * mass;
                     }
                 }
             }
