@@ -1,10 +1,8 @@
 ﻿using UnityEngine;
 using RoR2.Skills;
 using static TILER2.MiscUtil;
-using R2API.Utils;
 using RoR2;
 using R2API;
-using System.Collections.Generic;
 using EntityStates.Treebot.TreebotFlower;
 using RoR2.Projectile;
 
@@ -57,15 +55,13 @@ namespace ThinkInvisible.ClassicItems {
         }
 
         private void On_TreebotFlower2RootPulse(On.EntityStates.Treebot.TreebotFlower.TreebotFlower2Projectile.orig_RootPulse orig, TreebotFlower2Projectile self) {
-            var owner = self.GetFieldValue<GameObject>("owner");
-            var isBoosted = Scepter.instance.GetCount(owner?.GetComponent<CharacterBody>()) > 0;
+            var isBoosted = Scepter.instance.GetCount(self.owner?.GetComponent<CharacterBody>()) > 0;
             var origRadius = TreebotFlower2Projectile.radius;
             if(isBoosted) TreebotFlower2Projectile.radius *= 2f;
             orig(self);
             TreebotFlower2Projectile.radius = origRadius;
             if(!isBoosted) return;
-            var rb = self.GetFieldValue<List<CharacterBody>>("rootedBodies");
-            rb.ForEach(cb => {
+            self.rootedBodies.ForEach(cb => {
                 var nbi = Scepter.instance.itemRng.NextElementUniform(new[] {
                     BuffIndex.Bleeding,
                     BuffIndex.ClayGoo,
@@ -82,8 +78,8 @@ namespace ThinkInvisible.ClassicItems {
                         ssoh.SetFrozen(1.5f);
                     else return;
                 }
-                if(nbi == BuffIndex.OnFire) DotController.InflictDot(cb.gameObject, owner, DotController.DotIndex.Burn, 1.5f, 1f);
-                if(nbi == BuffIndex.Bleeding) DotController.InflictDot(cb.gameObject, owner, DotController.DotIndex.Bleed, 1.5f, 1f);
+                if(nbi == BuffIndex.OnFire) DotController.InflictDot(cb.gameObject, self.owner, DotController.DotIndex.Burn, 1.5f, 1f);
+                if(nbi == BuffIndex.Bleeding) DotController.InflictDot(cb.gameObject, self.owner, DotController.DotIndex.Bleed, 1.5f, 1f);
                 cb.AddTimedBuff(nbi, 1.5f);
             });
         }

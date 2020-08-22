@@ -3,7 +3,6 @@ using RoR2.Skills;
 using static TILER2.MiscUtil;
 using R2API;
 using RoR2;
-using R2API.Utils;
 
 namespace ThinkInvisible.ClassicItems {
     public class MercEvisProjectile2 : ScepterSkill {
@@ -52,7 +51,7 @@ namespace ThinkInvisible.ClassicItems {
             var fireCount = self.outer.commonComponents.skillLocator.special.stock;
             self.outer.commonComponents.skillLocator.special.stock = 0;
             for(var i = 0; i < fireCount; i++) {
-                typeof(EntityStates.Commando.CommandoWeapon.FireFMJ).GetMethodCached("Fire").Invoke(self, new object[]{});
+                self.Fire();
             }
         }
     }

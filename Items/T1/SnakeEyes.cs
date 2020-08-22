@@ -1,7 +1,5 @@
-﻿using R2API.Utils;
-using RoR2;
+﻿using RoR2;
 using UnityEngine;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using TILER2;
 using static TILER2.MiscUtil;
@@ -62,7 +60,7 @@ namespace ThinkInvisible.ClassicItems {
             if(failed) {
                 if(GetCount(tgtBody) > 0 && tgtBody.GetBuffCount(snakeEyesBuff) < stackCap) tgtBody.AddBuff(snakeEyesBuff);
                 if(!inclDeploys) return;
-                var dplist = tgtBody.master?.GetFieldValue<List<DeployableInfo>>("deployablesList");
+                var dplist = tgtBody.master?.deployablesList;
                 if(dplist != null) foreach(DeployableInfo d in dplist) {
                     var dplBody = d.deployable.gameObject.GetComponent<CharacterMaster>()?.GetBody();
                     if(dplBody && GetCount(dplBody) > 0 && dplBody.GetBuffCount(snakeEyesBuff) < stackCap) {
@@ -72,7 +70,7 @@ namespace ThinkInvisible.ClassicItems {
             } else {
                 tgtBody.SetBuffCount(snakeEyesBuff, 0);
                 if(!inclDeploys) return;
-                var dplist = tgtBody.master?.GetFieldValue<List<DeployableInfo>>("deployablesList");
+                var dplist = tgtBody.master?.deployablesList;
                 if(dplist != null) foreach(DeployableInfo d in dplist) {
                     d.deployable.gameObject.GetComponent<CharacterMaster>()?.GetBody()?.SetBuffCount(snakeEyesBuff, 0);
                 }

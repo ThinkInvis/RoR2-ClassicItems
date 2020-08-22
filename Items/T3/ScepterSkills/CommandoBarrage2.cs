@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using RoR2.Skills;
 using static TILER2.MiscUtil;
-using R2API.Utils;
 using EntityStates.Commando.CommandoWeapon;
 using RoR2;
 using R2API;
@@ -50,8 +49,8 @@ namespace ThinkInvisible.ClassicItems {
         private void On_FireBarrage_Enter(On.EntityStates.Commando.CommandoWeapon.FireBarrage.orig_OnEnter orig, FireBarrage self) {
             orig(self);
             if(Scepter.instance.GetCount(self.outer.commonComponents.characterBody) > 0) {
-                self.SetFieldValue("durationBetweenShots", self.GetFieldValue<float>("durationBetweenShots") / 2f);
-                self.SetFieldValue("bulletCount", self.GetFieldValue<int>("bulletCount") * 2);
+                self.durationBetweenShots /= 2f;
+                self.bulletCount *= 2;
             }
         }
 

@@ -1,11 +1,9 @@
 ﻿using UnityEngine;
 using RoR2.Skills;
 using static TILER2.MiscUtil;
-using R2API.Utils;
 using EntityStates.Huntress;
 using RoR2;
 using R2API;
-using RoR2.Projectile;
 using EntityStates.Huntress.Weapon;
 
 namespace ThinkInvisible.ClassicItems {
@@ -67,8 +65,8 @@ namespace ThinkInvisible.ClassicItems {
             for(var i = 1; i < 6; i++) {
                 var sprRay = new Ray(aimRay.origin, aimRay.direction);
                 sprRay.direction = Util.ApplySpread(sprRay.direction, 0.1f+i/24f, 0.3f+i/8f, 1f, 1f, 0f, 0f);
-				var pew = (BulletAttack)typeof(EntityStates.GenericBulletBaseState).GetMethodCached("GenerateBulletAttack").Invoke(self, new object[]{sprRay});
-				typeof(FireArrowSnipe).GetMethodCached("ModifyBullet").Invoke(self, new object[]{pew});
+				var pew = self.GenerateBulletAttack(sprRay);
+                self.ModifyBullet(pew);
                 pew.damage /= 10f/3f;
                 pew.force /= 20f/3f;
                 RoR2Application.fixedTimeTimers.CreateTimer(i*0.06f, ()=>{

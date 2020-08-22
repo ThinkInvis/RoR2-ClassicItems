@@ -3,8 +3,6 @@ using MonoMod.Cil;
 using RoR2;
 using System;
 using UnityEngine;
-using R2API.Utils;
-using BepInEx.Configuration;
 using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -608,8 +606,7 @@ namespace ThinkInvisible.ClassicItems {
             bool boost = false;
             c.Emit(OpCodes.Ldarg_0);
             c.EmitDelegate<Action<EntityStates.GoldGat.GoldGatFire>>((ggf)=>{
-                var n = ggf.GetFieldValue<NetworkedBodyAttachment>("networkedBodyAttachment");
-                boost = Util.CheckRoll(GetCount(n?.attachedBodyObject?.GetComponent<CharacterBody>())*procChance);
+                boost = Util.CheckRoll(GetCount(ggf.networkedBodyAttachment?.attachedBodyObject?.GetComponent<CharacterBody>())*procChance);
             });
 
             bool ILFound;
@@ -641,7 +638,7 @@ namespace ThinkInvisible.ClassicItems {
                 c.Index++;
                 c.Emit(OpCodes.Ldarg_0);
                 c.EmitDelegate<Func<float,JetpackController,float>>((origDecr,jpc)=>{
-                    EmbryoComponent cpt = jpc.GetPropertyValue<CharacterBody>("targetBody").GetComponentInChildren<EmbryoComponent>();
+                    EmbryoComponent cpt = jpc.targetBody.GetComponentInChildren<EmbryoComponent>();
                     if(!cpt || cpt.boostedJetTime <= 0) return origDecr;
                     cpt.boostedJetTime -= origDecr;
                     return 0f;

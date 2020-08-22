@@ -1,7 +1,6 @@
 ﻿using RoR2;
 using System;
 using UnityEngine;
-using R2API.Utils;
 using System.Collections.ObjectModel;
 using TILER2;
 using static TILER2.MiscUtil;
@@ -44,24 +43,23 @@ namespace ThinkInvisible.ClassicItems {
 
         private void On_CMOnHitGround(On.RoR2.CharacterMotor.orig_OnHitGround orig, CharacterMotor self, CharacterMotor.HitGroundInfo ghi) {
             orig(self,ghi);
-            CharacterBody body = self.GetFieldValue<CharacterBody>("body");
-            if(!body) return;
-            if(GetCount(body) > 0 && Math.Abs(ghi.velocity.y) > velThreshold) {
-                float scalefac = Mathf.Lerp(0f, baseDamage + (GetCount(body) - 1f) * stackDamage,
+            if(!self.body) return;
+            if(GetCount(self.body) > 0 && Math.Abs(ghi.velocity.y) > velThreshold) {
+                float scalefac = Mathf.Lerp(0f, baseDamage + (GetCount(self.body) - 1f) * stackDamage,
                     Mathf.InverseLerp(velThreshold, velMax+velThreshold, Math.Abs(ghi.velocity.y)));
                 //most properties borrowed from H3AD-5T v2
 				BlastAttack blastAttack = new BlastAttack {
-                    attacker = body.gameObject,
-					inflictor = body.gameObject,
-					teamIndex = TeamComponent.GetObjectTeam(body.gameObject),
+                    attacker = self.body.gameObject,
+					inflictor = self.body.gameObject,
+					teamIndex = TeamComponent.GetObjectTeam(self.body.gameObject),
 					position = ghi.position,
 					procCoefficient = 0.5f,
 					radius = 10f,
 					baseForce = 2000f,
 					bonusForce = Vector3.up * 2000f,
-					baseDamage = body.damage * scalefac,
+					baseDamage = self.body.damage * scalefac,
 					falloffModel = BlastAttack.FalloffModel.SweetSpot,
-					crit = Util.CheckRoll(body.crit, body.master),
+					crit = Util.CheckRoll(self.body.crit, self.body.master),
 					damageColorIndex = DamageColorIndex.Item,
                     attackerFiltering = AttackerFiltering.NeverHit
                 };

@@ -1,11 +1,9 @@
-﻿using EntityStates;
-using UnityEngine;
+﻿using UnityEngine;
 using RoR2.Skills;
 using static TILER2.MiscUtil;
 using R2API;
 using EntityStates.Merc;
 using RoR2;
-using R2API.Utils;
 
 namespace ThinkInvisible.ClassicItems {
     public class MercEvis2 : ScepterSkill {
@@ -48,9 +46,9 @@ namespace ThinkInvisible.ClassicItems {
         }
         private void Evt_GEMOnCharacterDeathGlobal(DamageReport rep) {
             var attackerState = rep.attackerBody?.GetComponent<EntityStateMachine>()?.state;
-            if(attackerState is Evis && Scepter.instance.GetCount(rep.attackerBody) > 0
+            if(attackerState is Evis asEvis && Scepter.instance.GetCount(rep.attackerBody) > 0
                 && Vector3.Distance(rep.attackerBody.transform.position, rep.victim.transform.position) < Evis.maxRadius)
-                typeof(Evis).GetFieldCached("stopwatch").SetValue(attackerState, 0f);
+                asEvis.stopwatch = 0f;
         }
 
         private void On_EvisFixedUpdate(On.EntityStates.Merc.Evis.orig_FixedUpdate orig, Evis self) {

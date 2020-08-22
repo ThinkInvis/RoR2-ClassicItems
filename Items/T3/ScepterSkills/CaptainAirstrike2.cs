@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using RoR2.Skills;
 using static TILER2.MiscUtil;
-using R2API.Utils;
 using RoR2;
 using R2API;
 using EntityStates.Captain.Weapon;
@@ -106,9 +105,8 @@ namespace ThinkInvisible.ClassicItems {
         }
 
         private void On_SetupAirstrikeStateExit(On.EntityStates.Captain.Weapon.SetupAirstrike.orig_OnExit orig, EntityStates.Captain.Weapon.SetupAirstrike self) {
-            var pSS = self.GetFieldValue<GenericSkill>("primarySkillSlot");
-            if(pSS)
-                pSS.UnsetSkillOverride(self, myCallDef, GenericSkill.SkillOverridePriority.Contextual);
+            if(self.primarySkillSlot)
+                self.primarySkillSlot.UnsetSkillOverride(self, myCallDef, GenericSkill.SkillOverridePriority.Contextual);
             orig(self);
         }
     }

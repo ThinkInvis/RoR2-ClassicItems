@@ -5,7 +5,6 @@ using R2API;
 using RoR2.Projectile;
 using RoR2;
 using EntityStates.Commando.CommandoWeapon;
-using R2API.Utils;
 
 namespace ThinkInvisible.ClassicItems {
     public class CommandoGrenade2 : ScepterSkill {
@@ -70,9 +69,9 @@ namespace ThinkInvisible.ClassicItems {
                         self.projectilePrefab,
                         r.origin, Util.QuaternionSafeLookRotation(r.direction),
                         self.outer.gameObject,
-                        (float)typeof(FireFMJ).GetFieldCached("damageStat").GetValue(self) * self.damageCoefficient,
+                        self.damageStat * self.damageCoefficient,
                         self.force,
-                        Util.CheckRoll((float)typeof(FireFMJ).GetFieldCached("critStat").GetValue(self), cc.characterBody.master),
+                        Util.CheckRoll(self.critStat, cc.characterBody.master),
                         DamageColorIndex.Default, null, -1f);
                 }
             }
