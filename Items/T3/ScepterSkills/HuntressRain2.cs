@@ -17,7 +17,7 @@ namespace ThinkInvisible.ClassicItems {
         
         public override string targetBody => "HuntressBody";
         public override SkillSlot targetSlot => SkillSlot.Special;
-        public override int targetVariantIndex => 1;
+        public override int targetVariantIndex => 0;
 
         internal override void SetupAttributes() {
             var oldDef = Resources.Load<SkillDef>("skilldefs/huntressbody/HuntressBodyArrowRain");
