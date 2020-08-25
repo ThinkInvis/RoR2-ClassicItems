@@ -1,5 +1,9 @@
 ﻿# ClassicItems Changelog
 
+**4.4.1**
+
+- Fixed a typo which was causing Ancient Scepter variants for Huntress to be inverted.
+
 **4.4.0**
 
 - Added Ancient Scepter skill for Captain: 21-Probe Salute.

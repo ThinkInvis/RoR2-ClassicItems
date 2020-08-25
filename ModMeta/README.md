@@ -111,6 +111,10 @@ For details and instructions on applying these, see: https://github.com/ThinkInv
 
 The 5 latest updates are listed below. For a full changelog, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/changelog.md
 
+**4.4.1**
+
+- Fixed a typo which was causing Ancient Scepter variants for Huntress to be inverted.
+
 **4.4.0**
 
 - Added Ancient Scepter skill for Captain: 21-Probe Salute.
@@ -138,9 +142,3 @@ The 5 latest updates are listed below. For a full changelog, see: https://github
 - Main plugin now uses AutoItemConfig for global configs. Note that **these config entries will reset to defaults once after updating ClassicItems** (names/categories have changed).
 - Moved some Captain's Brooch code (nodegraph cleanup) into TILER2.
 - (From TILER2 update to v1.4.0) Fixed some items applying incorrect types of damage bonus.
-
-**4.2.2**
-
-- Boxing Gloves now has an option to disable affecting bosses.
-- Made Golden Gun's second IL patch target slightly more lenient (fixes compatibility with GeneralFixes mod).
-- Now uses plugin-specific console logger.
