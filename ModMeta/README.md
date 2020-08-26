@@ -111,6 +111,10 @@ For details and instructions on applying these, see: https://github.com/ThinkInv
 
 The 5 latest updates are listed below. For a full changelog, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/changelog.md
 
+**4.4.2**
+
+- Updated for TILER2 2.0.0.
+
 **4.4.1**
 
 - Fixed a typo which was causing Ancient Scepter variants for Huntress to be inverted.
@@ -136,9 +140,3 @@ The 5 latest updates are listed below. For a full changelog, see: https://github
 
 - Patches critical bugs for RoR2 1.0. Fixes item models not being setup properly and Milky Chrysalis not working with Beating Embryo.
 - Temporarily removed code for Blast Shower's Beating Embryo patch, as it needs to be rewritten entirely.
-
-**4.2.3**
-
-- Main plugin now uses AutoItemConfig for global configs. Note that **these config entries will reset to defaults once after updating ClassicItems** (names/categories have changed).
-- Moved some Captain's Brooch code (nodegraph cleanup) into TILER2.
-- (From TILER2 update to v1.4.0) Fixed some items applying incorrect types of damage bonus.

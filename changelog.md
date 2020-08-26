@@ -1,5 +1,9 @@
 ﻿# ClassicItems Changelog
 
+**4.4.2**
+
+- Updated for TILER2 2.0.0.
+
 **4.4.1**
 
 - Fixed a typo which was causing Ancient Scepter variants for Huntress to be inverted.
