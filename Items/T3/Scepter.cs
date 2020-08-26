@@ -1,10 +1,9 @@
 ﻿using RoR2;
-using UnityEngine;
 using System.Collections.ObjectModel;
 using TILER2;
 using static TILER2.MiscUtil;
+using static TILER2.SkillUtil;
 using RoR2.Skills;
-using EntityStates;
 using System.Collections.Generic;
 using R2API;
 using System.Linq;

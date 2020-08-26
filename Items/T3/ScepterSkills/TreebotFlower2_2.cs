@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using RoR2.Skills;
-using static TILER2.MiscUtil;
+using static TILER2.SkillUtil;
 using RoR2;
 using R2API;
 using EntityStates.Treebot.TreebotFlower;
