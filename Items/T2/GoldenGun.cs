@@ -84,6 +84,7 @@ namespace ThinkInvisible.ClassicItems {
 
         private void On_CBFixedUpdate(On.RoR2.CharacterBody.orig_FixedUpdate orig, CharacterBody self) {
             orig(self);
+            if(!self) return;
             var cpt = self.GetComponent<GoldenGunComponent>();
             if(!cpt) return;
             var newMoney = self.master?.money ?? 0;
