@@ -32,7 +32,15 @@ namespace ThinkInvisible.ClassicItems {
         protected override string NewLangDesc(string langid = null) => "Hitting the ground faster than <style=cIsDamage>" + velThreshold.ToString("N1") + " m/s</style> (vertical component only) causes a <style=cIsDamage>10 m</style> radius <style=cIsDamage>kinetic explosion</style>, dealing up to <style=cIsDamage>" + Pct(baseDamage) + " base damage</style> <style=cStack>(+" + Pct(stackDamage) + " per stack, linear)</style>. <style=cIsDamage>Max damage</style> requires <style=cIsDamage>" + (velMax+velThreshold).ToString("N1") + " m/s falling speed</style>.";
         protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
-        public Headstompers() {}
+        public Headstompers() {
+            onBehav += () => {
+			    if(Compat_ItemStats.enabled) {
+				    Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+					    ((count,inv,master)=>{return baseDamage + stackDamage * (count - 1);},
+					    (value,inv,master)=>{return $"Stomp Damage: {Pct(value, 1)}";}));
+			    }
+            };
+        }
 
         protected override void LoadBehavior() {
             On.RoR2.CharacterMotor.OnHitGround += On_CMOnHitGround;

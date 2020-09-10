@@ -18,7 +18,15 @@ namespace ThinkInvisible.ClassicItems {
         protected override string NewLangDesc(string langid = null) => "Increases <style=cIsHealing>health regen by +" + addRegen.ToString("N1") + "/sec</style> <style=cStack>(+" + addRegen.ToString("N1") + "/sec per stack)</style>.";        
         protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
-        public Vial() {}
+        public Vial() {
+            onBehav += () => {
+			    if(Compat_ItemStats.enabled) {
+				    Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+					    ((count,inv,master)=>{return addRegen*count;},
+					    (value,inv,master)=>{return $"Regen Bonus: {value.ToString("N1")} HP/s";}));
+			    }
+            };
+        }
 
         protected override void LoadBehavior() {
             GetStatCoefficients += Evt_TILER2GetStatCoefficients;

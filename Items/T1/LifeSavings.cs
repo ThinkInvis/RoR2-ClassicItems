@@ -34,7 +34,15 @@ namespace ThinkInvisible.ClassicItems {
         protected override string NewLangDesc(string langid = null) => "Generates <style=cIsUtility>$" + gainPerSec.ToString("N0") + "</style> <style=cStack>(+$" + gainPerSec.ToString("N0") + " per stack)</style> every second. <style=cStack>Generates less below " + invertCount.ToString("N0") + " stacks.</style>";
         protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
-        public LifeSavings() {}
+        public LifeSavings() {
+            onBehav += () => {
+			    if(Compat_ItemStats.enabled) {
+				    Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+					    ((count,inv,master)=>{return LifeSavingsComponent.CalculateMoneyIncrease(Mathf.FloorToInt(count));},
+					    (value,inv,master)=>{return $"Money Per Second: ${value.ToString("N1")}";}));
+			    }
+            };
+        }
 
         protected override void LoadBehavior() {
             On.RoR2.CharacterBody.OnInventoryChanged += On_CBOnInventoryChanged;
@@ -104,12 +112,16 @@ namespace ThinkInvisible.ClassicItems {
             if(LifeSavings.instance.inclDeploys && body.master) icnt += LifeSavings.instance.GetCountOnDeploys(body.master);
         }
 
+        internal static float CalculateMoneyIncrease(int count) {
+            return LifeSavings.instance.gainPerSec * ((count < LifeSavings.instance.invertCount)?(1f/(float)(LifeSavings.instance.invertCount-count+1)):(count-LifeSavings.instance.invertCount+1));
+        }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Used by UnityEngine")]
         private void FixedUpdate() {
             var body = this.gameObject.GetComponent<CharacterBody>();
             if(body.inventory && body.master) {
                 if(icnt > 0)
-                    moneyBuffer += Time.fixedDeltaTime * LifeSavings.instance.gainPerSec * ((icnt < LifeSavings.instance.invertCount)?(1f/(float)(LifeSavings.instance.invertCount-icnt+1)):(icnt-LifeSavings.instance.invertCount+1));
+                    moneyBuffer += Time.fixedDeltaTime * CalculateMoneyIncrease(icnt);
                 //Disable during pre-teleport money drain so it doesn't softlock
                 //Accumulator is emptied into actual money variable whenever a tick passes and it has enough for a change in integer value
                 if(moneyBuffer >= 1.0f && !holdIt && (LifeSavings.instance.ignoreTimestop || !Run.instance.isRunStopwatchPaused)){

@@ -48,6 +48,16 @@ namespace ThinkInvisible.ClassicItems {
                 });
                 goldenGunBuff = R2API.BuffAPI.Add(goldenGunBuffDef);
             };
+
+            onBehav += () => {
+			    if(Compat_ItemStats.enabled) {
+				    Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+					    ((count,inv,master)=>{
+                            return Run.instance.GetDifficultyScaledCost(goldAmt) * Mathf.Pow(goldReduc, count - 1);
+                        },
+					    (value,inv,master)=>{return $"Full Damage Cost: ${value.ToString("N0")}";}));
+			    }
+            };
         }
 
         protected override void LoadBehavior() {

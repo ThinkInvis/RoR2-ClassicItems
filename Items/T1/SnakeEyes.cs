@@ -43,6 +43,14 @@ namespace ThinkInvisible.ClassicItems {
                 });
                 snakeEyesBuff = R2API.BuffAPI.Add(snakeEyesBuffDef);
             };
+
+            onBehav += () => {
+			    if(Compat_ItemStats.enabled) {
+				    Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+					    ((count,inv,master)=>{return critAdd*count;},
+					    (value,inv,master)=>{return $"Crit Chance Per Shrine Fail: {Pct(value, 1, 1)}";}));
+			    }
+            };
         }
 
         protected override void LoadBehavior() {

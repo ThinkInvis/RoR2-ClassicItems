@@ -34,7 +34,17 @@ namespace ThinkInvisible.ClassicItems {
         protected override string NewLangDesc(string langid = null) => "<style=cDeath>When hit for more than " + Pct(healthThreshold) + " max health</style>, <style=cIsDamage>explode</style> for up to <style=cIsDamage>" + Pct(baseDmg) + "</style> <style=cStack>(+" + Pct(stackDmg) + " per stack)</style> damage to enemies within <style=cIsDamage>" + baseRadius.ToString("N0") + " m</style>.";
         protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
-        public FireShield() { }
+        public FireShield() {
+            onBehav += () => {
+			    if(Compat_ItemStats.enabled) {
+				    Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+					    ((count,inv,master)=>{
+                            return baseDmg + (count-1) * stackDmg;
+					    },
+					    (value,inv,master)=>{return $"Fire Blast Damage: {Pct(value, 1)}";}));
+			    }
+            };
+        }
 
         protected override void LoadBehavior() {
 			On.RoR2.HealthComponent.TakeDamage += On_HCTakeDamage;

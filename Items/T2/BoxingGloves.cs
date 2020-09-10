@@ -28,7 +28,15 @@ namespace ThinkInvisible.ClassicItems {
         protected override string NewLangDesc(string langid = null) => "<style=cIsUtility>" + Pct(procChance,0,1) + "</style> <style=cStack>(+"+Pct(procChance,0,1)+" per stack, mult.)</style> chance to <style=cIsUtility>knock back</style> an enemy <style=cIsDamage>based on attack damage</style>.";
         protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
-        public BoxingGloves() { }
+        public BoxingGloves() {
+            onBehav += () => {
+                if(Compat_ItemStats.enabled) {
+				    Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+					    ((count,inv,master)=>{return (1f-Mathf.Pow(1-procChance/100f,count))*100f;},
+					    (value,inv,master)=>{return $"Knockback Chance: {Pct(value, 1, 1)}";}));
+			    }
+            };
+        }
 
         protected override void LoadBehavior() {
             On.RoR2.HealthComponent.TakeDamage += On_HCTakeDamage;

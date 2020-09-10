@@ -71,6 +71,14 @@ namespace ThinkInvisible.ClassicItems {
                 });
                 healBuff = R2API.BuffAPI.Add(healBuffDef);
             };
+
+            onBehav += () => {
+            	if(Compat_ItemStats.enabled) {
+				    Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+					    ((count,inv,master)=>{return Mathf.Max(baseCD * Mathf.Pow(1f - stackCDreduc, count - 1), baseDuration);},
+					    (value,inv,master)=>{return $"Buff Interval: {value.ToString("N1")} s";}));
+			    }
+            };
         }
 
         protected override void LoadBehavior() {

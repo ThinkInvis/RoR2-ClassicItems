@@ -55,6 +55,14 @@ namespace ThinkInvisible.ClassicItems {
 			    spikeWardPrefab = bwPrefabPrefab.InstantiateClone("SpikestripAuraPrefab");
 			    UnityEngine.Object.Destroy(bwPrefabPrefab);
             };
+
+            onBehav += () => {
+			    if(Compat_ItemStats.enabled) {
+				    Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+					    ((count,inv,master)=>{return baseDuration + (count-1)*stackDuration;},
+					    (value,inv,master)=>{return $"Duration: {value.ToString("N1")} s";}));
+			    }
+            };
         }
 
         protected override void LoadBehavior() {

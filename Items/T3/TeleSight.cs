@@ -33,7 +33,15 @@ namespace ThinkInvisible.ClassicItems {
         protected override string NewLangDesc(string langid = null) => "<style=cIsDamage>" + Pct(procChance,1,1) + "</style> <style=cStack>(+" + Pct(stackChance,1,1) + " per stack, up to " + Pct(capChance,1,1) + ")</style> chance to <style=cIsDamage>instantly kill</style> an enemy. Affected by proc coefficient.";
         protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
-        public TeleSight() {}
+        public TeleSight() {
+            onBehav += () => {
+			    if(Compat_ItemStats.enabled) {
+				    Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+					    ((count,inv,master)=>{return Mathf.Min(procChance+stackChance*(count-1), capChance);},
+					    (value,inv,master)=>{return $"Instakill Chance: {Pct(value, 1, 1f)}";}));
+			    }
+            };
+        }
 
         protected override void LoadBehavior() {
             On.RoR2.GlobalEventManager.OnHitEnemy += On_GEMOnHitEnemy;

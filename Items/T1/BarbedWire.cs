@@ -58,9 +58,23 @@ namespace ThinkInvisible.ClassicItems {
 				barbedWardPrefab = bwPrefabPrefab.InstantiateClone("BarbedWardAuraPrefab");
 				UnityEngine.Object.Destroy(bwPrefabPrefab);
 			};
+
+			onBehav += () => {
+				if(Compat_ItemStats.enabled) {
+					Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+						((count,inv,master)=>{
+							return baseDmg+(count-1)*stackDmg;
+						},
+						(value,inv,master)=>{return $"AoE Damage Per Second: {Pct(value)}";}),
+						((count,inv,master)=>{
+							return baseRadius+(count-1)*stackRadius;
+						},
+						(value,inv,master)=>{return $"Radius: {value.ToString("N1")} m";}));
+				}
+			};
 		}
 
-        protected override void LoadBehavior() {
+		protected override void LoadBehavior() {
             On.RoR2.CharacterBody.RecalculateStats += On_CBRecalcStats;
 			if(inclDeploys)
 				On.RoR2.CharacterMaster.AddDeployable += On_CMAddDeployable;
@@ -74,7 +88,7 @@ namespace ThinkInvisible.ClassicItems {
 
 		private void Evt_ConfigEntryChanged(object sender, AutoUpdateEventArgs args) {
 			AliveList().ForEach(cm => {
-				if(cm.hasBody) updateBarbedWard(cm.GetBody());
+				if(cm.hasBody) UpdateBarbedWard(cm.GetBody());
 			});
 		}
 
@@ -83,17 +97,17 @@ namespace ThinkInvisible.ClassicItems {
 			orig(self, depl, slot);
 
 			var body = depl.GetComponent<CharacterMaster>()?.GetBody();
-			if(body) updateBarbedWard(body);
+			if(body) UpdateBarbedWard(body);
 		}
 
         private void On_CBRecalcStats(On.RoR2.CharacterBody.orig_RecalculateStats orig, CharacterBody self) {
 			orig(self);
 
 			if(!NetworkServer.active || (!inclDeploys && self.master?.GetComponent<Deployable>())) return;
-			updateBarbedWard(self);
+			UpdateBarbedWard(self);
         }
 
-		private void updateBarbedWard(CharacterBody body) {
+		private void UpdateBarbedWard(CharacterBody body) {
             var cpt = body.GetComponentInChildren<BarbedWard>()?.gameObject;
 
 			var icnt = GetCount(body);

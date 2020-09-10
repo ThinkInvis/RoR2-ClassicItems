@@ -24,8 +24,16 @@ namespace ThinkInvisible.ClassicItems {
         protected override string NewLangDesc(string langid = null) => "<style=cIsUtility>Reduces gravity</style> by <style=cIsUtility>" + Pct(gravMod) + "</style> while <style=cIsUtility>holding jump</style>. Increases <style=cIsUtility>jump power</style> by <style=cIsUtility>" + Pct(jumpMult) + "</style> <style=cStack>(+" + Pct(jumpMult)  + " per stack, linear)</style>.";        
         protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
-        public RustyJetpack() {}
-
+        public RustyJetpack() {
+            onBehav += () => {
+			    if(Compat_ItemStats.enabled) {
+				    Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+					    ((count,inv,master)=>{return jumpMult*count;},
+					    (value,inv,master)=>{return $"Jump Power: +{value.ToString("N1")}";}));
+			    }
+            };
+        }
+        
         protected override void LoadBehavior() {
             GetStatCoefficients += Evt_TILER2GetStatCoefficients;
             On.RoR2.CharacterBody.FixedUpdate += On_CBFixedUpdate;

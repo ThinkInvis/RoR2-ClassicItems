@@ -53,6 +53,14 @@ namespace ThinkInvisible.ClassicItems {
                 });
                 photonFuelBuff = R2API.BuffAPI.Add(PhotonJetpackBuff);
             };
+
+            onBehav += () => {
+			    if(Compat_ItemStats.enabled) {
+				    Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+					    ((count,inv,master)=>{return baseFuel+(count-1)*stackFuel;},
+					    (value,inv,master)=>{return $"Fuel: {value.ToString("N1")} s";}));
+			    }
+            };
         }
 
         protected override void LoadBehavior() {

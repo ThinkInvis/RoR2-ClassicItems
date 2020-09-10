@@ -99,6 +99,14 @@ namespace ThinkInvisible.ClassicItems {
                 embryoCptPrefab = eCptPrefab2.InstantiateClone("embryoCptPrefab");
                 GameObject.Destroy(eCptPrefab2);
             };
+
+            onBehav += () => {
+			    if(Compat_ItemStats.enabled) {
+				    Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+					    ((count,inv,master)=>{return procChance*count;},
+					    (value,inv,master)=>{return $"Proc Chance: {Pct(value, 1, 1)}";}));
+			    }
+            };
         }
 
         protected override string NewLangName(string langid = null) => displayName;        

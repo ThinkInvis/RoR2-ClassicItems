@@ -55,7 +55,52 @@ namespace ThinkInvisible.ClassicItems {
         protected override string NewLangDesc(string langid = null) => "Elites have a <style=cIsUtility>" + Pct(baseChance, 1, 1) + " chance</style> <style=cStack>(+" + Pct(stackChance, 1, 1) + " per stack COMBINED FOR ALL PLAYERS, up to " + Pct(capChance, 1, 1) + ")</style> to <style=cIsUtility>drop items</style> when <style=cIsDamage>killed</style>. <style=cStack>(Further stacks increase uncommon/rare chance up to " +Pct(capUnc,2,1) +" and "+Pct(capRare,3,1)+", respectively.)</style>";        
         protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
-        public Clover() { }
+        public Clover() {
+            onBehav += () => {
+			    if(Compat_ItemStats.enabled) {
+				    Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+					    ((count,inv,master)=>{
+                            float numberOfClovers = 0;
+                            if(globalStack)
+                                foreach(CharacterMaster chrm in AliveList()) {
+			                        if(!inclDeploys && chrm.GetComponent<Deployable>()) continue;
+                                    numberOfClovers += chrm?.inventory?.GetItemCount(regIndex) ?? 0;
+                                }
+                            else
+                                numberOfClovers += count;
+                            return Math.Min(baseChance + (numberOfClovers-1) * stackChance, capChance);
+                        },
+					    (value,inv,master)=>{return $"Drop Chance: {Pct(value,1,1f)}";}),
+                    
+					    ((count,inv,master)=>{
+                            float numberOfClovers = 0;
+                            if(globalStack)
+                                foreach(CharacterMaster chrm in AliveList()) {
+			                        if(!inclDeploys && chrm.GetComponent<Deployable>()) continue;
+                                    numberOfClovers += chrm?.inventory?.GetItemCount(regIndex) ?? 0;
+                                }
+                            else
+                                numberOfClovers += count;
+                            return Math.Min(baseUnc + (numberOfClovers-1) * stackUnc, capUnc);
+                        },
+					    (value,inv,master)=>{return $"T2 Upgrade Chance: {Pct(value,2,1f)}";}),
+                    
+					    ((count,inv,master)=>{
+                            float numberOfClovers = 0;
+                            if(globalStack)
+                                foreach(CharacterMaster chrm in AliveList()) {
+			                        if(!inclDeploys && chrm.GetComponent<Deployable>()) continue;
+                                    numberOfClovers += chrm?.inventory?.GetItemCount(regIndex) ?? 0;
+                                }
+                            else
+                                numberOfClovers += count;
+                            return Math.Min(baseRare + (numberOfClovers-1) * stackRare, capRare);
+                        },
+					    (value,inv,master)=>{return $"T3 Upgrade Chance: {Pct(value,3,1f)}";})
+                        );
+			    }
+            };
+        }
 
         protected override void LoadBehavior() {
             On.RoR2.DeathRewards.OnKilledServer += On_DROnKilledServer;
@@ -82,9 +127,9 @@ namespace ThinkInvisible.ClassicItems {
 
             if(numberOfClovers == 0) return;
 
-            float rareChance = Math.Min(baseRare + numberOfClovers * stackRare, capRare);
-            float uncommonChance = Math.Min(baseUnc + numberOfClovers * stackUnc, capUnc);
-            float anyDropChance = Math.Min(baseChance + numberOfClovers * stackChance, capChance);
+            float rareChance = Math.Min(baseRare + (numberOfClovers - 1) * stackRare, capRare);
+            float uncommonChance = Math.Min(baseUnc + (numberOfClovers - 1) * stackUnc, capUnc);
+            float anyDropChance = Math.Min(baseChance + (numberOfClovers - 1) * stackChance, capChance);
             //Base drop chance is multiplicative with tier chances -- tier chances are applied to upgrade the dropped item
 
             if(Util.CheckRoll(anyDropChance)) {

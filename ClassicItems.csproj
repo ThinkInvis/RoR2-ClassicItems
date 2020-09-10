@@ -21,6 +21,9 @@
       <HintPath>..\REF\BepInEx\core\BepInEx.dll</HintPath>
       <Private>false</Private>
     </Reference>
+    <Reference Include="ItemStats">
+      <HintPath>lib\ItemStats.dll</HintPath>
+    </Reference>
     <Reference Include="MMHOOK_Assembly-CSharp">
       <HintPath>..\REF\BepInEx\plugins\R2API\MMHOOK_Assembly-CSharp.dll</HintPath>
       <Private>false</Private>

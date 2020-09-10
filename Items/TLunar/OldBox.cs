@@ -30,7 +30,15 @@ namespace ThinkInvisible.ClassicItems {
         protected override string NewLangDesc(string langid = null) => "<style=cDeath>When hit for more than " + Pct(healthThreshold) + " max health</style> <style=cStack>(/2 per stack)</style>, <style=cIsUtility>fear enemies</style> within <style=cIsUtility>" + radius.ToString("N0") + " m</style> for <style=cIsUtility>" + duration.ToString("N1") + " seconds</style>. <style=cIsUtility>Feared enemies will run out of melee</style>, <style=cDeath>but that won't stop them from shooting you.</style>";
         protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
-        public OldBox() {}
+        public OldBox() {
+            onBehav += () => {
+			    if(Compat_ItemStats.enabled) {
+				    Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+					    ((count,inv,master)=>{return healthThreshold * Mathf.Pow(2, 1-count);},
+					    (value,inv,master)=>{return $"Health Threshold: {Pct(value, 1)}";}));
+			    }
+            };
+        }
 
         protected override void LoadBehavior() {
 			On.RoR2.HealthComponent.TakeDamage += On_HCTakeDamage;

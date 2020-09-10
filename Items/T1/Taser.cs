@@ -27,7 +27,15 @@ namespace ThinkInvisible.ClassicItems {
         protected override string NewLangDesc(string langid = null) => "<style=cIsUtility>" + Pct(procChance,0,1) + "</style> chance to <style=cIsUtility>entangle</style> an enemy for <style=cIsUtility>" + procTime.ToString("N1") + " seconds</style> <style=cStack>(+ " + stackTime.ToString("N1") + " per stack)</style>.";
         protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
-        public Taser() { }
+        public Taser() {
+            onBehav += () => {
+			    if(Compat_ItemStats.enabled) {
+				    Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+					    ((count,inv,master)=>{return procTime + (count-1) * stackTime;},
+					    (value,inv,master)=>{return $"Duration: {value.ToString("N1")} s";}));
+			    }
+            };
+        }
 
         protected override void LoadBehavior() {
             On.RoR2.HealthComponent.TakeDamage += On_HCTakeDamage;

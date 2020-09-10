@@ -27,8 +27,9 @@ using static TILER2.MiscUtil;
 namespace ThinkInvisible.ClassicItems {
     [BepInPlugin(ModGuid, ModName, ModVer)]
     [BepInDependency(R2API.R2API.PluginGUID, R2API.R2API.PluginVersion)]
-    [BepInDependency(TILER2Plugin.ModGuid, "2.0.0")]
+    [BepInDependency(TILER2Plugin.ModGuid, TILER2Plugin.ModVer)]
     [BepInDependency("com.funkfrog_sipondo.sharesuite",BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency("dev.ontrigger.itemstats",BepInDependency.DependencyFlags.SoftDependency)]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     [R2APISubmoduleDependency(nameof(ItemAPI), nameof(LanguageAPI), nameof(ResourcesAPI), nameof(PlayerAPI), nameof(PrefabAPI), nameof(BuffAPI), nameof(LoadoutAPI))]
     public class ClassicItemsPlugin:BaseUnityPlugin {

@@ -20,7 +20,15 @@ namespace ThinkInvisible.ClassicItems {
         protected override string NewLangDesc(string langid = null) => "Gain <style=cIsUtility>+" + Pct(moneyMult) + "</style> <style=cStack>(+" + Pct(moneyMult) + " per stack, linear)</style> <style=cIsUtility>money</style> from <style=cIsDamage>killing enemies</style>.";
         protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
-        public SmartShopper() {}
+        public SmartShopper() {
+            onBehav += () => {
+			    if(Compat_ItemStats.enabled) {
+				    Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+					    ((count,inv,master)=>{return moneyMult*count;},
+					    (value,inv,master)=>{return $"Money Bonus: {Pct(value, 1)}";}));
+			    }
+            };
+        }
 
         protected override void LoadBehavior() {
             On.RoR2.DeathRewards.OnKilledServer += On_DROnKilledServer;
