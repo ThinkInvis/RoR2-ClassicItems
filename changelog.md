@@ -1,5 +1,10 @@
 ﻿# ClassicItems Changelog
 
+**4.5.0**
+
+- Added compatibility with the ItemStats mod. Only stats which increase with itemcount are displayed (for now).
+- Added extra safety to Golden Gun hook to handle a potential incompatibility.
+
 **4.4.2**
 
 - Updated for TILER2 2.0.0.

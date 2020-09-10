@@ -111,6 +111,11 @@ For details and instructions on applying these, see: https://github.com/ThinkInv
 
 The 5 latest updates are listed below. For a full changelog, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/changelog.md
 
+**4.5.0**
+
+- Added compatibility with the ItemStats mod. Only stats which increase with itemcount are displayed (for now).
+- Added extra safety to Golden Gun hook to handle a potential incompatibility.
+
 **4.4.2**
 
 - Updated for TILER2 2.0.0.
@@ -135,8 +140,3 @@ The 5 latest updates are listed below. For a full changelog, see: https://github
 - Fixed Beating Embryo causing infinite Milky Chrysalis and errorspam in console when used.
 - Added new Blast Shower patch for Beating Embryo.
 - Bumped R2API dependency version to 2.5.6.
-
-**4.3.0**
-
-- Patches critical bugs for RoR2 1.0. Fixes item models not being setup properly and Milky Chrysalis not working with Beating Embryo.
-- Temporarily removed code for Blast Shower's Beating Embryo patch, as it needs to be rewritten entirely.
