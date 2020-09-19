@@ -73,8 +73,7 @@
       <HintPath>lib\UnityEngine.ParticleSystemModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.PhysicsModule">
-      <HintPath>..\REF\Managed\UnityEngine.PhysicsModule.dll</HintPath>
-      <Private>false</Private>
+      <HintPath>lib\UnityEngine.PhysicsModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>lib\UnityEngine.UI.dll</HintPath>
