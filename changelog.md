@@ -1,5 +1,10 @@
 ﻿# ClassicItems Changelog
 
+**4.5.1**
+
+- Taser can no longer proc on self-damage.
+- Barbed Wire now uses a custom orb type and should no longer conflict with mods which change Razorwire behavior.
+
 **4.5.0**
 
 - Added compatibility with the ItemStats mod. Only stats which increase with itemcount are displayed (for now).

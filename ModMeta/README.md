@@ -111,6 +111,11 @@ For details and instructions on applying these, see: https://github.com/ThinkInv
 
 The 5 latest updates are listed below. For a full changelog, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/changelog.md
 
+**4.5.1**
+
+- Taser can no longer proc on self-damage.
+- Barbed Wire now uses a custom orb type and should no longer conflict with mods which change Razorwire behavior.
+
 **4.5.0**
 
 - Added compatibility with the ItemStats mod. Only stats which increase with itemcount are displayed (for now).
@@ -134,9 +139,3 @@ The 5 latest updates are listed below. For a full changelog, see: https://github
 - Bumped R2API dependency version to 2.5.7.
 - Switched from reflection to publicized assembly in many cases (should slightly improve performance).
 - Refactored Ancient Scepter skill overrides (main Scepter class is now neater).
-
-**4.3.1**
-
-- Fixed Beating Embryo causing infinite Milky Chrysalis and errorspam in console when used.
-- Added new Blast Shower patch for Beating Embryo.
-- Bumped R2API dependency version to 2.5.6.
