@@ -128,6 +128,19 @@ namespace ThinkInvisible.ClassicItems {
 		}
     }
 
+	public class BarbedWireOrb : LightningOrb {
+		public override void Begin() {
+			lightningType = LightningType.Count; //invalid type
+			duration = 0.2f;
+			var effectData = new EffectData {
+				origin = origin,
+				genericFloat = duration
+			};
+			effectData.SetHurtBoxReference(target);
+			EffectManager.SpawnEffect(Resources.Load<GameObject>("Prefabs/Effects/OrbEffects/RazorwireOrbEffect"), effectData, true);
+		}
+	}
+
 	[RequireComponent(typeof(TeamFilter))]
 	public class BarbedWard : NetworkBehaviour {
 		[SyncVar]
@@ -193,14 +206,13 @@ namespace ThinkInvisible.ClassicItems {
 			foreach(TeamComponent tcpt in teamMembers) {
 				if ((tcpt.transform.position - transform.position).sqrMagnitude <= sqrad) {
 					if (tcpt.body && tcpt.body.mainHurtBox && tcpt.body.isActiveAndEnabled && damage > 0f) {
-						OrbManager.instance.AddOrb(new LightningOrb {
+						OrbManager.instance.AddOrb(new BarbedWireOrb {
 							attacker = owner,
 							bouncesRemaining = 0,
 							damageColorIndex = DamageColorIndex.Bleed,
 							damageType = DamageType.AOE,
 							damageValue = damage,
 							isCrit = false,
-							lightningType = LightningOrb.LightningType.RazorWire,
 							origin = transform.position,
 							procChainMask = default,
 							procCoefficient = 1f,
