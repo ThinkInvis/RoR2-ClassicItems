@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections.ObjectModel;
 using TILER2;
 using static TILER2.MiscUtil;
+using static BetterUI.ProcItemsCatalog;
 
 namespace ThinkInvisible.ClassicItems {
     public class Taser : Item<Taser> {
@@ -35,6 +36,10 @@ namespace ThinkInvisible.ClassicItems {
 					    (value,inv,master)=>{return $"Duration: {value.ToString("N1")} s";}));
 			    }
             };
+            if (Compat_BetterUI.enabled)
+            {
+                Compat_BetterUI.AddCatalog(regIndex, ProcEffect.Chance, procChance, 0f, Stacking.None);
+            }
         }
 
         protected override void LoadBehavior() {

@@ -7,6 +7,7 @@ using RoR2.Orbs;
 using TILER2;
 using static TILER2.MiscUtil;
 using System.Collections.Generic;
+using static BetterUI.ProcItemsCatalog;
 
 namespace ThinkInvisible.ClassicItems {
     public class BarbedWire : Item<BarbedWire> {
@@ -71,6 +72,10 @@ namespace ThinkInvisible.ClassicItems {
 						},
 						(value,inv,master)=>{return $"Radius: {value.ToString("N1")} m";}));
 				}
+				if (Compat_BetterUI.enabled)
+                {
+					Compat_BetterUI.AddCatalog(regIndex, ProcEffect.Range, baseRadius, stackRadius, Stacking.Linear);
+                }
 			};
 		}
 

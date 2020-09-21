@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections.ObjectModel;
 using TILER2;
 using static TILER2.MiscUtil;
+using static BetterUI.ProcItemsCatalog;
 
 namespace ThinkInvisible.ClassicItems {
     public class BoxingGloves : Item<BoxingGloves> {
@@ -35,6 +36,10 @@ namespace ThinkInvisible.ClassicItems {
 					    ((count,inv,master)=>{return (1f-Mathf.Pow(1-procChance/100f,count))*100f;},
 					    (value,inv,master)=>{return $"Knockback Chance: {Pct(value, 1, 1)}";}));
 			    }
+                if (Compat_BetterUI.enabled)
+                {
+                    Compat_BetterUI.AddCatalog(regIndex, ProcEffect.Range, procChance, procChance, Stacking.Hyperbolic);
+                }
             };
         }
 

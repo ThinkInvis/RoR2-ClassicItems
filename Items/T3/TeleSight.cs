@@ -5,6 +5,7 @@ using UnityEngine.Networking;
 using RoR2.Orbs;
 using TILER2;
 using static TILER2.MiscUtil;
+using static BetterUI.ProcItemsCatalog;
 
 namespace ThinkInvisible.ClassicItems {
     public class TeleSight : Item<TeleSight> {
@@ -40,6 +41,11 @@ namespace ThinkInvisible.ClassicItems {
 					    ((count,inv,master)=>{return Mathf.Min(procChance+stackChance*(count-1), capChance);},
 					    (value,inv,master)=>{return $"Instakill Chance: {Pct(value, 1, 1f)}";}));
 			    }
+                //if (Compat_BetterUI.enabled)
+                //{
+                //    // There should be a stack cap argument or else it will display a calculation for stack cap of 100%
+                //    Compat_BetterUI.AddCatalog(regIndex, ProcEffect.Chance, procChance, stackChance, Stacking.Linear);
+                //}
             };
         }
 
