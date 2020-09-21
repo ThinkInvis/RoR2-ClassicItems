@@ -40,6 +40,7 @@ namespace ThinkInvisible.ClassicItems {
         protected override void LoadBehavior() {
             On.RoR2.HealthComponent.TakeDamage += On_HCTakeDamage;
         }
+
         protected override void UnloadBehavior() {
             On.RoR2.HealthComponent.TakeDamage -= On_HCTakeDamage;
         }
@@ -47,7 +48,7 @@ namespace ThinkInvisible.ClassicItems {
         private void On_HCTakeDamage(On.RoR2.HealthComponent.orig_TakeDamage orig, HealthComponent self, DamageInfo di) {
             orig(self,di);
 
-            if(di == null || di.rejected || !di.attacker) return;
+            if(di == null || di.rejected || !di.attacker || di.attacker == self.gameObject) return;
 
             var cb = di.attacker.GetComponent<CharacterBody>();
             if(cb) {
