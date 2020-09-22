@@ -34,6 +34,8 @@ namespace ThinkInvisible.ClassicItems {
 					    ((count,inv,master)=>{return procTime + (count-1) * stackTime;},
 					    (value,inv,master)=>{return $"Duration: {value.ToString("N1")} s";}));
 			    }
+                if(Compat_BetterUI.enabled)
+                    Compat_BetterUI.AddEffect(regIndex, Compat_BetterUI.ProcEffect.Chance, procChance, 0f);
             };
         }
 

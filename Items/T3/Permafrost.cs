@@ -37,6 +37,8 @@ namespace ThinkInvisible.ClassicItems {
 					    ((count,inv,master)=>{return Util.ConvertAmplificationPercentageIntoReductionPercentage(procChance * count);},
 					    (value,inv,master)=>{return $"Freeze Chance: {Pct(value, 1, 1f)}";}));
 			    }
+                if(Compat_BetterUI.enabled)
+                    Compat_BetterUI.AddEffect(regIndex, Compat_BetterUI.ProcEffect.Chance, procChance, procChance, Compat_BetterUI.Stacking.Hyperbolic);
             };
         }
 
