@@ -92,8 +92,7 @@ namespace ThinkInvisible.ClassicItems {
 
         private string FormatNewLangDesc()
         {
-            string desc = "";
-            desc += "Summon a snowstorm that";
+            string desc = "Summon a snowstorm that";
             if (procRate > 0f) desc += $"<style=cIsUtility>freezes</style> monsters at a <style=cIsUtility>{Pct(procRate, 1, 1)} chance ";
             else desc += $"<style=cIsUtility>slows</style> monsters <style=cIsUtility>";
             desc += $"over {duration:N0} seconds</style>.";

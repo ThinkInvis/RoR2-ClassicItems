@@ -66,8 +66,7 @@ namespace ThinkInvisible.ClassicItems {
 
         private string FormatNewLangDesc()
         {
-            string desc = "";
-            desc += "While active, increases";
+            string desc = "While active, increases";
             if (dmgBoost > 0f) desc += $" <style=cIsDamage>base damage by {dmgBoost:N0} points</style>";
             if (dmgBoost > 0f && aSpdBoost > 0f) desc += " and";
             if (aSpdBoost > 0f) desc += $" <style=cIsDamage>attack speed by {Pct(aSpdBoost)}</style>";
@@ -78,8 +77,7 @@ namespace ThinkInvisible.ClassicItems {
 
         private string FormatNewLangPickup()
         {
-            string desc = "";
-            desc += "Increase";
+            string desc = "Increase";
             if (dmgBoost > 0f) desc += $" damage";
             if (dmgBoost > 0f && aSpdBoost > 0f) desc += " and";
             if (aSpdBoost > 0f) desc += $" attack speed";
