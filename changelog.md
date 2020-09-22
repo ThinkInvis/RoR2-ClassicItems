@@ -1,5 +1,10 @@
 ﻿# ClassicItems Changelog
 
+**4.5.2**
+
+- Added compatibility with BetterUI's proc coefficients.
+- Migrated all mod compat classes to TILER2 and publicized.
+
 **4.5.1**
 
 - Taser can no longer proc on self-damage.

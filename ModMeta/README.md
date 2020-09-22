@@ -111,6 +111,11 @@ For details and instructions on applying these, see: https://github.com/ThinkInv
 
 The 5 latest updates are listed below. For a full changelog, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/changelog.md
 
+**4.5.2**
+
+- Added compatibility with BetterUI's proc coefficients.
+- Migrated all mod compat classes to TILER2 and publicized.
+
 **4.5.1**
 
 - Taser can no longer proc on self-damage.
@@ -128,14 +133,3 @@ The 5 latest updates are listed below. For a full changelog, see: https://github
 **4.4.1**
 
 - Fixed a typo which was causing Ancient Scepter variants for Huntress to be inverted.
-
-**4.4.0**
-
-- Added Ancient Scepter skill for Captain: 21-Probe Salute.
-- Added Beating Embryo patches for Forgive Me Please, Super Massive Leech, Gorag's Opus.
-- Boxing Gloves now scales based on damage fraction of max health, mass, and flying status (used to only scale by raw damage).
-- Fixed language token appends (mostly relevant for Ancient Scepter).
-- Added some additional safety checks to card model spinmod.
-- Bumped R2API dependency version to 2.5.7.
-- Switched from reflection to publicized assembly in many cases (should slightly improve performance).
-- Refactored Ancient Scepter skill overrides (main Scepter class is now neater).
