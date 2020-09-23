@@ -110,7 +110,7 @@ namespace ThinkInvisible.ClassicItems {
         }
 
         protected override string NewLangName(string langid = null) => displayName;        
-        protected override string NewLangPickup(string langid = null) => "Equipment has a 30% chance to deal double the effect.";        
+        protected override string NewLangPickup(string langid = null) => $"Equipment has a {Pct(procChance, 0, 1)} chance to deal double the effect.";        
         protected override string NewLangDesc(string langid = null) => "Upon activating an equipment, adds a <style=cIsUtility>" + Pct(procChance, 0, 1) + "</style> <style=cStack>(+" + Pct(procChance, 0, 1) + " per stack)</style> chance to <style=cIsUtility>double its effects somehow</style>.";        
         protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
