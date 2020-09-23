@@ -30,7 +30,7 @@ namespace ThinkInvisible.ClassicItems {
 
         protected override string NewLangName(string langid = null) => displayName;
         protected override string NewLangPickup(string langid = null) => "Chance to instantly kill an enemy.";
-        protected override string NewLangDesc(string langid = null) => "<style=cIsDamage>" + Pct(procChance,1,1) + "</style> <style=cStack>(+" + Pct(stackChance,1,1) + " per stack, up to " + Pct(capChance,1,1) + ")</style> chance to <style=cIsDamage>instantly kill</style> an enemy. Affected by proc coefficient.";
+        protected override string NewLangDesc(string langid = null) => FormatNewLangDesc();
         protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
         public TeleSight() {
@@ -83,6 +83,14 @@ namespace ThinkInvisible.ClassicItems {
                 target = vicb.mainHurtBox,
                 teamIndex = body.GetComponent<TeamComponent>()?.teamIndex ?? TeamIndex.Neutral
             });
+        }
+
+        private string FormatNewLangDesc()
+        {
+            string desc = "<style=cIsDamage>" + Pct(procChance, 1, 1) + "</style>";
+            if (stackChance > 0f) desc += "<style=cStack>(+" + Pct(stackChance, 1, 1) + " per stack, up to " + Pct(capChance, 1, 1) + ")</style>";
+            desc += " chance to <style=cIsDamage>instantly kill</style> an enemy. Affected by proc coefficient.";
+            return desc;
         }
     }
     
