@@ -35,7 +35,7 @@ namespace ThinkInvisible.ClassicItems {
 					    (value,inv,master)=>{return $"Duration: {value.ToString("N1")} s";}));
 			    }
                 if(Compat_BetterUI.enabled)
-                    Compat_BetterUI.AddEffect(regIndex, Compat_BetterUI.ProcEffect.Chance, procChance, 0f);
+                    Compat_BetterUI.AddEffect(regIndex, procChance, null, Compat_BetterUI.ChanceFormatter, Compat_BetterUI.NoStacking);
             };
         }
 

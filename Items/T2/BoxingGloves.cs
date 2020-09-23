@@ -35,6 +35,8 @@ namespace ThinkInvisible.ClassicItems {
 					    ((count,inv,master)=>{return (1f-Mathf.Pow(1-procChance/100f,count))*100f;},
 					    (value,inv,master)=>{return $"Knockback Chance: {Pct(value, 1, 1)}";}));
 			    }
+                if(Compat_BetterUI.enabled)
+                    Compat_BetterUI.AddEffect(regIndex, procChance, procChance, Compat_BetterUI.ChanceFormatter, Compat_BetterUI.ExponentialStacking);
             };
         }
 
