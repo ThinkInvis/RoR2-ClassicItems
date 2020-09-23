@@ -30,7 +30,8 @@ namespace ThinkInvisible.ClassicItems {
 
         protected override string NewLangName(string langid = null) => displayName;
         protected override string NewLangPickup(string langid = null) => "Upgrades one of your skills.";
-        protected override string NewLangDesc(string langid = null) => "While held, one of your selected character's <style=cIsUtility>skills</style> <style=cStack>(unique per character)</style> becomes a <style=cIsUtility>more powerful version</style>.";
+        protected override string NewLangDesc(string langid = null) => "While held, one of your selected character's <style=cIsUtility>skills</style> <style=cStack>(unique per character)</style> becomes a <style=cIsUtility>more powerful version</style>."
+            + $" <style=cStack>{(rerollExtras ? "Extra/unusable" : "Unusable (but NOT extra)")} pickups will reroll into other red items.</style>";
         protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
         
         [AutoItemConfig("If true, TR12-C Gauss Compact will recharge faster to match the additional stock.")]
@@ -39,6 +40,9 @@ namespace ThinkInvisible.ClassicItems {
         [AutoItemConfig("If true, TR58-C Carbonizer Mini will recharge faster to match the additional stock.")]
         public bool engiWalkerAdjustCooldown {get; private set;} = false;
         
+        [AutoItemConfig("If true, any stacks picked up past the first will reroll to other red items. If false, this behavior will only be used for characters which cannot benefit from the item at all.")]
+        public bool rerollExtras {get; private set;} = true;
+
         public void PatchLang() {
             foreach(var skill in skills) {
                 if(skill.oldDescToken == null) {
@@ -153,12 +157,31 @@ namespace ThinkInvisible.ClassicItems {
             return true;
         }
 
+        bool handlingInventory = false;
         private void On_CBOnInventoryChanged(On.RoR2.CharacterBody.orig_OnInventoryChanged orig, CharacterBody self) {
             orig(self);
-            HandleScepterSkill(self);
+            if(handlingInventory) return;
+            handlingInventory = true;
+            if(!HandleScepterSkill(self)) {
+                if(GetCount(self) > 0) {
+                    Reroll(self, GetCount(self));
+                }
+            } else if(GetCount(self) > 1 && rerollExtras) {
+                 Reroll(self, GetCount(self) - 1);
+            }
+            handlingInventory = false;
+        }
+
+        private void Reroll(CharacterBody self, int count) {
+            if(count <= 0) return;
+            var list = Run.instance.availableTier3DropList.Except(new[] {pickupIndex}).ToList();
+            for(var i = 0; i < count; i++) {
+                self.inventory.RemoveItem(regIndex, 1);
+                self.inventory.GiveItem(PickupCatalog.GetPickupDef(list[UnityEngine.Random.Range(0, list.Count)]).itemIndex);
+            }
         }
         
-        private void HandleScepterSkill(CharacterBody self, bool forceOff = false) {
+        private bool HandleScepterSkill(CharacterBody self, bool forceOff = false) {
             if(self.skillLocator && self.master?.loadout != null) {
                 var bodyName = BodyCatalog.GetBodyName(self.bodyIndex);
 
@@ -167,16 +190,18 @@ namespace ThinkInvisible.ClassicItems {
                     SkillSlot targetSlot = scepterSlots[bodyName];
                     var targetSkill = self.skillLocator.GetSkill(targetSlot);
                     var targetSlotIndex = self.skillLocator.GetSkillSlotIndex(targetSkill);
-                    if(!targetSkill) return;
+                    if(!targetSkill) return false;
                     var targetVariant = self.master.loadout.bodyLoadoutManager.GetSkillVariant(self.bodyIndex, targetSlotIndex);
                     var replVar = repl.Find(x => x.variantIndex == targetVariant);
-                    if(replVar == null) return;
+                    if(replVar == null) return false;
                     if(GetCount(self) > 0 && !forceOff)
                         targetSkill.SetSkillOverride(self, replVar.replDef, GenericSkill.SkillOverridePriority.Upgrade);
                     else
                         targetSkill.UnsetSkillOverride(self, replVar.replDef, GenericSkill.SkillOverridePriority.Upgrade);
+                    return true;
                 }
             }
+            return false;
         }
     }
 }
