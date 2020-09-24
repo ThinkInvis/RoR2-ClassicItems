@@ -20,10 +20,10 @@ namespace ThinkInvisible.ClassicItems {
         public float healthCap {get; private set;} = 3f;
 
         protected override string NewLangName(string langid = null) => displayName;        
-        protected override string NewLangPickup(string langid = null) => "Gain " + Pct(healthMult) + " max health.";
+        protected override string NewLangPickup(string langid = null) => "Gain " + Pct(healthMult) + " HP.";
         protected override string NewLangDesc(string langid = null)
         {
-            string desc = $"Increases <style=cIsHealing>health</style> by <style=cIsHealing>{Pct(healthMult)}</style>";
+            string desc = $"Increases <style=cIsHealing>HP</style> by <style=cIsHealing>{Pct(healthMult)}</style>";
             if (healthMult > 0f) desc += $" <style=cStack>(+{Pct(healthMult)} per stack, linear)</style>";
             desc += $", up to a <style=cIsHealing>maximum</style> of <style=cIsHealing>+{Pct(healthCap)}</style>.";
             return desc;
