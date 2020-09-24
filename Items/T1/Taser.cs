@@ -27,7 +27,7 @@ namespace ThinkInvisible.ClassicItems {
         protected override string NewLangDesc(string langid = null)
         {
             string desc = "<style=cIsUtility>" + Pct(procChance, 0, 1) + "</style> chance to <style=cIsUtility>entangle</style> an enemy for <style=cIsUtility>" + procTime.ToString("N1") + " seconds</style>";
-            if (stackTime > 0f) desc += $"<style=cStack>(+{stackTime:N1} seconds per stack)</style>";
+            if (stackTime > 0f) desc += $"<style=cStack>(+{stackTime:N1} per stack)</style>";
             desc += ".";
             return desc;
         }

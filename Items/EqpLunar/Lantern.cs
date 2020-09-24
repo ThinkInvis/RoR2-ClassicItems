@@ -36,7 +36,7 @@ namespace ThinkInvisible.ClassicItems {
 		}
 		protected override string NewLangDesc(string langid = null)
         {
-			string desc = $"Sets a {range:N0}m, {duration:N0}-second AoE which <style=cIsUtility>fears enemies</style>";
+			string desc = $"Sets a {range:N0}-meter, {duration:N0}-second AoE which <style=cIsUtility>fears enemies</style>";
 			if (damage > 0f) desc += $" and deals <style=cIsDamage>{Pct(damage)} damage per second</style>";
 			desc += ". <style=cIsUtility>Feared enemies will run away</style>, <style=cDeath>but that won't stop them from performing ranged attacks</style>.";
 			return desc;

@@ -43,7 +43,7 @@ namespace ThinkInvisible.ClassicItems {
         {
 			string desc = $"Deal <style=cIsDamage>{Pct(baseDmg)}</style>";
 			if (stackDmg > 0f) desc += $" <style=cStack>(+{Pct(stackDmg)} per stack)</style>";
-			desc += $" <style=cIsDamage>damage/sec</style> to enemies within <style=cIsDamage>{baseRadius:N1}m</style>";
+			desc += $" <style=cIsDamage>damage/sec</style> to enemies within <style=cIsDamage>{baseRadius:N1} meters</style>";
 			if (stackRadius > 0f) desc += $" <style=cStack>(+{stackRadius:N2} per stack)</style>";
 			desc += ".";
 			return desc;
