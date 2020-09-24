@@ -38,7 +38,7 @@ namespace ThinkInvisible.ClassicItems {
         {
 			string desc = $"Sets a {range:N0}-meter, {duration:N0}-second AoE which <style=cIsUtility>fears enemies</style>";
 			if (damage > 0f) desc += $" and deals <style=cIsDamage>{Pct(damage)} damage per second</style>";
-			desc += ". <style=cIsUtility>Feared enemies will run away</style>, <style=cDeath>but that won't stop them from performing ranged attacks</style>.";
+			desc += ". <style=cIsUtility>Feared enemies will run out of melee</style>, <style=cDeath>but that won't stop them from performing ranged attacks</style>.";
 			return desc;
 		}
         protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
