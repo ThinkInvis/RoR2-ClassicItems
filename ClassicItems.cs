@@ -325,15 +325,6 @@ namespace ThinkInvisible.ClassicItems {
 
             Logger.LogDebug("Processing pickup models...");
 
-            foreach(ItemBoilerplate bpl in masterItemList) {
-                PickupIndex pind;
-                if(bpl is Equipment equipment) pind = PickupCatalog.FindPickupIndex(equipment.regIndex);
-                else if(bpl is Item item) pind = PickupCatalog.FindPickupIndex(item.regIndex);
-                else continue;
-                var pickup = PickupCatalog.GetPickupDef(pind);
-                pickup.displayPrefab = pickup.displayPrefab.InstantiateClone("CI" + bpl.itemCodeName + "PickupCardPrefab", false);
-            }
-
             if(globalConfig.allCards) {
                 var eqpCardPrefab = Resources.Load<GameObject>("@ClassicItems:Assets/ClassicItems/models/VOvr/EqpCard.prefab");
                 var lunarCardPrefab = Resources.Load<GameObject>("@ClassicItems:Assets/ClassicItems/models/VOvr/LunarCard.prefab");
@@ -374,7 +365,7 @@ namespace ThinkInvisible.ClassicItems {
                         }
                         replacedItems ++;
                     } else continue;
-                    pickup.displayPrefab = npfb.InstantiateClone(pickup.internalName + "CICardPrefab", false);
+                    pickup.displayPrefab = npfb;
                 }
 
                 Logger.LogDebug("Replaced " + replacedItems + " item models and " + replacedEqps + " equipment models.");
@@ -386,14 +377,26 @@ namespace ThinkInvisible.ClassicItems {
             var tmpmtl = Resources.Load<Material>("tmpfonts/misc/tmpRiskOfRainFont Bold OutlineSDF");
 
             foreach(var pickup in PickupCatalog.allPickups) {
+                //pattern-match for CI card prefabs
                 var ctsf = pickup.displayPrefab?.transform;
                 if(!ctsf) continue;
+
                 var cfront = ctsf.Find("cardfront");
                 if(cfront == null) continue;
                 var croot = cfront.Find("carddesc");
                 var cnroot = cfront.Find("cardname");
                 var csprite = ctsf.Find("ovrsprite");
 
+                if(croot == null || cnroot == null || csprite == null) continue;
+                
+                //instantiate and update references
+                pickup.displayPrefab = pickup.displayPrefab.InstantiateClone($"CIPickupCardPrefab{pickup.pickupIndex}", false);
+                ctsf = pickup.displayPrefab.transform;
+                cfront = ctsf.Find("cardfront");
+                croot = cfront.Find("carddesc");
+                cnroot = cfront.Find("cardname");
+                csprite = ctsf.Find("ovrsprite");
+                
                 csprite.GetComponent<MeshRenderer>().material.mainTexture = pickup.iconTexture;
 
                 if(globalConfig.spinMod)
