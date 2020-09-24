@@ -11,7 +11,7 @@ namespace ThinkInvisible.ClassicItems {
         public override bool itemAIB {get; protected set;} = true;
         
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Percent chance of triggering Permafrost on hit. Affected by proc coefficient; stacks inverse-multiplicatively.", AutoItemConfigFlags.None, 0f, 100f)]
+        [AutoItemConfig("Percent chance of triggering Permafrost on hit. Affected by proc coefficient; stacks hyperbolically.", AutoItemConfigFlags.None, 0f, 100f)]
         public float procChance {get;private set;} = 6f;
 
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
@@ -27,7 +27,7 @@ namespace ThinkInvisible.ClassicItems {
         
         protected override string NewLangName(string langid = null) => displayName;
         protected override string NewLangPickup(string langid = null) => "Chance to freeze enemies on hit.";
-        protected override string NewLangDesc(string langid = null) => "<style=cIsUtility>" + Pct(procChance,1,1) + "</style> <style=cStack>(+" + Pct(procChance,1,1) + " per stack, inverse-multiplicative)</style> chance to <style=cIsUtility>freeze and slow</style> an enemy (" + freezeTime.ToString("N1") + "s and " + slowTime.ToString("N1") + "s respectively). Affected by proc coefficient.";
+        protected override string NewLangDesc(string langid = null) => "<style=cIsUtility>" + Pct(procChance,1,1) + "</style> <style=cStack>(+" + Pct(procChance,1,1) + " per stack, hyperbolic)</style> chance to <style=cIsUtility>freeze and slow</style> an enemy (" + freezeTime.ToString("N1") + "s and " + slowTime.ToString("N1") + "s respectively). Affected by proc coefficient.";
         protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
         public Permafrost() {
