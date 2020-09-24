@@ -21,9 +21,27 @@ namespace ThinkInvisible.ClassicItems {
         public float dmgBoost {get;private set;} = 10f;
 
         public BuffIndex prescriptionsBuff {get;private set;}
-        protected override string NewLangName(string langid = null) => displayName;        
-        protected override string NewLangPickup(string langid = null) => "Increase damage and attack speed for " + duration.ToString("N0") + " seconds.";        
-        protected override string NewLangDesc(string langid = null) => "While active, increases <style=cIsDamage>base damage by " + dmgBoost.ToString("N0") + " points</style> and <style=cIsDamage>attack speed by " + Pct(aSpdBoost) + "</style>. Lasts <style=cIsDamage>" + duration.ToString("N0") + " seconds</style>.";
+        protected override string NewLangName(string langid = null) => displayName;
+        protected override string NewLangPickup(string langid = null)
+        {
+            string desc = "Increase";
+            if (dmgBoost > 0f) desc += $" damage";
+            if (dmgBoost > 0f && aSpdBoost > 0f) desc += " and";
+            if (aSpdBoost > 0f) desc += $" attack speed";
+            if (dmgBoost <= 0f && aSpdBoost <= 0f) desc += $" <style=cIsDamage>NOTHING</style>";
+            desc += $" for {duration:N0} seconds.";
+            return desc;
+        }
+        protected override string NewLangDesc(string langid = null)
+        {
+            string desc = "While active, increases";
+            if (dmgBoost > 0f) desc += $" <style=cIsDamage>base damage by {dmgBoost:N0} points</style>";
+            if (dmgBoost > 0f && aSpdBoost > 0f) desc += " and";
+            if (aSpdBoost > 0f) desc += $" <style=cIsDamage>attack speed by {Pct(aSpdBoost)}</style>";
+            if (dmgBoost <= 0f && aSpdBoost <= 0f) desc += $" <style=cIsDamage>NOTHING</style>";
+            desc += $". Lasts <style=cIsDamage>{duration:N0} seconds</style>.";
+            return desc;
+        }
         protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
         public Prescriptions() {

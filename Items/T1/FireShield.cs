@@ -31,7 +31,15 @@ namespace ThinkInvisible.ClassicItems {
 
         protected override string NewLangName(string langid = null) => displayName;
         protected override string NewLangPickup(string langid = null) => "Retaliate on taking heavy damage.";
-        protected override string NewLangDesc(string langid = null) => "<style=cDeath>When hit for more than " + Pct(healthThreshold) + " max health</style>, <style=cIsDamage>explode</style> for up to <style=cIsDamage>" + Pct(baseDmg) + "</style> <style=cStack>(+" + Pct(stackDmg) + " per stack)</style> damage to enemies within <style=cIsDamage>" + baseRadius.ToString("N0") + " m</style>.";
+        protected override string NewLangDesc(string langid = null)
+        {
+            string desc = $"<style=cDeath>When hit";
+            if (healthThreshold > 0f) desc += " for more than {Pct(healthThreshold)} of max health</style>";
+            desc += ", <style=cIsDamage>explode</style> for up to <style=cIsDamage>{Pct(baseDmg)}</style>";
+            if (stackDmg > 0f) desc += $"<style=cStack>(+{Pct(stackDmg)} per stack)</style>";
+            desc += $" damage to enemies within <style=cIsDamage>{baseRadius:N0} meters</style>.";
+            return desc;
+        }
         protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
         public FireShield() {

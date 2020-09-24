@@ -31,8 +31,22 @@ namespace ThinkInvisible.ClassicItems {
 
         private GameObject snowglobeControllerPrefab;
         protected override string NewLangName(string langid = null) => displayName;
-        protected override string NewLangPickup(string langid = null) => "Randomly freeze enemies for " + duration.ToString("N0") + " seconds.";
-        protected override string NewLangDesc(string langid = null) => "Summon a snowstorm that <style=cIsUtility>freezes</style> monsters at a <style=cIsUtility>" + Pct(procRate,1,1) + " chance over " + duration.ToString("N0") + " seconds</style>.";
+        protected override string NewLangPickup(string langid = null)
+        {
+            string desc = "";
+            if (procRate > 0f) desc += $"Randomly freeze enemies";
+            else desc += $"Slow enemies";
+            desc += " for {duration:N0} seconds.";
+            return desc;
+        }
+        protected override string NewLangDesc(string langid = null)
+        {
+            string desc = "Summon a snowstorm that";
+            if (procRate > 0f) desc += $"<style=cIsUtility>freezes</style> monsters at a <style=cIsUtility>{Pct(procRate, 1, 1)} chance ";
+            else desc += $"<style=cIsUtility>slows</style> monsters <style=cIsUtility>";
+            desc += $"over {duration:N0} seconds</style>.";
+            return desc;
+        }
         protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
         public Snowglobe() {

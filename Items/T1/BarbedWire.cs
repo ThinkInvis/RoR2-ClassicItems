@@ -38,8 +38,16 @@ namespace ThinkInvisible.ClassicItems {
 
 		internal static GameObject barbedWardPrefab;        
         protected override string NewLangName(string langid = null) => displayName;        
-        protected override string NewLangPickup(string langid = null) => "Hurt nearby enemies.";        
-        protected override string NewLangDesc(string langid = null) => "Deal <style=cIsDamage>" + Pct(baseDmg) + "</style> <style=cStack>(+" + Pct(stackDmg) + " per stack)</style> <style=cIsDamage>damage/sec</style> to enemies within <style=cIsDamage>" + baseRadius.ToString("N1") + " m</style> <style=cStack>(+ " + stackRadius.ToString("N2") + " per stack)</style>";        
+        protected override string NewLangPickup(string langid = null) => "Hurt nearby enemies.";
+		protected override string NewLangDesc(string langid = null)
+        {
+			string desc = $"Deal <style=cIsDamage>{Pct(baseDmg)}</style>";
+			if (stackDmg > 0f) desc += $" <style=cStack>(+{Pct(stackDmg)} per stack)</style>";
+			desc += $" <style=cIsDamage>damage/sec</style> to enemies within <style=cIsDamage>{baseRadius:N1} meters</style>";
+			if (stackRadius > 0f) desc += $" <style=cStack>(+{stackRadius:N2} per stack)</style>";
+			desc += ".";
+			return desc;
+		}
         protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
 		public BarbedWire() {

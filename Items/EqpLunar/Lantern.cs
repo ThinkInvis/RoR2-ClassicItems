@@ -26,9 +26,21 @@ namespace ThinkInvisible.ClassicItems {
         private GameObject lanternWardPrefab;
 
 		public override bool eqpIsLunar{get;} = true;        
-        protected override string NewLangName(string langid = null) => displayName;        
-        protected override string NewLangPickup(string langid = null) => "Drop a lantern that fears and damages enemies for " + duration.ToString("N0") + " seconds.";        
-        protected override string NewLangDesc(string langid = null) => "Sets a " + range.ToString("N0") + "-meter, " + duration.ToString("N0") + "-second AoE which <style=cIsUtility>fears enemies</style> and deals <style=cIsDamage>" + Pct(damage) + " damage per second</style>. <style=cIsUtility>Feared enemies will run out of melee</style>, <style=cDeath>but that won't stop them from shooting you.</style>";        
+        protected override string NewLangName(string langid = null) => displayName;
+		protected override string NewLangPickup(string langid = null)
+        {
+			string desc = "Drop a lantern that fears";
+			if (damage > 0f) desc += " and damages";
+			desc += $" enemies for {duration:N0} seconds.";
+			return desc;
+		}
+		protected override string NewLangDesc(string langid = null)
+        {
+			string desc = $"Sets a {range:N0}-meter, {duration:N0}-second AoE which <style=cIsUtility>fears enemies</style>";
+			if (damage > 0f) desc += $" and deals <style=cIsDamage>{Pct(damage)} damage per second</style>";
+			desc += ". <style=cIsUtility>Feared enemies will run out of melee</style>, <style=cDeath>but that won't stop them from performing ranged attacks</style>.";
+			return desc;
+		}
         protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
 		public Lantern() {
@@ -66,7 +78,7 @@ namespace ThinkInvisible.ClassicItems {
             }
             return true;
         }
-    }
+	}
 
     [RequireComponent(typeof(TeamFilter))]
 	public class LanternWard : NetworkBehaviour {

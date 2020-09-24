@@ -20,8 +20,14 @@ namespace ThinkInvisible.ClassicItems {
         public float healthCap {get; private set;} = 3f;
 
         protected override string NewLangName(string langid = null) => displayName;        
-        protected override string NewLangPickup(string langid = null) => "Gain " + Pct(healthMult) + " max hp.";
-        protected override string NewLangDesc(string langid = null) => "Increases <style=cIsHealing>health</style> by <style=cIsHealing>" + Pct(healthMult) + "</style> <style=cStack>(+" +Pct(healthMult)+ " per stack, linear)</style>, up to a <style=cIsHealing>maximum</style> of <style=cIsHealing>+"+Pct(healthCap)+"</style>.";        
+        protected override string NewLangPickup(string langid = null) => "Gain " + Pct(healthMult) + " HP.";
+        protected override string NewLangDesc(string langid = null)
+        {
+            string desc = $"Increases <style=cIsHealing>HP</style> by <style=cIsHealing>{Pct(healthMult)}</style>";
+            if (healthMult > 0f) desc += $" <style=cStack>(+{Pct(healthMult)} per stack, linear)</style>";
+            desc += $", up to a <style=cIsHealing>maximum</style> of <style=cIsHealing>+{Pct(healthCap)}</style>.";
+            return desc;
+        }
         protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
         public BitterRoot() {

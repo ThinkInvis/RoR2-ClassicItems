@@ -11,17 +11,32 @@ namespace ThinkInvisible.ClassicItems {
         public override string displayName => "Lost Doll";
 
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Fraction of CURRENT health to take from the user when Lost Doll is activated.", AutoItemConfigFlags.None, 0f, 1f)]
+        [AutoItemConfig("Fraction of the user's CURRENT health to take from the user when Lost Doll is activated.", AutoItemConfigFlags.None, 0f, 1f)]
         public float damageTaken {get;private set;} = 0.25f;
 
         [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Fraction of MAXIMUM health to deal in damage to the closest enemy when Lost Doll is activated.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
+        [AutoItemConfig("Fraction of the user's MAXIMUM health to deal in damage to the closest enemy when Lost Doll is activated.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
         public float damageGiven {get;private set;} = 5f;
         
 		public override bool eqpIsLunar{get;} = true;
         protected override string NewLangName(string langid = null) => displayName;
-        protected override string NewLangPickup(string langid = null) => "Harm yourself to instantly kill an enemy.";
-        protected override string NewLangDesc(string langid = null) => "Sacrifices <style=cIsDamage>" + Pct(damageTaken) + "</style> of your <style=cIsDamage>current health</style> to damage the nearest enemy for <style=cIsDamage>" + Pct(damageGiven) + "</style> of your <style=cIsDamage>maximum health</style>.";
+        protected override string NewLangPickup(string langid = null)
+        {
+            string desc = "";
+            if (damageTaken > 0f) desc += "Harm yourself to";
+            else desc += "Use to";
+            desc += " damage an enemy.";
+            return desc;
+        }
+        protected override string NewLangDesc(string langid = null)
+        {
+            string desc = "";
+            if (damageTaken > 0f) desc += $"Sacrifice <style=cIsDamage>{Pct(damageTaken)}</style> of your <style=cIsDamage>current health</style>";
+            else desc += "Use";
+            desc += $" to damage the nearest enemy for <style=cIsDamage>{Pct(damageGiven)}</style> of your <style=cIsDamage>maximum health</style>.";
+
+            return desc;
+        }
         protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
         public LostDoll() { }
