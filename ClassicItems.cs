@@ -426,7 +426,7 @@ namespace ThinkInvisible.ClassicItems {
                     Destroy(croot.gameObject);
                     Destroy(cnroot.gameObject);
                 } else {
-                    var cdsc = croot.gameObject.AddComponent<TextMeshPro>();
+                    var cdsc = croot.gameObject.GetComponent<TextMeshPro>() ?? croot.gameObject.AddComponent<TextMeshPro>();
                     cdsc.richText = true;
                     cdsc.enableWordWrapping = true;
                     cdsc.alignment = TextAlignmentOptions.Center;
@@ -441,7 +441,7 @@ namespace ThinkInvisible.ClassicItems {
                     cdsc.color = Color.black;
                     cdsc.text = pdesc;
 
-                    var cname = cnroot.gameObject.AddComponent<TextMeshPro>();
+                    var cname = cnroot.gameObject.GetComponent<TextMeshPro>() ?? cnroot.gameObject.AddComponent<TextMeshPro>();
                     cname.richText = true;
                     cname.enableWordWrapping = false;
                     cname.alignment = TextAlignmentOptions.Center;
