@@ -31,12 +31,11 @@ namespace ThinkInvisible.ClassicItems {
 
         protected override string NewLangName(string langid = null) => displayName;
         protected override string NewLangPickup(string langid = null) => "Retaliate on taking heavy damage.";
-        protected override string NewLangDesc(string langid = null)
-        {
+        protected override string NewLangDesc(string langid = null) {
             string desc = $"<style=cDeath>When hit";
-            if (healthThreshold > 0f) desc += " for more than {Pct(healthThreshold)} of max health</style>";
+            if(healthThreshold > 0f) desc += " for more than {Pct(healthThreshold)} of max health</style>";
             desc += ", <style=cIsDamage>explode</style> for up to <style=cIsDamage>{Pct(baseDmg)}</style>";
-            if (stackDmg > 0f) desc += $"<style=cStack>(+{Pct(stackDmg)} per stack)</style>";
+            if(stackDmg > 0f) desc += $"<style=cStack>(+{Pct(stackDmg)} per stack)</style>";
             desc += $" damage to enemies within <style=cIsDamage>{baseRadius:N0} meters</style>.";
             return desc;
         }

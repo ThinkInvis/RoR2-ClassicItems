@@ -39,10 +39,9 @@ namespace ThinkInvisible.ClassicItems {
 
         protected override string NewLangName(string langid = null) => displayName;
         protected override string NewLangPickup(string langid = null) => "No hands.";
-        protected override string NewLangDesc(string langid = null)
-        {
+        protected override string NewLangDesc(string langid = null) {
             string desc = "Grants <style=cIsUtility>" + baseFuel.ToString("N1") + " second" + NPlur(baseFuel, 1) + "</style>";
-            if (stackFuel > 0f) desc += "<style=cStack>(+" + stackFuel.ToString("N1") + " seconds per stack)</style>";
+            if(stackFuel > 0f) desc += "<style=cStack>(+" + stackFuel.ToString("N1") + " seconds per stack)</style>";
             desc += " of <style=cIsUtility>flight</style> at <style=cIsUtility>" + gravMod.ToString("N1") + "-g</style> <style=cStack>(+" + fallBoost.ToString("N1") + "-g while falling)</style>, usable once you have no double jumps remaining. Fuel <style=cIsUtility>recharges</style> at <style=cIsUtility>" + Pct(rchRate) + " speed</style> after a <style=cIsUtility>delay</style> of <style=cIsUtility>" + rchDelay.ToString("N0") + " second" + NPlur(rchDelay) + "</style>.";
             return desc;
         }

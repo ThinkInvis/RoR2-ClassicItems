@@ -28,10 +28,9 @@ namespace ThinkInvisible.ClassicItems {
 		internal static GameObject spikeWardPrefab;
         protected override string NewLangName(string langid = null) => displayName;
         protected override string NewLangPickup(string langid = null) => "Drop spikestrips on being hit, slowing enemies.";
-        protected override string NewLangDesc(string langid = null)
-        {
+        protected override string NewLangDesc(string langid = null) {
             string desc = $"<style=cIsDamage>When hit</style>, drop a <style=cIsUtility>{baseRadius:N0}-meter AoE</style> which <style=cIsUtility>slows enemies by 50%</style> and lasts <style=cIsUtility>{baseDuration:N1} seconds</style>";
-            if (stackDuration > 0f) desc += $"<style=cStack>(+{stackDuration:N1} per stack)</style>";
+            if(stackDuration > 0f) desc += $"<style=cStack>(+{stackDuration:N1} per stack)</style>";
             desc += ".";
             return desc;
         }

@@ -29,10 +29,9 @@ namespace ThinkInvisible.ClassicItems {
         public float velMax {get;private set;} = 40f;
         protected override string NewLangName(string langid = null) => displayName;
         protected override string NewLangPickup(string langid = null) => "Hurt enemies by falling.";
-        protected override string NewLangDesc(string langid = null)
-        {
+        protected override string NewLangDesc(string langid = null) {
             string desc = $"Hitting the ground faster than <style=cIsDamage>{velThreshold:N1} meters per second</style> vertically causes a <style=cIsDamage>10-meter</style> radius <style=cIsDamage>kinetic explosion</style>, dealing up to <style=cIsDamage>{Pct(baseDamage)} base damage</style>";
-            if (stackDamage > 0f) desc += $"<style=cStack>(+{Pct(stackDamage)} per stack, linear)</style>";
+            if(stackDamage > 0f) desc += $"<style=cStack>(+{Pct(stackDamage)} per stack, linear)</style>";
             desc += $". <style=cIsDamage>Max damage</style> requires <style=cIsDamage>{(velMax + velThreshold):N1} meters per second falling speed</style>.";
             return desc;
         }

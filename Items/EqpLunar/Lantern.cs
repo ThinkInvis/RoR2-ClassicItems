@@ -27,17 +27,15 @@ namespace ThinkInvisible.ClassicItems {
 
 		public override bool eqpIsLunar{get;} = true;        
         protected override string NewLangName(string langid = null) => displayName;
-		protected override string NewLangPickup(string langid = null)
-        {
+		protected override string NewLangPickup(string langid = null) {
 			string desc = "Drop a lantern that fears";
-			if (damage > 0f) desc += " and damages";
+			if(damage > 0f) desc += " and damages";
 			desc += $" enemies for {duration:N0} seconds.";
 			return desc;
 		}
-		protected override string NewLangDesc(string langid = null)
-        {
+		protected override string NewLangDesc(string langid = null) {
 			string desc = $"Sets a {range:N0}-meter, {duration:N0}-second AoE which <style=cIsUtility>fears enemies</style>";
-			if (damage > 0f) desc += $" and deals <style=cIsDamage>{Pct(damage)} damage per second</style>";
+			if(damage > 0f) desc += $" and deals <style=cIsDamage>{Pct(damage)} damage per second</style>";
 			desc += ". <style=cIsUtility>Feared enemies will run out of melee</style>, <style=cDeath>but that won't stop them from performing ranged attacks</style>.";
 			return desc;
 		}

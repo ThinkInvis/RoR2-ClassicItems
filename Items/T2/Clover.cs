@@ -52,10 +52,9 @@ namespace ThinkInvisible.ClassicItems {
 
         protected override string NewLangName(string langid = null) => displayName;        
         protected override string NewLangPickup(string langid = null) => "Elite mobs have a chance to drop items.";
-        protected override string NewLangDesc(string langid = null)
-        {
+        protected override string NewLangDesc(string langid = null) {
             string desc = "Elites have a <style=cIsUtility>" + Pct(baseChance, 1, 1) + " chance</style> <style=cStack>(";
-            if (stackChance > 0f) desc += $"+{Pct(stackChance, 1, 1)} per stack, ";
+            if(stackChance > 0f) desc += $"+{Pct(stackChance, 1, 1)} per stack, ";
             desc += "COMBINED FOR ALL PLAYERS, up to " + Pct(capChance, 1, 1) + ")</style> to <style=cIsUtility>drop items</style> when <style=cIsDamage>killed</style>. <style=cStack>(Further stacks increase uncommon/rare chance up to " + Pct(capUnc, 2, 1) + " and " + Pct(capRare, 3, 1) + ", respectively.)</style>";
             return desc;
         }

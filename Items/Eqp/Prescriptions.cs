@@ -22,23 +22,21 @@ namespace ThinkInvisible.ClassicItems {
 
         public BuffIndex prescriptionsBuff {get;private set;}
         protected override string NewLangName(string langid = null) => displayName;
-        protected override string NewLangPickup(string langid = null)
-        {
+        protected override string NewLangPickup(string langid = null) {
             string desc = "Increase";
-            if (dmgBoost > 0f) desc += $" damage";
-            if (dmgBoost > 0f && aSpdBoost > 0f) desc += " and";
-            if (aSpdBoost > 0f) desc += $" attack speed";
-            if (dmgBoost <= 0f && aSpdBoost <= 0f) desc += $" <style=cIsDamage>NOTHING</style>";
+            if(dmgBoost > 0f) desc += $" damage";
+            if(dmgBoost > 0f && aSpdBoost > 0f) desc += " and";
+            if(aSpdBoost > 0f) desc += $" attack speed";
+            if(dmgBoost <= 0f && aSpdBoost <= 0f) desc += $" <style=cIsDamage>NOTHING</style>";
             desc += $" for {duration:N0} seconds.";
             return desc;
         }
-        protected override string NewLangDesc(string langid = null)
-        {
+        protected override string NewLangDesc(string langid = null) {
             string desc = "While active, increases";
-            if (dmgBoost > 0f) desc += $" <style=cIsDamage>base damage by {dmgBoost:N0} points</style>";
-            if (dmgBoost > 0f && aSpdBoost > 0f) desc += " and";
-            if (aSpdBoost > 0f) desc += $" <style=cIsDamage>attack speed by {Pct(aSpdBoost)}</style>";
-            if (dmgBoost <= 0f && aSpdBoost <= 0f) desc += $" <style=cIsDamage>NOTHING</style>";
+            if(dmgBoost > 0f) desc += $" <style=cIsDamage>base damage by {dmgBoost:N0} points</style>";
+            if(dmgBoost > 0f && aSpdBoost > 0f) desc += " and";
+            if(aSpdBoost > 0f) desc += $" <style=cIsDamage>attack speed by {Pct(aSpdBoost)}</style>";
+            if(dmgBoost <= 0f && aSpdBoost <= 0f) desc += $" <style=cIsDamage>NOTHING</style>";
             desc += $". Lasts <style=cIsDamage>{duration:N0} seconds</style>.";
             return desc;
         }

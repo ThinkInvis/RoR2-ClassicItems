@@ -31,18 +31,16 @@ namespace ThinkInvisible.ClassicItems {
 
         private GameObject snowglobeControllerPrefab;
         protected override string NewLangName(string langid = null) => displayName;
-        protected override string NewLangPickup(string langid = null)
-        {
+        protected override string NewLangPickup(string langid = null) {
             string desc = "";
-            if (procRate > 0f) desc += $"Randomly freeze enemies";
+            if(procRate > 0f) desc += $"Randomly freeze enemies";
             else desc += $"Slow enemies";
             desc += " for {duration:N0} seconds.";
             return desc;
         }
-        protected override string NewLangDesc(string langid = null)
-        {
+        protected override string NewLangDesc(string langid = null) {
             string desc = "Summon a snowstorm that";
-            if (procRate > 0f) desc += $"<style=cIsUtility>freezes</style> monsters at a <style=cIsUtility>{Pct(procRate, 1, 1)} chance ";
+            if(procRate > 0f) desc += $"<style=cIsUtility>freezes</style> monsters at a <style=cIsUtility>{Pct(procRate, 1, 1)} chance ";
             else desc += $"<style=cIsUtility>slows</style> monsters <style=cIsUtility>";
             desc += $"over {duration:N0} seconds</style>.";
             return desc;

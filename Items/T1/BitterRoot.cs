@@ -21,10 +21,9 @@ namespace ThinkInvisible.ClassicItems {
 
         protected override string NewLangName(string langid = null) => displayName;        
         protected override string NewLangPickup(string langid = null) => "Gain " + Pct(healthMult) + " HP.";
-        protected override string NewLangDesc(string langid = null)
-        {
+        protected override string NewLangDesc(string langid = null) {
             string desc = $"Increases <style=cIsHealing>HP</style> by <style=cIsHealing>{Pct(healthMult)}</style>";
-            if (healthMult > 0f) desc += $" <style=cStack>(+{Pct(healthMult)} per stack, linear)</style>";
+            if(healthMult > 0f) desc += $" <style=cStack>(+{Pct(healthMult)} per stack, linear)</style>";
             desc += $", up to a <style=cIsHealing>maximum</style> of <style=cIsHealing>+{Pct(healthCap)}</style>.";
             return desc;
         }
