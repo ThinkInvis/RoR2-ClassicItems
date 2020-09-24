@@ -111,6 +111,12 @@ For details and instructions on applying these, see: https://github.com/ThinkInv
 
 The 5 latest updates are listed below. For a full changelog, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/changelog.md
 
+**4.5.3**
+
+- Ancient Scepter now rerolls into another red item if the target character has no scepter skill available (not configurable), or if they already have an Ancient Scepter (configurable).
+- Made card model setup slightly more compatible with other mods.
+- Updated BetterUI hooks for v1.5.7.
+
 **4.5.2**
 
 - Added compatibility with BetterUI's proc coefficients.
@@ -129,7 +135,3 @@ The 5 latest updates are listed below. For a full changelog, see: https://github
 **4.4.2**
 
 - Updated for TILER2 2.0.0.
-
-**4.4.1**
-
-- Fixed a typo which was causing Ancient Scepter variants for Huntress to be inverted.
