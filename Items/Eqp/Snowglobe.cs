@@ -40,8 +40,7 @@ namespace ThinkInvisible.ClassicItems {
         }
         protected override string NewLangDesc(string langid = null) {
             string desc = "Summon a snowstorm that";
-            if(procRate > 0f) desc += $"<style=cIsUtility>freezes</style> monsters at a <style=cIsUtility>{Pct(procRate, 1, 1)} chance ";
-            else desc += $"<style=cIsUtility>slows</style> monsters <style=cIsUtility>";
+            desc += $"<style=cIsUtility>{(procRate>0f ? "freezes" : "slows")}</style> monsters at a <style=cIsUtility>{Pct(procRate, 1, 1)}/second chance ";
             desc += $"over {duration:N0} seconds</style>.";
             return desc;
         }
