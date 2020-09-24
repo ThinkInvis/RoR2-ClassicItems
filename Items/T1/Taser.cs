@@ -24,7 +24,13 @@ namespace ThinkInvisible.ClassicItems {
 
         protected override string NewLangName(string langid = null) => displayName;
         protected override string NewLangPickup(string langid = null) => "Chance to snare on hit.";
-        protected override string NewLangDesc(string langid = null) => FormatNewLangDesc();
+        protected override string NewLangDesc(string langid = null)
+        {
+            string desc = "<style=cIsUtility>" + Pct(procChance, 0, 1) + "</style> chance to <style=cIsUtility>entangle</style> an enemy for <style=cIsUtility>" + procTime.ToString("N1") + " seconds</style>";
+            if (stackTime > 0f) desc += $"<style=cStack>(+{stackTime:N1} seconds per stack)</style>";
+            desc += ".";
+            return desc;
+        }
         protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
         public Taser() {
@@ -61,14 +67,6 @@ namespace ThinkInvisible.ClassicItems {
                     self.body.AddTimedBuff(BuffIndex.Entangle, procTime + (icnt-1) * stackTime);
                 }
             }
-        }
-
-        private string FormatNewLangDesc()
-        {
-            string desc = "<style=cIsUtility>" + Pct(procChance, 0, 1) + "</style> chance to <style=cIsUtility>entangle</style> an enemy for <style=cIsUtility>" + procTime.ToString("N1") + " seconds</style>";
-            if (stackTime > 0f) desc += $"<style=cStack>(+{stackTime:N1} seconds per stack)</style>";
-            desc += ".";
-            return desc;
         }
     }
 }

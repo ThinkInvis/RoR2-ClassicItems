@@ -28,7 +28,13 @@ namespace ThinkInvisible.ClassicItems {
 		internal static GameObject spikeWardPrefab;
         protected override string NewLangName(string langid = null) => displayName;
         protected override string NewLangPickup(string langid = null) => "Drop spikestrips on being hit, slowing enemies.";
-        protected override string NewLangDesc(string langid = null) => FormatNewLangDesc();
+        protected override string NewLangDesc(string langid = null)
+        {
+            string desc = $"<style=cIsDamage>When hit</style>, drop a <style=cIsUtility>{baseRadius:N0}m AoE</style> which <style=cIsUtility>slows enemies by 50%</style> and lasts <style=cIsUtility>{baseDuration:N1}s</style>";
+            if (stackDuration > 0f) desc += $"<style=cStack>(+{stackDuration:N1}s per stack)</style>";
+            desc += ".";
+            return desc;
+        }
         protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
         public Spikestrip() {
@@ -82,14 +88,6 @@ namespace ThinkInvisible.ClassicItems {
 			cpt.GetComponent<TeamFilter>().teamIndex = self.body.teamComponent.teamIndex;
             cpt.AddComponent<DestroyOnTimer>().duration = baseDuration + stackDuration * (icnt - 1);
             NetworkServer.Spawn(cpt);
-        }
-
-        private string FormatNewLangDesc()
-        {
-            string desc = $"<style=cIsDamage>When hit</style>, drop a <style=cIsUtility>{baseRadius:N0}m AoE</style> which <style=cIsUtility>slows enemies by 50%</style> and lasts <style=cIsUtility>{baseDuration:N1}s</style>";
-            if (stackDuration > 0f) desc += $"<style=cStack>(+{stackDuration:N1}s per stack)</style>";
-            desc += ".";
-            return desc;
         }
 	}
 }
