@@ -14,7 +14,10 @@ using static TILER2.MiscUtil;
 namespace ThinkInvisible.ClassicItems {
     public static class EmbryoExtensions {
         public static bool CheckEmbryoProc(this Equipment eqp, CharacterBody body) {
-            return Embryo.instance.enabled && Embryo.instance.subEnableInternalGet[eqp] && Util.CheckRoll(Embryo.instance.GetCount(body)*Embryo.instance.procChance, body.master);
+            bool isIntEnab;
+            bool isIntExist = Embryo.instance.subEnableInternalGet.TryGetValue(eqp, out isIntEnab);
+            bool isExtEnab = Embryo.instance.subEnableExt.Contains(eqp.regIndex);
+            return Embryo.instance.enabled && ((isIntExist && isIntEnab) || isExtEnab) && Util.CheckRoll(Embryo.instance.GetCount(body)*Embryo.instance.procChance, body.master);
         }
     }
     public class Embryo : Item<Embryo> {
@@ -26,7 +29,6 @@ namespace ThinkInvisible.ClassicItems {
         [AutoItemConfig("Percent chance of triggering an equipment twice. Stacks additively.", AutoItemConfigFlags.None, 0f, 100f)]
         public float procChance {get;private set;} = 30f;
 
-        
         [AutoItemConfig("SubEnable<AIC.DictKey>", "If false, Beating Embryo will not affect <AIC.DictKey>.", AutoItemConfigFlags.BindDict | AutoItemConfigFlags.PreventNetMismatch)]
         private Dictionary<EquipmentIndex,bool> subEnable {get;} = new Dictionary<EquipmentIndex, bool>();
         public ReadOnlyDictionary<EquipmentIndex,bool> subEnableGet {get;private set;}
@@ -39,10 +41,20 @@ namespace ThinkInvisible.ClassicItems {
             AutoItemConfigFlags.PreventNetMismatch)]
         public bool subEnableModded {get;private set;} = false;
 
-        private readonly List<EquipmentIndex> subEnableExt = new List<EquipmentIndex>();
+        internal readonly HashSet<EquipmentIndex> subEnableExt = new HashSet<EquipmentIndex>();
         public void Compat_Register(EquipmentIndex ind) {
-            if(subEnableExt.Contains(ind)) throw new InvalidOperationException("The given equipment index (" + (int)ind + ") has already been registered.");
+            if(ind < EquipmentIndex.Count) {
+                ClassicItemsPlugin._logger.LogError($"Compat_Register does not support vanilla equipments (index < {(int)EquipmentIndex.Count}).");
+                return;
+            }
             subEnableExt.Add(ind);
+        }
+        public void Compat_Unregister(EquipmentIndex ind) {
+            if(ind < EquipmentIndex.Count) {
+                ClassicItemsPlugin._logger.LogError($"Compat_Unregister does not support vanilla equipments (index < {(int)EquipmentIndex.Count}).");
+                return;
+            }
+            subEnableExt.Remove(ind);
         }
 
         public readonly ReadOnlyCollection<EquipmentIndex> simpleDoubleEqps = new ReadOnlyCollection<EquipmentIndex>(new[] {
