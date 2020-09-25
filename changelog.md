@@ -1,5 +1,12 @@
 ﻿# ClassicItems Changelog
 
+(🌧︎: Involves an accepted GitHub Pull Request from the community. Thanks for your help!)
+
+**4.5.4**
+
+- 🌧︎ Large batch of language tweaks. Many item/equipment descriptions now hide sections if e.g. a relevant config option is set to 0.
+- Fixed several issues with Beating Embryo modded equipment support.
+
 **4.5.3**
 
 - Ancient Scepter now rerolls into another red item if the target character has no scepter skill available (not configurable), or if they already have an Ancient Scepter (configurable).

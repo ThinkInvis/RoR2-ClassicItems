@@ -1,4 +1,4 @@
-# Classic Items
+﻿# Classic Items
 
 ## SUPPORT DISCLAIMER
 
@@ -110,6 +110,12 @@ For details and instructions on applying these, see: https://github.com/ThinkInv
 ## Changelog
 
 The 5 latest updates are listed below. For a full changelog, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/changelog.md
+(🌧︎: Involves an accepted GitHub Pull Request from the community. Thanks for your help!)
+
+**4.5.4**
+
+- 🌧︎ Large batch of language tweaks. Many item/equipment descriptions now hide sections if e.g. a relevant config option is set to 0.
+- Fixed several issues with Beating Embryo modded equipment support.
 
 **4.5.3**
 
@@ -131,7 +137,3 @@ The 5 latest updates are listed below. For a full changelog, see: https://github
 
 - Added compatibility with the ItemStats mod. Only stats which increase with itemcount are displayed (for now).
 - Added extra safety to Golden Gun hook to handle a potential incompatibility.
-
-**4.4.2**
-
-- Updated for TILER2 2.0.0.
