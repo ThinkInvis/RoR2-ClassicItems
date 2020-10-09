@@ -34,8 +34,8 @@ namespace ThinkInvisible.ClassicItems {
         protected override string NewLangDesc(string langid = null) {
             string desc = $"<style=cDeath>When hit";
             if(healthThreshold > 0f) desc += $" for more than {Pct(healthThreshold)} of max health";
-            desc += "</style>, <style=cIsDamage>explode</style> for up to <style=cIsDamage>{Pct(baseDmg)}</style>";
-            if(stackDmg > 0f) desc += $"<style=cStack>(+{Pct(stackDmg)} per stack)</style>";
+            desc += $"</style>, <style=cIsDamage>explode</style> for up to <style=cIsDamage>{Pct(baseDmg)}</style>";
+            if(stackDmg > 0f) desc += $" <style=cStack>(+{Pct(stackDmg)} per stack)</style>";
             desc += $" damage to enemies within <style=cIsDamage>{baseRadius:N0} m</style>.";
             return desc;
         }
