@@ -2,6 +2,12 @@
 
 (🌧︎: Involves an accepted GitHub Pull Request from the community. Thanks for your help!)
 
+**4.5.5**
+
+- 🌧︎ A handful of additional language fixes.
+- Implements changes from TILER2 2.2.3.
+	- Ancient Scepter is now FakeInventory blacklisted. Fixes incompatibility with Tinker's Satchel (in combination with a Tinker's Satchel update).
+
 **4.5.4**
 
 - 🌧︎ Large batch of language tweaks. Many item/equipment descriptions now hide sections if e.g. a relevant config option is set to 0.
