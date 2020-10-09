@@ -96,6 +96,10 @@ namespace ThinkInvisible.ClassicItems {
                     RegisterScepterSkill(skill.myDef, skill.targetBody, skill.targetSlot, skill.targetVariantIndex);
                 }
             };
+
+            onBehav += () => {
+                FakeInventory.blacklist.Add(regIndex);
+            };
         }
 
         protected override void LoadBehavior() {
