@@ -45,6 +45,14 @@ namespace ThinkInvisible.ClassicItems {
         
         [AutoItemConfig("If true, Dragon's Breath will use significantly lighter particle effects and no dynamic lighting.", AutoItemConfigFlags.DeferForever)]
         public bool artiFlamePerformanceMode {get; private set;} = false;
+        
+        //TODO: test w/ stage changes
+        public enum StridesInteractionMode {
+            StridesTakesPrecedence, ScepterTakesPrecedence, ScepterRerolls
+        }
+        [AutoItemConfig("Changes what happens when a character whose Utility skill is affected by Ancient Scepter has both Ancient Scepter and Strides of Heresy at the same time.",
+            AutoItemConfigFlags.DeferUntilNextStage | AutoItemConfigFlags.PreventNetMismatch)]
+        public StridesInteractionMode stridesInteractionMode {get; private set;} = StridesInteractionMode.ScepterRerolls;
 
         public void PatchLang() {
             foreach(var skill in skills) {
@@ -108,24 +116,39 @@ namespace ThinkInvisible.ClassicItems {
         protected override void LoadBehavior() {
             On.RoR2.CharacterBody.OnInventoryChanged += On_CBOnInventoryChanged;
             On.RoR2.CharacterMaster.GetDeployableSameSlotLimit += On_CMGetDeployableSameSlotLimit;
-            
+            On.RoR2.GenericSkill.SetSkillOverride += On_GSSetSkillOverride;
+
             foreach(var skill in skills) {
                 skill.LoadBehavior();
+            }
+
+            foreach(var cm in AliveList()) {
+                if(!cm.hasBody) continue;
+                var body = cm.GetBody();
+                HandleScepterSkill(body);
             }
         }
 
         protected override void UnloadBehavior() {
             On.RoR2.CharacterBody.OnInventoryChanged -= On_CBOnInventoryChanged;
             On.RoR2.CharacterMaster.GetDeployableSameSlotLimit -= On_CMGetDeployableSameSlotLimit;
+            On.RoR2.GenericSkill.SetSkillOverride -= On_GSSetSkillOverride;
             
             foreach(var cm in AliveList()) {
                 if(!cm.hasBody) continue;
-                HandleScepterSkill(cm.GetBody(), true);
+                var body = cm.GetBody();
+                HandleScepterSkill(body, true);
             }
             
             foreach(var skill in skills) {
                 skill.UnloadBehavior();
             }
+        }
+        
+        private void On_GSSetSkillOverride(On.RoR2.GenericSkill.orig_SetSkillOverride orig, GenericSkill self, object source, SkillDef skillDef, GenericSkill.SkillOverridePriority priority) {
+            if(stridesInteractionMode != StridesInteractionMode.ScepterTakesPrecedence
+                || skillDef.skillIndex != CharacterBody.CommonAssets.lunarUtilityReplacementSkillDef.skillIndex)
+                orig(self, source, skillDef, priority);
         }
 
         private int On_CMGetDeployableSameSlotLimit(On.RoR2.CharacterMaster.orig_GetDeployableSameSlotLimit orig, CharacterMaster self, DeployableSlot slot) {
@@ -189,6 +212,8 @@ namespace ThinkInvisible.ClassicItems {
         }
         
         private bool HandleScepterSkill(CharacterBody self, bool forceOff = false) {
+            bool hasStrides = self.inventory.GetItemCount(ItemIndex.LunarUtilityReplacement) > 0;
+            if(stridesInteractionMode == StridesInteractionMode.ScepterRerolls && hasStrides) return false;
             if(self.skillLocator && self.master?.loadout != null) {
                 var bodyName = BodyCatalog.GetBodyName(self.bodyIndex);
 
@@ -203,8 +228,16 @@ namespace ThinkInvisible.ClassicItems {
                     if(replVar == null) return false;
                     if(GetCount(self) > 0 && !forceOff)
                         targetSkill.SetSkillOverride(self, replVar.replDef, GenericSkill.SkillOverridePriority.Upgrade);
-                    else
+                        if(stridesInteractionMode == StridesInteractionMode.ScepterTakesPrecedence && hasStrides) {
+                            self.skillLocator.primary.UnsetSkillOverride(self, CharacterBody.CommonAssets.lunarPrimaryReplacementSkillDef, GenericSkill.SkillOverridePriority.Replacement);
+                        }
+                    else {
                         targetSkill.UnsetSkillOverride(self, replVar.replDef, GenericSkill.SkillOverridePriority.Upgrade);
+                        if(stridesInteractionMode == StridesInteractionMode.ScepterTakesPrecedence && hasStrides) {
+                            self.skillLocator.primary.SetSkillOverride(self, CharacterBody.CommonAssets.lunarPrimaryReplacementSkillDef, GenericSkill.SkillOverridePriority.Replacement);
+                        }
+                    }
+
                     return true;
                 }
             }
