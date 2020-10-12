@@ -145,10 +145,19 @@ namespace ThinkInvisible.ClassicItems {
             }
         }
         
+        bool handlingOverride = false;
         private void On_GSSetSkillOverride(On.RoR2.GenericSkill.orig_SetSkillOverride orig, GenericSkill self, object source, SkillDef skillDef, GenericSkill.SkillOverridePriority priority) {
             if(stridesInteractionMode != StridesInteractionMode.ScepterTakesPrecedence
-                || skillDef.skillIndex != CharacterBody.CommonAssets.lunarUtilityReplacementSkillDef.skillIndex)
+                || skillDef.skillIndex != CharacterBody.CommonAssets.lunarUtilityReplacementSkillDef.skillIndex
+                || !(source is CharacterBody body)
+                || body.inventory.GetItemCount(regIndex) < 1
+                || handlingOverride)
                 orig(self, source, skillDef, priority);
+            else {
+                handlingOverride = true;
+                HandleScepterSkill(body);
+                handlingOverride = false;
+            }
         }
 
         private int On_CMGetDeployableSameSlotLimit(On.RoR2.CharacterMaster.orig_GetDeployableSameSlotLimit orig, CharacterMaster self, DeployableSlot slot) {
@@ -226,12 +235,12 @@ namespace ThinkInvisible.ClassicItems {
                     var targetVariant = self.master.loadout.bodyLoadoutManager.GetSkillVariant(self.bodyIndex, targetSlotIndex);
                     var replVar = repl.Find(x => x.variantIndex == targetVariant);
                     if(replVar == null) return false;
-                    if(GetCount(self) > 0 && !forceOff)
-                        targetSkill.SetSkillOverride(self, replVar.replDef, GenericSkill.SkillOverridePriority.Upgrade);
+                    if(!forceOff && GetCount(self) > 0) {
                         if(stridesInteractionMode == StridesInteractionMode.ScepterTakesPrecedence && hasStrides) {
                             self.skillLocator.primary.UnsetSkillOverride(self, CharacterBody.CommonAssets.lunarPrimaryReplacementSkillDef, GenericSkill.SkillOverridePriority.Replacement);
                         }
-                    else {
+                        targetSkill.SetSkillOverride(self, replVar.replDef, GenericSkill.SkillOverridePriority.Upgrade);
+                    } else {
                         targetSkill.UnsetSkillOverride(self, replVar.replDef, GenericSkill.SkillOverridePriority.Upgrade);
                         if(stridesInteractionMode == StridesInteractionMode.ScepterTakesPrecedence && hasStrides) {
                             self.skillLocator.primary.SetSkillOverride(self, CharacterBody.CommonAssets.lunarPrimaryReplacementSkillDef, GenericSkill.SkillOverridePriority.Replacement);
