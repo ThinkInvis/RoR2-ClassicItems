@@ -42,6 +42,9 @@ namespace ThinkInvisible.ClassicItems {
         
         [AutoItemConfig("If true, any stacks picked up past the first will reroll to other red items. If false, this behavior will only be used for characters which cannot benefit from the item at all.")]
         public bool rerollExtras {get; private set;} = true;
+        
+        [AutoItemConfig("If true, Dragon's Breath will use significantly lighter particle effects and no dynamic lighting.", AutoItemConfigFlags.DeferForever)]
+        public bool artiFlamePerformanceMode {get; private set;} = false;
 
         public void PatchLang() {
             foreach(var skill in skills) {

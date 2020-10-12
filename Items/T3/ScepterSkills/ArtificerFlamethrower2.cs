@@ -71,11 +71,16 @@ namespace ThinkInvisible.ClassicItems {
             psshape.shapeType = ParticleSystemShapeType.Sphere;
             psshape.scale = Vector3.one * 1.5f;
             var psemit = fxcloud.GetComponent<ParticleSystem>().emission;
-            psemit.rateOverTime = 20f;
-            var lightCpt = fxObj.Find("Point Light").gameObject.GetComponent<Light>();
-            lightCpt.color = new Color(1f, 0.5f, 0.2f);
-            lightCpt.intensity = 3.5f;
-            lightCpt.range = 5f;
+            psemit.rateOverTime = Scepter.instance.artiFlamePerformanceMode ? 4f : 20f;
+            var lightObj = fxObj.Find("Point Light").gameObject;
+            if(Scepter.instance.artiFlamePerformanceMode) {
+                UnityEngine.Object.Destroy(lightObj);
+            } else {
+                var lightCpt = lightObj.GetComponent<Light>();
+                lightCpt.color = new Color(1f, 0.5f, 0.2f);
+                lightCpt.intensity = 3.5f;
+                lightCpt.range = 5f;
+            }
 
             ProjectileCatalog.getAdditionalEntries += (list) => list.Add(projCloud);
         }
