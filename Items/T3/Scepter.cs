@@ -231,7 +231,7 @@ namespace ThinkInvisible.ClassicItems {
                     var targetSkill = self.skillLocator.GetSkill(targetSlot);
                     if(!targetSkill) return false;
                     var targetSlotIndex = self.skillLocator.GetSkillSlotIndex(targetSkill);
-                    if(targetSlotIndex == 2 && stridesInteractionMode == StridesInteractionMode.ScepterRerolls && hasStrides) return false;
+                    if(self.skillLocator.FindSkillSlot(targetSkill) == SkillSlot.Utility && stridesInteractionMode == StridesInteractionMode.ScepterRerolls && hasStrides) return false;
                     var targetVariant = self.master.loadout.bodyLoadoutManager.GetSkillVariant(self.bodyIndex, targetSlotIndex);
                     var replVar = repl.Find(x => x.variantIndex == targetVariant);
                     if(replVar == null) return false;
