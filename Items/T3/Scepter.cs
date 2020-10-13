@@ -222,7 +222,6 @@ namespace ThinkInvisible.ClassicItems {
         
         private bool HandleScepterSkill(CharacterBody self, bool forceOff = false) {
             bool hasStrides = self.inventory.GetItemCount(ItemIndex.LunarUtilityReplacement) > 0;
-            if(stridesInteractionMode == StridesInteractionMode.ScepterRerolls && hasStrides) return false;
             if(self.skillLocator && self.master?.loadout != null) {
                 var bodyName = BodyCatalog.GetBodyName(self.bodyIndex);
 
@@ -230,8 +229,9 @@ namespace ThinkInvisible.ClassicItems {
                 if(repl.Count > 0) {
                     SkillSlot targetSlot = scepterSlots[bodyName];
                     var targetSkill = self.skillLocator.GetSkill(targetSlot);
-                    var targetSlotIndex = self.skillLocator.GetSkillSlotIndex(targetSkill);
                     if(!targetSkill) return false;
+                    var targetSlotIndex = self.skillLocator.GetSkillSlotIndex(targetSkill);
+                    if(targetSlotIndex == 2 && stridesInteractionMode == StridesInteractionMode.ScepterRerolls && hasStrides) return false;
                     var targetVariant = self.master.loadout.bodyLoadoutManager.GetSkillVariant(self.bodyIndex, targetSlotIndex);
                     var replVar = repl.Find(x => x.variantIndex == targetVariant);
                     if(replVar == null) return false;
