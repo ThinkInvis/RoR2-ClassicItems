@@ -32,7 +32,6 @@ namespace ThinkInvisible.ClassicItems {
             if(damageTaken > 0f) desc += $"Sacrifice <style=cIsDamage>{Pct(damageTaken)}</style> of your <style=cIsDamage>current health</style>";
             else desc += "Use";
             desc += $" to damage the nearest enemy for <style=cIsDamage>{Pct(damageGiven)}</style> of your <style=cIsDamage>maximum health</style>.";
-
             return desc;
         }
         protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";

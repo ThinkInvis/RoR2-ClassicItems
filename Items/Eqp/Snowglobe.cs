@@ -33,9 +33,9 @@ namespace ThinkInvisible.ClassicItems {
         protected override string NewLangName(string langid = null) => displayName;
         protected override string NewLangPickup(string langid = null) {
             string desc = "";
-            if(procRate > 0f) desc += $"Randomly freeze enemies";
-            else desc += $"Slow enemies";
-            desc += " for {duration:N0} seconds.";
+            if(procRate > 0f) desc += "Randomly freeze enemies";
+            else desc += "Slow enemies";
+            desc += $" for {duration:N0} seconds.";
             return desc;
         }
         protected override string NewLangDesc(string langid = null) {
