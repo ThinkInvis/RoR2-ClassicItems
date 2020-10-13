@@ -228,10 +228,10 @@ namespace ThinkInvisible.ClassicItems {
                 var repl = scepterReplacers.FindAll(x => x.bodyName == bodyName);
                 if(repl.Count > 0) {
                     SkillSlot targetSlot = scepterSlots[bodyName];
+                    if(targetSlot == SkillSlot.Utility && stridesInteractionMode == StridesInteractionMode.ScepterRerolls && hasStrides) return false;
                     var targetSkill = self.skillLocator.GetSkill(targetSlot);
                     if(!targetSkill) return false;
                     var targetSlotIndex = self.skillLocator.GetSkillSlotIndex(targetSkill);
-                    if(targetSlot == SkillSlot.Utility && stridesInteractionMode == StridesInteractionMode.ScepterRerolls && hasStrides) return false;
                     var targetVariant = self.master.loadout.bodyLoadoutManager.GetSkillVariant(self.bodyIndex, targetSlotIndex);
                     var replVar = repl.Find(x => x.variantIndex == targetVariant);
                     if(replVar == null) return false;
