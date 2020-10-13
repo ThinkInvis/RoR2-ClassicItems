@@ -237,13 +237,13 @@ namespace ThinkInvisible.ClassicItems {
                     if(replVar == null) return false;
                     if(!forceOff && GetCount(self) > 0) {
                         if(stridesInteractionMode == StridesInteractionMode.ScepterTakesPrecedence && hasStrides) {
-                            self.skillLocator.primary.UnsetSkillOverride(self, CharacterBody.CommonAssets.lunarPrimaryReplacementSkillDef, GenericSkill.SkillOverridePriority.Replacement);
+                            self.skillLocator.utility.UnsetSkillOverride(self, CharacterBody.CommonAssets.lunarUtilityReplacementSkillDef, GenericSkill.SkillOverridePriority.Replacement);
                         }
                         targetSkill.SetSkillOverride(self, replVar.replDef, GenericSkill.SkillOverridePriority.Upgrade);
                     } else {
                         targetSkill.UnsetSkillOverride(self, replVar.replDef, GenericSkill.SkillOverridePriority.Upgrade);
                         if(stridesInteractionMode == StridesInteractionMode.ScepterTakesPrecedence && hasStrides) {
-                            self.skillLocator.primary.SetSkillOverride(self, CharacterBody.CommonAssets.lunarPrimaryReplacementSkillDef, GenericSkill.SkillOverridePriority.Replacement);
+                            self.skillLocator.utility.SetSkillOverride(self, CharacterBody.CommonAssets.lunarUtilityReplacementSkillDef, GenericSkill.SkillOverridePriority.Replacement);
                         }
                     }
 
