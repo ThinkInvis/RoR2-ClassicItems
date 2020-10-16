@@ -4,7 +4,7 @@ using TILER2;
 using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Amethyst : Equipment<Amethyst> {
+    public class Amethyst : Equipment_V2<Amethyst> {
         public override string displayName => "Gigantic Amethyst";
 
         public override float eqpCooldown {get;protected set;} = 8f;

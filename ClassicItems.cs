@@ -41,7 +41,7 @@ namespace ThinkInvisible.ClassicItems {
 
         private static ConfigFile cfgFile;
         
-        internal static FilingDictionary<ItemBoilerplate> masterItemList = new FilingDictionary<ItemBoilerplate>();
+        internal static FilingDictionary<ItemBoilerplate_V2> masterItemList = new FilingDictionary<ItemBoilerplate_V2>();
         
         public class GlobalConfig:AutoConfigContainer {
             [AutoConfig("If true, removes the hold-space-to-stomp functionality of H3AD-5T V2 (due to overlap in functionality with ClassicItems Headstompers). H3AD-5T V2 will still increase jump height and prevent fall damage.",
@@ -140,7 +140,7 @@ namespace ThinkInvisible.ClassicItems {
             };
 
             Logger.LogDebug("Instantiating item classes...");
-            masterItemList = T2Module.InitAll<ItemBoilerplate>(new T2Module.ModInfo {
+            masterItemList = T2Module.InitAll<ItemBoilerplate_V2>(new T2Module.ModInfo {
                 displayName = "Classic Items",
                 longIdentifier = "ClassicItems",
                 shortIdentifier = "CI",
@@ -148,10 +148,10 @@ namespace ThinkInvisible.ClassicItems {
             });
 
             Logger.LogDebug("Loading item configs...");
-            foreach(ItemBoilerplate x in masterItemList) {
+            foreach(ItemBoilerplate_V2 x in masterItemList) {
                 x.SetupConfig();
                 x.ConfigEntryChanged += (sender, args) => {
-                    if((args.flags & AutoUpdateEventFlags.InvalidateLanguage) == 0) return;
+                    if((args.flags & AutoUpdateEventFlags_V2.InvalidateLanguage) == 0) return;
                     if(x.pickupDef != null) {
                         var ctsf = x.pickupDef.displayPrefab?.transform;
                         if(!ctsf) return;
@@ -170,15 +170,15 @@ namespace ThinkInvisible.ClassicItems {
             Logger.LogDebug("Registering item attributes...");
             
             int longestName = 0;
-            foreach(ItemBoilerplate x in masterItemList) {
+            foreach(ItemBoilerplate_V2 x in masterItemList) {
                 string mpnOvr = null;
-                if(x is Item item) mpnOvr = "@ClassicItems:Assets/ClassicItems/models/" + modelNameMap[item.itemTier] + ".prefab";
-                else if(x is Equipment eqp) mpnOvr = "@ClassicItems:Assets/ClassicItems/models/" + (eqp.isLunar ? "LqpCard.prefab" : "EqpCard.prefab");
+                if(x is Item_V2 item) mpnOvr = "@ClassicItems:Assets/ClassicItems/models/" + modelNameMap[item.itemTier] + ".prefab";
+                else if(x is Equipment_V2 eqp) mpnOvr = "@ClassicItems:Assets/ClassicItems/models/" + (eqp.isLunar ? "LqpCard.prefab" : "EqpCard.prefab");
                 var ipnOvr = "@ClassicItems:Assets/ClassicItems/icons/" + x.name + "_icon.png";
 
                 if(mpnOvr != null) {
-                    typeof(ItemBoilerplate).GetProperty(nameof(ItemBoilerplate.modelPathName)).SetValue(x, mpnOvr);
-                    typeof(ItemBoilerplate).GetProperty(nameof(ItemBoilerplate.iconPathName)).SetValue(x, ipnOvr);
+                    typeof(ItemBoilerplate_V2).GetProperty(nameof(ItemBoilerplate_V2.modelPathName)).SetValue(x, mpnOvr);
+                    typeof(ItemBoilerplate_V2).GetProperty(nameof(ItemBoilerplate_V2.iconPathName)).SetValue(x, ipnOvr);
                 }
                 
                 x.SetupAttributes();
@@ -186,12 +186,12 @@ namespace ThinkInvisible.ClassicItems {
             }
             
             Logger.LogMessage("Index dump follows (pairs of name / index):");
-            foreach(ItemBoilerplate x in masterItemList) {
-                if(x is Equipment eqp)
+            foreach(ItemBoilerplate_V2 x in masterItemList) {
+                if(x is Equipment_V2 eqp)
                     Logger.LogMessage("Equipment CI"+x.name.PadRight(longestName) + " / "+((int)eqp.regIndex).ToString());
-                else if(x is Item item)
+                else if(x is Item_V2 item)
                     Logger.LogMessage("     Item CI"+x.name.PadRight(longestName) + " / "+((int)item.regIndex).ToString());
-                else if(x is Artifact afct)
+                else if(x is Artifact_V2 afct)
                     Logger.LogMessage(" Artifact CI"+x.name.PadRight(longestName) + " / "+((int)afct.regIndex).ToString());
                 else
                     Logger.LogMessage("    Other CI"+x.name.PadRight(longestName) + " / N/A");
@@ -234,7 +234,7 @@ namespace ThinkInvisible.ClassicItems {
 
             Logger.LogDebug("Registering item behaviors...");
 
-            foreach(ItemBoilerplate x in masterItemList) {
+            foreach(ItemBoilerplate_V2 x in masterItemList) {
                 x.SetupBehavior();
             }
 

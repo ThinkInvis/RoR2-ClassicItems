@@ -5,21 +5,21 @@ using TILER2;
 using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Clover : Item<Clover> {
+    public class Clover : Item_V2<Clover> {
         public override string displayName => "56 Leaf Clover";
 		public override ItemTier itemTier => ItemTier.Tier2;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
         public override bool itemAIB {get; protected set;} = true;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("Percent chance for a Clover drop to happen at first stack -- as such, multiplicative with Rare/Uncommon chances.", AutoConfigFlags.None, 0f, 100f)]
         public float baseChance {get;private set;} = 4f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("Percent chance for a Clover drop to happen per extra stack.", AutoConfigFlags.None, 0f, 100f)]
         public float stackChance {get;private set;} = 1.5f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("Maximum percent chance for a Clover drop on elite kill.", AutoConfigFlags.None, 0f, 100f)]
         public float capChance {get;private set;} = 100f;
         
@@ -28,7 +28,7 @@ namespace ThinkInvisible.ClassicItems {
         [AutoConfig("Percent chance for a Clover drop to become Tier 2 per extra stack.", AutoConfigFlags.None, 0f, 100f)]
         public float stackUnc {get;private set;} = 0.1f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("Maximum percent chance for a Clover drop to become Tier 2.", AutoConfigFlags.None, 0f, 100f)]
         public float capUnc {get;private set;} = 25f;
         
@@ -37,7 +37,7 @@ namespace ThinkInvisible.ClassicItems {
         [AutoConfig("Percent chance for a Clover drop to become Tier 3 per extra stack.", AutoConfigFlags.None, 0f, 100f)]
         public float stackRare {get;private set;} = 0.001f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("Maximum percent chance for a Clover drop to become Tier 3.", AutoConfigFlags.None, 0f, 100f)]
         public float capRare {get;private set;} = 1f;
 

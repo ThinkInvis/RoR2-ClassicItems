@@ -5,29 +5,29 @@ using TILER2;
 using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Witness : Item<Witness> {
+    public class Witness : Item_V2<Witness> {
         public override string displayName => "Burning Witness";
 		public override ItemTier itemTier => ItemTier.Boss;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage, ItemTag.Utility, ItemTag.OnKillEffect});
         public override bool itemAIB {get; protected set;} = true;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("Duration of on-kill buff applied by the first stack of Burning Witness.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float baseDuration {get; private set;} = 6f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("Duration of on-kill buff applied per additional stack of Burning Witness.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float stackDuration {get; private set;} = 3f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("Move speed bonus from the first stack of Burning Witness, while active.", AutoConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float baseSpeed {get; private set;} = 0.05f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("Move speed bonus per additional stack of Burning Witness, while active.", AutoConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float stackSpeed {get; private set;} = 0.05f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("Damage bonus applied by Burning Witness, while active.", AutoConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float damage {get; private set;} = 1f;     
         

@@ -4,12 +4,12 @@ using TILER2;
 using static TILER2.StatHooks;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Vial : Item<Vial> {
+    public class Vial : Item_V2<Vial> {
         public override string displayName => "Mysterious Vial";
 		public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Healing});
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage | AutoUpdateEventFlags.InvalidateStats)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage | AutoUpdateEventFlags_V2.InvalidateStats)]
         [AutoConfig("Direct additive to natural health regen per stack of Mysterious Vial.", AutoConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float addRegen {get;private set;} = 1.4f;
 

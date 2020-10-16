@@ -5,20 +5,20 @@ using TILER2;
 using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Taser : Item<Taser> {
+    public class Taser : Item_V2<Taser> {
         public override string displayName => "Taser";
 		public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("Percent chance for Taser to proc.", AutoConfigFlags.None, 0f, 100f)]
         public float procChance {get;private set;} = 7f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("Duration of root applied by first Taser stack.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float procTime {get;private set;} = 1.5f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("Duration of root applied per additional Taser stack.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float stackTime {get;private set;} = 0.5f;
 

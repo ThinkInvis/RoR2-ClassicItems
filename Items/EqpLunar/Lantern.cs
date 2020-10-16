@@ -7,18 +7,18 @@ using static TILER2.MiscUtil;
 using System.Collections.Generic;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Lantern : Equipment<Lantern> {
+    public class Lantern : Equipment_V2<Lantern> {
         public override string displayName => "Safeguard Lantern";
 
-		[AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+		[AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("Duration of the Safeguard Lantern effect.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float duration {get;private set;} = 10f;
 
-		[AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+		[AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
 		[AutoConfig("Base-player-damage/sec applied by Safeguard Lantern.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float damage {get;private set;} = 0.2f;
 
-		[AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+		[AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
 		[AutoConfig("Radius of the Safeguard Lantern aura.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float range {get;private set;} = 25f;
 

@@ -7,17 +7,17 @@ using TILER2;
 using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
-    public class LifeSavings : Item<LifeSavings> {
+    public class LifeSavings : Item_V2<LifeSavings> {
         public override string displayName => "Life Savings";
         public override bool itemAIB {get; protected set;} = true;
         public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
 
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("Money to add to players per second per Life Savings stack (without taking into account InvertCount).", AutoConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float gainPerSec {get;private set;} = 1f;
 
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("With <InvertCount stacks, number of stacks affects time per interval instead of multiplying money gained.", AutoConfigFlags.PreventNetMismatch, 0, int.MaxValue)]
         public int invertCount {get;private set;} = 3;
 

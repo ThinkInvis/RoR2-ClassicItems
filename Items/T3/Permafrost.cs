@@ -4,21 +4,21 @@ using TILER2;
 using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Permafrost : Item<Permafrost> {
+    public class Permafrost : Item_V2<Permafrost> {
         public override string displayName => "Permafrost";
 		public override ItemTier itemTier => ItemTier.Tier3;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
         public override bool itemAIB {get; protected set;} = true;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("Percent chance of triggering Permafrost on hit. Affected by proc coefficient; stacks hyperbolically.", AutoConfigFlags.None, 0f, 100f)]
         public float procChance {get;private set;} = 6f;
 
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("Duration of freeze applied by Permafrost.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float freezeTime {get;private set;} = 1.5f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("Duration of slow applied by Permafrost.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float slowTime {get;private set;} = 3.0f;
 

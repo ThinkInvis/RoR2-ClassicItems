@@ -7,14 +7,14 @@ using static TILER2.MiscUtil;
 
 
 namespace ThinkInvisible.ClassicItems {
-    public class LostDoll : Equipment<LostDoll> {
+    public class LostDoll : Equipment_V2<LostDoll> {
         public override string displayName => "Lost Doll";
 
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("Fraction of the user's CURRENT health to take from the user when Lost Doll is activated.", AutoConfigFlags.None, 0f, 1f)]
         public float damageTaken {get;private set;} = 0.25f;
 
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("Fraction of the user's MAXIMUM health to deal in damage to the closest enemy when Lost Doll is activated.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float damageGiven {get;private set;} = 5f;
         

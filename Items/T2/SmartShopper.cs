@@ -5,13 +5,13 @@ using TILER2;
 using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
-    public class SmartShopper : Item<SmartShopper> {
+    public class SmartShopper : Item_V2<SmartShopper> {
         public override string displayName => "Smart Shopper";
 		public override ItemTier itemTier => ItemTier.Tier2;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
         public override bool itemAIB {get; protected set;} = true;
 
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("Linear multiplier for money-on-kill increase per stack of Smart Shopper.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float moneyMult {get;private set;} = 0.25f;
 

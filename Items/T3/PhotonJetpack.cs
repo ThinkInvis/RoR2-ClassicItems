@@ -5,7 +5,7 @@ using TILER2;
 using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
-    public class PhotonJetpack : Item<PhotonJetpack> {
+    public class PhotonJetpack : Item_V2<PhotonJetpack> {
         public override string displayName => "Photon Jetpack";
 		public override ItemTier itemTier => ItemTier.Tier3;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
@@ -13,27 +13,27 @@ namespace ThinkInvisible.ClassicItems {
 
         public BuffIndex photonFuelBuff {get;private set;}
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("Time in seconds that jump must be released before Photon Jetpack fuel begins recharging.",AutoConfigFlags.PreventNetMismatch,0f,float.MaxValue)]
         public float rchDelay {get;private set;} = 1.0f;
 
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("Seconds of Photon Jetpack fuel recharged per second realtime.",AutoConfigFlags.PreventNetMismatch,0f,float.MaxValue)]
         public float rchRate {get;private set;} = 1.0f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("Seconds of Photon Jetpack fuel capacity at first stack.",AutoConfigFlags.PreventNetMismatch,0f,float.MaxValue)]
         public float baseFuel {get;private set;} = 1.6f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("Seconds of Photon Jetpack fuel capacity per additional stack.",AutoConfigFlags.PreventNetMismatch,0f,float.MaxValue)]
         public float stackFuel {get;private set;} = 1.6f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("Multiplier for gravity reduction while Photon Jetpack is active. Effectively the thrust provided by the jetpack -- 0 = no effect, 1 = anti-grav, 2 = negative gravity, etc.",AutoConfigFlags.PreventNetMismatch,0f,float.MaxValue)]
         public float gravMod {get;private set;} = 1.2f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("Added to Photon Jetpack's GravMod while the character is falling (negative vertical velocity) to assist in stopping falls.",AutoConfigFlags.PreventNetMismatch,0f,float.MaxValue)]
         public float fallBoost {get;private set;} = 2.0f;
 
@@ -85,7 +85,7 @@ namespace ThinkInvisible.ClassicItems {
             ConfigEntryChanged -= Evt_ConfigEntryChanged;
         }
 
-        private void Evt_ConfigEntryChanged(object sender, AutoUpdateEventArgs args) {
+        private void Evt_ConfigEntryChanged(object sender, AutoUpdateEventArgs_V2 args) {
             if(args.target.boundProperty.Name == nameof(baseFuel) || args.target.boundProperty.Name == nameof(stackFuel))
                 AliveList().ForEach(cm => {
                     if(cm.hasBody) UpdatePhotonFuel(cm.GetBody());

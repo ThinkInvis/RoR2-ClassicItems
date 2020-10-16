@@ -7,20 +7,20 @@ using TILER2;
 using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Spikestrip : Item<Spikestrip> {
+    public class Spikestrip : Item_V2<Spikestrip> {
         public override string displayName => "Spikestrip";
 		public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("AoE radius for Spikestrip.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float baseRadius {get; private set;} = 5f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("AoE duration for the first stack of Spikestrip, in seconds.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float baseDuration {get; private set;} = 2f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("AoE duration per additional stack of Spikestrip, in seconds.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float stackDuration {get; private set;} = 1f;
 

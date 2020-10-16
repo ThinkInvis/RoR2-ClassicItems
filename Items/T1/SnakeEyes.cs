@@ -6,16 +6,16 @@ using static TILER2.MiscUtil;
 using static TILER2.StatHooks;
 
 namespace ThinkInvisible.ClassicItems {
-    public class SnakeEyes : Item<SnakeEyes> {
+    public class SnakeEyes : Item_V2<SnakeEyes> {
         public override string displayName => "Snake Eyes";
 		public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
 
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage | AutoUpdateEventFlags.InvalidateStats)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage | AutoUpdateEventFlags_V2.InvalidateStats)]
         [AutoConfig("Direct additive to percent crit chance per proc per stack of Snake Eyes.", AutoConfigFlags.PreventNetMismatch, 0f, 100f)]
         public float critAdd {get;private set;} = 8f;
 
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("Maximum number of successive failed shrines to count towards increasing Snake Eyes buff.", AutoConfigFlags.None, 1, int.MaxValue)]
         public int stackCap {get;private set;} = 6;
 

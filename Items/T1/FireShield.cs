@@ -5,24 +5,24 @@ using TILER2;
 using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
-    public class FireShield : Item<FireShield> {
+    public class FireShield : Item_V2<FireShield> {
         public override string displayName => "Fire Shield";
 		public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("Fraction of max health required as damage taken to trigger Fire Shield.", AutoConfigFlags.None, 0f, 1f)]
         public float healthThreshold {get; private set;} = 0.1f;
 
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("AoE radius for Fire Shield.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float baseRadius {get; private set;} = 15f;
 
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("AoE damage, based on player base damage, for the first stack of Fire Shield.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float baseDmg {get; private set;} = 2f;
 
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("AoE damage, based on player base damage, per additional stack of Fire Shield.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float stackDmg {get; private set;} = 0.5f;
 

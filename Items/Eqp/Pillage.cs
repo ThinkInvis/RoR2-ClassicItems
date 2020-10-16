@@ -5,10 +5,10 @@ using TILER2;
 using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Pillage : Equipment<Pillage> {
+    public class Pillage : Equipment_V2<Pillage> {
         public override string displayName => "Pillaged Gold";
 
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage | AutoUpdateEventFlags.InvalidatePickupToken)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage | AutoUpdateEventFlags_V2.InvalidatePickupToken)]
         [AutoConfig("Duration of the buff applied by Pillaged Gold.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float duration {get;private set;} = 14f;
 

@@ -7,21 +7,21 @@ using TILER2;
 using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
-    public class TeleSight : Item<TeleSight> {
+    public class TeleSight : Item_V2<TeleSight> {
         public override string displayName => "Telescopic Sight";
 		public override ItemTier itemTier => ItemTier.Tier3;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
         public override bool itemAIB {get; protected set;} = true;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("Base percent chance of triggering Telescopic Sight on hit. Affected by proc coefficient.",AutoConfigFlags.None,0f,100f)]
         public float procChance {get;private set;} = 1f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("Added to ProcChance per extra stack of Telescopic Sight.",AutoConfigFlags.None,0f,100f)]
         public float stackChance {get;private set;} = 0.5f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("Maximum allowed ProcChance for Telescopic Sight.",AutoConfigFlags.None,0f,100f)]
         public float capChance {get;private set;} = 3f;
 

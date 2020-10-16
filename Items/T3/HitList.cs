@@ -9,20 +9,20 @@ using System.Collections.Generic;
 using static TILER2.StatHooks;
 
 namespace ThinkInvisible.ClassicItems {
-    public class HitList : Item<HitList> {
+    public class HitList : Item_V2<HitList> {
         public override string displayName => "The Hit List";
 		public override ItemTier itemTier => ItemTier.Tier3;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("Time per batch of marked enemies.",AutoConfigFlags.None,0f,float.MaxValue)]
         public float cooldown {get;private set;} = 10f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage | AutoUpdateEventFlags.InvalidateStats)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage | AutoUpdateEventFlags_V2.InvalidateStats)]
         [AutoConfig("Additive bonus to base damage per marked enemy killed.",AutoConfigFlags.PreventNetMismatch,0f,float.MaxValue)]
         public float procDamage {get;private set;} = 0.5f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage | AutoUpdateEventFlags.InvalidateStats)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage | AutoUpdateEventFlags_V2.InvalidateStats)]
         [AutoConfig("Maximum damage bonus from The Hit List.",AutoConfigFlags.PreventNetMismatch,0f,float.MaxValue)]
         public float maxDamage {get;private set;} = 20f;
 

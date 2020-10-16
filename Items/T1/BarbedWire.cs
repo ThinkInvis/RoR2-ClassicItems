@@ -9,24 +9,24 @@ using static TILER2.MiscUtil;
 using System.Collections.Generic;
 
 namespace ThinkInvisible.ClassicItems {
-    public class BarbedWire : Item<BarbedWire> {
+    public class BarbedWire : Item_V2<BarbedWire> {
 		public override string displayName => "Barbed Wire";
 		public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
 
-		[AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+		[AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
 		[AutoConfig("AoE radius for the first stack of Barbed Wire.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float baseRadius {get; private set;} = 5f;
 
-		[AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+		[AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
 		[AutoConfig("AoE radius to add per additional stack of Barbed Wire.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float stackRadius {get; private set;} = 1f;
 
-		[AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+		[AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
 		[AutoConfig("AoE damage/sec (as fraction of owner base damage) for the first stack of Barbed Wire.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float baseDmg {get; private set;} = 0.5f;
 
-		[AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+		[AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
 		[AutoConfig("AoE damage/sec (as fraction of owner base damage) per additional stack of Barbed Wire.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float stackDmg {get; private set;} = 0.15f;
 
@@ -99,7 +99,7 @@ namespace ThinkInvisible.ClassicItems {
 			ConfigEntryChanged -= Evt_ConfigEntryChanged;
 		}
 
-		private void Evt_ConfigEntryChanged(object sender, AutoUpdateEventArgs args) {
+		private void Evt_ConfigEntryChanged(object sender, AutoUpdateEventArgs_V2 args) {
 			AliveList().ForEach(cm => {
 				if(cm.hasBody) UpdateBarbedWard(cm.GetBody());
 			});

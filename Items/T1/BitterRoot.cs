@@ -6,16 +6,16 @@ using static TILER2.MiscUtil;
 using static TILER2.StatHooks;
 
 namespace ThinkInvisible.ClassicItems {
-    public class BitterRoot : Item<BitterRoot> {
+    public class BitterRoot : Item_V2<BitterRoot> {
         public override string displayName => "Bitter Root";
 		public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Healing});
 
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage | AutoUpdateEventFlags.InvalidateStats)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage | AutoUpdateEventFlags_V2.InvalidateStats)]
         [AutoConfig("Linearly-stacking multiplier for health gained from Bitter Root.", AutoConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float healthMult {get; private set;} = 0.08f;
 
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage | AutoUpdateEventFlags.InvalidateStats)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage | AutoUpdateEventFlags_V2.InvalidateStats)]
         [AutoConfig("Cap for health multiplier gained from Bitter Root.", AutoConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float healthCap {get; private set;} = 3f;
 

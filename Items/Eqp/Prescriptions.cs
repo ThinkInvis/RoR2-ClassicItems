@@ -5,18 +5,18 @@ using static TILER2.MiscUtil;
 using static TILER2.StatHooks;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Prescriptions : Equipment<Prescriptions> {
+    public class Prescriptions : Equipment_V2<Prescriptions> {
         public override string displayName => "Prescriptions";
 
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("Duration of the buff applied by Prescriptions.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float duration {get;private set;} = 11f;
 
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage | AutoUpdateEventFlags.InvalidateStats)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage | AutoUpdateEventFlags_V2.InvalidateStats)]
         [AutoConfig("Attack speed added while Prescriptions is active.", AutoConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float aSpdBoost {get;private set;} = 0.4f;
 
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage | AutoUpdateEventFlags.InvalidateStats)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage | AutoUpdateEventFlags_V2.InvalidateStats)]
         [AutoConfig("Base damage added while Prescriptions is active.", AutoConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float dmgBoost {get;private set;} = 10f;
 

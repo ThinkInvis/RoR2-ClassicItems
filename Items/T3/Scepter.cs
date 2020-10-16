@@ -22,7 +22,7 @@ namespace ThinkInvisible.ClassicItems {
         public abstract int targetVariantIndex {get;}
     }
 
-    public class Scepter : Item<Scepter> {
+    public class Scepter : Item_V2<Scepter> {
         public override string displayName => "Ancient Scepter";
 		public override ItemTier itemTier => ItemTier.Tier3;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Any});

@@ -5,12 +5,12 @@ using TILER2;
 using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
-    public class BoxingGloves : Item<BoxingGloves> {
+    public class BoxingGloves : Item_V2<BoxingGloves> {
         public override string displayName => "Boxing Gloves";
 		public override ItemTier itemTier => ItemTier.Tier2;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("Percent chance for Boxing Gloves to proc; stacks multiplicatively.", AutoConfigFlags.None, 0f, 100f)]
         public float procChance {get;private set;} = 6f;
         

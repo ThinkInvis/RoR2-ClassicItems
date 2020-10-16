@@ -5,10 +5,10 @@ using static TILER2.MiscUtil;
 
 
 namespace ThinkInvisible.ClassicItems {
-    public class SkeletonKey : Equipment<SkeletonKey> {
+    public class SkeletonKey : Equipment_V2<SkeletonKey> {
         public override string displayName => "Skeleton Key";
 
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("Radius around the user to search for chests to open when using Skeleton Key.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float radius {get;private set;} = 50f;
 
