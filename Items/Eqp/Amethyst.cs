@@ -14,8 +14,6 @@ namespace ThinkInvisible.ClassicItems {
         protected override string NewLangDesc(string langid = null) => "Immediately <style=cIsUtility>restores 1 charge each</style> to <style=cIsUtility>all</style> of your <style=cIsUtility>skills</style>.";
         protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
-        public Amethyst() { }
-
         protected override bool OnEquipUseInner(EquipmentSlot slot) {
             var sloc = slot.characterBody?.skillLocator;
             if(!sloc) return false;

@@ -11,12 +11,12 @@ namespace ThinkInvisible.ClassicItems {
 		public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Healing});
 
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken | AutoUpdateEventFlags.InvalidatePickupToken | AutoUpdateEventFlags.InvalidateStats)]
-        [AutoItemConfig("Linearly-stacking multiplier for health gained from Bitter Root.", AutoItemConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage | AutoUpdateEventFlags.InvalidateStats)]
+        [AutoConfig("Linearly-stacking multiplier for health gained from Bitter Root.", AutoConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float healthMult {get; private set;} = 0.08f;
 
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken | AutoUpdateEventFlags.InvalidateStats)]
-        [AutoItemConfig("Cap for health multiplier gained from Bitter Root.", AutoItemConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage | AutoUpdateEventFlags.InvalidateStats)]
+        [AutoConfig("Cap for health multiplier gained from Bitter Root.", AutoConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float healthCap {get; private set;} = 3f;
 
         protected override string NewLangName(string langid = null) => displayName;        
@@ -29,22 +29,25 @@ namespace ThinkInvisible.ClassicItems {
         }
         protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
-        public BitterRoot() {
-            onBehav += () => {
-			    if(Compat_ItemStats.enabled) {
-				    Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
-					    ((count,inv,master)=>{
-                            return Math.Min(count*healthMult,healthCap);
-					    },
-					    (value,inv,master)=>{return $"Bonus Health: {Pct(value)}";}));
-			    }
-            };
+        public override void SetupBehavior() {
+            base.SetupBehavior();
+
+            if(Compat_ItemStats.enabled) {
+                Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+                    ((count, inv, master) => {
+                        return Math.Min(count * healthMult, healthCap);
+                    },
+                    (value, inv, master) => { return $"Bonus Health: {Pct(value)}"; }
+                ));
+            }
         }
 
-        protected override void LoadBehavior() {
+        public override void Install() {
+            base.Install();
             GetStatCoefficients += Evt_TILER2GetStatCoefficients;
         }
-        protected override void UnloadBehavior() {
+        public override void Uninstall() {
+            base.Uninstall();
             GetStatCoefficients -= Evt_TILER2GetStatCoefficients;
         }
 

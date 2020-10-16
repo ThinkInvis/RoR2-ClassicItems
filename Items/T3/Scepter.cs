@@ -34,35 +34,25 @@ namespace ThinkInvisible.ClassicItems {
             + $" <style=cStack>{(rerollExtras ? "Extra/unusable" : "Unusable (but NOT extra)")} pickups will reroll into other red items.</style>";
         protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
         
-        [AutoItemConfig("If true, TR12-C Gauss Compact will recharge faster to match the additional stock.")]
+        [AutoConfig("If true, TR12-C Gauss Compact will recharge faster to match the additional stock.")]
         public bool engiTurretAdjustCooldown {get; private set;} = false;
 
-        [AutoItemConfig("If true, TR58-C Carbonizer Mini will recharge faster to match the additional stock.")]
+        [AutoConfig("If true, TR58-C Carbonizer Mini will recharge faster to match the additional stock.")]
         public bool engiWalkerAdjustCooldown {get; private set;} = false;
         
-        [AutoItemConfig("If true, any stacks picked up past the first will reroll to other red items. If false, this behavior will only be used for characters which cannot benefit from the item at all.")]
+        [AutoConfig("If true, any stacks picked up past the first will reroll to other red items. If false, this behavior will only be used for characters which cannot benefit from the item at all.")]
         public bool rerollExtras {get; private set;} = true;
         
-        [AutoItemConfig("If true, Dragon's Breath will use significantly lighter particle effects and no dynamic lighting.", AutoItemConfigFlags.DeferForever)]
+        [AutoConfig("If true, Dragon's Breath will use significantly lighter particle effects and no dynamic lighting.", AutoConfigFlags.DeferForever)]
         public bool artiFlamePerformanceMode {get; private set;} = false;
         
         //TODO: test w/ stage changes
         public enum StridesInteractionMode {
             StridesTakesPrecedence, ScepterTakesPrecedence, ScepterRerolls
         }
-        [AutoItemConfig("Changes what happens when a character whose Utility skill is affected by Ancient Scepter has both Ancient Scepter and Strides of Heresy at the same time.",
-            AutoItemConfigFlags.DeferUntilNextStage | AutoItemConfigFlags.PreventNetMismatch)]
+        [AutoConfig("Changes what happens when a character whose Utility skill is affected by Ancient Scepter has both Ancient Scepter and Strides of Heresy at the same time.",
+            AutoConfigFlags.DeferUntilNextStage | AutoConfigFlags.PreventNetMismatch)]
         public StridesInteractionMode stridesInteractionMode {get; private set;} = StridesInteractionMode.ScepterRerolls;
-
-        public void PatchLang() {
-            foreach(var skill in skills) {
-                if(skill.oldDescToken == null) {
-                    ClassicItemsPlugin._logger.LogError(skill.GetType().Name + " oldDescToken is null!");
-                    continue;
-                }
-                LanguageAPI.Add(skill.newDescToken, Language.GetString(skill.oldDescToken) + skill.overrideStr, Language.currentLanguageName);
-            }
-        }
 
         internal List<ScepterSkill> skills = new List<ScepterSkill>();
 
@@ -83,12 +73,16 @@ namespace ThinkInvisible.ClassicItems {
             skills.Add(new MercEvisProjectile2());
             skills.Add(new ToolbotDash2());
             skills.Add(new TreebotFlower2_2());
+        }
+
+        public override void SetupConfig() {
+            base.SetupConfig();
 
             ConfigEntryChanged += (sender, args) => {
                 switch(args.target.boundProperty.Name) {
                     case nameof(engiTurretAdjustCooldown):
                         var engiSkill = skills.First(x => x is EngiTurret2);
-                        engiSkill.myDef.baseRechargeInterval = EngiTurret2.oldDef.baseRechargeInterval * (((bool)args.newValue) ? 2f/3f : 1f);
+                        engiSkill.myDef.baseRechargeInterval = EngiTurret2.oldDef.baseRechargeInterval * (((bool)args.newValue) ? 2f / 3f : 1f);
                         GlobalUpdateSkillDef(engiSkill.myDef);
                         break;
                     case nameof(engiWalkerAdjustCooldown):
@@ -100,20 +94,25 @@ namespace ThinkInvisible.ClassicItems {
                         break;
                 }
             };
-
-            onAttrib += (tokenIdent, namePrefix) => {
-                foreach(var skill in skills) {
-                    skill.SetupAttributes();
-                    RegisterScepterSkill(skill.myDef, skill.targetBody, skill.targetSlot, skill.targetVariantIndex);
-                }
-            };
-
-            onBehav += () => {
-                FakeInventory.blacklist.Add(regIndex);
-            };
         }
 
-        protected override void LoadBehavior() {
+        public override void SetupAttributes() {
+            base.SetupAttributes();
+
+            foreach(var skill in skills) {
+                skill.SetupAttributes();
+                RegisterScepterSkill(skill.myDef, skill.targetBody, skill.targetSlot, skill.targetVariantIndex);
+            }
+        }
+
+        public override void SetupBehavior() {
+            base.SetupBehavior();
+
+            FakeInventory.blacklist.Add(regIndex);
+        }
+
+        public override void Install() {
+            base.Install();
             On.RoR2.CharacterBody.OnInventoryChanged += On_CBOnInventoryChanged;
             On.RoR2.CharacterMaster.GetDeployableSameSlotLimit += On_CMGetDeployableSameSlotLimit;
             On.RoR2.GenericSkill.SetSkillOverride += On_GSSetSkillOverride;
@@ -129,7 +128,8 @@ namespace ThinkInvisible.ClassicItems {
             }
         }
 
-        protected override void UnloadBehavior() {
+        public override void Uninstall() {
+            base.Uninstall();
             On.RoR2.CharacterBody.OnInventoryChanged -= On_CBOnInventoryChanged;
             On.RoR2.CharacterMaster.GetDeployableSameSlotLimit -= On_CMGetDeployableSameSlotLimit;
             On.RoR2.GenericSkill.SetSkillOverride -= On_GSSetSkillOverride;
@@ -144,7 +144,18 @@ namespace ThinkInvisible.ClassicItems {
                 skill.UnloadBehavior();
             }
         }
-        
+
+        public override void InstallLanguage() {
+            base.InstallLanguage();
+            foreach(var skill in skills) {
+                if(skill.oldDescToken == null) {
+                    ClassicItemsPlugin._logger.LogError(skill.GetType().Name + " oldDescToken is null!");
+                    continue;
+                }
+                languageOverlays.Add(LanguageAPI.AddOverlay(skill.newDescToken, Language.GetString(skill.oldDescToken) + skill.overrideStr, Language.currentLanguageName));
+            }
+        }
+
         bool handlingOverride = false;
         private void On_GSSetSkillOverride(On.RoR2.GenericSkill.orig_SetSkillOverride orig, GenericSkill self, object source, SkillDef skillDef, GenericSkill.SkillOverridePriority priority) {
             if(stridesInteractionMode != StridesInteractionMode.ScepterTakesPrecedence

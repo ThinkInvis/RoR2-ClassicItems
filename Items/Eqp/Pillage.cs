@@ -8,8 +8,8 @@ namespace ThinkInvisible.ClassicItems {
     public class Pillage : Equipment<Pillage> {
         public override string displayName => "Pillaged Gold";
 
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken | AutoUpdateEventFlags.InvalidatePickupToken)]
-        [AutoItemConfig("Duration of the buff applied by Pillaged Gold.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage | AutoUpdateEventFlags.InvalidatePickupToken)]
+        [AutoConfig("Duration of the buff applied by Pillaged Gold.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float duration {get;private set;} = 14f;
 
         public BuffIndex pillageBuff {get;private set;}
@@ -31,12 +31,13 @@ namespace ThinkInvisible.ClassicItems {
             };
         }
 
-        protected override void LoadBehavior() {
+        public override void Install() {
             On.RoR2.GlobalEventManager.OnHitEnemy += On_GEMOnHitEnemy;
             //ConfigEntryChanged += Evt_ConfigEntryChanged;
         }
 
-        protected override void UnloadBehavior() {
+        public override void Uninstall() {
+            base.Uninstall();
             On.RoR2.GlobalEventManager.OnHitEnemy -= On_GEMOnHitEnemy;
             //ConfigEntryChanged -= Evt_ConfigEntryChanged;
         }

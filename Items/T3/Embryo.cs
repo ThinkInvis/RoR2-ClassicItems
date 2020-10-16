@@ -14,8 +14,7 @@ using static TILER2.MiscUtil;
 namespace ThinkInvisible.ClassicItems {
     public static class EmbryoExtensions {
         public static bool CheckEmbryoProc(this Equipment eqp, CharacterBody body) {
-            bool isIntEnab;
-            bool isIntExist = Embryo.instance.subEnableInternalGet.TryGetValue(eqp, out isIntEnab);
+            bool isIntExist = Embryo.instance.subEnableInternalGet.TryGetValue(eqp, out bool isIntEnab);
             bool isExtEnab = Embryo.instance.subEnableExt.Contains(eqp.regIndex);
             return Embryo.instance.enabled && ((isIntExist && isIntEnab) || isExtEnab) && Util.CheckRoll(Embryo.instance.GetCount(body)*Embryo.instance.procChance, body.master);
         }
@@ -25,20 +24,20 @@ namespace ThinkInvisible.ClassicItems {
 		public override ItemTier itemTier => ItemTier.Tier3;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.EquipmentRelated});
 
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Percent chance of triggering an equipment twice. Stacks additively.", AutoItemConfigFlags.None, 0f, 100f)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("Percent chance of triggering an equipment twice. Stacks additively.", AutoConfigFlags.None, 0f, 100f)]
         public float procChance {get;private set;} = 30f;
 
-        [AutoItemConfig("SubEnable<AIC.DictKey>", "If false, Beating Embryo will not affect <AIC.DictKey>.", AutoItemConfigFlags.BindDict | AutoItemConfigFlags.PreventNetMismatch)]
+        [AutoConfig("SubEnable<AIC.DictKey>", "If false, Beating Embryo will not affect <AIC.DictKey>.", AutoConfigFlags.BindDict | AutoConfigFlags.PreventNetMismatch)]
         private Dictionary<EquipmentIndex,bool> subEnable {get;} = new Dictionary<EquipmentIndex, bool>();
         public ReadOnlyDictionary<EquipmentIndex,bool> subEnableGet {get;private set;}
 
-        [AutoItemConfig("SubEnable<AIC.DictKeyProp." + nameof(Equipment.itemCodeName) + ">","If false, Beating Embryo will not affect <AIC.DictKeyProp." + nameof(Equipment.displayName) + "> (added by ClassicItems).", AutoItemConfigFlags.BindDict | AutoItemConfigFlags.PreventNetMismatch)]
+        [AutoConfig("SubEnable<AIC.DictKeyProp." + nameof(Equipment.name) + ">","If false, Beating Embryo will not affect <AIC.DictKeyProp." + nameof(Equipment.displayName) + "> (added by ClassicItems).", AutoConfigFlags.BindDict | AutoConfigFlags.PreventNetMismatch)]
         private Dictionary<Equipment,bool> subEnableInternal {get;} = new Dictionary<Equipment, bool>();
         public ReadOnlyDictionary<Equipment,bool> subEnableInternalGet {get;private set;}
 
-        [AutoItemConfig("If false, Beating Embryo will not affect equipment added by other mods. If true, these items will be triggered twice when Beating Embryo procs, which may not work with some items.",
-            AutoItemConfigFlags.PreventNetMismatch)]
+        [AutoConfig("If false, Beating Embryo will not affect equipment added by other mods. If true, these items will be triggered twice when Beating Embryo procs, which may not work with some items.",
+            AutoConfigFlags.PreventNetMismatch)]
         public bool subEnableModded {get;private set;} = false;
 
         internal readonly HashSet<EquipmentIndex> subEnableExt = new HashSet<EquipmentIndex>();
@@ -77,48 +76,53 @@ namespace ThinkInvisible.ClassicItems {
             EquipmentIndex.BurnNearby, EquipmentIndex.CrippleWard, EquipmentIndex.LunarPotion, EquipmentIndex.SoulCorruptor, EquipmentIndex.Tonic
         });
 
-        public Embryo() {
-            preConfig += (cfl) => {
-                foreach(ItemBoilerplate bpl in ClassicItemsPlugin.masterItemList) {
-                    if(!(bpl is Equipment)) continue;
-                    Equipment eqp = (Equipment)bpl;
-                    subEnableInternal.Add(eqp, !eqp.eqpIsLunar);
-                }
-                foreach(EquipmentIndex e in Enum.GetValues(typeof(EquipmentIndex))) {
-                    if(!handledEqps.Contains(e)) continue;
-                    subEnable.Add(e, !dftDisableEqps.Contains(e));
-                }
+        public override void SetupConfig() {
+            foreach(ItemBoilerplate bpl in ClassicItemsPlugin.masterItemList) {
+                if(!(bpl is Equipment)) continue;
+                Equipment eqp = (Equipment)bpl;
+                subEnableInternal.Add(eqp, !eqp.isLunar);
+            }
+            foreach(EquipmentIndex e in Enum.GetValues(typeof(EquipmentIndex))) {
+                if(!handledEqps.Contains(e)) continue;
+                subEnable.Add(e, !dftDisableEqps.Contains(e));
+            }
 
-                subEnableGet = new ReadOnlyDictionary<EquipmentIndex,bool>(subEnable);
-                subEnableInternalGet = new ReadOnlyDictionary<Equipment,bool>(subEnableInternal);
-            };
+            subEnableGet = new ReadOnlyDictionary<EquipmentIndex, bool>(subEnable);
+            subEnableInternalGet = new ReadOnlyDictionary<Equipment, bool>(subEnableInternal);
 
-            onAttrib += (tokenIdent, namePrefix) => {
-                boostedScannerPrefab = Resources.Load<GameObject>("Prefabs/NetworkedObjects/ChestScanner").InstantiateClone("boostedScannerPrefab");
-                boostedScannerPrefab.GetComponent<ChestRevealer>().revealDuration *= 2f;
+            base.SetupConfig();
+        }
 
-                boostedGatewayPrefab = Resources.Load<GameObject>("Prefabs/NetworkedObjects/Zipline").InstantiateClone("boostedGatewayPrefab");
-                var ziplineCtrl = boostedGatewayPrefab.GetComponent<ZiplineController>();
-                ziplineCtrl.ziplineVehiclePrefab = ziplineCtrl.ziplineVehiclePrefab.InstantiateClone("boostedGatewayVehiclePrefab");
-                var zvh = ziplineCtrl.ziplineVehiclePrefab.GetComponent<ZiplineVehicle>();
-                zvh.maxSpeed *= 2f;
-                zvh.acceleration *= 2f;
+        public override void SetupAttributes() {
+            base.SetupAttributes();
 
-                var eCptPrefab2 = new GameObject("embryoCptPrefabPrefab");
-                eCptPrefab2.AddComponent<NetworkIdentity>();
-                eCptPrefab2.AddComponent<EmbryoComponent>();
-                eCptPrefab2.AddComponent<NetworkedBodyAttachment>().forceHostAuthority = true;
-                embryoCptPrefab = eCptPrefab2.InstantiateClone("embryoCptPrefab");
-                GameObject.Destroy(eCptPrefab2);
-            };
+            boostedScannerPrefab = Resources.Load<GameObject>("Prefabs/NetworkedObjects/ChestScanner").InstantiateClone("boostedScannerPrefab");
+            boostedScannerPrefab.GetComponent<ChestRevealer>().revealDuration *= 2f;
 
-            onBehav += () => {
-			    if(Compat_ItemStats.enabled) {
-				    Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
-					    ((count,inv,master)=>{return procChance*count;},
-					    (value,inv,master)=>{return $"Proc Chance: {Pct(value, 1, 1)}";}));
-			    }
-            };
+            boostedGatewayPrefab = Resources.Load<GameObject>("Prefabs/NetworkedObjects/Zipline").InstantiateClone("boostedGatewayPrefab");
+            var ziplineCtrl = boostedGatewayPrefab.GetComponent<ZiplineController>();
+            ziplineCtrl.ziplineVehiclePrefab = ziplineCtrl.ziplineVehiclePrefab.InstantiateClone("boostedGatewayVehiclePrefab");
+            var zvh = ziplineCtrl.ziplineVehiclePrefab.GetComponent<ZiplineVehicle>();
+            zvh.maxSpeed *= 2f;
+            zvh.acceleration *= 2f;
+
+            var eCptPrefab2 = new GameObject("embryoCptPrefabPrefab");
+            eCptPrefab2.AddComponent<NetworkIdentity>();
+            eCptPrefab2.AddComponent<EmbryoComponent>();
+            eCptPrefab2.AddComponent<NetworkedBodyAttachment>().forceHostAuthority = true;
+            embryoCptPrefab = eCptPrefab2.InstantiateClone("embryoCptPrefab");
+            GameObject.Destroy(eCptPrefab2);
+        }
+
+        public override void SetupBehavior() {
+            base.SetupBehavior();
+
+            if(Compat_ItemStats.enabled) {
+                Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+                    ((count, inv, master) => { return procChance * count; },
+                    (value, inv, master) => { return $"Proc Chance: {Pct(value, 1, 1)}"; }
+                ));
+            }
         }
 
         protected override string NewLangName(string langid = null) => displayName;        
@@ -132,7 +136,8 @@ namespace ThinkInvisible.ClassicItems {
         private GameObject boostedGatewayPrefab;
         private GameObject boostedScannerPrefab;
 
-        protected override void LoadBehavior() {
+        public override void Install() {
+            base.Install();
             On.RoR2.CharacterBody.OnInventoryChanged += On_CBOnInventoryChanged;
             On.RoR2.EquipmentSlot.PerformEquipmentAction += On_ESPerformEquipmentAction;
 
@@ -172,7 +177,8 @@ namespace ThinkInvisible.ClassicItems {
         }
 
 
-        protected override void UnloadBehavior() {
+        public override void Uninstall() {
+            base.Uninstall();
             On.RoR2.CharacterBody.OnInventoryChanged -= On_CBOnInventoryChanged;
             On.RoR2.EquipmentSlot.PerformEquipmentAction -= On_ESPerformEquipmentAction;
             IL.RoR2.EquipmentSlot.PerformEquipmentAction -= IL_ESPerformEquipmentAction;

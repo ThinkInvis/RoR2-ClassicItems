@@ -11,12 +11,12 @@ namespace ThinkInvisible.ClassicItems {
 		public override ItemTier itemTier => ItemTier.Tier2;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Multiplier for gravity reduction (0.0 = no effect, 1.0 = full anti-grav).", AutoItemConfigFlags.PreventNetMismatch, 0f, 0.999f)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("Multiplier for gravity reduction (0.0 = no effect, 1.0 = full anti-grav).", AutoConfigFlags.PreventNetMismatch, 0f, 0.999f)]
         public float gravMod {get;private set;} = 0.5f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken | AutoUpdateEventFlags.InvalidateStats)]
-        [AutoItemConfig("Amount added to jump power per stack.", AutoItemConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage | AutoUpdateEventFlags.InvalidateStats)]
+        [AutoConfig("Amount added to jump power per stack.", AutoConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float jumpMult {get;private set;} = 0.1f;
 
         protected override string NewLangName(string langid = null) => displayName;        
@@ -24,22 +24,24 @@ namespace ThinkInvisible.ClassicItems {
         protected override string NewLangDesc(string langid = null) => "<style=cIsUtility>Reduces gravity</style> by <style=cIsUtility>" + Pct(gravMod) + "</style> while <style=cIsUtility>holding jump</style>. Increases <style=cIsUtility>jump power</style> by <style=cIsUtility>" + Pct(jumpMult) + "</style> <style=cStack>(+" + Pct(jumpMult)  + " per stack, linear)</style>.";        
         protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
-        public RustyJetpack() {
-            onBehav += () => {
-			    if(Compat_ItemStats.enabled) {
-				    Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
-					    ((count,inv,master)=>{return jumpMult*count;},
-					    (value,inv,master)=>{return $"Jump Power: +{value.ToString("N1")}";}));
-			    }
-            };
+        public override void SetupBehavior() {
+            base.SetupBehavior();
+
+			if(Compat_ItemStats.enabled) {
+				Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+					((count,inv,master)=>{return jumpMult*count;},
+					(value,inv,master)=>{return $"Jump Power: +{value.ToString("N1")}";}));
+			}
         }
         
-        protected override void LoadBehavior() {
+        public override void Install() {
+            base.Install();
             GetStatCoefficients += Evt_TILER2GetStatCoefficients;
             On.RoR2.CharacterBody.FixedUpdate += On_CBFixedUpdate;
         }
 
-        protected override void UnloadBehavior() {
+        public override void Uninstall() {
+            base.Uninstall();
             GetStatCoefficients -= Evt_TILER2GetStatCoefficients;
             On.RoR2.CharacterBody.FixedUpdate -= On_CBFixedUpdate;
         }

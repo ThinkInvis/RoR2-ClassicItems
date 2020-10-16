@@ -13,28 +13,28 @@ namespace ThinkInvisible.ClassicItems {
 
         public BuffIndex photonFuelBuff {get;private set;}
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Time in seconds that jump must be released before Photon Jetpack fuel begins recharging.",AutoItemConfigFlags.PreventNetMismatch,0f,float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("Time in seconds that jump must be released before Photon Jetpack fuel begins recharging.",AutoConfigFlags.PreventNetMismatch,0f,float.MaxValue)]
         public float rchDelay {get;private set;} = 1.0f;
 
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Seconds of Photon Jetpack fuel recharged per second realtime.",AutoItemConfigFlags.PreventNetMismatch,0f,float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("Seconds of Photon Jetpack fuel recharged per second realtime.",AutoConfigFlags.PreventNetMismatch,0f,float.MaxValue)]
         public float rchRate {get;private set;} = 1.0f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Seconds of Photon Jetpack fuel capacity at first stack.",AutoItemConfigFlags.PreventNetMismatch,0f,float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("Seconds of Photon Jetpack fuel capacity at first stack.",AutoConfigFlags.PreventNetMismatch,0f,float.MaxValue)]
         public float baseFuel {get;private set;} = 1.6f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Seconds of Photon Jetpack fuel capacity per additional stack.",AutoItemConfigFlags.PreventNetMismatch,0f,float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("Seconds of Photon Jetpack fuel capacity per additional stack.",AutoConfigFlags.PreventNetMismatch,0f,float.MaxValue)]
         public float stackFuel {get;private set;} = 1.6f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Multiplier for gravity reduction while Photon Jetpack is active. Effectively the thrust provided by the jetpack -- 0 = no effect, 1 = anti-grav, 2 = negative gravity, etc.",AutoItemConfigFlags.PreventNetMismatch,0f,float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("Multiplier for gravity reduction while Photon Jetpack is active. Effectively the thrust provided by the jetpack -- 0 = no effect, 1 = anti-grav, 2 = negative gravity, etc.",AutoConfigFlags.PreventNetMismatch,0f,float.MaxValue)]
         public float gravMod {get;private set;} = 1.2f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Added to Photon Jetpack's GravMod while the character is falling (negative vertical velocity) to assist in stopping falls.",AutoItemConfigFlags.PreventNetMismatch,0f,float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("Added to Photon Jetpack's GravMod while the character is falling (negative vertical velocity) to assist in stopping falls.",AutoConfigFlags.PreventNetMismatch,0f,float.MaxValue)]
         public float fallBoost {get;private set;} = 2.0f;
 
         protected override string NewLangName(string langid = null) => displayName;
@@ -47,34 +47,39 @@ namespace ThinkInvisible.ClassicItems {
         }
         protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
-        public PhotonJetpack() {
-            onAttrib += (tokenIdent, namePrefix) => {
-                var PhotonJetpackBuff = new R2API.CustomBuff(new BuffDef {
-                    buffColor = Color.cyan,
-                    canStack = true,
-                    isDebuff = false,
-                    name = namePrefix + "PhotonFuel",
-                    iconPath = "@ClassicItems:Assets/ClassicItems/icons/PhotonJetpack_icon.png"
-                });
-                photonFuelBuff = R2API.BuffAPI.Add(PhotonJetpackBuff);
-            };
+        public override void SetupAttributes() {
+            base.SetupAttributes();
 
-            onBehav += () => {
-			    if(Compat_ItemStats.enabled) {
-				    Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
-					    ((count,inv,master)=>{return baseFuel+(count-1)*stackFuel;},
-					    (value,inv,master)=>{return $"Fuel: {value.ToString("N1")} s";}));
-			    }
-            };
+            var PhotonJetpackBuff = new R2API.CustomBuff(new BuffDef {
+                buffColor = Color.cyan,
+                canStack = true,
+                isDebuff = false,
+                name = modInfo.shortIdentifier + "PhotonFuel",
+                iconPath = "@ClassicItems:Assets/ClassicItems/icons/PhotonJetpack_icon.png"
+            });
+            photonFuelBuff = R2API.BuffAPI.Add(PhotonJetpackBuff);
         }
 
-        protected override void LoadBehavior() {
+        public override void SetupBehavior() {
+            base.SetupBehavior();
+
+            if(Compat_ItemStats.enabled) {
+                Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+                    ((count, inv, master) => { return baseFuel + (count - 1) * stackFuel; },
+                    (value, inv, master) => { return $"Fuel: {value.ToString("N1")} s"; }
+                ));
+            }
+        }
+
+        public override void Install() {
+            base.Install();
             On.RoR2.CharacterBody.OnInventoryChanged += On_CBInventoryChanged;
             On.RoR2.CharacterBody.FixedUpdate += On_CBFixedUpdate;
             ConfigEntryChanged += Evt_ConfigEntryChanged;
         }
 
-        protected override void UnloadBehavior() {
+        public override void Uninstall() {
+            base.Uninstall();
             On.RoR2.CharacterBody.OnInventoryChanged -= On_CBInventoryChanged;
             On.RoR2.CharacterBody.FixedUpdate -= On_CBFixedUpdate;
             ConfigEntryChanged -= Evt_ConfigEntryChanged;

@@ -10,30 +10,30 @@ using System.Collections.Generic;
 
 namespace ThinkInvisible.ClassicItems {
     public class BarbedWire : Item<BarbedWire> {
-        public override string displayName => "Barbed Wire";
+		public override string displayName => "Barbed Wire";
 		public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
 
-		[AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-		[AutoItemConfig("AoE radius for the first stack of Barbed Wire.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
+		[AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+		[AutoConfig("AoE radius for the first stack of Barbed Wire.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float baseRadius {get; private set;} = 5f;
 
-		[AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-		[AutoItemConfig("AoE radius to add per additional stack of Barbed Wire.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
+		[AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+		[AutoConfig("AoE radius to add per additional stack of Barbed Wire.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float stackRadius {get; private set;} = 1f;
 
-		[AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-		[AutoItemConfig("AoE damage/sec (as fraction of owner base damage) for the first stack of Barbed Wire.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
+		[AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+		[AutoConfig("AoE damage/sec (as fraction of owner base damage) for the first stack of Barbed Wire.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float baseDmg {get; private set;} = 0.5f;
 
-		[AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-		[AutoItemConfig("AoE damage/sec (as fraction of owner base damage) per additional stack of Barbed Wire.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
+		[AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+		[AutoConfig("AoE damage/sec (as fraction of owner base damage) per additional stack of Barbed Wire.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float stackDmg {get; private set;} = 0.15f;
 
-		[AutoItemConfig("If true, Barbed Wire only affects one target at most. If false, Barbed Wire affects every target in range.")]
+		[AutoConfig("If true, Barbed Wire only affects one target at most. If false, Barbed Wire affects every target in range.")]
 		public bool oneOnly {get; private set;} = true;
 
-		[AutoItemConfig("If true, deployables (e.g. Engineer turrets) with Barbed Wire will benefit from their master's damage. Deployables usually have 0 damage stat by default, and will not otherwise be able to use Barbed Wire.")]
+		[AutoConfig("If true, deployables (e.g. Engineer turrets) with Barbed Wire will benefit from their master's damage. Deployables usually have 0 damage stat by default, and will not otherwise be able to use Barbed Wire.")]
         public bool inclDeploys {get;private set;} = true;
 
 		internal static GameObject barbedWardPrefab;        
@@ -49,45 +49,51 @@ namespace ThinkInvisible.ClassicItems {
 		}
         protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
-		public BarbedWire() {
-			onAttrib += (tokenIdent, namePrefix) => {
-				var mshPrefab = Resources.Load<GameObject>("Prefabs/NetworkedObjects/MushroomWard");
+		public override void SetupAttributes() {
+			base.SetupAttributes();
 
-				var bwPrefabPrefab = new GameObject("BarbedWardAuraPrefabPrefab");
-				bwPrefabPrefab.AddComponent<TeamFilter>();
-				bwPrefabPrefab.AddComponent<MeshFilter>().mesh = mshPrefab.GetComponentInChildren<MeshFilter>().mesh;
-				bwPrefabPrefab.AddComponent<MeshRenderer>().material = UnityEngine.Object.Instantiate(mshPrefab.GetComponentInChildren<MeshRenderer>().material);
-				bwPrefabPrefab.GetComponent<MeshRenderer>().material.SetVector("_TintColor",new Vector4(1f,0f,0f,0.5f));
-				bwPrefabPrefab.AddComponent<NetworkedBodyAttachment>().forceHostAuthority = true;
-				var bw = bwPrefabPrefab.AddComponent<BarbedWard>();
-				bw.rangeIndicator = bwPrefabPrefab.GetComponent<MeshRenderer>().transform;
-				bw.interval = 1f;
-				barbedWardPrefab = bwPrefabPrefab.InstantiateClone("BarbedWardAuraPrefab");
-				UnityEngine.Object.Destroy(bwPrefabPrefab);
-			};
+			var mshPrefab = Resources.Load<GameObject>("Prefabs/NetworkedObjects/MushroomWard");
 
-			onBehav += () => {
-				if(Compat_ItemStats.enabled) {
-					Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
-						((count,inv,master)=>{
-							return baseDmg+(count-1)*stackDmg;
-						},
-						(value,inv,master)=>{return $"AoE Damage Per Second: {Pct(value)}";}),
-						((count,inv,master)=>{
-							return baseRadius+(count-1)*stackRadius;
-						},
-						(value,inv,master)=>{return $"Radius: {value.ToString("N1")} m";}));
-				}
-			};
+			var bwPrefabPrefab = new GameObject("BarbedWardAuraPrefabPrefab");
+			bwPrefabPrefab.AddComponent<TeamFilter>();
+			bwPrefabPrefab.AddComponent<MeshFilter>().mesh = mshPrefab.GetComponentInChildren<MeshFilter>().mesh;
+			bwPrefabPrefab.AddComponent<MeshRenderer>().material = UnityEngine.Object.Instantiate(mshPrefab.GetComponentInChildren<MeshRenderer>().material);
+			bwPrefabPrefab.GetComponent<MeshRenderer>().material.SetVector("_TintColor", new Vector4(1f, 0f, 0f, 0.5f));
+			bwPrefabPrefab.AddComponent<NetworkedBodyAttachment>().forceHostAuthority = true;
+			var bw = bwPrefabPrefab.AddComponent<BarbedWard>();
+			bw.rangeIndicator = bwPrefabPrefab.GetComponent<MeshRenderer>().transform;
+			bw.interval = 1f;
+			barbedWardPrefab = bwPrefabPrefab.InstantiateClone("BarbedWardAuraPrefab");
+			UnityEngine.Object.Destroy(bwPrefabPrefab);
 		}
 
-		protected override void LoadBehavior() {
+		public override void SetupBehavior() {
+			base.SetupBehavior();
+
+			if(Compat_ItemStats.enabled) {
+				Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+					((count, inv, master) => {
+						return baseDmg + (count - 1) * stackDmg;
+					},
+					(value, inv, master) => { return $"AoE Damage Per Second: {Pct(value)}"; }
+				),
+					((count, inv, master) => {
+						return baseRadius + (count - 1) * stackRadius;
+					},
+					(value, inv, master) => { return $"Radius: {value.ToString("N1")} m"; }
+				));
+			}
+		}
+
+		public override void Install() {
+            base.Install();
             On.RoR2.CharacterBody.RecalculateStats += On_CBRecalcStats;
 			if(inclDeploys)
 				On.RoR2.CharacterMaster.AddDeployable += On_CMAddDeployable;
 			ConfigEntryChanged += Evt_ConfigEntryChanged;
         }
-		protected override void UnloadBehavior() {
+		public override void Uninstall() {
+            base.Uninstall();
             On.RoR2.CharacterBody.RecalculateStats -= On_CBRecalcStats;
 			On.RoR2.CharacterMaster.AddDeployable -= On_CMAddDeployable;
 			ConfigEntryChanged -= Evt_ConfigEntryChanged;

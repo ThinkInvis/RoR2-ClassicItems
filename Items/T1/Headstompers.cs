@@ -11,20 +11,20 @@ namespace ThinkInvisible.ClassicItems {
 		public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
 
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Multiplier for player base damage applied by explosion.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("Multiplier for player base damage applied by explosion.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float baseDamage {get;private set;} = 5f;
 
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Added to BaseDamage per extra stack.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("Added to BaseDamage per extra stack.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float stackDamage {get;private set;} = 0.5f;
 
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Minimum vertical velocity required to trigger Headstompers.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("Minimum vertical velocity required to trigger Headstompers.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float velThreshold {get;private set;} = 20f;
 
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Additional vertical velocity required for max damage (scales linearly from 0 @ VelThreshold).", AutoItemConfigFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("Additional vertical velocity required for max damage (scales linearly from 0 @ VelThreshold).", AutoConfigFlags.None, 0f, float.MaxValue)]
 
         public float velMax {get;private set;} = 40f;
         protected override string NewLangName(string langid = null) => displayName;
@@ -37,20 +37,23 @@ namespace ThinkInvisible.ClassicItems {
         }
         protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
-        public Headstompers() {
-            onBehav += () => {
-			    if(Compat_ItemStats.enabled) {
-				    Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
-					    ((count,inv,master)=>{return baseDamage + stackDamage * (count - 1);},
-					    (value,inv,master)=>{return $"Stomp Damage: {Pct(value, 1)}";}));
-			    }
-            };
+        public override void SetupBehavior() {
+            base.SetupBehavior();
+
+            if(Compat_ItemStats.enabled) {
+                Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+                    ((count, inv, master) => { return baseDamage + stackDamage * (count - 1); },
+                    (value, inv, master) => { return $"Stomp Damage: {Pct(value, 1)}"; }
+                ));
+            }
         }
 
-        protected override void LoadBehavior() {
+        public override void Install() {
+            base.Install();
             On.RoR2.CharacterMotor.OnHitGround += On_CMOnHitGround;
         }
-        protected override void UnloadBehavior() {
+        public override void Uninstall() {
+            base.Uninstall();
             On.RoR2.CharacterMotor.OnHitGround -= On_CMOnHitGround;
         }
 

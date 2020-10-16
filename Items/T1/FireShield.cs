@@ -10,23 +10,23 @@ namespace ThinkInvisible.ClassicItems {
 		public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Fraction of max health required as damage taken to trigger Fire Shield.", AutoItemConfigFlags.None, 0f, 1f)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("Fraction of max health required as damage taken to trigger Fire Shield.", AutoConfigFlags.None, 0f, 1f)]
         public float healthThreshold {get; private set;} = 0.1f;
 
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("AoE radius for Fire Shield.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("AoE radius for Fire Shield.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float baseRadius {get; private set;} = 15f;
 
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("AoE damage, based on player base damage, for the first stack of Fire Shield.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("AoE damage, based on player base damage, for the first stack of Fire Shield.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float baseDmg {get; private set;} = 2f;
 
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("AoE damage, based on player base damage, per additional stack of Fire Shield.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("AoE damage, based on player base damage, per additional stack of Fire Shield.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float stackDmg {get; private set;} = 0.5f;
 
-        [AutoItemConfig("If true, damage to shield and barrier (from e.g. Personal Shield Generator, Topaz Brooch) will not count towards triggering Fire Shield.")]
+        [AutoConfig("If true, damage to shield and barrier (from e.g. Personal Shield Generator, Topaz Brooch) will not count towards triggering Fire Shield.")]
         public bool requireHealth {get; private set;} = true;
 
         protected override string NewLangName(string langid = null) => displayName;
@@ -41,22 +41,25 @@ namespace ThinkInvisible.ClassicItems {
         }
         protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
-        public FireShield() {
-            onBehav += () => {
-			    if(Compat_ItemStats.enabled) {
-				    Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
-					    ((count,inv,master)=>{
-                            return baseDmg + (count-1) * stackDmg;
-					    },
-					    (value,inv,master)=>{return $"Fire Blast Damage: {Pct(value, 1)}";}));
-			    }
-            };
+        public override void SetupBehavior() {
+            base.SetupBehavior();
+
+            if(Compat_ItemStats.enabled) {
+                Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+                    ((count, inv, master) => {
+                        return baseDmg + (count - 1) * stackDmg;
+                    },
+                    (value, inv, master) => { return $"Fire Blast Damage: {Pct(value, 1)}"; }
+                ));
+            }
         }
 
-        protected override void LoadBehavior() {
+        public override void Install() {
+			base.Install();
 			On.RoR2.HealthComponent.TakeDamage += On_HCTakeDamage;
         }
-        protected override void UnloadBehavior() {
+        public override void Uninstall() {
+            base.Uninstall();
             On.RoR2.HealthComponent.TakeDamage -= On_HCTakeDamage;
         }
 

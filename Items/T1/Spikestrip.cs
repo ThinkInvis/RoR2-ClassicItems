@@ -12,18 +12,17 @@ namespace ThinkInvisible.ClassicItems {
 		public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("AoE radius for Spikestrip.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("AoE radius for Spikestrip.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float baseRadius {get; private set;} = 5f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("AoE duration for the first stack of Spikestrip, in seconds.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("AoE duration for the first stack of Spikestrip, in seconds.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float baseDuration {get; private set;} = 2f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("AoE duration per additional stack of Spikestrip, in seconds.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("AoE duration per additional stack of Spikestrip, in seconds.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float stackDuration {get; private set;} = 1f;
-
 
 		internal static GameObject spikeWardPrefab;
         protected override string NewLangName(string langid = null) => displayName;
@@ -36,44 +35,49 @@ namespace ThinkInvisible.ClassicItems {
         }
         protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
-        public Spikestrip() {
-            onAttrib += (tokenIdent, namePrefix) => {
-			    var mshPrefab = Resources.Load<GameObject>("Prefabs/NetworkedObjects/MushroomWard");
+        public override void SetupAttributes() {
+            base.SetupAttributes();
 
-			    var bwPrefabPrefab = new GameObject("SpikestripAuraPrefabPrefab");
-                bwPrefabPrefab.AddComponent<NetworkIdentity>();
-			    bwPrefabPrefab.AddComponent<TeamFilter>();
-                var bwPfb2ModelAdjust = new GameObject("SpikestripAuraModelAdjust");
-                bwPfb2ModelAdjust.transform.parent = bwPrefabPrefab.transform;
-			    bwPfb2ModelAdjust.AddComponent<MeshFilter>().mesh = mshPrefab.GetComponentInChildren<MeshFilter>().mesh;
-			    bwPfb2ModelAdjust.AddComponent<MeshRenderer>().material = UnityEngine.Object.Instantiate(mshPrefab.GetComponentInChildren<MeshRenderer>().material);
-			    bwPfb2ModelAdjust.GetComponent<MeshRenderer>().material.SetVector("_TintColor",new Vector4(0.6f,0.06f,0.5f,0.3f));
-                bwPrefabPrefab.transform.localScale *= 2f;
-			    var bw = bwPrefabPrefab.AddComponent<BuffWard>();
-                bw.invertTeamFilter = true;
-			    bw.rangeIndicator = bwPfb2ModelAdjust.GetComponent<MeshRenderer>().transform;
-                bw.expires = false;
-                bw.Networkradius = baseRadius;
-                bw.buffDuration = 0.5f;
-                bw.interval = 0.5f;
-                bw.buffType = BuffIndex.Slow50;
-			    spikeWardPrefab = bwPrefabPrefab.InstantiateClone("SpikestripAuraPrefab");
-			    UnityEngine.Object.Destroy(bwPrefabPrefab);
-            };
+            var mshPrefab = Resources.Load<GameObject>("Prefabs/NetworkedObjects/MushroomWard");
 
-            onBehav += () => {
-			    if(Compat_ItemStats.enabled) {
-				    Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
-					    ((count,inv,master)=>{return baseDuration + (count-1)*stackDuration;},
-					    (value,inv,master)=>{return $"Duration: {value.ToString("N1")} s";}));
-			    }
-            };
+            var bwPrefabPrefab = new GameObject("SpikestripAuraPrefabPrefab");
+            bwPrefabPrefab.AddComponent<NetworkIdentity>();
+            bwPrefabPrefab.AddComponent<TeamFilter>();
+            var bwPfb2ModelAdjust = new GameObject("SpikestripAuraModelAdjust");
+            bwPfb2ModelAdjust.transform.parent = bwPrefabPrefab.transform;
+            bwPfb2ModelAdjust.AddComponent<MeshFilter>().mesh = mshPrefab.GetComponentInChildren<MeshFilter>().mesh;
+            bwPfb2ModelAdjust.AddComponent<MeshRenderer>().material = UnityEngine.Object.Instantiate(mshPrefab.GetComponentInChildren<MeshRenderer>().material);
+            bwPfb2ModelAdjust.GetComponent<MeshRenderer>().material.SetVector("_TintColor", new Vector4(0.6f, 0.06f, 0.5f, 0.3f));
+            bwPrefabPrefab.transform.localScale *= 2f;
+            var bw = bwPrefabPrefab.AddComponent<BuffWard>();
+            bw.invertTeamFilter = true;
+            bw.rangeIndicator = bwPfb2ModelAdjust.GetComponent<MeshRenderer>().transform;
+            bw.expires = false;
+            bw.Networkradius = baseRadius;
+            bw.buffDuration = 0.5f;
+            bw.interval = 0.5f;
+            bw.buffType = BuffIndex.Slow50;
+            spikeWardPrefab = bwPrefabPrefab.InstantiateClone("SpikestripAuraPrefab");
+            UnityEngine.Object.Destroy(bwPrefabPrefab);
         }
 
-        protected override void LoadBehavior() {
+        public override void SetupBehavior() {
+            base.SetupBehavior();
+
+            if(Compat_ItemStats.enabled) {
+                Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+                    ((count, inv, master) => { return baseDuration + (count - 1) * stackDuration; },
+                    (value, inv, master) => { return $"Duration: {value.ToString("N1")} s"; }
+                ));
+            }
+        }
+
+        public override void Install() {
+			base.Install();
 			On.RoR2.HealthComponent.TakeDamage += On_HCTakeDamage;
         }
-        protected override void UnloadBehavior() {
+        public override void Uninstall() {
+            base.Uninstall();
             On.RoR2.HealthComponent.TakeDamage -= On_HCTakeDamage;
         }
 

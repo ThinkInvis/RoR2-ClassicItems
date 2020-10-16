@@ -9,8 +9,8 @@ namespace ThinkInvisible.ClassicItems {
 		public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Healing});
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken | AutoUpdateEventFlags.InvalidateStats)]
-        [AutoItemConfig("Direct additive to natural health regen per stack of Mysterious Vial.", AutoItemConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage | AutoUpdateEventFlags.InvalidateStats)]
+        [AutoConfig("Direct additive to natural health regen per stack of Mysterious Vial.", AutoConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float addRegen {get;private set;} = 1.4f;
 
         protected override string NewLangName(string langid = null) => displayName;        
@@ -18,20 +18,23 @@ namespace ThinkInvisible.ClassicItems {
         protected override string NewLangDesc(string langid = null) => "Increases <style=cIsHealing>health regen by +" + addRegen.ToString("N1") + "/s</style> <style=cStack>(+" + addRegen.ToString("N1") + "/s per stack)</style>.";        
         protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
-        public Vial() {
-            onBehav += () => {
-			    if(Compat_ItemStats.enabled) {
-				    Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
-					    ((count,inv,master)=>{return addRegen*count;},
-					    (value,inv,master)=>{return $"Regen Bonus: {value.ToString("N1")} HP/s";}));
-			    }
-            };
+        public override void SetupBehavior() {
+            base.SetupBehavior();
+
+            if(Compat_ItemStats.enabled) {
+                Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+                    ((count, inv, master) => { return addRegen * count; },
+                    (value, inv, master) => { return $"Regen Bonus: {value.ToString("N1")} HP/s"; }
+                ));
+            }
         }
 
-        protected override void LoadBehavior() {
+        public override void Install() {
+            base.Install();
             GetStatCoefficients += Evt_TILER2GetStatCoefficients;
         }
-        protected override void UnloadBehavior() {
+        public override void Uninstall() {
+            base.Uninstall();
             GetStatCoefficients -= Evt_TILER2GetStatCoefficients;
         }
 

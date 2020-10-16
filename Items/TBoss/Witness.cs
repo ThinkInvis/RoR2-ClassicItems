@@ -11,24 +11,24 @@ namespace ThinkInvisible.ClassicItems {
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage, ItemTag.Utility, ItemTag.OnKillEffect});
         public override bool itemAIB {get; protected set;} = true;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Duration of on-kill buff applied by the first stack of Burning Witness.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("Duration of on-kill buff applied by the first stack of Burning Witness.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float baseDuration {get; private set;} = 6f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Duration of on-kill buff applied per additional stack of Burning Witness.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("Duration of on-kill buff applied per additional stack of Burning Witness.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float stackDuration {get; private set;} = 3f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Move speed bonus from the first stack of Burning Witness, while active.", AutoItemConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("Move speed bonus from the first stack of Burning Witness, while active.", AutoConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float baseSpeed {get; private set;} = 0.05f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Move speed bonus per additional stack of Burning Witness, while active.", AutoItemConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("Move speed bonus per additional stack of Burning Witness, while active.", AutoConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float stackSpeed {get; private set;} = 0.05f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Damage bonus applied by Burning Witness, while active.", AutoItemConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("Damage bonus applied by Burning Witness, while active.", AutoConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float damage {get; private set;} = 1f;     
         
         protected override string NewLangName(string langid = null) => displayName;        
@@ -38,11 +38,13 @@ namespace ThinkInvisible.ClassicItems {
 
         public Witness() {}
 
-        protected override void LoadBehavior() {
+        public override void Install() {
+            base.Install();
             On.RoR2.SetStateOnHurt.OnTakeDamageServer += On_SSOHOnTakeDamageServer;
         }
 
-        protected override void UnloadBehavior() {
+        public override void Uninstall() {
+            base.Uninstall();
             On.RoR2.SetStateOnHurt.OnTakeDamageServer -= On_SSOHOnTakeDamageServer;
         }
 

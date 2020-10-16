@@ -43,30 +43,30 @@ namespace ThinkInvisible.ClassicItems {
         
         internal static FilingDictionary<ItemBoilerplate> masterItemList = new FilingDictionary<ItemBoilerplate>();
         
-        public class GlobalConfig:AutoItemConfigContainer {
-            [AutoItemConfig("If true, removes the hold-space-to-stomp functionality of H3AD-5T V2 (due to overlap in functionality with ClassicItems Headstompers). H3AD-5T V2 will still increase jump height and prevent fall damage.",
-                AutoItemConfigFlags.PreventNetMismatch)]
+        public class GlobalConfig:AutoConfigContainer {
+            [AutoConfig("If true, removes the hold-space-to-stomp functionality of H3AD-5T V2 (due to overlap in functionality with ClassicItems Headstompers). H3AD-5T V2 will still increase jump height and prevent fall damage.",
+                AutoConfigFlags.PreventNetMismatch)]
             public bool hSV2NoStomp {get;private set;} = false;
             internal bool hSV2Bound = false;
 
-            [AutoItemConfig("If true, replaces the pickup models for most vanilla items and equipments with trading cards.",
-                AutoItemConfigFlags.DeferForever)]
+            [AutoConfig("If true, replaces the pickup models for most vanilla items and equipments with trading cards.",
+                AutoConfigFlags.DeferForever)]
             public bool allCards {get; private set;} = false;
 
-            [AutoItemConfig("If true, hides the dynamic description text on trading card-style pickup models. Enabling this may slightly improve performance.",
-                AutoItemConfigFlags.DeferForever)]
+            [AutoConfig("If true, hides the dynamic description text on trading card-style pickup models. Enabling this may slightly improve performance.",
+                AutoConfigFlags.DeferForever)]
             public bool hideDesc {get; private set;} = false;
             
-            [AutoItemConfig("If true, descriptions on trading card-style pickup models will be the (typically longer) description text of the item. If false, pickup text will be used instead.",
-                AutoItemConfigFlags.DeferForever)]
+            [AutoConfig("If true, descriptions on trading card-style pickup models will be the (typically longer) description text of the item. If false, pickup text will be used instead.",
+                AutoConfigFlags.DeferForever)]
             public bool longDesc {get; private set;} = true;
 
-            [AutoItemConfig("If true, trading card-style pickup models will have customized spin behavior which makes descriptions more readable. Disabling this may slightly improve compatibility and performance.",
-                AutoItemConfigFlags.DeferForever)]
+            [AutoConfig("If true, trading card-style pickup models will have customized spin behavior which makes descriptions more readable. Disabling this may slightly improve compatibility and performance.",
+                AutoConfigFlags.DeferForever)]
             public bool spinMod {get; private set;} = true;
             
-            [AutoItemConfig("If true, disables the Rusty Jetpack gravity reduction while Photon Jetpack is active. If false, there shall be yeet.",
-                AutoItemConfigFlags.PreventNetMismatch)]
+            [AutoConfig("If true, disables the Rusty Jetpack gravity reduction while Photon Jetpack is active. If false, there shall be yeet.",
+                AutoConfigFlags.PreventNetMismatch)]
             public bool coolYourJets {get; private set;} = true;
         }
 
@@ -140,12 +140,18 @@ namespace ThinkInvisible.ClassicItems {
             };
 
             Logger.LogDebug("Instantiating item classes...");
-            masterItemList = ItemBoilerplate.InitAll("ClassicItems");
+            masterItemList = T2Module.InitAll<ItemBoilerplate>(new T2Module.ModInfo {
+                displayName = "Classic Items",
+                longIdentifier = "ClassicItems",
+                shortIdentifier = "CI",
+                mainConfigFile = cfgFile
+            });
 
             Logger.LogDebug("Loading item configs...");
             foreach(ItemBoilerplate x in masterItemList) {
+                x.SetupConfig();
                 x.ConfigEntryChanged += (sender, args) => {
-                    if((args.flags & (AutoUpdateEventFlags.InvalidateNameToken | (globalConfig.longDesc ? AutoUpdateEventFlags.InvalidateDescToken : AutoUpdateEventFlags.InvalidatePickupToken))) == 0) return;
+                    if((args.flags & AutoUpdateEventFlags.InvalidateLanguage) == 0) return;
                     if(x.pickupDef != null) {
                         var ctsf = x.pickupDef.displayPrefab?.transform;
                         if(!ctsf) return;
@@ -159,7 +165,6 @@ namespace ThinkInvisible.ClassicItems {
                         x.logbookEntry.modelPrefab = x.pickupDef.displayPrefab;
                     }
                 };
-                x.SetupConfig(cfgFile);
             }
 
             Logger.LogDebug("Registering item attributes...");
@@ -168,28 +173,28 @@ namespace ThinkInvisible.ClassicItems {
             foreach(ItemBoilerplate x in masterItemList) {
                 string mpnOvr = null;
                 if(x is Item item) mpnOvr = "@ClassicItems:Assets/ClassicItems/models/" + modelNameMap[item.itemTier] + ".prefab";
-                else if(x is Equipment eqp) mpnOvr = "@ClassicItems:Assets/ClassicItems/models/" + (eqp.eqpIsLunar ? "LqpCard.prefab" : "EqpCard.prefab");
-                var ipnOvr = "@ClassicItems:Assets/ClassicItems/icons/" + x.itemCodeName + "_icon.png";
+                else if(x is Equipment eqp) mpnOvr = "@ClassicItems:Assets/ClassicItems/models/" + (eqp.isLunar ? "LqpCard.prefab" : "EqpCard.prefab");
+                var ipnOvr = "@ClassicItems:Assets/ClassicItems/icons/" + x.name + "_icon.png";
 
                 if(mpnOvr != null) {
                     typeof(ItemBoilerplate).GetProperty(nameof(ItemBoilerplate.modelPathName)).SetValue(x, mpnOvr);
                     typeof(ItemBoilerplate).GetProperty(nameof(ItemBoilerplate.iconPathName)).SetValue(x, ipnOvr);
                 }
                 
-                x.SetupAttributes("CLASSICITEMS", "CI");
-                if(x.itemCodeName.Length > longestName) longestName = x.itemCodeName.Length;
+                x.SetupAttributes();
+                if(x.name.Length > longestName) longestName = x.name.Length;
             }
             
             Logger.LogMessage("Index dump follows (pairs of name / index):");
             foreach(ItemBoilerplate x in masterItemList) {
                 if(x is Equipment eqp)
-                    Logger.LogMessage("Equipment CI"+x.itemCodeName.PadRight(longestName) + " / "+((int)eqp.regIndex).ToString());
+                    Logger.LogMessage("Equipment CI"+x.name.PadRight(longestName) + " / "+((int)eqp.regIndex).ToString());
                 else if(x is Item item)
-                    Logger.LogMessage("     Item CI"+x.itemCodeName.PadRight(longestName) + " / "+((int)item.regIndex).ToString());
+                    Logger.LogMessage("     Item CI"+x.name.PadRight(longestName) + " / "+((int)item.regIndex).ToString());
                 else if(x is Artifact afct)
-                    Logger.LogMessage(" Artifact CI"+x.itemCodeName.PadRight(longestName) + " / "+((int)afct.regIndex).ToString());
+                    Logger.LogMessage(" Artifact CI"+x.name.PadRight(longestName) + " / "+((int)afct.regIndex).ToString());
                 else
-                    Logger.LogMessage("    Other CI"+x.itemCodeName.PadRight(longestName) + " / N/A");
+                    Logger.LogMessage("    Other CI"+x.name.PadRight(longestName) + " / N/A");
             }
 
             Logger.LogDebug("Tweaking vanilla stuff...");
@@ -238,9 +243,10 @@ namespace ThinkInvisible.ClassicItems {
 
         private void Start() {
             Logger.LogDebug("Performing late setup:");
-            Logger.LogDebug("Setting up lang token overrides...");
-            Scepter.instance.PatchLang();
-            Language.CCLanguageReload(new ConCommandArgs());
+
+            Logger.LogDebug("Late setup for individual items...");
+            T2Module.SetupAll_PluginStart(masterItemList);
+
             Logger.LogDebug("Late setup done!");
         }
 

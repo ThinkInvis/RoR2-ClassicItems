@@ -13,20 +13,20 @@ namespace ThinkInvisible.ClassicItems {
 		public override ItemTier itemTier => ItemTier.Tier2;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
 
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Maximum multiplier to add to player damage.", AutoItemConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("Maximum multiplier to add to player damage.", AutoConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float damageBoost {get;private set;} = 0.4f;
 
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Gold required for maximum damage. Scales with difficulty level.", AutoItemConfigFlags.PreventNetMismatch, 0, int.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("Gold required for maximum damage. Scales with difficulty level.", AutoConfigFlags.PreventNetMismatch, 0, int.MaxValue)]
         public int goldAmt {get;private set;} = 700;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Inverse-exponential multiplier for reduced GoldAmt per stack (higher = more powerful).", AutoItemConfigFlags.PreventNetMismatch, 0f, 0.999f)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("Inverse-exponential multiplier for reduced GoldAmt per stack (higher = more powerful).", AutoConfigFlags.PreventNetMismatch, 0f, 0.999f)]
         public float goldReduc {get;private set;} = 0.5f;
 
-        [AutoItemConfig("If true, deployables (e.g. Engineer turrets) with Golden Gun will benefit from their master's money.",
-            AutoItemConfigFlags.PreventNetMismatch)]
+        [AutoConfig("If true, deployables (e.g. Engineer turrets) with Golden Gun will benefit from their master's money.",
+            AutoConfigFlags.PreventNetMismatch)]
         public bool inclDeploys {get;private set;} = true;
 
         private bool ilFailed = false;
@@ -36,31 +36,34 @@ namespace ThinkInvisible.ClassicItems {
         protected override string NewLangPickup(string langid = null) => "More gold, more damage.";
         protected override string NewLangDesc(string langid = null) => "Deal <style=cIsDamage>bonus damage</style> based on your <style=cIsUtility>money</style>, up to <style=cIsDamage>" + Pct(damageBoost) + "</style> at <style=cIsUtility>$" + goldAmt.ToString("N0") + "</style> <style=cStack>(cost increases with difficulty, -" + Pct(goldReduc) + " per stack)</style>.";
         protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
-        
-        public GoldenGun() {
-            onAttrib += (tokenIdent, namePrefix) => {
-                var goldenGunBuffDef = new R2API.CustomBuff(new BuffDef {
-                    buffColor = new Color(0.85f, 0.8f, 0.3f),
-                    canStack = true,
-                    isDebuff = false,
-                    name = namePrefix + "GoldenGun",
-                    iconPath = "@ClassicItems:Assets/ClassicItems/icons/GoldenGun_icon.png"
-                });
-                goldenGunBuff = R2API.BuffAPI.Add(goldenGunBuffDef);
-            };
 
-            onBehav += () => {
-			    if(Compat_ItemStats.enabled) {
-				    Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
-					    ((count,inv,master)=>{
-                            return Run.instance.GetDifficultyScaledCost(goldAmt) * Mathf.Pow(goldReduc, count - 1);
-                        },
-					    (value,inv,master)=>{return $"Full Damage Cost: ${value.ToString("N0")}";}));
-			    }
-            };
+        public override void SetupAttributes() {
+            base.SetupAttributes();
+
+            var goldenGunBuffDef = new R2API.CustomBuff(new BuffDef {
+                buffColor = new Color(0.85f, 0.8f, 0.3f),
+                canStack = true,
+                isDebuff = false,
+                name = $"{modInfo.shortIdentifier}GoldenGun",
+                iconPath = "@ClassicItems:Assets/ClassicItems/icons/GoldenGun_icon.png"
+            });
+            goldenGunBuff = R2API.BuffAPI.Add(goldenGunBuffDef);
         }
 
-        protected override void LoadBehavior() {
+        public override void SetupBehavior() {
+            base.SetupBehavior();
+            if(Compat_ItemStats.enabled) {
+                Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+                    ((count, inv, master) => {
+                        return Run.instance.GetDifficultyScaledCost(goldAmt) * Mathf.Pow(goldReduc, count - 1);
+                    },
+                    (value, inv, master) => { return $"Full Damage Cost: ${value.ToString("N0")}"; }
+                ));
+            }
+        }
+
+        public override void Install() {
+            base.Install();
             IL.RoR2.HealthComponent.TakeDamage += IL_CBTakeDamage;
             if(ilFailed) IL.RoR2.HealthComponent.TakeDamage -= IL_CBTakeDamage;
             else {
@@ -69,16 +72,11 @@ namespace ThinkInvisible.ClassicItems {
             }
         }
 
-        protected override void UnloadBehavior() {
+        public override void Uninstall() {
+            base.Uninstall();
             IL.RoR2.HealthComponent.TakeDamage -= IL_CBTakeDamage;
             On.RoR2.CharacterBody.FixedUpdate -= On_CBFixedUpdate;
             On.RoR2.CharacterBody.OnInventoryChanged -= On_CBInventoryChanged;
-        }
-
-        private void OnConfigEntryChanged(object sender, AutoUpdateEventArgs args) {
-            AliveList().ForEach(cm => {
-                if(cm.hasBody) UpdateGGBuff(cm.GetBody());
-            });
         }
 
         private void On_CBInventoryChanged(On.RoR2.CharacterBody.orig_OnInventoryChanged orig, CharacterBody self) {

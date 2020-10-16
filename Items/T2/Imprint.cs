@@ -11,28 +11,28 @@ namespace ThinkInvisible.ClassicItems {
 		public override ItemTier itemTier => ItemTier.Tier2;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Any});
 
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Base cooldown between Filial Imprinting buffs, in seconds.", AutoItemConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("Base cooldown between Filial Imprinting buffs, in seconds.", AutoConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float baseCD {get;private set;} = 20f;
 
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Multiplicative cooldown decrease per additional stack of Filial Imprinting. Caps at a minimum of baseDuration.", AutoItemConfigFlags.PreventNetMismatch, 0f, 0.999f)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("Multiplicative cooldown decrease per additional stack of Filial Imprinting. Caps at a minimum of baseDuration.", AutoConfigFlags.PreventNetMismatch, 0f, 0.999f)]
         public float stackCDreduc {get;private set;} = 0.1f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Duration of buffs applied by Filial Imprinting.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("Duration of buffs applied by Filial Imprinting.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float baseDuration {get;private set;} = 5f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Extra health regen multiplier applied by Filial Imprinting.", AutoItemConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("Extra health regen multiplier applied by Filial Imprinting.", AutoConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float regenMod {get;private set;} = 1f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Extra move speed multiplier applied by Filial Imprinting.", AutoItemConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("Extra move speed multiplier applied by Filial Imprinting.", AutoConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float speedMod {get;private set;} = 0.5f;
 
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Extra attack speed multiplier applied by Filial Imprinting.", AutoItemConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("Extra attack speed multiplier applied by Filial Imprinting.", AutoConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float attackMod {get;private set;} = 0.5f;
 
         protected override string NewLangName(string langid = null) => displayName;
@@ -44,49 +44,52 @@ namespace ThinkInvisible.ClassicItems {
         public BuffIndex speedBuff {get; private set;}
         public BuffIndex healBuff {get; private set;}
 
-        public Imprint() {
-            onAttrib += (tokenIdent, namePrefix) => {
-                var attackBuffDef = new R2API.CustomBuff(new BuffDef {
-                    buffColor = Color.red,
-                    canStack = false,
-                    isDebuff = false,
-                    name = namePrefix + "ImprintAttack",
-                    iconPath = "@ClassicItems:Assets/ClassicItems/icons/Imprint_icon.png"
-                });
-                attackBuff = R2API.BuffAPI.Add(attackBuffDef);
-                var speedBuffDef = new R2API.CustomBuff(new BuffDef {
-                    buffColor = Color.cyan,
-                    canStack = false,
-                    isDebuff = false,
-                    name = namePrefix + "ImprintSpeed",
-                    iconPath = "@ClassicItems:Assets/ClassicItems/icons/Imprint_icon.png"
-                });
-                speedBuff = R2API.BuffAPI.Add(speedBuffDef);
-                var healBuffDef = new R2API.CustomBuff(new BuffDef {
-                    buffColor = Color.green,
-                    canStack = false,
-                    isDebuff = false,
-                    name = namePrefix + "ImprintHeal",
-                    iconPath = "@ClassicItems:Assets/ClassicItems/icons/Imprint_icon.png"
-                });
-                healBuff = R2API.BuffAPI.Add(healBuffDef);
-            };
-
-            onBehav += () => {
-            	if(Compat_ItemStats.enabled) {
-				    Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
-					    ((count,inv,master)=>{return Mathf.Max(baseCD * Mathf.Pow(1f - stackCDreduc, count - 1), baseDuration);},
-					    (value,inv,master)=>{return $"Buff Interval: {value.ToString("N1")} s";}));
-			    }
-            };
+        public override void SetupAttributes() {
+            base.SetupAttributes();
+            var attackBuffDef = new R2API.CustomBuff(new BuffDef {
+                buffColor = Color.red,
+                canStack = false,
+                isDebuff = false,
+                name = modInfo.shortIdentifier + "ImprintAttack",
+                iconPath = "@ClassicItems:Assets/ClassicItems/icons/Imprint_icon.png"
+            });
+            attackBuff = R2API.BuffAPI.Add(attackBuffDef);
+            var speedBuffDef = new R2API.CustomBuff(new BuffDef {
+                buffColor = Color.cyan,
+                canStack = false,
+                isDebuff = false,
+                name = modInfo.shortIdentifier + "ImprintSpeed",
+                iconPath = "@ClassicItems:Assets/ClassicItems/icons/Imprint_icon.png"
+            });
+            speedBuff = R2API.BuffAPI.Add(speedBuffDef);
+            var healBuffDef = new R2API.CustomBuff(new BuffDef {
+                buffColor = Color.green,
+                canStack = false,
+                isDebuff = false,
+                name = modInfo.shortIdentifier + "ImprintHeal",
+                iconPath = "@ClassicItems:Assets/ClassicItems/icons/Imprint_icon.png"
+            });
+            healBuff = R2API.BuffAPI.Add(healBuffDef);
         }
 
-        protected override void LoadBehavior() {
+        public override void SetupBehavior() {
+            base.SetupBehavior();
+            if(Compat_ItemStats.enabled) {
+                Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+                    ((count, inv, master) => { return Mathf.Max(baseCD * Mathf.Pow(1f - stackCDreduc, count - 1), baseDuration); },
+                    (value, inv, master) => { return $"Buff Interval: {value.ToString("N1")} s"; }
+                ));
+            }
+        }
+
+        public override void Install() {
+            base.Install();
             On.RoR2.CharacterBody.OnInventoryChanged += On_CBInventoryChanged;
             GetStatCoefficients += Evt_TILER2GetStatCoefficients;
         }
 
-        protected override void UnloadBehavior() {
+        public override void Uninstall() {
+            base.Uninstall();
             On.RoR2.CharacterBody.OnInventoryChanged -= On_CBInventoryChanged;
             GetStatCoefficients -= Evt_TILER2GetStatCoefficients;
         }
@@ -122,7 +125,7 @@ namespace ThinkInvisible.ClassicItems {
             stopwatch -= Time.fixedDeltaTime;
             if(stopwatch <= 0f) {
                 stopwatch = Mathf.Max(Imprint.instance.baseCD * Mathf.Pow(1f - Imprint.instance.stackCDreduc, count - 1), Imprint.instance.baseDuration);
-                ownerBody.AddTimedBuff(Imprint.instance.itemRng.NextElementUniform(rndBuffs), Imprint.instance.baseDuration);
+                ownerBody.AddTimedBuff(Imprint.instance.rng.NextElementUniform(rndBuffs), Imprint.instance.baseDuration);
             }
         }
     }

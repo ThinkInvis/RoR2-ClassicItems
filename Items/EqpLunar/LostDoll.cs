@@ -10,15 +10,15 @@ namespace ThinkInvisible.ClassicItems {
     public class LostDoll : Equipment<LostDoll> {
         public override string displayName => "Lost Doll";
 
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Fraction of the user's CURRENT health to take from the user when Lost Doll is activated.", AutoItemConfigFlags.None, 0f, 1f)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("Fraction of the user's CURRENT health to take from the user when Lost Doll is activated.", AutoConfigFlags.None, 0f, 1f)]
         public float damageTaken {get;private set;} = 0.25f;
 
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Fraction of the user's MAXIMUM health to deal in damage to the closest enemy when Lost Doll is activated.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("Fraction of the user's MAXIMUM health to deal in damage to the closest enemy when Lost Doll is activated.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float damageGiven {get;private set;} = 5f;
         
-		public override bool eqpIsLunar{get;} = true;
+		public override bool isLunar => true;
         protected override string NewLangName(string langid = null) => displayName;
         protected override string NewLangPickup(string langid = null) {
             string desc = "";

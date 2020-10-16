@@ -11,8 +11,8 @@ namespace ThinkInvisible.ClassicItems {
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
         public override bool itemAIB {get; protected set;} = true;
 
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Linear multiplier for money-on-kill increase per stack of Smart Shopper.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("Linear multiplier for money-on-kill increase per stack of Smart Shopper.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float moneyMult {get;private set;} = 0.25f;
 
         protected override string NewLangName(string langid = null) => displayName;
@@ -20,21 +20,23 @@ namespace ThinkInvisible.ClassicItems {
         protected override string NewLangDesc(string langid = null) => "Gain <style=cIsUtility>+" + Pct(moneyMult) + "</style> <style=cStack>(+" + Pct(moneyMult) + " per stack, linear)</style> <style=cIsUtility>money</style> from <style=cIsDamage>killing enemies</style>.";
         protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
-        public SmartShopper() {
-            onBehav += () => {
-			    if(Compat_ItemStats.enabled) {
-				    Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
-					    ((count,inv,master)=>{return moneyMult*count;},
-					    (value,inv,master)=>{return $"Money Bonus: {Pct(value, 1)}";}));
-			    }
-            };
+        public override void SetupBehavior() {
+            base.SetupBehavior();
+
+            if(Compat_ItemStats.enabled) {
+				Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+					((count,inv,master)=>{return moneyMult*count;},
+					(value,inv,master)=>{return $"Money Bonus: {Pct(value, 1)}";}));
+			}
         }
 
-        protected override void LoadBehavior() {
+        public override void Install() {
+            base.Install();
             On.RoR2.DeathRewards.OnKilledServer += On_DROnKilledServer;
         }
 
-        protected override void UnloadBehavior() {
+        public override void Uninstall() {
+            base.Uninstall();
             On.RoR2.DeathRewards.OnKilledServer -= On_DROnKilledServer;
         }
 

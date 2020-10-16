@@ -14,16 +14,16 @@ namespace ThinkInvisible.ClassicItems {
 		public override ItemTier itemTier => ItemTier.Tier3;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Time per batch of marked enemies.",AutoItemConfigFlags.None,0f,float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("Time per batch of marked enemies.",AutoConfigFlags.None,0f,float.MaxValue)]
         public float cooldown {get;private set;} = 10f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken | AutoUpdateEventFlags.InvalidateStats)]
-        [AutoItemConfig("Additive bonus to base damage per marked enemy killed.",AutoItemConfigFlags.PreventNetMismatch,0f,float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage | AutoUpdateEventFlags.InvalidateStats)]
+        [AutoConfig("Additive bonus to base damage per marked enemy killed.",AutoConfigFlags.PreventNetMismatch,0f,float.MaxValue)]
         public float procDamage {get;private set;} = 0.5f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken | AutoUpdateEventFlags.InvalidateStats)]
-        [AutoItemConfig("Maximum damage bonus from The Hit List.",AutoItemConfigFlags.PreventNetMismatch,0f,float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage | AutoUpdateEventFlags.InvalidateStats)]
+        [AutoConfig("Maximum damage bonus from The Hit List.",AutoConfigFlags.PreventNetMismatch,0f,float.MaxValue)]
         public float maxDamage {get;private set;} = 20f;
 
         protected override string NewLangName(string langid = null) => displayName;
@@ -35,43 +35,45 @@ namespace ThinkInvisible.ClassicItems {
         public BuffIndex markDebuff {get; private set;}
         public BuffIndex tallyBuff {get; private set;}
 
-        public HitList() {
-            onAttrib += (tokenIdent, namePrefix) => {
-                var markDebuffDef = new CustomBuff(new BuffDef {
-                    buffColor = Color.yellow,
-                    canStack = false,
-                    isDebuff = true,
-                    name = namePrefix + "HitListDebuff",
-                    iconPath = "@ClassicItems:Assets/ClassicItems/icons/hitlist_debuff_icon.png"
-                });
-                markDebuff = BuffAPI.Add(markDebuffDef);
-                
-                var tallyBuffDef = new CustomBuff(new BuffDef {
-                    buffColor = Color.yellow,
-                    canStack = true,
-                    isDebuff = false,
-                    name = namePrefix + "HitListBuff",
-                    iconPath = "@ClassicItems:Assets/ClassicItems/icons/hitlist_buff_icon.png"
-                });
-                tallyBuff = BuffAPI.Add(tallyBuffDef);
+        public override void SetupAttributes() {
+            base.SetupAttributes();
 
-                var hitListTallyDef = new CustomItem(new ItemDef {
-                    hidden = true,
-                    name = namePrefix + "INTERNALTally",
-                    tier = ItemTier.NoTier,
-                    canRemove = false
-                }, new ItemDisplayRuleDict(null));
-                hitListTally = ItemAPI.Add(hitListTallyDef);
-            };
+            var markDebuffDef = new CustomBuff(new BuffDef {
+                buffColor = Color.yellow,
+                canStack = false,
+                isDebuff = true,
+                name = modInfo.shortIdentifier + "HitListDebuff",
+                iconPath = "@ClassicItems:Assets/ClassicItems/icons/hitlist_debuff_icon.png"
+            });
+            markDebuff = BuffAPI.Add(markDebuffDef);
+
+            var tallyBuffDef = new CustomBuff(new BuffDef {
+                buffColor = Color.yellow,
+                canStack = true,
+                isDebuff = false,
+                name = modInfo.shortIdentifier + "HitListBuff",
+                iconPath = "@ClassicItems:Assets/ClassicItems/icons/hitlist_buff_icon.png"
+            });
+            tallyBuff = BuffAPI.Add(tallyBuffDef);
+
+            var hitListTallyDef = new CustomItem(new ItemDef {
+                hidden = true,
+                name = modInfo.shortIdentifier + "INTERNALTally",
+                tier = ItemTier.NoTier,
+                canRemove = false
+            }, new ItemDisplayRuleDict(null));
+            hitListTally = ItemAPI.Add(hitListTallyDef);
         }
 
-        protected override void LoadBehavior() {
+        public override void Install() {
+            base.Install();
             GlobalEventManager.onCharacterDeathGlobal += Evt_GEMOnCharacterDeathGlobal;
             On.RoR2.Run.FixedUpdate += On_RunFixedUpdate;
             GetStatCoefficients += Evt_TILER2GetStatCoefficients;
         }
 
-        protected override void UnloadBehavior() {
+        public override void Uninstall() {
+            base.Uninstall();
             GlobalEventManager.onCharacterDeathGlobal -= Evt_GEMOnCharacterDeathGlobal;
             On.RoR2.Run.FixedUpdate -= On_RunFixedUpdate;
             GetStatCoefficients -= Evt_TILER2GetStatCoefficients;
@@ -100,7 +102,7 @@ namespace ThinkInvisible.ClassicItems {
             if(totalVsAll > 0) {
                 for(var i = 0; i < totalVsAll; i++) {
                     if(alive.Count <= 0) break;
-                    var next = itemRng.NextElementUniform(alive);
+                    var next = rng.NextElementUniform(alive);
                     if(next.hasBody)
                         next.GetBody().AddTimedBuff(markDebuff, cooldown);
                     else
@@ -116,7 +118,7 @@ namespace ThinkInvisible.ClassicItems {
                 for(var list = 0; list <= 2; list++) {
                     for(var i = 0; i < totalVsTeam[list]; i++) {                        
                         if(aliveTeam[list].Count <= 0) break;
-                        var next = itemRng.NextElementUniform(aliveTeam[list]);
+                        var next = rng.NextElementUniform(aliveTeam[list]);
                         if(next.hasBody)
                             next.GetBody().AddTimedBuff(markDebuff, cooldown);
                         else

@@ -10,17 +10,17 @@ namespace ThinkInvisible.ClassicItems {
 		public override ItemTier itemTier => ItemTier.Tier2;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken | AutoUpdateEventFlags.InvalidatePickupToken)]
-        [AutoItemConfig("Percent chance for Boxing Gloves to proc; stacks multiplicatively.", AutoItemConfigFlags.None, 0f, 100f)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("Percent chance for Boxing Gloves to proc; stacks multiplicatively.", AutoConfigFlags.None, 0f, 100f)]
         public float procChance {get;private set;} = 6f;
         
-        [AutoItemConfig("Multiplier for knockback force vs. grounded targets.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
+        [AutoConfig("Multiplier for knockback force vs. grounded targets.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float procForceGrounded {get;private set;} = 90f;
 
-        [AutoItemConfig("Multiplier for knockback force vs. flying targets.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
+        [AutoConfig("Multiplier for knockback force vs. flying targets.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float procForceFlying {get;private set;} = 30f;
         
-        [AutoItemConfig("If false, Boxing Gloves will not proc on bosses.", AutoItemConfigFlags.None)]
+        [AutoConfig("If false, Boxing Gloves will not proc on bosses.", AutoConfigFlags.None)]
         public bool affectBosses {get;private set;} = false;
 
         protected override string NewLangName(string langid = null) => displayName;
@@ -28,22 +28,25 @@ namespace ThinkInvisible.ClassicItems {
         protected override string NewLangDesc(string langid = null) => "<style=cIsUtility>" + Pct(procChance,0,1) + "</style> <style=cStack>(+"+Pct(procChance,0,1)+" per stack, multiplicative)</style> chance to <style=cIsUtility>knock back</style> an enemy <style=cIsDamage>based on fraction of health removed</style>.";
         protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
-        public BoxingGloves() {
-            onBehav += () => {
-                if(Compat_ItemStats.enabled) {
-				    Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
-					    ((count,inv,master)=>{return (1f-Mathf.Pow(1-procChance/100f,count))*100f;},
-					    (value,inv,master)=>{return $"Knockback Chance: {Pct(value, 1, 1)}";}));
-			    }
-                if(Compat_BetterUI.enabled)
-                    Compat_BetterUI.AddEffect(regIndex, procChance, procChance, Compat_BetterUI.ChanceFormatter, Compat_BetterUI.ExponentialStacking);
-            };
+        public override void SetupBehavior() {
+            base.SetupBehavior();
+
+            if(Compat_ItemStats.enabled) {
+                Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+                    ((count, inv, master) => { return (1f - Mathf.Pow(1 - procChance / 100f, count)) * 100f; },
+                    (value, inv, master) => { return $"Knockback Chance: {Pct(value, 1, 1)}"; }
+                ));
+            }
+            if(Compat_BetterUI.enabled)
+                Compat_BetterUI.AddEffect(regIndex, procChance, procChance, Compat_BetterUI.ChanceFormatter, Compat_BetterUI.ExponentialStacking);
         }
 
-        protected override void LoadBehavior() {
+        public override void Install() {
+            base.Install();
             On.RoR2.HealthComponent.TakeDamage += On_HCTakeDamage;
         }
-        protected override void UnloadBehavior() {
+        public override void Uninstall() {
+            base.Uninstall();
             On.RoR2.HealthComponent.TakeDamage -= On_HCTakeDamage;
         }
 

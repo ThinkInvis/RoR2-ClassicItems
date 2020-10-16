@@ -10,16 +10,16 @@ namespace ThinkInvisible.ClassicItems {
 		public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Percent chance for Taser to proc.", AutoItemConfigFlags.None, 0f, 100f)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("Percent chance for Taser to proc.", AutoConfigFlags.None, 0f, 100f)]
         public float procChance {get;private set;} = 7f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Duration of root applied by first Taser stack.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("Duration of root applied by first Taser stack.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float procTime {get;private set;} = 1.5f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Duration of root applied per additional Taser stack.", AutoItemConfigFlags.None, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("Duration of root applied per additional Taser stack.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float stackTime {get;private set;} = 0.5f;
 
         protected override string NewLangName(string langid = null) => displayName;
@@ -32,23 +32,26 @@ namespace ThinkInvisible.ClassicItems {
         }
         protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
-        public Taser() {
-            onBehav += () => {
-			    if(Compat_ItemStats.enabled) {
-				    Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
-					    ((count,inv,master)=>{return procTime + (count-1) * stackTime;},
-					    (value,inv,master)=>{return $"Duration: {value.ToString("N1")} s";}));
-			    }
-                if(Compat_BetterUI.enabled)
-                    Compat_BetterUI.AddEffect(regIndex, procChance, null, Compat_BetterUI.ChanceFormatter, Compat_BetterUI.NoStacking);
-            };
+        public override void SetupBehavior() {
+            base.SetupBehavior();
+
+            if(Compat_ItemStats.enabled) {
+                Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+                    ((count, inv, master) => { return procTime + (count - 1) * stackTime; },
+                    (value, inv, master) => { return $"Duration: {value.ToString("N1")} s"; }
+                ));
+            }
+            if(Compat_BetterUI.enabled)
+                Compat_BetterUI.AddEffect(regIndex, procChance, null, Compat_BetterUI.ChanceFormatter, Compat_BetterUI.NoStacking);
         }
 
-        protected override void LoadBehavior() {
+        public override void Install() {
+            base.Install();
             On.RoR2.HealthComponent.TakeDamage += On_HCTakeDamage;
         }
 
-        protected override void UnloadBehavior() {
+        public override void Uninstall() {
+            base.Uninstall();
             On.RoR2.HealthComponent.TakeDamage -= On_HCTakeDamage;
         }
 

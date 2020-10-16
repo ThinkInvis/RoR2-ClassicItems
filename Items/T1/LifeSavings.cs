@@ -13,20 +13,20 @@ namespace ThinkInvisible.ClassicItems {
         public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
 
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Money to add to players per second per Life Savings stack (without taking into account InvertCount).", AutoItemConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("Money to add to players per second per Life Savings stack (without taking into account InvertCount).", AutoConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float gainPerSec {get;private set;} = 1f;
 
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("With <InvertCount stacks, number of stacks affects time per interval instead of multiplying money gained.", AutoItemConfigFlags.PreventNetMismatch, 0, int.MaxValue)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("With <InvertCount stacks, number of stacks affects time per interval instead of multiplying money gained.", AutoConfigFlags.PreventNetMismatch, 0, int.MaxValue)]
         public int invertCount {get;private set;} = 3;
 
-        [AutoItemConfig("If true, Life Savings stacks on deployables (e.g. Engineer turrets) will send money to their master.",
-            AutoItemConfigFlags.PreventNetMismatch)]
+        [AutoConfig("If true, Life Savings stacks on deployables (e.g. Engineer turrets) will send money to their master.",
+            AutoConfigFlags.PreventNetMismatch)]
         public bool inclDeploys {get;private set;} = false;
 
-        [AutoItemConfig("If true, Life Savings will continue to work in areas where the run timer is paused (e.g. bazaar).",
-            AutoItemConfigFlags.PreventNetMismatch)]
+        [AutoConfig("If true, Life Savings will continue to work in areas where the run timer is paused (e.g. bazaar).",
+            AutoConfigFlags.PreventNetMismatch)]
         public bool ignoreTimestop {get;private set;} = false;
 
         protected override string NewLangName(string langid = null) => displayName;
@@ -34,24 +34,27 @@ namespace ThinkInvisible.ClassicItems {
         protected override string NewLangDesc(string langid = null) => "Generates <style=cIsUtility>$" + gainPerSec.ToString("N0") + "</style> <style=cStack>(+$" + gainPerSec.ToString("N0") + " per stack)</style> every second. <style=cStack>Generates less below " + invertCount.ToString("N0") + " stacks.</style>";
         protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
-        public LifeSavings() {
-            onBehav += () => {
-			    if(Compat_ItemStats.enabled) {
-				    Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
-					    ((count,inv,master)=>{return LifeSavingsComponent.CalculateMoneyIncrease(Mathf.FloorToInt(count));},
-					    (value,inv,master)=>{return $"Money Per Second: ${value.ToString("N1")}";}));
-			    }
-            };
+        public override void SetupBehavior() {
+            base.SetupBehavior();
+
+            if(Compat_ItemStats.enabled) {
+                Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+                    ((count, inv, master) => { return LifeSavingsComponent.CalculateMoneyIncrease(Mathf.FloorToInt(count)); },
+                    (value, inv, master) => { return $"Money Per Second: ${value.ToString("N1")}"; }
+                ));
+            }
         }
 
-        protected override void LoadBehavior() {
+        public override void Install() {
+            base.Install();
             On.RoR2.CharacterBody.OnInventoryChanged += On_CBOnInventoryChanged;
             On.RoR2.SceneExitController.Begin += On_SECBegin;
             On.EntityStates.SpawnTeleporterState.OnExit += On_EntSTSOnExit;
             On.RoR2.CharacterMaster.AddDeployable += On_CMAddDeployable;
             On.RoR2.CharacterMaster.RemoveDeployable += On_CMRemoveDeployable;
         }
-        protected override void UnloadBehavior() {
+        public override void Uninstall() {
+            base.Uninstall();
             On.RoR2.CharacterBody.OnInventoryChanged -= On_CBOnInventoryChanged;
             On.RoR2.SceneExitController.Begin -= On_SECBegin;
             On.EntityStates.SpawnTeleporterState.OnExit -= On_EntSTSOnExit;

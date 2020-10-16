@@ -13,19 +13,19 @@ namespace ThinkInvisible.ClassicItems {
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
         public override bool itemAIB {get; protected set;} = true;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Base percent chance of triggering Telescopic Sight on hit. Affected by proc coefficient.",AutoItemConfigFlags.None,0f,100f)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("Base percent chance of triggering Telescopic Sight on hit. Affected by proc coefficient.",AutoConfigFlags.None,0f,100f)]
         public float procChance {get;private set;} = 1f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Added to ProcChance per extra stack of Telescopic Sight.",AutoItemConfigFlags.None,0f,100f)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("Added to ProcChance per extra stack of Telescopic Sight.",AutoConfigFlags.None,0f,100f)]
         public float stackChance {get;private set;} = 0.5f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Maximum allowed ProcChance for Telescopic Sight.",AutoItemConfigFlags.None,0f,100f)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("Maximum allowed ProcChance for Telescopic Sight.",AutoConfigFlags.None,0f,100f)]
         public float capChance {get;private set;} = 3f;
 
-        [AutoItemConfig("If true, Telescopic Sight will not trigger on bosses.")]
+        [AutoConfig("If true, Telescopic Sight will not trigger on bosses.")]
         public bool bossImmunity {get;private set;} = false;
 
         protected override string NewLangName(string langid = null) => displayName;
@@ -38,26 +38,27 @@ namespace ThinkInvisible.ClassicItems {
         }
         protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
-        public TeleSight() {
-            onBehav += () => {
-			    if(Compat_ItemStats.enabled) {
-				    Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
-					    ((count,inv,master)=>{return Mathf.Min(procChance+stackChance*(count-1), capChance);},
-					    (value,inv,master)=>{return $"Instakill Chance: {Pct(value, 1, 1f)}";}));
-			    }
-                if(Compat_BetterUI.enabled)
-                    Compat_BetterUI.AddEffect(regIndex, procChance, stackChance, Compat_BetterUI.ChanceFormatter, Compat_BetterUI.LinearStacking,
-                        (value, extraStackValue, procCoefficient) => {
-                            return Mathf.CeilToInt((capChance - value*procCoefficient)/(extraStackValue*procCoefficient)) + 1;
-                        });
-            };
+        public override void SetupBehavior() {
+            base.SetupBehavior();
+            if(Compat_ItemStats.enabled) {
+				Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+					((count,inv,master)=>{return Mathf.Min(procChance+stackChance*(count-1), capChance);},
+					(value,inv,master)=>{return $"Instakill Chance: {Pct(value, 1, 1f)}";}));
+			}
+            if(Compat_BetterUI.enabled)
+                Compat_BetterUI.AddEffect(regIndex, procChance, stackChance, Compat_BetterUI.ChanceFormatter, Compat_BetterUI.LinearStacking,
+                    (value, extraStackValue, procCoefficient) => {
+                        return Mathf.CeilToInt((capChance - value*procCoefficient)/(extraStackValue*procCoefficient)) + 1;
+                    });
         }
 
-        protected override void LoadBehavior() {
+        public override void Install() {
+            base.Install();
             On.RoR2.GlobalEventManager.OnHitEnemy += On_GEMOnHitEnemy;
         }
 
-        protected override void UnloadBehavior() {
+        public override void Uninstall() {
+            base.Uninstall();
             On.RoR2.GlobalEventManager.OnHitEnemy -= On_GEMOnHitEnemy;
         }
 

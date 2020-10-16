@@ -62,7 +62,7 @@ namespace ThinkInvisible.ClassicItems {
             TreebotFlower2Projectile.radius = origRadius;
             if(!isBoosted) return;
             self.rootedBodies.ForEach(cb => {
-                var nbi = Scepter.instance.itemRng.NextElementUniform(new[] {
+                var nbi = Scepter.instance.rng.NextElementUniform(new[] {
                     BuffIndex.Bleeding,
                     BuffIndex.ClayGoo,
                     BuffIndex.Cripple,

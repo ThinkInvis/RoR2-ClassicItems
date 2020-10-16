@@ -11,43 +11,43 @@ namespace ThinkInvisible.ClassicItems {
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
         public override bool itemAIB {get; protected set;} = true;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Percent chance for a Clover drop to happen at first stack -- as such, multiplicative with Rare/Uncommon chances.", AutoItemConfigFlags.None, 0f, 100f)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("Percent chance for a Clover drop to happen at first stack -- as such, multiplicative with Rare/Uncommon chances.", AutoConfigFlags.None, 0f, 100f)]
         public float baseChance {get;private set;} = 4f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Percent chance for a Clover drop to happen per extra stack.", AutoItemConfigFlags.None, 0f, 100f)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("Percent chance for a Clover drop to happen per extra stack.", AutoConfigFlags.None, 0f, 100f)]
         public float stackChance {get;private set;} = 1.5f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Maximum percent chance for a Clover drop on elite kill.", AutoItemConfigFlags.None, 0f, 100f)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("Maximum percent chance for a Clover drop on elite kill.", AutoConfigFlags.None, 0f, 100f)]
         public float capChance {get;private set;} = 100f;
         
-        [AutoItemConfig("Percent chance for a Clover drop to become Tier 2 at first stack (if it hasn't already become Tier 3).", AutoItemConfigFlags.None, 0f, 100f)]
+        [AutoConfig("Percent chance for a Clover drop to become Tier 2 at first stack (if it hasn't already become Tier 3).", AutoConfigFlags.None, 0f, 100f)]
         public float baseUnc {get;private set;} = 1f;
-        [AutoItemConfig("Percent chance for a Clover drop to become Tier 2 per extra stack.", AutoItemConfigFlags.None, 0f, 100f)]
+        [AutoConfig("Percent chance for a Clover drop to become Tier 2 per extra stack.", AutoConfigFlags.None, 0f, 100f)]
         public float stackUnc {get;private set;} = 0.1f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Maximum percent chance for a Clover drop to become Tier 2.", AutoItemConfigFlags.None, 0f, 100f)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("Maximum percent chance for a Clover drop to become Tier 2.", AutoConfigFlags.None, 0f, 100f)]
         public float capUnc {get;private set;} = 25f;
         
-        [AutoItemConfig("Percent chance for a Clover drop to become Tier 3 at first stack.", AutoItemConfigFlags.None, 0f, 100f)]
+        [AutoConfig("Percent chance for a Clover drop to become Tier 3 at first stack.", AutoConfigFlags.None, 0f, 100f)]
         public float baseRare {get;private set;} = 0.01f;
-        [AutoItemConfig("Percent chance for a Clover drop to become Tier 3 per extra stack.", AutoItemConfigFlags.None, 0f, 100f)]
+        [AutoConfig("Percent chance for a Clover drop to become Tier 3 per extra stack.", AutoConfigFlags.None, 0f, 100f)]
         public float stackRare {get;private set;} = 0.001f;
         
-        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateDescToken)]
-        [AutoItemConfig("Maximum percent chance for a Clover drop to become Tier 3.", AutoItemConfigFlags.None, 0f, 100f)]
+        [AutoUpdateEventInfo(AutoUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfig("Maximum percent chance for a Clover drop to become Tier 3.", AutoConfigFlags.None, 0f, 100f)]
         public float capRare {get;private set;} = 1f;
 
-        [AutoItemConfig("Percent chance for a Tier 1 Clover drop to become Equipment instead.", AutoItemConfigFlags.None, 0f, 100f)]
+        [AutoConfig("Percent chance for a Tier 1 Clover drop to become Equipment instead.", AutoConfigFlags.None, 0f, 100f)]
         public float baseEqp {get;private set;} = 5f;
 
-        [AutoItemConfig("If true, all clovers across all living players are counted towards item drops. If false, only the killer's items count.")]
+        [AutoConfig("If true, all clovers across all living players are counted towards item drops. If false, only the killer's items count.")]
         public bool globalStack {get;private set;} = true;
         
-		[AutoItemConfig("If true, deployables (e.g. Engineer turrets) with 56 Leaf Clover will count towards globalStack.")]
+		[AutoConfig("If true, deployables (e.g. Engineer turrets) with 56 Leaf Clover will count towards globalStack.")]
         public bool inclDeploys {get;private set;} = false;
 
         protected override string NewLangName(string langid = null) => displayName;        
@@ -60,58 +60,58 @@ namespace ThinkInvisible.ClassicItems {
         }
         protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
-        public Clover() {
-            onBehav += () => {
-			    if(Compat_ItemStats.enabled) {
-				    Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
-					    ((count,inv,master)=>{
-                            float numberOfClovers = 0;
-                            if(globalStack)
-                                foreach(CharacterMaster chrm in AliveList()) {
-			                        if(!inclDeploys && chrm.GetComponent<Deployable>()) continue;
-                                    numberOfClovers += chrm?.inventory?.GetItemCount(regIndex) ?? 0;
-                                }
-                            else
-                                numberOfClovers += count;
-                            return Math.Min(baseChance + (numberOfClovers-1) * stackChance, capChance);
-                        },
-					    (value,inv,master)=>{return $"Drop Chance: {Pct(value,1,1f)}";}),
+        public override void SetupBehavior() {
+			if(Compat_ItemStats.enabled) {
+				Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+					((count,inv,master)=>{
+                        float numberOfClovers = 0;
+                        if(globalStack)
+                            foreach(CharacterMaster chrm in AliveList()) {
+			                    if(!inclDeploys && chrm.GetComponent<Deployable>()) continue;
+                                numberOfClovers += chrm?.inventory?.GetItemCount(regIndex) ?? 0;
+                            }
+                        else
+                            numberOfClovers += count;
+                        return Math.Min(baseChance + (numberOfClovers-1) * stackChance, capChance);
+                    },
+					(value,inv,master)=>{return $"Drop Chance: {Pct(value,1,1f)}";}),
                     
-					    ((count,inv,master)=>{
-                            float numberOfClovers = 0;
-                            if(globalStack)
-                                foreach(CharacterMaster chrm in AliveList()) {
-			                        if(!inclDeploys && chrm.GetComponent<Deployable>()) continue;
-                                    numberOfClovers += chrm?.inventory?.GetItemCount(regIndex) ?? 0;
-                                }
-                            else
-                                numberOfClovers += count;
-                            return Math.Min(baseUnc + (numberOfClovers-1) * stackUnc, capUnc);
-                        },
-					    (value,inv,master)=>{return $"T2 Upgrade Chance: {Pct(value,2,1f)}";}),
+					((count,inv,master)=>{
+                        float numberOfClovers = 0;
+                        if(globalStack)
+                            foreach(CharacterMaster chrm in AliveList()) {
+			                    if(!inclDeploys && chrm.GetComponent<Deployable>()) continue;
+                                numberOfClovers += chrm?.inventory?.GetItemCount(regIndex) ?? 0;
+                            }
+                        else
+                            numberOfClovers += count;
+                        return Math.Min(baseUnc + (numberOfClovers-1) * stackUnc, capUnc);
+                    },
+					(value,inv,master)=>{return $"T2 Upgrade Chance: {Pct(value,2,1f)}";}),
                     
-					    ((count,inv,master)=>{
-                            float numberOfClovers = 0;
-                            if(globalStack)
-                                foreach(CharacterMaster chrm in AliveList()) {
-			                        if(!inclDeploys && chrm.GetComponent<Deployable>()) continue;
-                                    numberOfClovers += chrm?.inventory?.GetItemCount(regIndex) ?? 0;
-                                }
-                            else
-                                numberOfClovers += count;
-                            return Math.Min(baseRare + (numberOfClovers-1) * stackRare, capRare);
-                        },
-					    (value,inv,master)=>{return $"T3 Upgrade Chance: {Pct(value,3,1f)}";})
-                        );
-			    }
-            };
+					((count,inv,master)=>{
+                        float numberOfClovers = 0;
+                        if(globalStack)
+                            foreach(CharacterMaster chrm in AliveList()) {
+			                    if(!inclDeploys && chrm.GetComponent<Deployable>()) continue;
+                                numberOfClovers += chrm?.inventory?.GetItemCount(regIndex) ?? 0;
+                            }
+                        else
+                            numberOfClovers += count;
+                        return Math.Min(baseRare + (numberOfClovers-1) * stackRare, capRare);
+                    },
+					(value,inv,master)=>{return $"T3 Upgrade Chance: {Pct(value,3,1f)}";})
+                    );
+			}
         }
 
-        protected override void LoadBehavior() {
+        public override void Install() {
+            base.Install();
             On.RoR2.DeathRewards.OnKilledServer += On_DROnKilledServer;
         }
 
-        protected override void UnloadBehavior() {
+        public override void Uninstall() {
+            base.Uninstall();
             On.RoR2.DeathRewards.OnKilledServer -= On_DROnKilledServer;
         }
 
@@ -149,7 +149,7 @@ namespace ThinkInvisible.ClassicItems {
                     else
                         tier = 0;
                 }
-                SpawnItemFromBody(victimBody, tier, itemRng);
+                SpawnItemFromBody(victimBody, tier, rng);
             }
         }
     }
