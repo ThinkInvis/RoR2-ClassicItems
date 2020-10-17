@@ -150,26 +150,11 @@ namespace ThinkInvisible.ClassicItems {
             Logger.LogDebug("Loading item configs...");
             foreach(CatalogBoilerplate x in masterItemList) {
                 x.SetupConfig();
-                x.ConfigEntryChanged += (sender, args) => {
-                    if((args.flags & AutoUpdateEventFlags_V2.InvalidateLanguage) == 0) return;
-                    if(x.pickupDef != null) {
-                        var ctsf = x.pickupDef.displayPrefab?.transform;
-                        if(!ctsf) return;
-                        var cfront = ctsf.Find("cardfront");
-                        if(!cfront) return;
-
-                        cfront.Find("carddesc").GetComponent<TextMeshPro>().text = Language.GetString(globalConfig.longDesc ? x.descToken : x.pickupToken);
-                        cfront.Find("cardname").GetComponent<TextMeshPro>().text = Language.GetString(x.nameToken);
-                    }
-                    if(x.logbookEntry != null) {
-                        x.logbookEntry.modelPrefab = x.pickupDef.displayPrefab;
-                    }
-                };
+                x.ConfigEntryChanged += CardModelConfigUpdateHook;
             }
 
             Logger.LogDebug("Registering item attributes...");
             
-            int longestName = 0;
             foreach(CatalogBoilerplate x in masterItemList) {
                 string mpnOvr = null;
                 if(x is Item_V2 item) mpnOvr = "@ClassicItems:Assets/ClassicItems/models/" + modelNameMap[item.itemTier] + ".prefab";
@@ -182,7 +167,6 @@ namespace ThinkInvisible.ClassicItems {
                 }
                 
                 x.SetupAttributes();
-                if(x.name.Length > longestName) longestName = x.name.Length;
             }
 
             Logger.LogDebug("Tweaking vanilla stuff...");
@@ -227,6 +211,23 @@ namespace ThinkInvisible.ClassicItems {
             }
 
             Logger.LogDebug("Initial setup done!");
+        }
+
+        private void CardModelConfigUpdateHook(object sender, AutoUpdateEventArgs_V2 args) {
+            if((args.flags & AutoUpdateEventFlags_V2.InvalidateLanguage) == 0) return;
+            var x = sender as CatalogBoilerplate;
+            if(x.pickupDef != null) {
+                var ctsf = x.pickupDef.displayPrefab?.transform;
+                if(!ctsf) return;
+                var cfront = ctsf.Find("cardfront");
+                if(!cfront) return;
+
+                cfront.Find("carddesc").GetComponent<TextMeshPro>().text = Language.GetString(globalConfig.longDesc ? x.descToken : x.pickupToken);
+                cfront.Find("cardname").GetComponent<TextMeshPro>().text = Language.GetString(x.nameToken);
+            }
+            if(x.logbookEntry != null) {
+                x.logbookEntry.modelPrefab = x.pickupDef.displayPrefab;
+            }
         }
 
         private void Start() {
