@@ -8,7 +8,7 @@ namespace ThinkInvisible.ClassicItems {
         public override string displayName => "Permafrost";
 		public override ItemTier itemTier => ItemTier.Tier3;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
-        public override bool itemAIB {get; protected set;} = true;
+        public override bool itemIsAIBlacklisted {get; protected set;} = true;
         
         [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("Percent chance of triggering Permafrost on hit. Affected by proc coefficient; stacks hyperbolically.", AutoConfigFlags.None, 0f, 100f)]
@@ -25,20 +25,20 @@ namespace ThinkInvisible.ClassicItems {
         [AutoConfig("If true, Permafrost will slow targets even if they can't be frozen.")]
         public bool slowUnfreezable {get;private set;} = true;
         
-        protected override string NewLangName(string langid = null) => displayName;
-        protected override string NewLangPickup(string langid = null) => "Chance to freeze enemies on hit.";
-        protected override string NewLangDesc(string langid = null) => "<style=cIsUtility>" + Pct(procChance,1,1) + "</style> <style=cStack>(+" + Pct(procChance,1,1) + " per stack, hyperbolic)</style> chance to <style=cIsUtility>freeze and slow</style> an enemy (" + freezeTime.ToString("N1") + "s and " + slowTime.ToString("N1") + "s respectively). Affected by proc coefficient.";
-        protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetNameString(string langid = null) => displayName;
+        protected override string GetPickupString(string langid = null) => "Chance to freeze enemies on hit.";
+        protected override string GetDescString(string langid = null) => "<style=cIsUtility>" + Pct(procChance,1,1) + "</style> <style=cStack>(+" + Pct(procChance,1,1) + " per stack, hyperbolic)</style> chance to <style=cIsUtility>freeze and slow</style> an enemy (" + freezeTime.ToString("N1") + "s and " + slowTime.ToString("N1") + "s respectively). Affected by proc coefficient.";
+        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
         public override void SetupBehavior() {
             base.SetupBehavior();
             if(Compat_ItemStats.enabled) {
-				Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+				Compat_ItemStats.CreateItemStatDef(itemDef,
 					((count,inv,master)=>{return Util.ConvertAmplificationPercentageIntoReductionPercentage(procChance * count);},
 					(value,inv,master)=>{return $"Freeze Chance: {Pct(value, 1, 1f)}";}));
 			}
             if(Compat_BetterUI.enabled)
-                Compat_BetterUI.AddEffect(regIndex, procChance, procChance, Compat_BetterUI.ChanceFormatter, Compat_BetterUI.HyperbolicStacking);
+                Compat_BetterUI.AddEffect(catalogIndex, procChance, procChance, Compat_BetterUI.ChanceFormatter, Compat_BetterUI.HyperbolicStacking);
         }
 
         public override void Install() {

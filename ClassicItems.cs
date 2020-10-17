@@ -41,7 +41,7 @@ namespace ThinkInvisible.ClassicItems {
 
         private static ConfigFile cfgFile;
         
-        internal static FilingDictionary<ItemBoilerplate_V2> masterItemList = new FilingDictionary<ItemBoilerplate_V2>();
+        internal static FilingDictionary<CatalogBoilerplate> masterItemList = new FilingDictionary<CatalogBoilerplate>();
         
         public class GlobalConfig:AutoConfigContainer {
             [AutoConfig("If true, removes the hold-space-to-stomp functionality of H3AD-5T V2 (due to overlap in functionality with ClassicItems Headstompers). H3AD-5T V2 will still increase jump height and prevent fall damage.",
@@ -140,7 +140,7 @@ namespace ThinkInvisible.ClassicItems {
             };
 
             Logger.LogDebug("Instantiating item classes...");
-            masterItemList = T2Module.InitAll<ItemBoilerplate_V2>(new T2Module.ModInfo {
+            masterItemList = T2Module.InitAll<CatalogBoilerplate>(new T2Module.ModInfo {
                 displayName = "Classic Items",
                 longIdentifier = "ClassicItems",
                 shortIdentifier = "CI",
@@ -148,7 +148,7 @@ namespace ThinkInvisible.ClassicItems {
             });
 
             Logger.LogDebug("Loading item configs...");
-            foreach(ItemBoilerplate_V2 x in masterItemList) {
+            foreach(CatalogBoilerplate x in masterItemList) {
                 x.SetupConfig();
                 x.ConfigEntryChanged += (sender, args) => {
                     if((args.flags & AutoUpdateEventFlags_V2.InvalidateLanguage) == 0) return;
@@ -170,31 +170,19 @@ namespace ThinkInvisible.ClassicItems {
             Logger.LogDebug("Registering item attributes...");
             
             int longestName = 0;
-            foreach(ItemBoilerplate_V2 x in masterItemList) {
+            foreach(CatalogBoilerplate x in masterItemList) {
                 string mpnOvr = null;
                 if(x is Item_V2 item) mpnOvr = "@ClassicItems:Assets/ClassicItems/models/" + modelNameMap[item.itemTier] + ".prefab";
                 else if(x is Equipment_V2 eqp) mpnOvr = "@ClassicItems:Assets/ClassicItems/models/" + (eqp.isLunar ? "LqpCard.prefab" : "EqpCard.prefab");
                 var ipnOvr = "@ClassicItems:Assets/ClassicItems/icons/" + x.name + "_icon.png";
 
                 if(mpnOvr != null) {
-                    typeof(ItemBoilerplate_V2).GetProperty(nameof(ItemBoilerplate_V2.modelPathName)).SetValue(x, mpnOvr);
-                    typeof(ItemBoilerplate_V2).GetProperty(nameof(ItemBoilerplate_V2.iconPathName)).SetValue(x, ipnOvr);
+                    typeof(CatalogBoilerplate).GetProperty(nameof(CatalogBoilerplate.modelResourcePath)).SetValue(x, mpnOvr);
+                    typeof(CatalogBoilerplate).GetProperty(nameof(CatalogBoilerplate.iconResourcePath)).SetValue(x, ipnOvr);
                 }
                 
                 x.SetupAttributes();
                 if(x.name.Length > longestName) longestName = x.name.Length;
-            }
-            
-            Logger.LogMessage("Index dump follows (pairs of name / index):");
-            foreach(ItemBoilerplate_V2 x in masterItemList) {
-                if(x is Equipment_V2 eqp)
-                    Logger.LogMessage("Equipment CI"+x.name.PadRight(longestName) + " / "+((int)eqp.regIndex).ToString());
-                else if(x is Item_V2 item)
-                    Logger.LogMessage("     Item CI"+x.name.PadRight(longestName) + " / "+((int)item.regIndex).ToString());
-                else if(x is Artifact_V2 afct)
-                    Logger.LogMessage(" Artifact CI"+x.name.PadRight(longestName) + " / "+((int)afct.regIndex).ToString());
-                else
-                    Logger.LogMessage("    Other CI"+x.name.PadRight(longestName) + " / N/A");
             }
 
             Logger.LogDebug("Tweaking vanilla stuff...");
@@ -234,7 +222,7 @@ namespace ThinkInvisible.ClassicItems {
 
             Logger.LogDebug("Registering item behaviors...");
 
-            foreach(ItemBoilerplate_V2 x in masterItemList) {
+            foreach(CatalogBoilerplate x in masterItemList) {
                 x.SetupBehavior();
             }
 
@@ -248,6 +236,8 @@ namespace ThinkInvisible.ClassicItems {
             T2Module.SetupAll_PluginStart(masterItemList);
 
             Logger.LogDebug("Late setup done!");
+
+            CatalogBoilerplate.ConsoleDump(Logger, masterItemList);
         }
 
         private void IL_ESAIWalkerCombatUpdateAI(ILContext il) {

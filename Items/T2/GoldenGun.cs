@@ -32,10 +32,10 @@ namespace ThinkInvisible.ClassicItems {
         private bool ilFailed = false;
         
         public BuffIndex goldenGunBuff {get;private set;}
-        protected override string NewLangName(string langid = null) => displayName;
-        protected override string NewLangPickup(string langid = null) => "More gold, more damage.";
-        protected override string NewLangDesc(string langid = null) => "Deal <style=cIsDamage>bonus damage</style> based on your <style=cIsUtility>money</style>, up to <style=cIsDamage>" + Pct(damageBoost) + "</style> at <style=cIsUtility>$" + goldAmt.ToString("N0") + "</style> <style=cStack>(cost increases with difficulty, -" + Pct(goldReduc) + " per stack)</style>.";
-        protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetNameString(string langid = null) => displayName;
+        protected override string GetPickupString(string langid = null) => "More gold, more damage.";
+        protected override string GetDescString(string langid = null) => "Deal <style=cIsDamage>bonus damage</style> based on your <style=cIsUtility>money</style>, up to <style=cIsDamage>" + Pct(damageBoost) + "</style> at <style=cIsUtility>$" + goldAmt.ToString("N0") + "</style> <style=cStack>(cost increases with difficulty, -" + Pct(goldReduc) + " per stack)</style>.";
+        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
         public override void SetupAttributes() {
             base.SetupAttributes();
@@ -53,7 +53,7 @@ namespace ThinkInvisible.ClassicItems {
         public override void SetupBehavior() {
             base.SetupBehavior();
             if(Compat_ItemStats.enabled) {
-                Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+                Compat_ItemStats.CreateItemStatDef(itemDef,
                     ((count, inv, master) => {
                         return Run.instance.GetDifficultyScaledCost(goldAmt) * Mathf.Pow(goldReduc, count - 1);
                     },

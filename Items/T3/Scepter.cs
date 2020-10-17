@@ -26,13 +26,13 @@ namespace ThinkInvisible.ClassicItems {
         public override string displayName => "Ancient Scepter";
 		public override ItemTier itemTier => ItemTier.Tier3;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Any});
-        public override bool itemAIB {get; protected set;} = true;
+        public override bool itemIsAIBlacklisted {get; protected set;} = true;
 
-        protected override string NewLangName(string langid = null) => displayName;
-        protected override string NewLangPickup(string langid = null) => "Upgrades one of your skills.";
-        protected override string NewLangDesc(string langid = null) => "While held, one of your selected character's <style=cIsUtility>skills</style> <style=cStack>(unique per character)</style> becomes a <style=cIsUtility>more powerful version</style>."
+        protected override string GetNameString(string langid = null) => displayName;
+        protected override string GetPickupString(string langid = null) => "Upgrades one of your skills.";
+        protected override string GetDescString(string langid = null) => "While held, one of your selected character's <style=cIsUtility>skills</style> <style=cStack>(unique per character)</style> becomes a <style=cIsUtility>more powerful version</style>."
             + $" <style=cStack>{(rerollExtras ? "Extra/unusable" : "Unusable (but NOT extra)")} pickups will reroll into other red items.</style>";
-        protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
         
         [AutoConfig("If true, TR12-C Gauss Compact will recharge faster to match the additional stock.")]
         public bool engiTurretAdjustCooldown {get; private set;} = false;
@@ -108,7 +108,7 @@ namespace ThinkInvisible.ClassicItems {
         public override void SetupBehavior() {
             base.SetupBehavior();
 
-            FakeInventory.blacklist.Add(regIndex);
+            FakeInventory.blacklist.Add(catalogIndex);
         }
 
         public override void Install() {
@@ -161,7 +161,7 @@ namespace ThinkInvisible.ClassicItems {
             if(stridesInteractionMode != StridesInteractionMode.ScepterTakesPrecedence
                 || skillDef.skillIndex != CharacterBody.CommonAssets.lunarUtilityReplacementSkillDef.skillIndex
                 || !(source is CharacterBody body)
-                || body.inventory.GetItemCount(regIndex) < 1
+                || body.inventory.GetItemCount(catalogIndex) < 1
                 || handlingOverride)
                 orig(self, source, skillDef, priority);
             else {
@@ -226,7 +226,7 @@ namespace ThinkInvisible.ClassicItems {
             if(count <= 0) return;
             var list = Run.instance.availableTier3DropList.Except(new[] {pickupIndex}).ToList();
             for(var i = 0; i < count; i++) {
-                self.inventory.RemoveItem(regIndex, 1);
+                self.inventory.RemoveItem(catalogIndex, 1);
                 self.inventory.GiveItem(PickupCatalog.GetPickupDef(list[UnityEngine.Random.Range(0, list.Count)]).itemIndex);
             }
         }

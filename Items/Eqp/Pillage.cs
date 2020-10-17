@@ -8,27 +8,27 @@ namespace ThinkInvisible.ClassicItems {
     public class Pillage : Equipment_V2<Pillage> {
         public override string displayName => "Pillaged Gold";
 
-        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage | AutoUpdateEventFlags_V2.InvalidatePickupToken)]
+        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("Duration of the buff applied by Pillaged Gold.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float duration {get;private set;} = 14f;
 
         public BuffIndex pillageBuff {get;private set;}
-        protected override string NewLangName(string langid = null) => displayName;
-        protected override string NewLangPickup(string langid = null) => "For " + duration.ToString("N0") + " seconds, hitting enemies cause them to drop gold.";
-        protected override string NewLangDesc(string langid = null) => "While active, every hit <style=cIsUtility>drops 1 gold</style> (scales with difficulty). Lasts <style=cIsUtility>" + duration.ToString("N0") + " seconds</style>.";
-        protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetNameString(string langid = null) => displayName;
+        protected override string GetPickupString(string langid = null) => "For " + duration.ToString("N0") + " seconds, hitting enemies cause them to drop gold.";
+        protected override string GetDescString(string langid = null) => "While active, every hit <style=cIsUtility>drops 1 gold</style> (scales with difficulty). Lasts <style=cIsUtility>" + duration.ToString("N0") + " seconds</style>.";
+        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
-        public Pillage() {
-            onAttrib += (tokenIdent, namePrefix) => {
-                var pillageBuffDef = new R2API.CustomBuff(new BuffDef {
-                    buffColor = new Color(0.85f, 0.8f, 0.3f),
-                    canStack = true,
-                    isDebuff = false,
-                    name = namePrefix + "PillagedGold",
-                    iconPath = "@ClassicItems:Assets/ClassicItems/icons/pillage_icon.png"
-                });
-                pillageBuff = R2API.BuffAPI.Add(pillageBuffDef);
-            };
+        public override void SetupAttributes() {
+            base.SetupAttributes();
+
+            var pillageBuffDef = new R2API.CustomBuff(new BuffDef {
+                buffColor = new Color(0.85f, 0.8f, 0.3f),
+                canStack = true,
+                isDebuff = false,
+                name = modInfo.shortIdentifier + "PillagedGold",
+                iconPath = "@ClassicItems:Assets/ClassicItems/icons/pillage_icon.png"
+            });
+            pillageBuff = R2API.BuffAPI.Add(pillageBuffDef);
         }
 
         public override void Install() {
@@ -47,7 +47,7 @@ namespace ThinkInvisible.ClassicItems {
             }
         }*/ //TODO: update buff timers. will require a lot of reflection
 
-        protected override bool OnEquipUseInner(EquipmentSlot slot) {
+        protected override bool PerformEquipmentAction(EquipmentSlot slot) {
             var sbdy = slot.characterBody;
             if(!sbdy) return false;
             sbdy.ClearTimedBuffs(pillageBuff);

@@ -19,21 +19,21 @@ namespace ThinkInvisible.ClassicItems {
         [AutoConfig("Cap for health multiplier gained from Bitter Root.", AutoConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float healthCap {get; private set;} = 3f;
 
-        protected override string NewLangName(string langid = null) => displayName;        
-        protected override string NewLangPickup(string langid = null) => "Gain " + Pct(healthMult) + " max hp.";
-        protected override string NewLangDesc(string langid = null) {
+        protected override string GetNameString(string langid = null) => displayName;        
+        protected override string GetPickupString(string langid = null) => "Gain " + Pct(healthMult) + " max hp.";
+        protected override string GetDescString(string langid = null) {
             string desc = $"Increases <style=cIsHealing>health</style> by <style=cIsHealing>{Pct(healthMult)}</style>";
             if(healthMult > 0f) desc += $" <style=cStack>(+{Pct(healthMult)} per stack, linear)</style>";
             desc += $", up to a <style=cIsHealing>maximum</style> of <style=cIsHealing>+{Pct(healthCap)}</style>.";
             return desc;
         }
-        protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
         public override void SetupBehavior() {
             base.SetupBehavior();
 
             if(Compat_ItemStats.enabled) {
-                Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+                Compat_ItemStats.CreateItemStatDef(itemDef,
                     ((count, inv, master) => {
                         return Math.Min(count * healthMult, healthCap);
                     },

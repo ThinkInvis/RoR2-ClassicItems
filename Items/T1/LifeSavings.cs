@@ -9,7 +9,7 @@ using static TILER2.MiscUtil;
 namespace ThinkInvisible.ClassicItems {
     public class LifeSavings : Item_V2<LifeSavings> {
         public override string displayName => "Life Savings";
-        public override bool itemAIB {get; protected set;} = true;
+        public override bool itemIsAIBlacklisted {get; protected set;} = true;
         public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
 
@@ -29,16 +29,16 @@ namespace ThinkInvisible.ClassicItems {
             AutoConfigFlags.PreventNetMismatch)]
         public bool ignoreTimestop {get;private set;} = false;
 
-        protected override string NewLangName(string langid = null) => displayName;
-        protected override string NewLangPickup(string langid = null) => "Earn gold over time.";
-        protected override string NewLangDesc(string langid = null) => "Generates <style=cIsUtility>$" + gainPerSec.ToString("N0") + "</style> <style=cStack>(+$" + gainPerSec.ToString("N0") + " per stack)</style> every second. <style=cStack>Generates less below " + invertCount.ToString("N0") + " stacks.</style>";
-        protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetNameString(string langid = null) => displayName;
+        protected override string GetPickupString(string langid = null) => "Earn gold over time.";
+        protected override string GetDescString(string langid = null) => "Generates <style=cIsUtility>$" + gainPerSec.ToString("N0") + "</style> <style=cStack>(+$" + gainPerSec.ToString("N0") + " per stack)</style> every second. <style=cStack>Generates less below " + invertCount.ToString("N0") + " stacks.</style>";
+        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
         public override void SetupBehavior() {
             base.SetupBehavior();
 
             if(Compat_ItemStats.enabled) {
-                Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+                Compat_ItemStats.CreateItemStatDef(itemDef,
                     ((count, inv, master) => { return LifeSavingsComponent.CalculateMoneyIncrease(Mathf.FloorToInt(count)); },
                     (value, inv, master) => { return $"Money Per Second: ${value.ToString("N1")}"; }
                 ));
@@ -112,7 +112,7 @@ namespace ThinkInvisible.ClassicItems {
         public void ServerUpdateIcnt() {
             var body = this.gameObject.GetComponent<CharacterBody>();
             icnt = LifeSavings.instance.GetCount(body);
-            if(LifeSavings.instance.inclDeploys && body.master) icnt += LifeSavings.instance.GetCountOnDeploys(body.master);
+            if(LifeSavings.instance.inclDeploys && body.master) icnt += LifeSavings.instance.GetCountOnDeployables(body.master);
         }
 
         internal static float CalculateMoneyIncrease(int count) {

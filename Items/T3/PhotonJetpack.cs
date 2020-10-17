@@ -9,7 +9,7 @@ namespace ThinkInvisible.ClassicItems {
         public override string displayName => "Photon Jetpack";
 		public override ItemTier itemTier => ItemTier.Tier3;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
-        public override bool itemAIB {get; protected set;} = true;
+        public override bool itemIsAIBlacklisted {get; protected set;} = true;
 
         public BuffIndex photonFuelBuff {get;private set;}
         
@@ -37,15 +37,15 @@ namespace ThinkInvisible.ClassicItems {
         [AutoConfig("Added to Photon Jetpack's GravMod while the character is falling (negative vertical velocity) to assist in stopping falls.",AutoConfigFlags.PreventNetMismatch,0f,float.MaxValue)]
         public float fallBoost {get;private set;} = 2.0f;
 
-        protected override string NewLangName(string langid = null) => displayName;
-        protected override string NewLangPickup(string langid = null) => "No hands.";
-        protected override string NewLangDesc(string langid = null) {
+        protected override string GetNameString(string langid = null) => displayName;
+        protected override string GetPickupString(string langid = null) => "No hands.";
+        protected override string GetDescString(string langid = null) {
             string desc = "Grants <style=cIsUtility>" + baseFuel.ToString("N1") + " second" + NPlur(baseFuel, 1) + "</style>";
             if(stackFuel > 0f) desc += "<style=cStack>(+" + stackFuel.ToString("N1") + " seconds per stack)</style>";
             desc += " of <style=cIsUtility>flight</style> at <style=cIsUtility>" + gravMod.ToString("N1") + "·g</style> <style=cStack>(+" + fallBoost.ToString("N1") + "·g while falling)</style>, usable once you have no double jumps remaining. Fuel <style=cIsUtility>recharges</style> at <style=cIsUtility>" + Pct(rchRate) + " speed</style> after a <style=cIsUtility>delay</style> of <style=cIsUtility>" + rchDelay.ToString("N0") + " second" + NPlur(rchDelay) + "</style>.";
             return desc;
         }
-        protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
         public override void SetupAttributes() {
             base.SetupAttributes();
@@ -64,7 +64,7 @@ namespace ThinkInvisible.ClassicItems {
             base.SetupBehavior();
 
             if(Compat_ItemStats.enabled) {
-                Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+                Compat_ItemStats.CreateItemStatDef(itemDef,
                     ((count, inv, master) => { return baseFuel + (count - 1) * stackFuel; },
                     (value, inv, master) => { return $"Fuel: {value.ToString("N1")} s"; }
                 ));

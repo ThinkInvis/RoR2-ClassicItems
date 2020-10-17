@@ -27,10 +27,10 @@ namespace ThinkInvisible.ClassicItems {
 
         public BuffIndex snakeEyesBuff {get;private set;}
 
-        protected override string NewLangName(string langid = null) => displayName;
-        protected override string NewLangPickup(string langid = null) => "Gain increased crit chance on failing a shrine. Removed on succeeding a shrine.";
-        protected override string NewLangDesc(string langid = null) => "Increases <style=cIsDamage>crit chance</style> by <style=cIsDamage>" + Pct(critAdd, 0, 1) + "</style> <style=cStack>(+" + Pct(critAdd, 0, 1) + " per stack, linear)</style> for up to <style=cIsUtility>" + stackCap + "</style> consecutive <style=cIsUtility>chance shrine failures</style>. <style=cIsDamage>Resets to 0</style> on any <style=cIsUtility>chance shrine success</style>.";
-        protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetNameString(string langid = null) => displayName;
+        protected override string GetPickupString(string langid = null) => "Gain increased crit chance on failing a shrine. Removed on succeeding a shrine.";
+        protected override string GetDescString(string langid = null) => "Increases <style=cIsDamage>crit chance</style> by <style=cIsDamage>" + Pct(critAdd, 0, 1) + "</style> <style=cStack>(+" + Pct(critAdd, 0, 1) + " per stack, linear)</style> for up to <style=cIsUtility>" + stackCap + "</style> consecutive <style=cIsUtility>chance shrine failures</style>. <style=cIsDamage>Resets to 0</style> on any <style=cIsUtility>chance shrine success</style>.";
+        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
         public override void SetupAttributes() {
             base.SetupAttributes();
@@ -49,7 +49,7 @@ namespace ThinkInvisible.ClassicItems {
             base.SetupBehavior();
 
             if(Compat_ItemStats.enabled) {
-                Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+                Compat_ItemStats.CreateItemStatDef(itemDef,
                     ((count, inv, master) => { return critAdd * count; },
                     (value, inv, master) => { return $"Crit Chance Per Shrine Fail: {Pct(value, 1, 1)}"; }
                 ));

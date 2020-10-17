@@ -29,9 +29,9 @@ namespace ThinkInvisible.ClassicItems {
         [AutoConfig("If true, damage to shield and barrier (from e.g. Personal Shield Generator, Topaz Brooch) will not count towards triggering Fire Shield.")]
         public bool requireHealth {get; private set;} = true;
 
-        protected override string NewLangName(string langid = null) => displayName;
-        protected override string NewLangPickup(string langid = null) => "Retaliate on taking heavy damage.";
-        protected override string NewLangDesc(string langid = null) {
+        protected override string GetNameString(string langid = null) => displayName;
+        protected override string GetPickupString(string langid = null) => "Retaliate on taking heavy damage.";
+        protected override string GetDescString(string langid = null) {
             string desc = $"<style=cDeath>When hit";
             if(healthThreshold > 0f) desc += $" for more than {Pct(healthThreshold)} of max health";
             desc += $"</style>, <style=cIsDamage>explode</style> for up to <style=cIsDamage>{Pct(baseDmg)}</style>";
@@ -39,13 +39,13 @@ namespace ThinkInvisible.ClassicItems {
             desc += $" damage to enemies within <style=cIsDamage>{baseRadius:N0} m</style>.";
             return desc;
         }
-        protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
         public override void SetupBehavior() {
             base.SetupBehavior();
 
             if(Compat_ItemStats.enabled) {
-                Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+                Compat_ItemStats.CreateItemStatDef(itemDef,
                     ((count, inv, master) => {
                         return baseDmg + (count - 1) * stackDmg;
                     },

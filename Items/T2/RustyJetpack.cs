@@ -19,16 +19,16 @@ namespace ThinkInvisible.ClassicItems {
         [AutoConfig("Amount added to jump power per stack.", AutoConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float jumpMult {get;private set;} = 0.1f;
 
-        protected override string NewLangName(string langid = null) => displayName;        
-        protected override string NewLangPickup(string langid = null) => "Increase jump height and reduce gravity.";        
-        protected override string NewLangDesc(string langid = null) => "<style=cIsUtility>Reduces gravity</style> by <style=cIsUtility>" + Pct(gravMod) + "</style> while <style=cIsUtility>holding jump</style>. Increases <style=cIsUtility>jump power</style> by <style=cIsUtility>" + Pct(jumpMult) + "</style> <style=cStack>(+" + Pct(jumpMult)  + " per stack, linear)</style>.";        
-        protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetNameString(string langid = null) => displayName;        
+        protected override string GetPickupString(string langid = null) => "Increase jump height and reduce gravity.";        
+        protected override string GetDescString(string langid = null) => "<style=cIsUtility>Reduces gravity</style> by <style=cIsUtility>" + Pct(gravMod) + "</style> while <style=cIsUtility>holding jump</style>. Increases <style=cIsUtility>jump power</style> by <style=cIsUtility>" + Pct(jumpMult) + "</style> <style=cStack>(+" + Pct(jumpMult)  + " per stack, linear)</style>.";        
+        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
         public override void SetupBehavior() {
             base.SetupBehavior();
 
 			if(Compat_ItemStats.enabled) {
-				Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+				Compat_ItemStats.CreateItemStatDef(itemDef,
 					((count,inv,master)=>{return jumpMult*count;},
 					(value,inv,master)=>{return $"Jump Power: +{value.ToString("N1")}";}));
 			}

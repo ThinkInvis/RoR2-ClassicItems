@@ -30,21 +30,21 @@ namespace ThinkInvisible.ClassicItems {
         public bool slowUnfreezable {get;private set;} = true;
 
         private GameObject snowglobeControllerPrefab;
-        protected override string NewLangName(string langid = null) => displayName;
-        protected override string NewLangPickup(string langid = null) {
+        protected override string GetNameString(string langid = null) => displayName;
+        protected override string GetPickupString(string langid = null) {
             string desc = "";
             if(procRate > 0f) desc += $"Randomly freeze enemies";
             else desc += $"Slow enemies";
             desc += " for {duration:N0} seconds.";
             return desc;
         }
-        protected override string NewLangDesc(string langid = null) {
+        protected override string GetDescString(string langid = null) {
             string desc = "Summon a snowstorm that";
             desc += $" <style=cIsUtility>{(procRate>0f ? "freezes" : "slows")}</style> monsters at a <style=cIsUtility>{Pct(procRate, 1, 1)}/second chance ";
             desc += $"over {duration:N0} seconds</style>.";
             return desc;
         }
-        protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
         public override void SetupConfig() {
             base.SetupConfig();
@@ -91,7 +91,7 @@ namespace ThinkInvisible.ClassicItems {
             UnityEngine.Object.Destroy(ctrlPfb2);
         }
 
-        protected override bool OnEquipUseInner(EquipmentSlot slot) {
+        protected override bool PerformEquipmentAction(EquipmentSlot slot) {
             if(!slot.characterBody || !slot.characterBody.teamComponent) return false;
             var ctrlInst = UnityEngine.Object.Instantiate(snowglobeControllerPrefab, slot.characterBody.corePosition, Quaternion.identity);
             ctrlInst.GetComponent<SnowglobeController>().myTeam = slot.characterBody.teamComponent.teamIndex;

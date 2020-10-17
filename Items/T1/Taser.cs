@@ -22,27 +22,27 @@ namespace ThinkInvisible.ClassicItems {
         [AutoConfig("Duration of root applied per additional Taser stack.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float stackTime {get;private set;} = 0.5f;
 
-        protected override string NewLangName(string langid = null) => displayName;
-        protected override string NewLangPickup(string langid = null) => "Chance to snare on hit.";
-        protected override string NewLangDesc(string langid = null) {
+        protected override string GetNameString(string langid = null) => displayName;
+        protected override string GetPickupString(string langid = null) => "Chance to snare on hit.";
+        protected override string GetDescString(string langid = null) {
             string desc = "<style=cIsUtility>" + Pct(procChance, 0, 1) + "</style> chance to <style=cIsUtility>entangle</style> an enemy for <style=cIsUtility>" + procTime.ToString("N1") + " seconds</style>";
             if(stackTime > 0f) desc += $" <style=cStack>(+{stackTime:N1} per stack)</style>";
             desc += ".";
             return desc;
         }
-        protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
         public override void SetupBehavior() {
             base.SetupBehavior();
 
             if(Compat_ItemStats.enabled) {
-                Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+                Compat_ItemStats.CreateItemStatDef(itemDef,
                     ((count, inv, master) => { return procTime + (count - 1) * stackTime; },
                     (value, inv, master) => { return $"Duration: {value.ToString("N1")} s"; }
                 ));
             }
             if(Compat_BetterUI.enabled)
-                Compat_BetterUI.AddEffect(regIndex, procChance, null, Compat_BetterUI.ChanceFormatter, Compat_BetterUI.NoStacking);
+                Compat_BetterUI.AddEffect(catalogIndex, procChance, null, Compat_BetterUI.ChanceFormatter, Compat_BetterUI.NoStacking);
         }
 
         public override void Install() {

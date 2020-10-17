@@ -15,7 +15,7 @@ namespace ThinkInvisible.ClassicItems {
     public static class EmbryoExtensions {
         public static bool CheckEmbryoProc(this Equipment_V2 eqp, CharacterBody body) {
             bool isIntExist = Embryo.instance.subEnableInternalGet.TryGetValue(eqp, out bool isIntEnab);
-            bool isExtEnab = Embryo.instance.subEnableExt.Contains(eqp.regIndex);
+            bool isExtEnab = Embryo.instance.subEnableExt.Contains(eqp.catalogIndex);
             return Embryo.instance.enabled && ((isIntExist && isIntEnab) || isExtEnab) && Util.CheckRoll(Embryo.instance.GetCount(body)*Embryo.instance.procChance, body.master);
         }
     }
@@ -77,7 +77,7 @@ namespace ThinkInvisible.ClassicItems {
         });
 
         public override void SetupConfig() {
-            foreach(ItemBoilerplate_V2 bpl in ClassicItemsPlugin.masterItemList) {
+            foreach(CatalogBoilerplate bpl in ClassicItemsPlugin.masterItemList) {
                 if(!(bpl is Equipment_V2)) continue;
                 Equipment_V2 eqp = (Equipment_V2)bpl;
                 subEnableInternal.Add(eqp, !eqp.isLunar);
@@ -118,17 +118,17 @@ namespace ThinkInvisible.ClassicItems {
             base.SetupBehavior();
 
             if(Compat_ItemStats.enabled) {
-                Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+                Compat_ItemStats.CreateItemStatDef(itemDef,
                     ((count, inv, master) => { return procChance * count; },
                     (value, inv, master) => { return $"Proc Chance: {Pct(value, 1, 1)}"; }
                 ));
             }
         }
 
-        protected override string NewLangName(string langid = null) => displayName;        
-        protected override string NewLangPickup(string langid = null) => $"Equipment has a {Pct(procChance, 0, 1)} chance to deal double the effect.";        
-        protected override string NewLangDesc(string langid = null) => "Upon activating an equipment, adds a <style=cIsUtility>" + Pct(procChance, 0, 1) + "</style> <style=cStack>(+" + Pct(procChance, 0, 1) + " per stack)</style> chance to <style=cIsUtility>double its effects somehow</style>.";        
-        protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetNameString(string langid = null) => displayName;        
+        protected override string GetPickupString(string langid = null) => $"Equipment has a {Pct(procChance, 0, 1)} chance to deal double the effect.";        
+        protected override string GetDescString(string langid = null) => "Upon activating an equipment, adds a <style=cIsUtility>" + Pct(procChance, 0, 1) + "</style> <style=cStack>(+" + Pct(procChance, 0, 1) + " per stack)</style> chance to <style=cIsUtility>double its effects somehow</style>.";        
+        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
         private bool ILFailed = false;
 
@@ -210,7 +210,7 @@ namespace ThinkInvisible.ClassicItems {
             var retv = orig(slot, ind);
             if(subEnableExt.Contains(ind)) return retv;
             foreach(Equipment_V2 bpl in ClassicItemsPlugin.masterItemList.OfType<Equipment_V2>()) {
-                if(bpl.enabled && ind == bpl.regIndex) return retv; //Embryo is handled in individual item code for CI items
+                if(bpl.enabled && ind == bpl.catalogIndex) return retv; //Embryo is handled in individual item code for CI items
             }
             if(slot.characterBody && Util.CheckRoll(GetCount(slot.characterBody)*procChance)) {
                 if((simpleDoubleEqps.Contains(ind) && subEnable[ind])

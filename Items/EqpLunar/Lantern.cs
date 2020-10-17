@@ -25,20 +25,20 @@ namespace ThinkInvisible.ClassicItems {
         private GameObject lanternWardPrefab;
 
 		public override bool isLunar => true;
-        protected override string NewLangName(string langid = null) => displayName;
-		protected override string NewLangPickup(string langid = null) {
+        protected override string GetNameString(string langid = null) => displayName;
+		protected override string GetPickupString(string langid = null) {
 			string desc = "Drop a lantern that fears";
 			if(damage > 0f) desc += " and damages";
 			desc += $" enemies for {duration:N0} seconds.";
 			return desc;
 		}
-		protected override string NewLangDesc(string langid = null) {
+		protected override string GetDescString(string langid = null) {
 			string desc = $"Sets a {range:N0}-meter, {duration:N0}-second AoE which <style=cIsUtility>fears enemies</style>";
 			if(damage > 0f) desc += $" and deals <style=cIsDamage>{Pct(damage)} damage per second</style>";
 			desc += ". <style=cIsUtility>Feared enemies will run out of melee</style>, <style=cDeath>but that won't stop them from performing ranged attacks</style>.";
 			return desc;
 		}
-        protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
 		public override void SetupAttributes() {
 			base.SetupAttributes();
@@ -59,7 +59,7 @@ namespace ThinkInvisible.ClassicItems {
 			UnityEngine.Object.Destroy(lPrefabPrefab);
 		}
 
-		protected override bool OnEquipUseInner(EquipmentSlot slot) {
+		protected override bool PerformEquipmentAction(EquipmentSlot slot) {
             if(!slot.characterBody || !slot.characterBody.teamComponent) return false;
             var ctrlInst = UnityEngine.Object.Instantiate(lanternWardPrefab, slot.characterBody.corePosition, Quaternion.identity);
 			var lw = ctrlInst.GetComponent<LanternWard>();

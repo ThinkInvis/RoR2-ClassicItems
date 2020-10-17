@@ -21,8 +21,8 @@ namespace ThinkInvisible.ClassicItems {
         public float dmgBoost {get;private set;} = 10f;
 
         public BuffIndex prescriptionsBuff {get;private set;}
-        protected override string NewLangName(string langid = null) => displayName;
-        protected override string NewLangPickup(string langid = null) {
+        protected override string GetNameString(string langid = null) => displayName;
+        protected override string GetPickupString(string langid = null) {
             string desc = "Increase";
             if(dmgBoost > 0f) desc += $" damage";
             if(dmgBoost > 0f && aSpdBoost > 0f) desc += " and";
@@ -31,7 +31,7 @@ namespace ThinkInvisible.ClassicItems {
             desc += $" for {duration:N0} seconds.";
             return desc;
         }
-        protected override string NewLangDesc(string langid = null) {
+        protected override string GetDescString(string langid = null) {
             string desc = "While active, increases";
             if(dmgBoost > 0f) desc += $" <style=cIsDamage>base damage by {dmgBoost:N0} points</style>";
             if(dmgBoost > 0f && aSpdBoost > 0f) desc += " and";
@@ -40,7 +40,7 @@ namespace ThinkInvisible.ClassicItems {
             desc += $". Lasts <style=cIsDamage>{duration:N0} seconds</style>.";
             return desc;
         }
-        protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
         public override void SetupAttributes() {
             base.SetupAttributes();
@@ -72,7 +72,7 @@ namespace ThinkInvisible.ClassicItems {
             }
         }
 
-        protected override bool OnEquipUseInner(EquipmentSlot slot) {
+        protected override bool PerformEquipmentAction(EquipmentSlot slot) {
             var sbdy = slot.characterBody;
             if(!sbdy) return false;
             sbdy.ClearTimedBuffs(prescriptionsBuff);

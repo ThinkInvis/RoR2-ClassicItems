@@ -14,7 +14,7 @@ namespace ThinkInvisible.ClassicItems {
 
         float baseCost = 25f;
 
-        public override float eqpCooldown {get;protected set;} = 135f;
+        public override float cooldown {get;protected set;} = 135f;
 
         [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("Multiplier for additional cost of chests spawned by Captain's Brooch.", AutoConfigFlags.None, 0f, float.MaxValue)]
@@ -28,10 +28,10 @@ namespace ThinkInvisible.ClassicItems {
         public bool doFallbackSpawn {get;private set;} = false;
 
         internal static InteractableSpawnCard broochPrefab;        
-        protected override string NewLangName(string langid = null) => displayName;        
-        protected override string NewLangPickup(string langid = null) => "One man's wreckage is another man's treasure.";        
-        protected override string NewLangDesc(string langid = null) => "Calls down a <style=cIsUtility>low-tier item chest</style> which <style=cIsUtility>costs " + Pct(extraCost) + " more than usual</style>.";        
-        protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetNameString(string langid = null) => displayName;        
+        protected override string GetPickupString(string langid = null) => "One man's wreckage is another man's treasure.";        
+        protected override string GetDescString(string langid = null) => "Calls down a <style=cIsUtility>low-tier item chest</style> which <style=cIsUtility>costs " + Pct(extraCost) + " more than usual</style>.";        
+        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
         private bool ILFailed = false;
 
@@ -88,7 +88,7 @@ namespace ThinkInvisible.ClassicItems {
                 spawnres.spawnedInstance.GetComponent<CaptainsBroochDroppod>().ServerLaunch();
         }
 
-        protected override bool OnEquipUseInner(EquipmentSlot slot) {
+        protected override bool PerformEquipmentAction(EquipmentSlot slot) {
             if(!slot.characterBody) return false;
             if(SceneCatalog.mostRecentSceneDef.baseSceneName == "bazaar") return false;
             bool s1 = TrySpawnChest(slot.characterBody.transform);

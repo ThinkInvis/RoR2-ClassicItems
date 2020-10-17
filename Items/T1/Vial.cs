@@ -13,16 +13,16 @@ namespace ThinkInvisible.ClassicItems {
         [AutoConfig("Direct additive to natural health regen per stack of Mysterious Vial.", AutoConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float addRegen {get;private set;} = 1.4f;
 
-        protected override string NewLangName(string langid = null) => displayName;        
-        protected override string NewLangPickup(string langid = null) => "Increased health regeneration.";        
-        protected override string NewLangDesc(string langid = null) => "Increases <style=cIsHealing>health regen by +" + addRegen.ToString("N1") + "/s</style> <style=cStack>(+" + addRegen.ToString("N1") + "/s per stack)</style>.";        
-        protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetNameString(string langid = null) => displayName;        
+        protected override string GetPickupString(string langid = null) => "Increased health regeneration.";        
+        protected override string GetDescString(string langid = null) => "Increases <style=cIsHealing>health regen by +" + addRegen.ToString("N1") + "/s</style> <style=cStack>(+" + addRegen.ToString("N1") + "/s per stack)</style>.";        
+        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
         public override void SetupBehavior() {
             base.SetupBehavior();
 
             if(Compat_ItemStats.enabled) {
-                Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+                Compat_ItemStats.CreateItemStatDef(itemDef,
                     ((count, inv, master) => { return addRegen * count; },
                     (value, inv, master) => { return $"Regen Bonus: {value.ToString("N1")} HP/s"; }
                 ));

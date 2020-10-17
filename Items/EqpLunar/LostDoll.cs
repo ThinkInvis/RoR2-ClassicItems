@@ -19,15 +19,15 @@ namespace ThinkInvisible.ClassicItems {
         public float damageGiven {get;private set;} = 5f;
         
 		public override bool isLunar => true;
-        protected override string NewLangName(string langid = null) => displayName;
-        protected override string NewLangPickup(string langid = null) {
+        protected override string GetNameString(string langid = null) => displayName;
+        protected override string GetPickupString(string langid = null) {
             string desc = "";
             if(damageTaken > 0f) desc += "Harm yourself to";
             else desc += "Use to";
             desc += " damage an enemy.";
             return desc;
         }
-        protected override string NewLangDesc(string langid = null) {
+        protected override string GetDescString(string langid = null) {
             string desc = "";
             if(damageTaken > 0f) desc += $"Sacrifice <style=cIsDamage>{Pct(damageTaken)}</style> of your <style=cIsDamage>current health</style>";
             else desc += "Use";
@@ -35,11 +35,11 @@ namespace ThinkInvisible.ClassicItems {
 
             return desc;
         }
-        protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
         public LostDoll() { }
 
-        protected override bool OnEquipUseInner(EquipmentSlot slot) {
+        protected override bool PerformEquipmentAction(EquipmentSlot slot) {
             if(!slot.characterBody || !slot.characterBody.teamComponent) return false;
             var tpos = slot.characterBody.transform.position;
 			ReadOnlyCollection<TeamComponent> teamMembers = TeamComponent.GetTeamMembers((TeamIndex.Player | TeamIndex.Neutral | TeamIndex.Monster) & ~slot.characterBody.teamComponent.teamIndex);

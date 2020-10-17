@@ -9,7 +9,7 @@ namespace ThinkInvisible.ClassicItems {
         public override string displayName => "Burning Witness";
 		public override ItemTier itemTier => ItemTier.Boss;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage, ItemTag.Utility, ItemTag.OnKillEffect});
-        public override bool itemAIB {get; protected set;} = true;
+        public override bool itemIsAIBlacklisted {get; protected set;} = true;
         
         [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("Duration of on-kill buff applied by the first stack of Burning Witness.", AutoConfigFlags.None, 0f, float.MaxValue)]
@@ -31,10 +31,10 @@ namespace ThinkInvisible.ClassicItems {
         [AutoConfig("Damage bonus applied by Burning Witness, while active.", AutoConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float damage {get; private set;} = 1f;     
         
-        protected override string NewLangName(string langid = null) => displayName;        
-        protected override string NewLangPickup(string langid = null) => "The Worm's eye seems to still see.. watching.. rewarding..";        
-        protected override string NewLangDesc(string langid = null) => "<style=cDeath>On kill</style>: Grants a <style=cIsDamage>firetrail</style>, <style=cIsUtility>" + Pct(baseSpeed) + " movement speed</style> <style=cStack>(+" + Pct(stackSpeed) + " per stack)</style>, and <style=cIsDamage>+" + damage.ToString("N1") + " damage</style> for " + baseDuration.ToString("N0") + " <style=cStack>(+" + stackDuration.ToString("N0") + " per stack)</style>.";        
-        protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetNameString(string langid = null) => displayName;        
+        protected override string GetPickupString(string langid = null) => "The Worm's eye seems to still see.. watching.. rewarding..";        
+        protected override string GetDescString(string langid = null) => "<style=cDeath>On kill</style>: Grants a <style=cIsDamage>firetrail</style>, <style=cIsUtility>" + Pct(baseSpeed) + " movement speed</style> <style=cStack>(+" + Pct(stackSpeed) + " per stack)</style>, and <style=cIsDamage>+" + damage.ToString("N1") + " damage</style> for " + baseDuration.ToString("N0") + " <style=cStack>(+" + stackDuration.ToString("N0") + " per stack)</style>.";        
+        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
         public Witness() {}
 

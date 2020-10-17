@@ -25,15 +25,15 @@ namespace ThinkInvisible.ClassicItems {
         public float stackDuration {get; private set;} = 1f;
 
 		internal static GameObject spikeWardPrefab;
-        protected override string NewLangName(string langid = null) => displayName;
-        protected override string NewLangPickup(string langid = null) => "Drop spikestrips on being hit, slowing enemies.";
-        protected override string NewLangDesc(string langid = null) {
+        protected override string GetNameString(string langid = null) => displayName;
+        protected override string GetPickupString(string langid = null) => "Drop spikestrips on being hit, slowing enemies.";
+        protected override string GetDescString(string langid = null) {
             string desc = $"<style=cIsDamage>When hit</style>, drop a <style=cIsUtility>{baseRadius:N0}-meter AoE</style> which <style=cIsUtility>slows enemies by 50%</style> and lasts <style=cIsUtility>{baseDuration:N1} seconds</style>";
             if(stackDuration > 0f) desc += $" <style=cStack>(+{stackDuration:N1} per stack)</style>";
             desc += ".";
             return desc;
         }
-        protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
         public override void SetupAttributes() {
             base.SetupAttributes();
@@ -65,7 +65,7 @@ namespace ThinkInvisible.ClassicItems {
             base.SetupBehavior();
 
             if(Compat_ItemStats.enabled) {
-                Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+                Compat_ItemStats.CreateItemStatDef(itemDef,
                     ((count, inv, master) => { return baseDuration + (count - 1) * stackDuration; },
                     (value, inv, master) => { return $"Duration: {value.ToString("N1")} s"; }
                 ));

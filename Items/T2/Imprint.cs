@@ -35,10 +35,10 @@ namespace ThinkInvisible.ClassicItems {
         [AutoConfig("Extra attack speed multiplier applied by Filial Imprinting.", AutoConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float attackMod {get;private set;} = 0.5f;
 
-        protected override string NewLangName(string langid = null) => displayName;
-        protected override string NewLangPickup(string langid = null) => "Hatch a strange creature who drops buffs periodically.";
-        protected override string NewLangDesc(string langid = null) => "Every <style=cIsUtility>" + baseCD.ToString("N0") + " seconds</style> <style=cStack>(-" + Pct(stackCDreduc) + " per stack, minimum of " + baseDuration.ToString("N0") + " seconds)</style>, gain <style=cIsHealing>+" + Pct(regenMod) + " health regen</style> OR <style=cIsUtility>+" + Pct(speedMod) + " move speed</style> OR <style=cIsDamage>+" + Pct(attackMod) + " attack speed</style> for <style=cIsUtility>" + baseDuration.ToString("N0") + " seconds</style>.";
-        protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetNameString(string langid = null) => displayName;
+        protected override string GetPickupString(string langid = null) => "Hatch a strange creature who drops buffs periodically.";
+        protected override string GetDescString(string langid = null) => "Every <style=cIsUtility>" + baseCD.ToString("N0") + " seconds</style> <style=cStack>(-" + Pct(stackCDreduc) + " per stack, minimum of " + baseDuration.ToString("N0") + " seconds)</style>, gain <style=cIsHealing>+" + Pct(regenMod) + " health regen</style> OR <style=cIsUtility>+" + Pct(speedMod) + " move speed</style> OR <style=cIsDamage>+" + Pct(attackMod) + " attack speed</style> for <style=cIsUtility>" + baseDuration.ToString("N0") + " seconds</style>.";
+        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
         
         public BuffIndex attackBuff {get; private set;}
         public BuffIndex speedBuff {get; private set;}
@@ -75,7 +75,7 @@ namespace ThinkInvisible.ClassicItems {
         public override void SetupBehavior() {
             base.SetupBehavior();
             if(Compat_ItemStats.enabled) {
-                Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+                Compat_ItemStats.CreateItemStatDef(itemDef,
                     ((count, inv, master) => { return Mathf.Max(baseCD * Mathf.Pow(1f - stackCDreduc, count - 1), baseDuration); },
                     (value, inv, master) => { return $"Buff Interval: {value.ToString("N1")} s"; }
                 ));

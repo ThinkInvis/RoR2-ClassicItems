@@ -37,9 +37,9 @@ namespace ThinkInvisible.ClassicItems {
         public bool inclDeploys {get;private set;} = true;
 
 		internal static GameObject barbedWardPrefab;        
-        protected override string NewLangName(string langid = null) => displayName;        
-        protected override string NewLangPickup(string langid = null) => "Hurt nearby enemies.";
-		protected override string NewLangDesc(string langid = null) {
+        protected override string GetNameString(string langid = null) => displayName;        
+        protected override string GetPickupString(string langid = null) => "Hurt nearby enemies.";
+		protected override string GetDescString(string langid = null) {
 			string desc = $"Deal <style=cIsDamage>{Pct(baseDmg)}</style>";
 			if(stackDmg > 0f) desc += $" <style=cStack>(+{Pct(stackDmg)} per stack)</style>";
 			desc += $" <style=cIsDamage>damage/sec</style> to enemies within <style=cIsDamage>{baseRadius:N1} m</style>";
@@ -47,7 +47,7 @@ namespace ThinkInvisible.ClassicItems {
 			desc += ".";
 			return desc;
 		}
-        protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
 		public override void SetupAttributes() {
 			base.SetupAttributes();
@@ -71,7 +71,7 @@ namespace ThinkInvisible.ClassicItems {
 			base.SetupBehavior();
 
 			if(Compat_ItemStats.enabled) {
-				Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+				Compat_ItemStats.CreateItemStatDef(itemDef,
 					((count, inv, master) => {
 						return baseDmg + (count - 1) * stackDmg;
 					},

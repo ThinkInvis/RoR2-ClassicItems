@@ -23,22 +23,22 @@ namespace ThinkInvisible.ClassicItems {
         [AutoConfig("If false, Boxing Gloves will not proc on bosses.", AutoConfigFlags.None)]
         public bool affectBosses {get;private set;} = false;
 
-        protected override string NewLangName(string langid = null) => displayName;
-        protected override string NewLangPickup(string langid = null) => "Hitting enemies have a " + Pct(procChance,0,1) + " chance to knock them back.";
-        protected override string NewLangDesc(string langid = null) => "<style=cIsUtility>" + Pct(procChance,0,1) + "</style> <style=cStack>(+"+Pct(procChance,0,1)+" per stack, multiplicative)</style> chance to <style=cIsUtility>knock back</style> an enemy <style=cIsDamage>based on fraction of health removed</style>.";
-        protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetNameString(string langid = null) => displayName;
+        protected override string GetPickupString(string langid = null) => "Hitting enemies have a " + Pct(procChance,0,1) + " chance to knock them back.";
+        protected override string GetDescString(string langid = null) => "<style=cIsUtility>" + Pct(procChance,0,1) + "</style> <style=cStack>(+"+Pct(procChance,0,1)+" per stack, multiplicative)</style> chance to <style=cIsUtility>knock back</style> an enemy <style=cIsDamage>based on fraction of health removed</style>.";
+        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
         public override void SetupBehavior() {
             base.SetupBehavior();
 
             if(Compat_ItemStats.enabled) {
-                Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+                Compat_ItemStats.CreateItemStatDef(itemDef,
                     ((count, inv, master) => { return (1f - Mathf.Pow(1 - procChance / 100f, count)) * 100f; },
                     (value, inv, master) => { return $"Knockback Chance: {Pct(value, 1, 1)}"; }
                 ));
             }
             if(Compat_BetterUI.enabled)
-                Compat_BetterUI.AddEffect(regIndex, procChance, procChance, Compat_BetterUI.ChanceFormatter, Compat_BetterUI.ExponentialStacking);
+                Compat_BetterUI.AddEffect(catalogIndex, procChance, procChance, Compat_BetterUI.ChanceFormatter, Compat_BetterUI.ExponentialStacking);
         }
 
         public override void Install() {

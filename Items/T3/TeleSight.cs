@@ -11,7 +11,7 @@ namespace ThinkInvisible.ClassicItems {
         public override string displayName => "Telescopic Sight";
 		public override ItemTier itemTier => ItemTier.Tier3;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
-        public override bool itemAIB {get; protected set;} = true;
+        public override bool itemIsAIBlacklisted {get; protected set;} = true;
         
         [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
         [AutoConfig("Base percent chance of triggering Telescopic Sight on hit. Affected by proc coefficient.",AutoConfigFlags.None,0f,100f)]
@@ -28,25 +28,25 @@ namespace ThinkInvisible.ClassicItems {
         [AutoConfig("If true, Telescopic Sight will not trigger on bosses.")]
         public bool bossImmunity {get;private set;} = false;
 
-        protected override string NewLangName(string langid = null) => displayName;
-        protected override string NewLangPickup(string langid = null) => "Chance to instantly kill an enemy.";
-        protected override string NewLangDesc(string langid = null) {
+        protected override string GetNameString(string langid = null) => displayName;
+        protected override string GetPickupString(string langid = null) => "Chance to instantly kill an enemy.";
+        protected override string GetDescString(string langid = null) {
             string desc = "<style=cIsDamage>" + Pct(procChance, 1, 1) + "</style>";
             if(stackChance > 0f) desc += " <style=cStack>(+" + Pct(stackChance, 1, 1) + " per stack, up to " + Pct(capChance, 1, 1) + ")</style>";
             desc += " chance to <style=cIsDamage>instantly kill</style> an enemy. Affected by proc coefficient.";
             return desc;
         }
-        protected override string NewLangLore(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
         public override void SetupBehavior() {
             base.SetupBehavior();
             if(Compat_ItemStats.enabled) {
-				Compat_ItemStats.CreateItemStatDef(regItem.ItemDef,
+				Compat_ItemStats.CreateItemStatDef(itemDef,
 					((count,inv,master)=>{return Mathf.Min(procChance+stackChance*(count-1), capChance);},
 					(value,inv,master)=>{return $"Instakill Chance: {Pct(value, 1, 1f)}";}));
 			}
             if(Compat_BetterUI.enabled)
-                Compat_BetterUI.AddEffect(regIndex, procChance, stackChance, Compat_BetterUI.ChanceFormatter, Compat_BetterUI.LinearStacking,
+                Compat_BetterUI.AddEffect(catalogIndex, procChance, stackChance, Compat_BetterUI.ChanceFormatter, Compat_BetterUI.LinearStacking,
                     (value, extraStackValue, procCoefficient) => {
                         return Mathf.CeilToInt((capChance - value*procCoefficient)/(extraStackValue*procCoefficient)) + 1;
                     });
