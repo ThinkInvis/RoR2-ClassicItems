@@ -112,6 +112,10 @@ For details and instructions on applying these, see: https://github.com/ThinkInv
 The 5 latest updates are listed below. For a full changelog, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/changelog.md
 (🌧︎: Involves an accepted GitHub Pull Request from the community. Thanks for your help!)
 
+**4.6.0**
+
+- Implements changes from TILER2 3.0.0.
+
 **4.5.5**
 
 - 🌧︎ A handful of additional language fixes.
@@ -133,8 +137,3 @@ The 5 latest updates are listed below. For a full changelog, see: https://github
 
 - Added compatibility with BetterUI's proc coefficients.
 - Migrated all mod compat classes to TILER2 and publicized.
-
-**4.5.1**
-
-- Taser can no longer proc on self-damage.
-- Barbed Wire now uses a custom orb type and should no longer conflict with mods which change Razorwire behavior.

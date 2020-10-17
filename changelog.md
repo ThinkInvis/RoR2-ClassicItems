@@ -2,6 +2,10 @@
 
 (🌧︎: Involves an accepted GitHub Pull Request from the community. Thanks for your help!)
 
+**4.6.0**
+
+- Implements changes from TILER2 3.0.0.
+
 **4.5.5**
 
 - 🌧︎ A handful of additional language fixes.
