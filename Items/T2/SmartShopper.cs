@@ -11,7 +11,7 @@ namespace ThinkInvisible.ClassicItems {
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
         public override bool itemIsAIBlacklisted {get; protected set;} = true;
 
-        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
+        [AutoConfigUpdateEventInfo(AutoConfigUpdateEventFlags.InvalidateLanguage)]
         [AutoConfig("Linear multiplier for money-on-kill increase per stack of Smart Shopper.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float moneyMult {get;private set;} = 0.25f;
 

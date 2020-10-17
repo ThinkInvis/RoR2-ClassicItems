@@ -11,15 +11,15 @@ namespace ThinkInvisible.ClassicItems {
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
         public override bool itemIsAIBlacklisted {get; protected set;} = true; //TODO: find a way to make fear work on players... random movement and forced sprint? halt movement (root)?
 
-        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
+        [AutoConfigUpdateEventInfo(AutoConfigUpdateEventFlags.InvalidateLanguage)]
         [AutoConfig("Fraction of max health required as damage taken to trigger Old Box (halved per additional stack).", AutoConfigFlags.None, 0f, 1f)]
         public float healthThreshold {get; private set;} = 0.5f;
 
-        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
+        [AutoConfigUpdateEventInfo(AutoConfigUpdateEventFlags.InvalidateLanguage)]
         [AutoConfig("AoE radius for Old Box.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float radius {get; private set;} = 25f;
         
-        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
+        [AutoConfigUpdateEventInfo(AutoConfigUpdateEventFlags.InvalidateLanguage)]
         [AutoConfig("Duration of fear debuff applied by Old Box.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float duration {get; private set;} = 2f;
 

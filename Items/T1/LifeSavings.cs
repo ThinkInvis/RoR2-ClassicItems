@@ -13,11 +13,11 @@ namespace ThinkInvisible.ClassicItems {
         public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
 
-        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
+        [AutoConfigUpdateEventInfo(AutoConfigUpdateEventFlags.InvalidateLanguage)]
         [AutoConfig("Money to add to players per second per Life Savings stack (without taking into account InvertCount).", AutoConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float gainPerSec {get;private set;} = 1f;
 
-        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
+        [AutoConfigUpdateEventInfo(AutoConfigUpdateEventFlags.InvalidateLanguage)]
         [AutoConfig("With <InvertCount stacks, number of stacks affects time per interval instead of multiplying money gained.", AutoConfigFlags.PreventNetMismatch, 0, int.MaxValue)]
         public int invertCount {get;private set;} = 3;
 

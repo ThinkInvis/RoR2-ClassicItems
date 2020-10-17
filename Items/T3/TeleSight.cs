@@ -13,15 +13,15 @@ namespace ThinkInvisible.ClassicItems {
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
         public override bool itemIsAIBlacklisted {get; protected set;} = true;
         
-        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
+        [AutoConfigUpdateEventInfo(AutoConfigUpdateEventFlags.InvalidateLanguage)]
         [AutoConfig("Base percent chance of triggering Telescopic Sight on hit. Affected by proc coefficient.",AutoConfigFlags.None,0f,100f)]
         public float procChance {get;private set;} = 1f;
         
-        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
+        [AutoConfigUpdateEventInfo(AutoConfigUpdateEventFlags.InvalidateLanguage)]
         [AutoConfig("Added to ProcChance per extra stack of Telescopic Sight.",AutoConfigFlags.None,0f,100f)]
         public float stackChance {get;private set;} = 0.5f;
         
-        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
+        [AutoConfigUpdateEventInfo(AutoConfigUpdateEventFlags.InvalidateLanguage)]
         [AutoConfig("Maximum allowed ProcChance for Telescopic Sight.",AutoConfigFlags.None,0f,100f)]
         public float capChance {get;private set;} = 3f;
 

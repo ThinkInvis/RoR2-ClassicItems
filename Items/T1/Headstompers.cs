@@ -11,19 +11,19 @@ namespace ThinkInvisible.ClassicItems {
 		public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
 
-        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
+        [AutoConfigUpdateEventInfo(AutoConfigUpdateEventFlags.InvalidateLanguage)]
         [AutoConfig("Multiplier for player base damage applied by explosion.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float baseDamage {get;private set;} = 5f;
 
-        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
+        [AutoConfigUpdateEventInfo(AutoConfigUpdateEventFlags.InvalidateLanguage)]
         [AutoConfig("Added to BaseDamage per extra stack.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float stackDamage {get;private set;} = 0.5f;
 
-        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
+        [AutoConfigUpdateEventInfo(AutoConfigUpdateEventFlags.InvalidateLanguage)]
         [AutoConfig("Minimum vertical velocity required to trigger Headstompers.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float velThreshold {get;private set;} = 20f;
 
-        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
+        [AutoConfigUpdateEventInfo(AutoConfigUpdateEventFlags.InvalidateLanguage)]
         [AutoConfig("Additional vertical velocity required for max damage (scales linearly from 0 @ VelThreshold).", AutoConfigFlags.None, 0f, float.MaxValue)]
 
         public float velMax {get;private set;} = 40f;

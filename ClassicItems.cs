@@ -213,8 +213,8 @@ namespace ThinkInvisible.ClassicItems {
             Logger.LogDebug("Initial setup done!");
         }
 
-        private void CardModelConfigUpdateHook(object sender, AutoUpdateEventArgs_V2 args) {
-            if((args.flags & AutoUpdateEventFlags_V2.InvalidateLanguage) == 0) return;
+        private void CardModelConfigUpdateHook(object sender, AutoConfigUpdateEventArgs args) {
+            if((args.flags & AutoConfigUpdateEventFlags.InvalidateLanguage) == 0) return;
             var x = sender as CatalogBoilerplate;
             if(x.pickupDef != null) {
                 var ctsf = x.pickupDef.displayPrefab?.transform;

@@ -14,19 +14,19 @@ namespace ThinkInvisible.ClassicItems {
 		public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
 
-		[AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
+		[AutoConfigUpdateEventInfo(AutoConfigUpdateEventFlags.InvalidateLanguage)]
 		[AutoConfig("AoE radius for the first stack of Barbed Wire.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float baseRadius {get; private set;} = 5f;
 
-		[AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
+		[AutoConfigUpdateEventInfo(AutoConfigUpdateEventFlags.InvalidateLanguage)]
 		[AutoConfig("AoE radius to add per additional stack of Barbed Wire.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float stackRadius {get; private set;} = 1f;
 
-		[AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
+		[AutoConfigUpdateEventInfo(AutoConfigUpdateEventFlags.InvalidateLanguage)]
 		[AutoConfig("AoE damage/sec (as fraction of owner base damage) for the first stack of Barbed Wire.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float baseDmg {get; private set;} = 0.5f;
 
-		[AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
+		[AutoConfigUpdateEventInfo(AutoConfigUpdateEventFlags.InvalidateLanguage)]
 		[AutoConfig("AoE damage/sec (as fraction of owner base damage) per additional stack of Barbed Wire.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float stackDmg {get; private set;} = 0.15f;
 
@@ -99,7 +99,7 @@ namespace ThinkInvisible.ClassicItems {
 			ConfigEntryChanged -= Evt_ConfigEntryChanged;
 		}
 
-		private void Evt_ConfigEntryChanged(object sender, AutoUpdateEventArgs_V2 args) {
+		private void Evt_ConfigEntryChanged(object sender, AutoConfigUpdateEventArgs args) {
 			AliveList().ForEach(cm => {
 				if(cm.hasBody) UpdateBarbedWard(cm.GetBody());
 			});

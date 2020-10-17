@@ -10,15 +10,15 @@ namespace ThinkInvisible.ClassicItems {
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
         public override bool itemIsAIBlacklisted {get; protected set;} = true;
         
-        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
+        [AutoConfigUpdateEventInfo(AutoConfigUpdateEventFlags.InvalidateLanguage)]
         [AutoConfig("Percent chance of triggering Permafrost on hit. Affected by proc coefficient; stacks hyperbolically.", AutoConfigFlags.None, 0f, 100f)]
         public float procChance {get;private set;} = 6f;
 
-        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
+        [AutoConfigUpdateEventInfo(AutoConfigUpdateEventFlags.InvalidateLanguage)]
         [AutoConfig("Duration of freeze applied by Permafrost.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float freezeTime {get;private set;} = 1.5f;
         
-        [AutoUpdateEventInfo_V2(AutoUpdateEventFlags_V2.InvalidateLanguage)]
+        [AutoConfigUpdateEventInfo(AutoConfigUpdateEventFlags.InvalidateLanguage)]
         [AutoConfig("Duration of slow applied by Permafrost.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float slowTime {get;private set;} = 3.0f;
 
