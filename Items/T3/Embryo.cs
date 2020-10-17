@@ -32,7 +32,7 @@ namespace ThinkInvisible.ClassicItems {
         private Dictionary<EquipmentIndex,bool> subEnable {get;} = new Dictionary<EquipmentIndex, bool>();
         public ReadOnlyDictionary<EquipmentIndex,bool> subEnableGet {get;private set;}
 
-        [AutoConfig("SubEnable<AIC.DictKeyProp." + nameof(Equipment_V2.name) + ">","If false, Beating Embryo will not affect <AIC.DictKeyProp." + nameof(Equipment_V2.displayName) + "> (added by ClassicItems).", AutoConfigFlags.BindDict | AutoConfigFlags.PreventNetMismatch)]
+        [AutoConfig("SubEnable<AIC.DictKeyField." + nameof(Equipment_V2.name) + ">","If false, Beating Embryo will not affect <AIC.DictKeyProp." + nameof(Equipment_V2.displayName) + "> (added by ClassicItems).", AutoConfigFlags.BindDict | AutoConfigFlags.PreventNetMismatch)]
         private Dictionary<Equipment_V2, bool> subEnableInternal {get;} = new Dictionary<Equipment_V2, bool>();
         public ReadOnlyDictionary<Equipment_V2, bool> subEnableInternalGet {get;private set;}
 
