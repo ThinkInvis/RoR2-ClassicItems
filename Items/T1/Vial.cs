@@ -9,7 +9,7 @@ namespace ThinkInvisible.ClassicItems {
 		public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Healing});
         
-        [AutoConfigUpdateEventInfo(AutoConfigUpdateEventFlags.InvalidateLanguage | AutoConfigUpdateEventFlags.InvalidateStats)]
+        [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage | AutoConfigUpdateActionTypes.InvalidateStats)]
         [AutoConfig("Direct additive to natural health regen per stack of Mysterious Vial.", AutoConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float addRegen {get;private set;} = 1.4f;
 

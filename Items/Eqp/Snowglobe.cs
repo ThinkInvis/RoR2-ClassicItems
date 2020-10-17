@@ -12,11 +12,11 @@ namespace ThinkInvisible.ClassicItems {
     public class Snowglobe : Equipment_V2<Snowglobe> {
         public override string displayName => "Snowglobe";
 
-        [AutoConfigUpdateEventInfo(AutoConfigUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Percent chance of freezing each individual enemy for every Snowglobe tick.", AutoConfigFlags.None, 0f, 100f)]
         public float procRate {get;private set;} = 30f;
 
-        [AutoConfigUpdateEventInfo(AutoConfigUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Number of 1-second ticks of Snowglobe duration.", AutoConfigFlags.PreventNetMismatch, 0, int.MaxValue)]
         public int duration {get;private set;} = 8;
 

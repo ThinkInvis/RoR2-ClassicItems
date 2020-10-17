@@ -10,19 +10,19 @@ namespace ThinkInvisible.ClassicItems {
 		public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
         
-        [AutoConfigUpdateEventInfo(AutoConfigUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Fraction of max health required as damage taken to trigger Fire Shield.", AutoConfigFlags.None, 0f, 1f)]
         public float healthThreshold {get; private set;} = 0.1f;
 
-        [AutoConfigUpdateEventInfo(AutoConfigUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("AoE radius for Fire Shield.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float baseRadius {get; private set;} = 15f;
 
-        [AutoConfigUpdateEventInfo(AutoConfigUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("AoE damage, based on player base damage, for the first stack of Fire Shield.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float baseDmg {get; private set;} = 2f;
 
-        [AutoConfigUpdateEventInfo(AutoConfigUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("AoE damage, based on player base damage, per additional stack of Fire Shield.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float stackDmg {get; private set;} = 0.5f;
 

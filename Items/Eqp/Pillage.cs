@@ -8,7 +8,7 @@ namespace ThinkInvisible.ClassicItems {
     public class Pillage : Equipment_V2<Pillage> {
         public override string displayName => "Pillaged Gold";
 
-        [AutoConfigUpdateEventInfo(AutoConfigUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Duration of the buff applied by Pillaged Gold.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float duration {get;private set;} = 14f;
 

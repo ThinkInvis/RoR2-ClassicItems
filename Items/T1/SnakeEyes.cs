@@ -11,11 +11,11 @@ namespace ThinkInvisible.ClassicItems {
 		public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
 
-        [AutoConfigUpdateEventInfo(AutoConfigUpdateEventFlags.InvalidateLanguage | AutoConfigUpdateEventFlags.InvalidateStats)]
+        [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage | AutoConfigUpdateActionTypes.InvalidateStats)]
         [AutoConfig("Direct additive to percent crit chance per proc per stack of Snake Eyes.", AutoConfigFlags.PreventNetMismatch, 0f, 100f)]
         public float critAdd {get;private set;} = 8f;
 
-        [AutoConfigUpdateEventInfo(AutoConfigUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Maximum number of successive failed shrines to count towards increasing Snake Eyes buff.", AutoConfigFlags.None, 1, int.MaxValue)]
         public int stackCap {get;private set;} = 6;
 

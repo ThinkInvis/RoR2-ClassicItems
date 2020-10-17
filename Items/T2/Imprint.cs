@@ -11,27 +11,27 @@ namespace ThinkInvisible.ClassicItems {
 		public override ItemTier itemTier => ItemTier.Tier2;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Any});
 
-        [AutoConfigUpdateEventInfo(AutoConfigUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Base cooldown between Filial Imprinting buffs, in seconds.", AutoConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float baseCD {get;private set;} = 20f;
 
-        [AutoConfigUpdateEventInfo(AutoConfigUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Multiplicative cooldown decrease per additional stack of Filial Imprinting. Caps at a minimum of baseDuration.", AutoConfigFlags.PreventNetMismatch, 0f, 0.999f)]
         public float stackCDreduc {get;private set;} = 0.1f;
         
-        [AutoConfigUpdateEventInfo(AutoConfigUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Duration of buffs applied by Filial Imprinting.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float baseDuration {get;private set;} = 5f;
         
-        [AutoConfigUpdateEventInfo(AutoConfigUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Extra health regen multiplier applied by Filial Imprinting.", AutoConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float regenMod {get;private set;} = 1f;
         
-        [AutoConfigUpdateEventInfo(AutoConfigUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Extra move speed multiplier applied by Filial Imprinting.", AutoConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float speedMod {get;private set;} = 0.5f;
 
-        [AutoConfigUpdateEventInfo(AutoConfigUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Extra attack speed multiplier applied by Filial Imprinting.", AutoConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float attackMod {get;private set;} = 0.5f;
 

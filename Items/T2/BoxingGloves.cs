@@ -10,7 +10,7 @@ namespace ThinkInvisible.ClassicItems {
 		public override ItemTier itemTier => ItemTier.Tier2;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
         
-        [AutoConfigUpdateEventInfo(AutoConfigUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Percent chance for Boxing Gloves to proc; stacks multiplicatively.", AutoConfigFlags.None, 0f, 100f)]
         public float procChance {get;private set;} = 6f;
         

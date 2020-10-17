@@ -16,7 +16,7 @@ namespace ThinkInvisible.ClassicItems {
 
         public override float cooldown {get;protected set;} = 135f;
 
-        [AutoConfigUpdateEventInfo(AutoConfigUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Multiplier for additional cost of chests spawned by Captain's Brooch.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float extraCost {get;private set;} = 0.5f;
 

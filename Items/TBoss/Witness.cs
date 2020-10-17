@@ -11,23 +11,23 @@ namespace ThinkInvisible.ClassicItems {
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage, ItemTag.Utility, ItemTag.OnKillEffect});
         public override bool itemIsAIBlacklisted {get; protected set;} = true;
         
-        [AutoConfigUpdateEventInfo(AutoConfigUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Duration of on-kill buff applied by the first stack of Burning Witness.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float baseDuration {get; private set;} = 6f;
         
-        [AutoConfigUpdateEventInfo(AutoConfigUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Duration of on-kill buff applied per additional stack of Burning Witness.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float stackDuration {get; private set;} = 3f;
         
-        [AutoConfigUpdateEventInfo(AutoConfigUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Move speed bonus from the first stack of Burning Witness, while active.", AutoConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float baseSpeed {get; private set;} = 0.05f;
         
-        [AutoConfigUpdateEventInfo(AutoConfigUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Move speed bonus per additional stack of Burning Witness, while active.", AutoConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float stackSpeed {get; private set;} = 0.05f;
         
-        [AutoConfigUpdateEventInfo(AutoConfigUpdateEventFlags.InvalidateLanguage)]
+        [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Damage bonus applied by Burning Witness, while active.", AutoConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float damage {get; private set;} = 1f;     
         
