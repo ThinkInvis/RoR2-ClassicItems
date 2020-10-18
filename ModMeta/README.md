@@ -112,6 +112,10 @@ For details and instructions on applying these, see: https://github.com/ThinkInv
 The 5 latest updates are listed below. For a full changelog, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/changelog.md
 (🌧︎: Involves an accepted GitHub Pull Request from the community. Thanks for your help!)
 
+**4.6.2**
+
+- Removed backcompat Scepter/Embryo patches from item list (they did NOT like being there).
+
 **4.6.1**
 
 - Fixed backwards-compatibility on Ancient Scepter and Beating Embryo.
@@ -130,9 +134,3 @@ The 5 latest updates are listed below. For a full changelog, see: https://github
 
 - 🌧︎ Large batch of language tweaks. Many item/equipment descriptions now hide sections if e.g. a relevant config option is set to 0.
 - Fixed several issues with Beating Embryo modded equipment support.
-
-**4.5.3**
-
-- Ancient Scepter now rerolls into another red item if the target character has no scepter skill available (not configurable), or if they already have an Ancient Scepter (configurable).
-- Made card model setup slightly more compatible with other mods.
-- Updated BetterUI hooks for v1.5.7.

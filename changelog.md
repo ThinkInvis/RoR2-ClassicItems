@@ -2,6 +2,10 @@
 
 (🌧︎: Involves an accepted GitHub Pull Request from the community. Thanks for your help!)
 
+**4.6.2**
+
+- Removed backcompat Scepter/Embryo patches from item list (they did NOT like being there).
+
 **4.6.1**
 
 - Fixed backwards-compatibility on Ancient Scepter and Beating Embryo.
