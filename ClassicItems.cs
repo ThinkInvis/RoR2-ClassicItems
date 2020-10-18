@@ -15,6 +15,7 @@ using Path = System.IO.Path;
 using System.Collections.ObjectModel;
 using TILER2;
 using static TILER2.MiscUtil;
+using System.Runtime.Serialization;
 
 //TODO:
 // Add missing documentation in... a whole lotta places... whoops.
@@ -147,8 +148,13 @@ namespace ThinkInvisible.ClassicItems {
                 mainConfigFile = cfgFile
             });
 
-            new Scepter();
-            new Embryo();
+            var itemType = typeof(Item<>);
+            var scep = (Scepter)FormatterServices.GetUninitializedObject(typeof(Scepter));
+            var embryo = (Embryo)FormatterServices.GetUninitializedObject(typeof(Embryo));
+            var scepGenType = itemType.MakeGenericType(typeof(Scepter));
+            var embGenType = itemType.MakeGenericType(typeof(Embryo));
+            scepGenType.GetProperty("instance", BindingFlags.Public | BindingFlags.Static).GetSetMethod(true).Invoke(null, new[] { scep });
+            embGenType.GetProperty("instance", BindingFlags.Public | BindingFlags.Static).GetSetMethod(true).Invoke(null, new[] { embryo });
 
             Logger.LogDebug("Loading item configs...");
             foreach(CatalogBoilerplate x in masterItemList) {
@@ -162,7 +168,7 @@ namespace ThinkInvisible.ClassicItems {
                 string mpnOvr = null;
                 if(x is Item_V2 item) mpnOvr = "@ClassicItems:Assets/ClassicItems/models/" + modelNameMap[item.itemTier] + ".prefab";
                 else if(x is Equipment_V2 eqp) mpnOvr = "@ClassicItems:Assets/ClassicItems/models/" + (eqp.isLunar ? "LqpCard.prefab" : "EqpCard.prefab");
-                var ipnOvr = "@ClassicItems:Assets/ClassicItems/icons/" + x.name + "_icon.png";
+                var ipnOvr = "@ClassicItems:Assets/ClassicItems/icons/" + x.name.Replace("_V2", "") + "_icon.png";
 
                 if(mpnOvr != null) {
                     typeof(CatalogBoilerplate).GetProperty(nameof(CatalogBoilerplate.modelResourcePath)).SetValue(x, mpnOvr);
