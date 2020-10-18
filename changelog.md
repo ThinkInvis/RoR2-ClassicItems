@@ -2,6 +2,10 @@
 
 (🌧︎: Involves an accepted GitHub Pull Request from the community. Thanks for your help!)
 
+**4.6.1**
+
+- Fixed backwards-compatibility on Ancient Scepter and Beating Embryo.
+
 **4.6.0**
 
 - Implements changes from TILER2 3.0.0.
