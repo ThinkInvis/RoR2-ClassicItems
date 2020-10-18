@@ -18,6 +18,12 @@ namespace ThinkInvisible.ClassicItems {
             bool isExtEnab = Embryo.instance.subEnableExt.Contains(eqp.catalogIndex);
             return Embryo.instance.enabled && ((isIntExist && isIntEnab) || isExtEnab) && Util.CheckRoll(Embryo.instance.GetCount(body)*Embryo.instance.procChance, body.master);
         }
+
+        [Obsolete("TILER2.Equipment is deprecated; use TILER2.Equipment_V2 (will replace Equipment in a future version)")]
+        public static bool CheckEmbryoProc(this Equipment eqp, CharacterBody body) {
+            bool isExtEnab = Embryo.instance.subEnableExt.Contains(eqp.regIndex);
+            return Embryo.instance.enabled && isExtEnab && Util.CheckRoll(Embryo.instance.GetCount(body) * Embryo.instance.procChance, body.master);
+        }
     }
     public class Embryo : Item_V2<Embryo> {
         public override string displayName => "Beating Embryo";
