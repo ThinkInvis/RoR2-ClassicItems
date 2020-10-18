@@ -46,7 +46,7 @@ namespace ThinkInvisible.ClassicItems {
         private void On_FlyUpStateEnter(On.EntityStates.Mage.FlyUpState.orig_OnEnter orig, EntityStates.Mage.FlyUpState self) {
             var origRadius = FlyUpState.blastAttackRadius;
             var origDamage = FlyUpState.blastAttackDamageCoefficient;
-            if(Scepter.instance.GetCount(self.outer.commonComponents.characterBody) > 0) {
+            if(Scepter_V2.instance.GetCount(self.outer.commonComponents.characterBody) > 0) {
                 FlyUpState.blastAttackRadius *= 4f;
                 FlyUpState.blastAttackDamageCoefficient *= 2f;
             }

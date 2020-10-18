@@ -69,7 +69,7 @@ namespace ThinkInvisible.ClassicItems {
 
         private void On_ArrowRain_DoFireArrowRain(On.EntityStates.Huntress.ArrowRain.orig_DoFireArrowRain orig, ArrowRain self) {
             var origPrefab = ArrowRain.projectilePrefab;
-            if(Scepter.instance.GetCount(self.outer.commonComponents.characterBody) > 0) ArrowRain.projectilePrefab = projReplacer;
+            if(Scepter_V2.instance.GetCount(self.outer.commonComponents.characterBody) > 0) ArrowRain.projectilePrefab = projReplacer;
             orig(self);
             ArrowRain.projectilePrefab = origPrefab;
         }

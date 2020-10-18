@@ -49,20 +49,20 @@ namespace ThinkInvisible.ClassicItems {
         private void On_TreebotFlower2Enter(On.EntityStates.Treebot.TreebotFlower.TreebotFlower2Projectile.orig_OnEnter orig, TreebotFlower2Projectile self) {
 			var owner = self.outer.GetComponent<ProjectileController>()?.owner;
             var origRadius = TreebotFlower2Projectile.radius;
-            if(Scepter.instance.GetCount(owner.GetComponent<CharacterBody>()) > 0) TreebotFlower2Projectile.radius *= 2f;
+            if(Scepter_V2.instance.GetCount(owner.GetComponent<CharacterBody>()) > 0) TreebotFlower2Projectile.radius *= 2f;
             orig(self);
             TreebotFlower2Projectile.radius = origRadius;
         }
 
         private void On_TreebotFlower2RootPulse(On.EntityStates.Treebot.TreebotFlower.TreebotFlower2Projectile.orig_RootPulse orig, TreebotFlower2Projectile self) {
-            var isBoosted = Scepter.instance.GetCount(self.owner?.GetComponent<CharacterBody>()) > 0;
+            var isBoosted = Scepter_V2.instance.GetCount(self.owner?.GetComponent<CharacterBody>()) > 0;
             var origRadius = TreebotFlower2Projectile.radius;
             if(isBoosted) TreebotFlower2Projectile.radius *= 2f;
             orig(self);
             TreebotFlower2Projectile.radius = origRadius;
             if(!isBoosted) return;
             self.rootedBodies.ForEach(cb => {
-                var nbi = Scepter.instance.rng.NextElementUniform(new[] {
+                var nbi = Scepter_V2.instance.rng.NextElementUniform(new[] {
                     BuffIndex.Bleeding,
                     BuffIndex.ClayGoo,
                     BuffIndex.Cripple,

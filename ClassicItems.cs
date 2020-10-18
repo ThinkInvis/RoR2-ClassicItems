@@ -147,6 +147,9 @@ namespace ThinkInvisible.ClassicItems {
                 mainConfigFile = cfgFile
             });
 
+            new Scepter();
+            new Embryo();
+
             Logger.LogDebug("Loading item configs...");
             foreach(CatalogBoilerplate x in masterItemList) {
                 x.SetupConfig();

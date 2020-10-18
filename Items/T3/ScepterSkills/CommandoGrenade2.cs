@@ -56,7 +56,7 @@ namespace ThinkInvisible.ClassicItems {
             var cc = self.outer.commonComponents;
             bool isBoosted = self is ThrowGrenade
                 && Util.HasEffectiveAuthority(self.outer.networkIdentity)
-                && Scepter.instance.GetCount(cc.characterBody) > 0;
+                && Scepter_V2.instance.GetCount(cc.characterBody) > 0;
             if(isBoosted) self.projectilePrefab = projReplacer;
             orig(self);
             if(isBoosted) {

@@ -14,18 +14,59 @@ using static TILER2.MiscUtil;
 namespace ThinkInvisible.ClassicItems {
     public static class EmbryoExtensions {
         public static bool CheckEmbryoProc(this Equipment_V2 eqp, CharacterBody body) {
-            bool isIntExist = Embryo.instance.subEnableInternalGet.TryGetValue(eqp, out bool isIntEnab);
-            bool isExtEnab = Embryo.instance.subEnableExt.Contains(eqp.catalogIndex);
-            return Embryo.instance.enabled && ((isIntExist && isIntEnab) || isExtEnab) && Util.CheckRoll(Embryo.instance.GetCount(body)*Embryo.instance.procChance, body.master);
+            bool isIntExist = Embryo_V2.instance.subEnableInternalGet.TryGetValue(eqp, out bool isIntEnab);
+            bool isExtEnab = Embryo_V2.instance.subEnableExt.Contains(eqp.catalogIndex);
+            return Embryo_V2.instance.enabled && ((isIntExist && isIntEnab) || isExtEnab) && Util.CheckRoll(Embryo_V2.instance.GetCount(body)*Embryo_V2.instance.procChance, body.master);
         }
 
         [Obsolete("TILER2.Equipment is deprecated; use TILER2.Equipment_V2 (will replace Equipment in a future version)")]
         public static bool CheckEmbryoProc(this Equipment eqp, CharacterBody body) {
-            bool isExtEnab = Embryo.instance.subEnableExt.Contains(eqp.regIndex);
-            return Embryo.instance.enabled && isExtEnab && Util.CheckRoll(Embryo.instance.GetCount(body) * Embryo.instance.procChance, body.master);
+            bool isExtEnab = Embryo_V2.instance.subEnableExt.Contains(eqp.regIndex);
+            return Embryo_V2.instance.enabled && isExtEnab && Util.CheckRoll(Embryo_V2.instance.GetCount(body) * Embryo_V2.instance.procChance, body.master);
         }
     }
-    public class Embryo : Item_V2<Embryo> {
+
+
+    [Obsolete("Embryo is deprecated; use Embryo_V2 (will replace Embryo in a future version)")]
+    public class Embryo : Item<Embryo> {
+        public override ItemTier itemTier => throw new NotImplementedException();
+
+        public override string displayName => throw new NotImplementedException();
+
+        protected override void LoadBehavior() {
+            throw new NotImplementedException();
+        }
+
+        protected override string NewLangDesc(string langID = null) {
+            throw new NotImplementedException();
+        }
+
+        protected override string NewLangLore(string langID = null) {
+            throw new NotImplementedException();
+        }
+
+        protected override string NewLangName(string langID = null) {
+            throw new NotImplementedException();
+        }
+
+        protected override string NewLangPickup(string langID = null) {
+            throw new NotImplementedException();
+        }
+
+        protected override void UnloadBehavior() {
+            throw new NotImplementedException();
+        }
+
+        public void Compat_Register(EquipmentIndex ind) {
+            Embryo_V2.instance.Compat_Register(ind);
+        }
+        public void Compat_Unregister(EquipmentIndex ind) {
+            Embryo_V2.instance.Compat_Register(ind);
+        }
+    }
+
+
+    public class Embryo_V2 : Item_V2<Embryo_V2> {
         public override string displayName => "Beating Embryo";
 		public override ItemTier itemTier => ItemTier.Tier3;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.EquipmentRelated});

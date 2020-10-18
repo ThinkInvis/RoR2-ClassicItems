@@ -71,9 +71,9 @@ namespace ThinkInvisible.ClassicItems {
             psshape.shapeType = ParticleSystemShapeType.Sphere;
             psshape.scale = Vector3.one * 1.5f;
             var psemit = fxcloud.GetComponent<ParticleSystem>().emission;
-            psemit.rateOverTime = Scepter.instance.artiFlamePerformanceMode ? 4f : 20f;
+            psemit.rateOverTime = Scepter_V2.instance.artiFlamePerformanceMode ? 4f : 20f;
             var lightObj = fxObj.Find("Point Light").gameObject;
-            if(Scepter.instance.artiFlamePerformanceMode) {
+            if(Scepter_V2.instance.artiFlamePerformanceMode) {
                 UnityEngine.Object.Destroy(lightObj);
             } else {
                 var lightCpt = lightObj.GetComponent<Light>();
@@ -101,7 +101,7 @@ namespace ThinkInvisible.ClassicItems {
             if(ilFound) {
                 c.Emit(OpCodes.Ldarg_0);
                 c.EmitDelegate<Func<BulletAttack,EntityStates.Mage.Weapon.Flamethrower,BulletAttack>>((origAttack,state) => {
-                    if(Scepter.instance.GetCount(state.outer.commonComponents.characterBody) < 1) return origAttack;
+                    if(Scepter_V2.instance.GetCount(state.outer.commonComponents.characterBody) < 1) return origAttack;
                     origAttack.hitCallback = (ref BulletAttack.BulletHit h) => {
                         ProjectileManager.instance.FireProjectile(new FireProjectileInfo {
                             crit = false,

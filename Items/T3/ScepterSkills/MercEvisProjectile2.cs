@@ -46,7 +46,7 @@ namespace ThinkInvisible.ClassicItems {
 
         private void On_FireFMJEnter(On.EntityStates.Commando.CommandoWeapon.FireFMJ.orig_OnEnter orig, EntityStates.Commando.CommandoWeapon.FireFMJ self) {
             orig(self);
-            if(!(self is EntityStates.Commando.CommandoWeapon.ThrowEvisProjectile) || Scepter.instance.GetCount(self.outer.commonComponents.characterBody) < 1) return;
+            if(!(self is EntityStates.Commando.CommandoWeapon.ThrowEvisProjectile) || Scepter_V2.instance.GetCount(self.outer.commonComponents.characterBody) < 1) return;
             if(!self.outer.commonComponents.skillLocator?.special) return;
             var fireCount = self.outer.commonComponents.skillLocator.special.stock;
             self.outer.commonComponents.skillLocator.special.stock = 0;
