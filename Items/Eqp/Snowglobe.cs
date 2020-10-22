@@ -31,19 +31,10 @@ namespace ThinkInvisible.ClassicItems {
 
         private GameObject snowglobeControllerPrefab;
         protected override string GetNameString(string langid = null) => displayName;
-        protected override string GetPickupString(string langid = null) {
-            string desc = "";
-            if(procRate > 0f) desc += $"Randomly freeze enemies";
-            else desc += $"Slow enemies";
-            desc += " for {duration:N0} seconds.";
-            return desc;
-        }
-        protected override string GetDescString(string langid = null) {
-            string desc = "Summon a snowstorm that";
-            desc += $" <style=cIsUtility>{(procRate>0f ? "freezes" : "slows")}</style> monsters at a <style=cIsUtility>{Pct(procRate, 1, 1)}/second chance ";
-            desc += $"over {duration:N0} seconds</style>.";
-            return desc;
-        }
+        protected override string GetPickupString(string langid = null) => $"Randomly {(procRate > 0f ? "freeze" : "slow")} enemies for {duration:N0} seconds.";
+        protected override string GetDescString(string langid = null) => "Summon a snowstorm that" +
+            $" <style=cIsUtility>{(procRate > 0f ? "freezes" : "slows")}</style> monsters at a <style=cIsUtility>{Pct(procRate, 1, 1)}/second chance " +
+            $"over {duration:N0} seconds</style>.";
         protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
         public override void SetupConfig() {
