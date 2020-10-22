@@ -37,6 +37,19 @@ namespace ThinkInvisible.ClassicItems {
         [AutoConfig("Added to Photon Jetpack's GravMod while the character is falling (negative vertical velocity) to assist in stopping falls.",AutoConfigFlags.PreventNetMismatch,0f,float.MaxValue)]
         public float fallBoost {get;private set;} = 2.0f;
 
+        public enum ExtraJumpInteractionType {
+            Simultaneous,
+            UseJumpsFirst,
+            UseJetpackFirst,
+            ConvertJumpsToFuel
+        }
+
+        [AutoConfig("What to do when both Photon Jetpack and extra jumps may be used.", AutoConfigFlags.PreventNetMismatch)]
+        public ExtraJumpInteractionType extraJumpInteraction { get; private set; } = ExtraJumpInteractionType.UseJetpackFirst;
+
+        [AutoConfig("If ExtraJumpInteraction is ConvertJumpsToFuel: seconds of fuel to provide per extra jump.", AutoConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
+        public float jumpFuel { get; private set; } = 0.8f;
+
         protected override string GetNameString(string langid = null) => displayName;
         protected override string GetPickupString(string langid = null) => "No hands.";
         protected override string GetDescString(string langid = null) {
@@ -65,7 +78,9 @@ namespace ThinkInvisible.ClassicItems {
 
             if(Compat_ItemStats.enabled) {
                 Compat_ItemStats.CreateItemStatDef(itemDef,
-                    ((count, inv, master) => { return baseFuel + (count - 1) * stackFuel; },
+                    ((count, inv, master) => { return baseFuel + (count - 1) * stackFuel +
+                        ((extraJumpInteraction == ExtraJumpInteractionType.ConvertJumpsToFuel && master.hasBody)
+                        ? ((master.GetBody().maxJumpCount - 1) * jumpFuel) : 0); },
                     (value, inv, master) => { return $"Fuel: {value.ToString("N1")} s"; }
                 ));
             }
@@ -155,6 +170,8 @@ namespace ThinkInvisible.ClassicItems {
                 
             int stacks = GetCount(tgt);
             cpt.fuelCap = stacks>0 ? baseFuel + stackFuel * (stacks-1) : 0;
+            if(stacks > 0 && extraJumpInteraction == ExtraJumpInteractionType.ConvertJumpsToFuel)
+                cpt.fuelCap += (tgt.maxJumpCount - 1) * jumpFuel;
             if(cpt.fuel>cpt.fuelCap) cpt.fuel=cpt.fuelCap;
             if(cpt.fuelCap == 0)
                 tgt.SetBuffCount(photonFuelBuff, 0);
