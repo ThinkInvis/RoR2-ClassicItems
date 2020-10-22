@@ -159,7 +159,6 @@ namespace ThinkInvisible.ClassicItems {
             Logger.LogDebug("Loading item configs...");
             foreach(CatalogBoilerplate x in masterItemList) {
                 x.SetupConfig();
-                x.ConfigEntryChanged += CardModelConfigUpdateHook;
             }
 
             Logger.LogDebug("Registering item attributes...");
@@ -188,6 +187,7 @@ namespace ThinkInvisible.ClassicItems {
 
             On.RoR2.PickupCatalog.Init += On_PickupCatalogInit;
             On.RoR2.UI.LogBook.LogBookController.BuildPickupEntries += On_LogbookBuildPickupEntries;
+            Language.onCurrentLanguageChanged += Language_onCurrentLanguageChanged;
 
             if(globalConfig.spinMod)
                 IL.RoR2.PickupDisplay.Update += IL_PickupDisplayUpdate;
@@ -222,20 +222,24 @@ namespace ThinkInvisible.ClassicItems {
             Logger.LogDebug("Initial setup done!");
         }
 
-        private void CardModelConfigUpdateHook(object sender, AutoConfigUpdateActionEventArgs args) {
-            if((args.flags & AutoConfigUpdateActionTypes.InvalidateLanguage) == 0) return;
-            var x = sender as CatalogBoilerplate;
-            if(x.pickupDef != null) {
-                var ctsf = x.pickupDef.displayPrefab?.transform;
+        private void Language_onCurrentLanguageChanged() {
+            foreach(CatalogBoilerplate bpl in masterItemList) {
+                UpdateCardModel(bpl);
+            }
+        }
+
+        private void UpdateCardModel(CatalogBoilerplate sender) {
+            if(sender.pickupDef != null) {
+                var ctsf = sender.pickupDef.displayPrefab?.transform;
                 if(!ctsf) return;
                 var cfront = ctsf.Find("cardfront");
                 if(!cfront) return;
 
-                cfront.Find("carddesc").GetComponent<TextMeshPro>().text = Language.GetString(globalConfig.longDesc ? x.descToken : x.pickupToken);
-                cfront.Find("cardname").GetComponent<TextMeshPro>().text = Language.GetString(x.nameToken);
+                cfront.Find("carddesc").GetComponent<TextMeshPro>().text = Language.GetString(globalConfig.longDesc ? sender.descToken : sender.pickupToken);
+                cfront.Find("cardname").GetComponent<TextMeshPro>().text = Language.GetString(sender.nameToken);
             }
-            if(x.logbookEntry != null) {
-                x.logbookEntry.modelPrefab = x.pickupDef.displayPrefab;
+            if(sender.logbookEntry != null) {
+                sender.logbookEntry.modelPrefab = sender.pickupDef.displayPrefab;
             }
         }
 
