@@ -2,6 +2,11 @@
 
 (🌧︎: Involves an accepted GitHub Pull Request from the community. Thanks for your help!)
 
+**4.6.3**
+
+- Fixed card model text not updating immediately after game launch.
+- Additional language fixes for Snowglobe.
+
 **4.6.2**
 
 - Removed backcompat Scepter/Embryo patches from item list (they did NOT like being there).

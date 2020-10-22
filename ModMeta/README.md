@@ -112,6 +112,11 @@ For details and instructions on applying these, see: https://github.com/ThinkInv
 The 5 latest updates are listed below. For a full changelog, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/changelog.md
 (🌧︎: Involves an accepted GitHub Pull Request from the community. Thanks for your help!)
 
+**4.6.3**
+
+- Fixed card model text not updating immediately after game launch.
+- Additional language fixes for Snowglobe.
+
 **4.6.2**
 
 - Removed backcompat Scepter/Embryo patches from item list (they did NOT like being there).
@@ -129,8 +134,3 @@ The 5 latest updates are listed below. For a full changelog, see: https://github
 - 🌧︎ A handful of additional language fixes.
 - Implements changes from TILER2 2.2.3.
 	- Ancient Scepter is now FakeInventory blacklisted. Fixes incompatibility with Tinker's Satchel (in combination with a Tinker's Satchel update).
-
-**4.5.4**
-
-- 🌧︎ Large batch of language tweaks. Many item/equipment descriptions now hide sections if e.g. a relevant config option is set to 0.
-- Fixed several issues with Beating Embryo modded equipment support.
