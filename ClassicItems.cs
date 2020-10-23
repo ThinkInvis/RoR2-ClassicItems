@@ -222,7 +222,9 @@ namespace ThinkInvisible.ClassicItems {
             Logger.LogDebug("Initial setup done!");
         }
 
+        bool pluginIsStarted = false;
         private void Language_onCurrentLanguageChanged() {
+            if(!pluginIsStarted) return;
             foreach(CatalogBoilerplate bpl in masterItemList) {
                 UpdateCardModel(bpl);
             }
@@ -230,20 +232,25 @@ namespace ThinkInvisible.ClassicItems {
 
         private void UpdateCardModel(CatalogBoilerplate sender) {
             if(sender.pickupDef != null) {
-                var ctsf = sender.pickupDef.displayPrefab?.transform;
+                var cobj = sender.pickupDef.displayPrefab;
+                if(!cobj) return;
+                var ctsf = sender.pickupDef.displayPrefab.transform;
                 if(!ctsf) return;
                 var cfront = ctsf.Find("cardfront");
                 if(!cfront) return;
 
                 cfront.Find("carddesc").GetComponent<TextMeshPro>().text = Language.GetString(globalConfig.longDesc ? sender.descToken : sender.pickupToken);
                 cfront.Find("cardname").GetComponent<TextMeshPro>().text = Language.GetString(sender.nameToken);
-            }
-            if(sender.logbookEntry != null) {
-                sender.logbookEntry.modelPrefab = sender.pickupDef.displayPrefab;
+
+                if(sender.logbookEntry != null) {
+                    sender.logbookEntry.modelPrefab = sender.pickupDef.displayPrefab;
+                }
             }
         }
 
         private void Start() {
+            pluginIsStarted = true;
+
             Logger.LogDebug("Performing late setup:");
 
             Logger.LogDebug("Late setup for individual items...");
