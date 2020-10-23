@@ -1,6 +1,6 @@
 {
   "name": "ClassicItems",
-  "version_number": "4.6.3",
+  "version_number": "4.6.4",
   "website_url": "https://github.com/ThinkInvis/RoR2-ClassicItems",
   "description": "Adds items from Risk of Rain 1 which didn't make the cut.",
   "dependencies": [

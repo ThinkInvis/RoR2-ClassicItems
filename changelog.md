@@ -2,6 +2,10 @@
 
 (🌧︎: Involves an accepted GitHub Pull Request from the community. Thanks for your help!)
 
+**4.6.4**
+
+- Added more safety checks to card model text updates (may fix a potential incompatibility).
+
 **4.6.3**
 
 - Fixed card model text not updating immediately after game launch.

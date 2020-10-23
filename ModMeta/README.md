@@ -112,6 +112,10 @@ For details and instructions on applying these, see: https://github.com/ThinkInv
 The 5 latest updates are listed below. For a full changelog, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/changelog.md
 (🌧︎: Involves an accepted GitHub Pull Request from the community. Thanks for your help!)
 
+**4.6.4**
+
+- Added more safety checks to card model text updates (may fix a potential incompatibility).
+
 **4.6.3**
 
 - Fixed card model text not updating immediately after game launch.
@@ -128,9 +132,3 @@ The 5 latest updates are listed below. For a full changelog, see: https://github
 **4.6.0**
 
 - Implements changes from TILER2 3.0.0.
-
-**4.5.5**
-
-- 🌧︎ A handful of additional language fixes.
-- Implements changes from TILER2 2.2.3.
-	- Ancient Scepter is now FakeInventory blacklisted. Fixes incompatibility with Tinker's Satchel (in combination with a Tinker's Satchel update).
