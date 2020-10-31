@@ -231,7 +231,7 @@ namespace ThinkInvisible.ClassicItems {
         }
 
         private void UpdateCardModel(CatalogBoilerplate sender) {
-            if(sender.pickupDef != null) {
+            if(sender.pickupDef != null && !globalConfig.hideDesc) {
                 var cobj = sender.pickupDef.displayPrefab;
                 if(!cobj) return;
                 var ctsf = sender.pickupDef.displayPrefab.transform;
