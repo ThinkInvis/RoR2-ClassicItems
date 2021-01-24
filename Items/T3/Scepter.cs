@@ -260,7 +260,8 @@ namespace ThinkInvisible.ClassicItems {
         }
 
         private void Reroll(CharacterBody self, int count) {
-            if(count <= 0) return;
+            var bodyName = BodyCatalog.GetBodyName(self.bodyIndex);
+            if (count <= 0 || bodyName == "EngiWalkerTurretBody" || bodyName == "EngiTurretBody") return;
             var list = Run.instance.availableTier3DropList.Except(new[] {pickupIndex}).ToList();
             for(var i = 0; i < count; i++) {
                 self.inventory.RemoveItem(catalogIndex, 1);
