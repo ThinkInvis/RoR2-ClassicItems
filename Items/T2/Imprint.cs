@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using TILER2;
 using static TILER2.MiscUtil;
 using static TILER2.StatHooks;
+using UnityEngine.Networking;
 
 namespace ThinkInvisible.ClassicItems {
     public class Imprint : Item_V2<Imprint> {
@@ -102,6 +103,7 @@ namespace ThinkInvisible.ClassicItems {
         
         private void On_CBInventoryChanged(On.RoR2.CharacterBody.orig_OnInventoryChanged orig, CharacterBody self) {
             orig(self);
+            if(!NetworkServer.active) return;
             var cpt = self.GetComponent<ImprintComponent>();
             if(!cpt) cpt = self.gameObject.AddComponent<ImprintComponent>();
             cpt.count = GetCount(self);
