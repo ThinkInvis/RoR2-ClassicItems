@@ -42,8 +42,7 @@ namespace ThinkInvisible.ClassicItems {
             myCallDef = CloneSkillDef(oldCallDef);
             myCallDef.baseMaxStock = 21;
             myCallDef.mustKeyPress = false;
-            myCallDef.isBullets = true;
-            myCallDef.shootDelay = 0.07f;
+            myCallDef.isCombatSkill = true;
             myCallDef.baseRechargeInterval = 0.07f;
             myCallDef.icon = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/scepter/captain_airstrikeicon.png");
 
