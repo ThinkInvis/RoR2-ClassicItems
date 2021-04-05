@@ -166,13 +166,13 @@ namespace ThinkInvisible.ClassicItems {
             
             foreach(CatalogBoilerplate x in masterItemList) {
                 string mpnOvr = null;
-                if(x is Item item) mpnOvr = "@ClassicItems:Assets/ClassicItems/models/" + modelNameMap[item.itemTier] + ".prefab";
-                else if(x is Equipment eqp) mpnOvr = "@ClassicItems:Assets/ClassicItems/models/" + (eqp.isLunar ? "LqpCard.prefab" : "EqpCard.prefab");
-                var ipnOvr = "@ClassicItems:Assets/ClassicItems/icons/" + x.name.Replace("_V2", "") + "_icon.png";
+                if(x is Item item) mpnOvr = "Assets/ClassicItems/models/" + modelNameMap[item.itemTier] + ".prefab";
+                else if(x is Equipment eqp) mpnOvr = "Assets/ClassicItems/models/" + (eqp.isLunar ? "LqpCard.prefab" : "EqpCard.prefab");
+                var ipnOvr = "Assets/ClassicItems/icons/" + x.name.Replace("_V2", "") + "_icon.png";
 
                 if(mpnOvr != null) {
-                    typeof(CatalogBoilerplate).GetProperty(nameof(CatalogBoilerplate.modelResourcePath)).SetValue(x, mpnOvr);
-                    typeof(CatalogBoilerplate).GetProperty(nameof(CatalogBoilerplate.iconResourcePath)).SetValue(x, ipnOvr);
+                    typeof(CatalogBoilerplate).GetProperty(nameof(CatalogBoilerplate.modelResource)).SetValue(x, resources.LoadAsset<GameObject>(mpnOvr));
+                    typeof(CatalogBoilerplate).GetProperty(nameof(CatalogBoilerplate.iconResource)).SetValue(x, resources.LoadAsset<Sprite>(ipnOvr));
                 }
                 
                 x.SetupAttributes();
