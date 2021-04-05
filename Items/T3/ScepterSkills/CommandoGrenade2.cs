@@ -53,10 +53,6 @@ namespace ThinkInvisible.ClassicItems {
         }
 
         private void On_FireFMJFire(On.EntityStates.GenericProjectileBaseState.orig_FireProjectile orig, EntityStates.GenericProjectileBaseState self) {
-            if(!(self is FireFMJ)) {
-                orig(self);
-                return;
-            }
             var cc = self.outer.commonComponents;
             bool isBoosted = self is ThrowGrenade
                 && Util.HasEffectiveAuthority(self.outer.networkIdentity)
