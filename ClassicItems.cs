@@ -16,6 +16,7 @@ using System.Collections.ObjectModel;
 using TILER2;
 using static TILER2.MiscUtil;
 using System.Runtime.Serialization;
+using System.Linq;
 
 //TODO:
 // Add missing documentation in... a whole lotta places... whoops.
@@ -357,13 +358,17 @@ namespace ThinkInvisible.ClassicItems {
                 foreach(var pickup in PickupCatalog.allPickups) {
                     GameObject npfb;
                     if(pickup.interactContextToken == "EQUIPMENT_PICKUP_CONTEXT") {
-                        if(pickup.equipmentIndex >= EquipmentIndex.Count || pickup.equipmentIndex < 0) continue;
+                        if(!RoR2Content.Equipment.equipmentDefs.Contains(EquipmentCatalog.GetEquipmentDef(pickup.equipmentIndex))
+                        || pickup.itemIndex == ItemIndex.None)
+                            continue;
                         var eqp = EquipmentCatalog.GetEquipmentDef(pickup.equipmentIndex);
                         if(!eqp.canDrop) continue;
                         npfb = eqp.isLunar ? lunEqpCardPrefab : eqpCardPrefab;
                         replacedEqps ++;
                     } else if(pickup.interactContextToken == "ITEM_PICKUP_CONTEXT") {
-                        if(pickup.itemIndex >= ItemIndex.Count || pickup.itemIndex < 0) continue;
+                        if(!RoR2Content.Items.itemDefs.Contains(ItemCatalog.GetItemDef(pickup.itemIndex))
+                        || pickup.itemIndex == ItemIndex.None)
+                        continue;
 
                         var item = ItemCatalog.GetItemDef(pickup.itemIndex);
                         switch(item.tier) {
