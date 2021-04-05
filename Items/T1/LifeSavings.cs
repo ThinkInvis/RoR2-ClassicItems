@@ -40,7 +40,7 @@ namespace ThinkInvisible.ClassicItems {
             if(Compat_ItemStats.enabled) {
                 Compat_ItemStats.CreateItemStatDef(itemDef,
                     ((count, inv, master) => { return LifeSavingsComponent.CalculateMoneyIncrease(Mathf.FloorToInt(count)); },
-                    (value, inv, master) => { return $"Money Per Second: ${value.ToString("N1")}"; }
+                    (value, inv, master) => { return $"Money Per Second: ${value:N1}"; }
                 ));
             }
         }

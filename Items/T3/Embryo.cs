@@ -67,7 +67,7 @@ namespace ThinkInvisible.ClassicItems {
         [AutoConfig("Percent chance of triggering an equipment twice. Stacks additively.", AutoConfigFlags.None, 0f, 100f)]
         public float procChance {get;private set;} = 30f;
 
-        private Dictionary<EquipmentDef, EmbryoHook> _hookedEquipmentDefs = new Dictionary<EquipmentDef, EmbryoHook>();
+        private readonly Dictionary<EquipmentDef, EmbryoHook> _hookedEquipmentDefs = new Dictionary<EquipmentDef, EmbryoHook>();
         public ReadOnlyDictionary<EquipmentDef, EmbryoHook> hookedEquipmentDefs { get; private set; }
 
         internal List<EmbryoHook> allInternalHooks = new List<EmbryoHook>();
