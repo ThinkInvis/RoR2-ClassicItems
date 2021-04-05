@@ -41,7 +41,7 @@ namespace ThinkInvisible.ClassicItems {
             pie.blastDamageCoefficient *= 0.5f;
             pie.bonusBlastForce *= 0.5f;
 
-            ProjectileCatalog.getAdditionalEntries += (list) => list.Add(projReplacer);
+            ProjectileAPI.Add(projReplacer);
         }
         
         internal override void LoadBehavior() {

@@ -82,7 +82,7 @@ namespace ThinkInvisible.ClassicItems {
                 lightCpt.range = 5f;
             }
 
-            ProjectileCatalog.getAdditionalEntries += (list) => list.Add(projCloud);
+            ProjectileAPI.Add(projCloud);
         }
 
         internal override void LoadBehavior() {

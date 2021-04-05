@@ -56,7 +56,7 @@ namespace ThinkInvisible.ClassicItems {
             flashlight.GetComponent<Light>().range = 15f;
             flashlight.gameObject.SetActive(true);
 
-            ProjectileCatalog.getAdditionalEntries += (list) => list.Add(projReplacer);
+            ProjectileAPI.Add(projReplacer);
         }
 
         internal override void LoadBehavior() {

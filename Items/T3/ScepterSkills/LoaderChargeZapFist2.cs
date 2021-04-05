@@ -45,7 +45,7 @@ namespace ThinkInvisible.ClassicItems {
             proxb.maxAngleFilter = 180f;
             projReplacer.transform.Find("Effect").localScale *= 3f;
 
-            ProjectileCatalog.getAdditionalEntries += (list) => list.Add(projReplacer);
+            ProjectileAPI.Add(projReplacer);
         }
 
         internal override void LoadBehavior() {
