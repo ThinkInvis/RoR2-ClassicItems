@@ -63,7 +63,7 @@ namespace ThinkInvisible.ClassicItems {
 
         internal List<EmbryoHook> allHooks = new List<EmbryoHook>();
 
-        public Embryo() : base() {
+        public Embryo() {
             new EmbryoHooks.CommandMissile();
         }
 
