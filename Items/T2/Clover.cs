@@ -61,6 +61,7 @@ namespace ThinkInvisible.ClassicItems {
         protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
         public override void SetupBehavior() {
+            base.SetupBehavior();
 			if(Compat_ItemStats.enabled) {
 				Compat_ItemStats.CreateItemStatDef(itemDef,
 					((count,inv,master)=>{
