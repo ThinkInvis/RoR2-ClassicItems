@@ -46,13 +46,12 @@ namespace ThinkInvisible.ClassicItems {
         public override void SetupAttributes() {
             base.SetupAttributes();
 
-            prescriptionsBuff = new BuffDef {
-                buffColor = Color.red,
-                canStack = true,
-                isDebuff = false,
-                name = $"{modInfo.shortIdentifier}Prescriptions",
-                iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/Prescriptions_icon.png")
-            };
+            prescriptionsBuff = ScriptableObject.CreateInstance<BuffDef>();
+            prescriptionsBuff.buffColor = Color.red;
+            prescriptionsBuff.canStack = true;
+            prescriptionsBuff.isDebuff = false;
+            prescriptionsBuff.name = $"{modInfo.shortIdentifier}Prescriptions";
+            prescriptionsBuff.iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/Prescriptions_icon.png");
             BuffAPI.Add(new CustomBuff(prescriptionsBuff));
         }
 

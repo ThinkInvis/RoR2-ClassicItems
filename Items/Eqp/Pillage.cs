@@ -21,13 +21,12 @@ namespace ThinkInvisible.ClassicItems {
         public override void SetupAttributes() {
             base.SetupAttributes();
 
-            pillageBuff = new BuffDef {
-                buffColor = new Color(0.85f, 0.8f, 0.3f),
-                canStack = true,
-                isDebuff = false,
-                name = modInfo.shortIdentifier + "PillagedGold",
-                iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/pillage_icon.png")
-            };
+            pillageBuff = ScriptableObject.CreateInstance<BuffDef>();
+            pillageBuff.buffColor = new Color(0.85f, 0.8f, 0.3f);
+            pillageBuff.canStack = true;
+            pillageBuff.isDebuff = false;
+            pillageBuff.name = modInfo.shortIdentifier + "PillagedGold";
+            pillageBuff.iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/pillage_icon.png");
             R2API.BuffAPI.Add(new R2API.CustomBuff(pillageBuff));
         }
 

@@ -38,30 +38,27 @@ namespace ThinkInvisible.ClassicItems {
         public override void SetupAttributes() {
             base.SetupAttributes();
 
-            markDebuff = new BuffDef {
-                buffColor = Color.yellow,
-                canStack = false,
-                isDebuff = true,
-                name = modInfo.shortIdentifier + "HitListDebuff",
-                iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/hitlist_debuff_icon.png")
-            };
+            markDebuff = ScriptableObject.CreateInstance<BuffDef>();
+            markDebuff.buffColor = Color.yellow;
+            markDebuff.canStack = false;
+            markDebuff.isDebuff = true;
+            markDebuff.name = modInfo.shortIdentifier + "HitListDebuff";
+            markDebuff.iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/hitlist_debuff_icon.png");
             BuffAPI.Add(new CustomBuff(markDebuff));
 
-            tallyBuff = new BuffDef {
-                buffColor = Color.yellow,
-                canStack = true,
-                isDebuff = false,
-                name = modInfo.shortIdentifier + "HitListBuff",
-                iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/hitlist_buff_icon.png")
-            };
+            tallyBuff = ScriptableObject.CreateInstance<BuffDef>();
+            tallyBuff.buffColor = Color.yellow;
+            tallyBuff.canStack = true;
+            tallyBuff.isDebuff = false;
+            tallyBuff.name = modInfo.shortIdentifier + "HitListBuff";
+            tallyBuff.iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/hitlist_buff_icon.png");
             BuffAPI.Add(new CustomBuff(tallyBuff));
 
-            hitListTally = new ItemDef {
-                hidden = true,
-                name = modInfo.shortIdentifier + "INTERNALTally",
-                tier = ItemTier.NoTier,
-                canRemove = false
-            };
+            hitListTally = ScriptableObject.CreateInstance<ItemDef>();
+            hitListTally.hidden = true;
+            hitListTally.name = modInfo.shortIdentifier + "INTERNALTally";
+            hitListTally.tier = ItemTier.NoTier;
+            hitListTally.canRemove = false;
             ItemAPI.Add(new CustomItem(hitListTally, new ItemDisplayRuleDict(null)));
         }
 

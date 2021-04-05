@@ -41,13 +41,12 @@ namespace ThinkInvisible.ClassicItems {
         public override void SetupAttributes() {
             base.SetupAttributes();
 
-            goldenGunBuff = new BuffDef {
-                buffColor = new Color(0.85f, 0.8f, 0.3f),
-                canStack = true,
-                isDebuff = false,
-                name = $"{modInfo.shortIdentifier}GoldenGun",
-                iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/GoldenGun_icon.png")
-            };
+            goldenGunBuff = ScriptableObject.CreateInstance<BuffDef>();
+            goldenGunBuff.buffColor = new Color(0.85f, 0.8f, 0.3f);
+            goldenGunBuff.canStack = true;
+            goldenGunBuff.isDebuff = false;
+            goldenGunBuff.name = $"{modInfo.shortIdentifier}GoldenGun";
+            goldenGunBuff.iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/GoldenGun_icon.png");
             BuffAPI.Add(new CustomBuff(goldenGunBuff));
         }
 

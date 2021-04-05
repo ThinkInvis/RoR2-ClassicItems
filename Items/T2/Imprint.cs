@@ -47,29 +47,26 @@ namespace ThinkInvisible.ClassicItems {
 
         public override void SetupAttributes() {
             base.SetupAttributes();
-            attackBuff = new BuffDef {
-                buffColor = Color.red,
-                canStack = false,
-                isDebuff = false,
-                name = modInfo.shortIdentifier + "ImprintAttack",
-                iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/Imprint_icon.png")
-            };
+            attackBuff = ScriptableObject.CreateInstance<BuffDef>();
+            attackBuff.buffColor = Color.red;
+            attackBuff.canStack = false;
+            attackBuff.isDebuff = false;
+            attackBuff.name = modInfo.shortIdentifier + "ImprintAttack";
+            attackBuff.iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/Imprint_icon.png");
             R2API.BuffAPI.Add(new R2API.CustomBuff(attackBuff));
-            speedBuff = new BuffDef {
-                buffColor = Color.cyan,
-                canStack = false,
-                isDebuff = false,
-                name = modInfo.shortIdentifier + "ImprintSpeed",
-                iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/Imprint_icon.png")
-            };
+            speedBuff = ScriptableObject.CreateInstance<BuffDef>();
+            speedBuff.buffColor = Color.cyan;
+            speedBuff.canStack = false;
+            speedBuff.isDebuff = false;
+            speedBuff.name = modInfo.shortIdentifier + "ImprintSpeed";
+            speedBuff.iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/Imprint_icon.png");
             R2API.BuffAPI.Add(new R2API.CustomBuff(speedBuff));
-            healBuff = new BuffDef {
-                buffColor = Color.green,
-                canStack = false,
-                isDebuff = false,
-                name = modInfo.shortIdentifier + "ImprintHeal",
-                iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/Imprint_icon.png")
-            };
+            healBuff = ScriptableObject.CreateInstance<BuffDef>();
+            healBuff.buffColor = Color.green;
+            healBuff.canStack = false;
+            healBuff.isDebuff = false;
+            healBuff.name = modInfo.shortIdentifier + "ImprintHeal";
+            healBuff.iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/Imprint_icon.png");
             R2API.BuffAPI.Add(new R2API.CustomBuff(healBuff));
         }
 

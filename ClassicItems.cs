@@ -195,22 +195,21 @@ namespace ThinkInvisible.ClassicItems {
 
             Logger.LogDebug("Registering shared buffs...");
             //used only for purposes of Death Mark; applied by Permafrost and Snowglobe
-            freezeBuff = new BuffDef {
-                buffColor = Color.cyan,
-                canStack = false,
-                isDebuff = true,
-                name = "CIFreeze",
-                iconSprite = resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/permafrost_icon.png")
-            };
+            freezeBuff = ScriptableObject.CreateInstance<BuffDef>();
+            freezeBuff.buffColor = Color.cyan;
+            freezeBuff.canStack = false;
+            freezeBuff.isDebuff = true;
+            freezeBuff.name = "CIFreeze";
+            freezeBuff.iconSprite = resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/permafrost_icon.png");
             BuffAPI.Add(new CustomBuff(freezeBuff));
 
-            fearBuff = new BuffDef {
-                buffColor = Color.red,
-                canStack = false,
-                isDebuff = true,
-                name = "CIFear",
-                iconSprite = Resources.Load<Sprite>("textures/miscicons/texSprintIcon")
-            };
+            fearBuff = ScriptableObject.CreateInstance<BuffDef>();
+            fearBuff.buffColor = Color.red;
+            fearBuff.canStack = false;
+            fearBuff.isDebuff = true;
+            fearBuff.name = "CIFear";
+            fearBuff.iconSprite = Resources.Load<Sprite>("textures/miscicons/texSprintIcon");
+
             BuffAPI.Add(new CustomBuff(fearBuff));
             IL.EntityStates.AI.Walker.Combat.UpdateAI += IL_ESAIWalkerCombatUpdateAI;
 

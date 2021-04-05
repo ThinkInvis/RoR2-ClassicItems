@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections.ObjectModel;
 using TILER2;
 using static TILER2.MiscUtil;
+using R2API;
 
 namespace ThinkInvisible.ClassicItems {
     public class PhotonJetpack : Item<PhotonJetpack> {
@@ -50,14 +51,14 @@ namespace ThinkInvisible.ClassicItems {
         public override void SetupAttributes() {
             base.SetupAttributes();
 
-            photonFuelBuff = new BuffDef {
-                buffColor = Color.cyan,
-                canStack = true,
-                isDebuff = false,
-                name = modInfo.shortIdentifier + "PhotonFuel",
-                iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/PhotonJetpack_icon.png")
-            };
-            R2API.BuffAPI.Add(new R2API.CustomBuff(photonFuelBuff));
+            photonFuelBuff = ScriptableObject.CreateInstance<BuffDef>();
+            photonFuelBuff.buffColor = Color.cyan;
+            photonFuelBuff.canStack = true;
+            photonFuelBuff.isDebuff = false;
+            photonFuelBuff.name = modInfo.shortIdentifier + "PhotonFuel";
+            photonFuelBuff.iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/PhotonJetpack_icon.png");
+
+            BuffAPI.Add(new CustomBuff(photonFuelBuff));
         }
 
         public override void SetupBehavior() {

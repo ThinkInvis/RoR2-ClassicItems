@@ -36,13 +36,12 @@ namespace ThinkInvisible.ClassicItems {
         public override void SetupAttributes() {
             base.SetupAttributes();
 
-            snakeEyesBuff = new BuffDef {
-                buffColor = Color.red,
-                canStack = true,
-                isDebuff = false,
-                name = $"{modInfo.shortIdentifier}SnakeEyes",
-                iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/SnakeEyes_icon.png")
-            };
+            snakeEyesBuff = ScriptableObject.CreateInstance<BuffDef>();
+            snakeEyesBuff.buffColor = Color.red;
+            snakeEyesBuff.canStack = true;
+            snakeEyesBuff.isDebuff = false;
+            snakeEyesBuff.name = $"{modInfo.shortIdentifier}SnakeEyes";
+            snakeEyesBuff.iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/SnakeEyes_icon.png");
             BuffAPI.Add(new CustomBuff(snakeEyesBuff));
         }
 
