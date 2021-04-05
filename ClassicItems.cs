@@ -86,7 +86,9 @@ namespace ThinkInvisible.ClassicItems {
 
         internal static BepInEx.Logging.ManualLogSource _logger;
 
-        #if DEBUG
+        internal static AssetBundle resources;
+
+#if DEBUG
         public void Update() {
             var i3 = Input.GetKeyDown(KeyCode.F3);
             var i4 = Input.GetKeyDown(KeyCode.F4);
@@ -106,7 +108,7 @@ namespace ThinkInvisible.ClassicItems {
                 PickupDropletController.CreatePickupDroplet(spawnList[Run.instance.spawnRng.RangeInt(0,spawnList.Count)], trans.position, new Vector3(0f, -5f, 0f));
             }
         }
-        #endif
+#endif
 
         private void Awake() {
             _logger = Logger;
@@ -119,9 +121,7 @@ namespace ThinkInvisible.ClassicItems {
 
             Logger.LogDebug("Loading assets...");
             using(var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("ClassicItems.classicitems_assets")) {
-                var bundle = AssetBundle.LoadFromStream(stream);
-                var provider = new AssetBundleResourcesProvider("@ClassicItems", bundle);
-                ResourcesAPI.AddProvider(provider);
+                resources = AssetBundle.LoadFromStream(stream);
             }
 
             cfgFile = new ConfigFile(Path.Combine(Paths.ConfigPath, ModGuid + ".cfg"), true);
