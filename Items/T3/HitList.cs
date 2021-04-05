@@ -59,6 +59,10 @@ namespace ThinkInvisible.ClassicItems {
             hitListTally.name = modInfo.shortIdentifier + "INTERNALTally";
             hitListTally.tier = ItemTier.NoTier;
             hitListTally.canRemove = false;
+            hitListTally.nameToken = "";
+            hitListTally.pickupToken = "";
+            hitListTally.loreToken = "";
+            hitListTally.descriptionToken = "";
             ItemAPI.Add(new CustomItem(hitListTally, new ItemDisplayRuleDict(null)));
         }
 
