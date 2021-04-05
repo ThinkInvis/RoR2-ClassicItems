@@ -6,7 +6,7 @@ using static TILER2.MiscUtil;
 using static TILER2.StatHooks;
 
 namespace ThinkInvisible.ClassicItems {
-    public class SnakeEyes : Item_V2<SnakeEyes> {
+    public class SnakeEyes : Item<SnakeEyes> {
         public override string displayName => "Snake Eyes";
 		public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});

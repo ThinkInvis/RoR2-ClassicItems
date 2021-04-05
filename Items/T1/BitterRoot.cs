@@ -6,7 +6,7 @@ using static TILER2.MiscUtil;
 using static TILER2.StatHooks;
 
 namespace ThinkInvisible.ClassicItems {
-    public class BitterRoot : Item_V2<BitterRoot> {
+    public class BitterRoot : Item<BitterRoot> {
         public override string displayName => "Bitter Root";
 		public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Healing});

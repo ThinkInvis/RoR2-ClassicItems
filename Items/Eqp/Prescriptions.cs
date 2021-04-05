@@ -5,7 +5,7 @@ using static TILER2.MiscUtil;
 using static TILER2.StatHooks;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Prescriptions : Equipment_V2<Prescriptions> {
+    public class Prescriptions : Equipment<Prescriptions> {
         public override string displayName => "Prescriptions";
 
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]

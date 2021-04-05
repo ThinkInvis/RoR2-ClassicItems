@@ -5,7 +5,7 @@ using static TILER2.MiscUtil;
 
 
 namespace ThinkInvisible.ClassicItems {
-    public class SkeletonKey : Equipment_V2<SkeletonKey> {
+    public class SkeletonKey : Equipment<SkeletonKey> {
         public override string displayName => "Skeleton Key";
 
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]

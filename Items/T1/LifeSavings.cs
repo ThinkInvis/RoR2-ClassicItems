@@ -7,7 +7,7 @@ using TILER2;
 using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
-    public class LifeSavings : Item_V2<LifeSavings> {
+    public class LifeSavings : Item<LifeSavings> {
         public override string displayName => "Life Savings";
         public override bool itemIsAIBlacklisted {get; protected set;} = true;
         public override ItemTier itemTier => ItemTier.Tier1;

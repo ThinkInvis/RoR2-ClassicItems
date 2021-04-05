@@ -7,7 +7,7 @@ using TILER2;
 using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Spikestrip : Item_V2<Spikestrip> {
+    public class Spikestrip : Item<Spikestrip> {
         public override string displayName => "Spikestrip";
 		public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});

@@ -4,7 +4,7 @@ using TILER2;
 using static TILER2.StatHooks;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Vial : Item_V2<Vial> {
+    public class Vial : Item<Vial> {
         public override string displayName => "Mysterious Vial";
 		public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Healing});

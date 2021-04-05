@@ -5,7 +5,7 @@ using TILER2;
 using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
-    public class OldBox : Item_V2<OldBox> {
+    public class OldBox : Item<OldBox> {
         public override string displayName => "Old Box";
 		public override ItemTier itemTier => ItemTier.Lunar;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});

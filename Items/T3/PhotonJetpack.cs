@@ -5,7 +5,7 @@ using TILER2;
 using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
-    public class PhotonJetpack : Item_V2<PhotonJetpack> {
+    public class PhotonJetpack : Item<PhotonJetpack> {
         public override string displayName => "Photon Jetpack";
 		public override ItemTier itemTier => ItemTier.Tier3;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});

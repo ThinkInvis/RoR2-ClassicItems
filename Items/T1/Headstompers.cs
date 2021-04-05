@@ -6,7 +6,7 @@ using TILER2;
 using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Headstompers : Item_V2<Headstompers> {
+    public class Headstompers : Item<Headstompers> {
         public override string displayName => "Headstompers";
 		public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});

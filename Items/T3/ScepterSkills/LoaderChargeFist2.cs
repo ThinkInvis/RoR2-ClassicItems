@@ -47,7 +47,7 @@ namespace ThinkInvisible.ClassicItems {
         private void on_BaseSwingChargedFistEnter(On.EntityStates.Loader.BaseSwingChargedFist.orig_OnEnter orig, BaseSwingChargedFist self) {
             orig(self);
             if(!(self is SwingChargedFist)) return;
-            if(Scepter_V2.instance.GetCount(self.outer.commonComponents.characterBody) > 0) {
+            if(Scepter.instance.GetCount(self.outer.commonComponents.characterBody) > 0) {
                 self.minPunchForce *= 7f;
                 self.maxPunchForce *= 7f;
                 self.damageCoefficient *= 2f;
@@ -57,7 +57,7 @@ namespace ThinkInvisible.ClassicItems {
         }
 
         private void BaseSwingChargedFist_OnMeleeHitAuthority(On.EntityStates.Loader.BaseSwingChargedFist.orig_OnMeleeHitAuthority orig, BaseSwingChargedFist self) {
-            if(Scepter_V2.instance.GetCount(self.outer.commonComponents.characterBody) < 1) return;
+            if(Scepter.instance.GetCount(self.outer.commonComponents.characterBody) < 1) return;
 			var mTsf = self.outer.commonComponents.modelLocator?.modelTransform?.GetComponent<ChildLocator>()?.FindChild(self.swingEffectMuzzleString);
             EffectManager.SpawnEffect(Resources.Load<GameObject>("prefabs/effects/omnieffect/OmniExplosionVFXCommandoGrenade"),
                 new EffectData {

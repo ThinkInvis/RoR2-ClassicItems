@@ -9,7 +9,7 @@ using TILER2;
 using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Brooch : Equipment_V2<Brooch> {
+    public class Brooch : Equipment<Brooch> {
         public override string displayName => "Captain's Brooch";
 
         float baseCost = 25f;

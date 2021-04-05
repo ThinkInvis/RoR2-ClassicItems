@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using static TILER2.StatHooks;
 
 namespace ThinkInvisible.ClassicItems {
-    public class HitList : Item_V2<HitList> {
+    public class HitList : Item<HitList> {
         public override string displayName => "The Hit List";
 		public override ItemTier itemTier => ItemTier.Tier3;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});

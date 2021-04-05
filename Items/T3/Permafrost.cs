@@ -4,7 +4,7 @@ using TILER2;
 using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Permafrost : Item_V2<Permafrost> {
+    public class Permafrost : Item<Permafrost> {
         public override string displayName => "Permafrost";
 		public override ItemTier itemTier => ItemTier.Tier3;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});

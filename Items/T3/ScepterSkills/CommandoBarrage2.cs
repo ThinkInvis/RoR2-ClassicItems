@@ -48,14 +48,14 @@ namespace ThinkInvisible.ClassicItems {
 
         private void On_FireBarrage_Enter(On.EntityStates.Commando.CommandoWeapon.FireBarrage.orig_OnEnter orig, FireBarrage self) {
             orig(self);
-            if(Scepter_V2.instance.GetCount(self.outer.commonComponents.characterBody) > 0) {
+            if(Scepter.instance.GetCount(self.outer.commonComponents.characterBody) > 0) {
                 self.durationBetweenShots /= 2f;
                 self.bulletCount *= 2;
             }
         }
 
         private void On_FireBarrage_FireBullet(On.EntityStates.Commando.CommandoWeapon.FireBarrage.orig_FireBullet orig, FireBarrage self) {
-            bool hasScep = Scepter_V2.instance.GetCount(self.outer.commonComponents.characterBody) > 0;
+            bool hasScep = Scepter.instance.GetCount(self.outer.commonComponents.characterBody) > 0;
             var origAmp = FireBarrage.recoilAmplitude;
             if(hasScep) FireBarrage.recoilAmplitude /= 2;
             orig(self);

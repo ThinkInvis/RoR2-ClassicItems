@@ -9,7 +9,7 @@ using static TILER2.MiscUtil;
 using System.Collections.Generic;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Snowglobe : Equipment_V2<Snowglobe> {
+    public class Snowglobe : Equipment<Snowglobe> {
         public override string displayName => "Snowglobe";
 
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]

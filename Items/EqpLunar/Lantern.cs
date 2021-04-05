@@ -7,7 +7,7 @@ using static TILER2.MiscUtil;
 using System.Collections.Generic;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Lantern : Equipment_V2<Lantern> {
+    public class Lantern : Equipment<Lantern> {
         public override string displayName => "Safeguard Lantern";
 
 		[AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]

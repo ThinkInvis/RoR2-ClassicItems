@@ -7,7 +7,7 @@ using static TILER2.MiscUtil;
 
 
 namespace ThinkInvisible.ClassicItems {
-    public class LostDoll : Equipment_V2<LostDoll> {
+    public class LostDoll : Equipment<LostDoll> {
         public override string displayName => "Lost Doll";
 
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]

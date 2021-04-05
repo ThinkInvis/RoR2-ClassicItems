@@ -6,7 +6,7 @@ using static TILER2.MiscUtil;
 using static TILER2.StatHooks;
 
 namespace ThinkInvisible.ClassicItems {
-    public class RustyJetpack : Item_V2<RustyJetpack> {
+    public class RustyJetpack : Item<RustyJetpack> {
         public override string displayName => "Rusty Jetpack";
 		public override ItemTier itemTier => ItemTier.Tier2;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});

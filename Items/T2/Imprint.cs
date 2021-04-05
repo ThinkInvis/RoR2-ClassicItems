@@ -7,7 +7,7 @@ using static TILER2.StatHooks;
 using UnityEngine.Networking;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Imprint : Item_V2<Imprint> {
+    public class Imprint : Item<Imprint> {
         public override string displayName => "Filial Imprinting";
 		public override ItemTier itemTier => ItemTier.Tier2;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Any});

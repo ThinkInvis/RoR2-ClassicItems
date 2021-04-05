@@ -23,43 +23,7 @@ namespace ThinkInvisible.ClassicItems {
         public abstract int targetVariantIndex {get;}
     }
 
-
-    [Obsolete("Scepter is deprecated; use Scepter_V2 (will replace Scepter in a future version)")]
     public class Scepter : Item<Scepter> {
-        public override ItemTier itemTier => throw new NotImplementedException();
-
-        public override string displayName => throw new NotImplementedException();
-
-        protected override void LoadBehavior() {
-            throw new NotImplementedException();
-        }
-
-        protected override string NewLangDesc(string langID = null) {
-            throw new NotImplementedException();
-        }
-
-        protected override string NewLangLore(string langID = null) {
-            throw new NotImplementedException();
-        }
-
-        protected override string NewLangName(string langID = null) {
-            throw new NotImplementedException();
-        }
-
-        protected override string NewLangPickup(string langID = null) {
-            throw new NotImplementedException();
-        }
-
-        protected override void UnloadBehavior() {
-            throw new NotImplementedException();
-        }
-
-        public bool RegisterScepterSkill(SkillDef replacingDef, string targetBodyName, SkillSlot targetSlot, int targetVariant) {
-            return Scepter_V2.instance.RegisterScepterSkill(replacingDef, targetBodyName, targetSlot, targetVariant);
-        }
-    }
-
-    public class Scepter_V2 : Item_V2<Scepter_V2> {
         public override string displayName => "Ancient Scepter";
 		public override ItemTier itemTier => ItemTier.Tier3;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Any});
@@ -93,7 +57,7 @@ namespace ThinkInvisible.ClassicItems {
 
         internal List<ScepterSkill> skills = new List<ScepterSkill>();
 
-        public Scepter_V2() {
+        public Scepter() {
             skills.Add(new ArtificerFlamethrower2());
             skills.Add(new ArtificerFlyUp2());
             skills.Add(new CaptainAirstrike2());

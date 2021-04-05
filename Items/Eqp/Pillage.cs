@@ -5,7 +5,7 @@ using TILER2;
 using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Pillage : Equipment_V2<Pillage> {
+    public class Pillage : Equipment<Pillage> {
         public override string displayName => "Pillaged Gold";
 
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]

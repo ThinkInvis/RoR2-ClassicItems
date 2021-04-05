@@ -9,7 +9,7 @@ using static TILER2.MiscUtil;
 using System.Collections.Generic;
 
 namespace ThinkInvisible.ClassicItems {
-    public class BarbedWire : Item_V2<BarbedWire> {
+    public class BarbedWire : Item<BarbedWire> {
 		public override string displayName => "Barbed Wire";
 		public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});

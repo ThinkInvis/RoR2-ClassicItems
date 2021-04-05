@@ -7,7 +7,7 @@ using TILER2;
 using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
-    public class TeleSight : Item_V2<TeleSight> {
+    public class TeleSight : Item<TeleSight> {
         public override string displayName => "Telescopic Sight";
 		public override ItemTier itemTier => ItemTier.Tier3;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
