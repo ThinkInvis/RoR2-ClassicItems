@@ -63,7 +63,7 @@ namespace ThinkInvisible.ClassicItems {
 
         internal List<EmbryoHook> allHooks = new List<EmbryoHook>();
 
-        public Embryo() {
+        public Embryo() : base() {
             new EmbryoHooks.CommandMissile();
         }
 
@@ -76,7 +76,14 @@ namespace ThinkInvisible.ClassicItems {
 
         public bool CheckEmbryoProc(CharacterBody body) {
             if(!this.enabled) return false;
-            return Util.CheckRoll(Embryo.instance.GetCount(body) * procChance, body.master);
+            return Util.CheckRoll(Embryo.instance.GetCount(body) * procChance, body?.master);
+        }
+
+        public bool CheckEmbryoProc(Inventory inv) {
+            ClassicItemsPlugin._logger.LogWarning($"Embryo.CheckProc: enab {this.enabled}, inv {inv}");
+            ClassicItemsPlugin._logger.LogWarning($"Count {GetCount(inv)} --> chance {GetCount(inv) * procChance}");
+            if(!this.enabled) return false;
+            return Util.CheckRoll(GetCount(inv) * procChance, inv?.gameObject?.GetComponent<CharacterMaster>());
         }
 
         public override void SetupAttributes() {
