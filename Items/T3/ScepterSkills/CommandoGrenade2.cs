@@ -45,14 +45,18 @@ namespace ThinkInvisible.ClassicItems {
         }
         
         internal override void LoadBehavior() {
-            On.EntityStates.Commando.CommandoWeapon.FireFMJ.Fire += On_FireFMJFire;
+            On.EntityStates.GenericProjectileBaseState.FireProjectile += On_FireFMJFire;
         }
 
         internal override void UnloadBehavior() {
-            On.EntityStates.Commando.CommandoWeapon.FireFMJ.Fire -= On_FireFMJFire;
+            On.EntityStates.GenericProjectileBaseState.FireProjectile -= On_FireFMJFire;
         }
 
-        private void On_FireFMJFire(On.EntityStates.Commando.CommandoWeapon.FireFMJ.orig_Fire orig, FireFMJ self) {
+        private void On_FireFMJFire(On.EntityStates.GenericProjectileBaseState.orig_FireProjectile orig, EntityStates.GenericProjectileBaseState self) {
+            if(!(self is FireFMJ)) {
+                orig(self);
+                return;
+            }
             var cc = self.outer.commonComponents;
             bool isBoosted = self is ThrowGrenade
                 && Util.HasEffectiveAuthority(self.outer.networkIdentity)
