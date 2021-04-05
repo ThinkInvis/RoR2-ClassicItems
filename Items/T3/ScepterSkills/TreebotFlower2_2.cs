@@ -16,7 +16,7 @@ namespace ThinkInvisible.ClassicItems {
         
         public override string targetBody => "TreebotBody";
         public override SkillSlot targetSlot => SkillSlot.Special;
-        public override int targetVariantIndex => 0;
+        public override int targetVariantIndex => 1;
 
         internal override void SetupAttributes() {
             var oldDef = Resources.Load<SkillDef>("skilldefs/treebotbody/TreebotBodyFireFlower2");
