@@ -31,6 +31,7 @@ namespace ThinkInvisible.ClassicItems {
         }
 
         public override void Install() {
+            base.Install();
             On.RoR2.GlobalEventManager.OnHitEnemy += On_GEMOnHitEnemy;
             //ConfigEntryChanged += Evt_ConfigEntryChanged;
         }
