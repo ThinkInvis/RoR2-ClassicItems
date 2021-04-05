@@ -24,7 +24,7 @@ namespace ThinkInvisible.ClassicItems {
             if(Compat_ItemStats.enabled) {
                 Compat_ItemStats.CreateItemStatDef(itemDef,
                     ((count, inv, master) => { return addRegen * count; },
-                    (value, inv, master) => { return $"Regen Bonus: {value.ToString("N1")} HP/s"; }
+                    (value, inv, master) => { return $"Regen Bonus: {value:N1} HP/s"; }
                 ));
             }
         }

@@ -67,7 +67,7 @@ namespace ThinkInvisible.ClassicItems {
             if(Compat_ItemStats.enabled) {
                 Compat_ItemStats.CreateItemStatDef(itemDef,
                     ((count, inv, master) => { return baseFuel + (count - 1) * stackFuel; },
-                    (value, inv, master) => { return $"Fuel: {value.ToString("N1")} s"; }
+                    (value, inv, master) => { return $"Fuel: {value:N1} s"; }
                 ));
             }
         }

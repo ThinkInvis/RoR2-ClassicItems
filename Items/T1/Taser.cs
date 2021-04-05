@@ -38,7 +38,7 @@ namespace ThinkInvisible.ClassicItems {
             if(Compat_ItemStats.enabled) {
                 Compat_ItemStats.CreateItemStatDef(itemDef,
                     ((count, inv, master) => { return procTime + (count - 1) * stackTime; },
-                    (value, inv, master) => { return $"Duration: {value.ToString("N1")} s"; }
+                    (value, inv, master) => { return $"Duration: {value:N1} s"; }
                 ));
             }
             if(Compat_BetterUI.enabled)
