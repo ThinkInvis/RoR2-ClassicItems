@@ -77,7 +77,7 @@ namespace ThinkInvisible.ClassicItems {
             if(!sbdy) return false;
             sbdy.ClearTimedBuffs(prescriptionsBuff);
             sbdy.AddTimedBuff(prescriptionsBuff, duration);
-            if(instance.CheckEmbryoProc(sbdy)) sbdy.AddTimedBuff(prescriptionsBuff, duration);
+            if(Embryo.instance.CheckEmbryoProc(sbdy)) sbdy.AddTimedBuff(prescriptionsBuff, duration);
             return true;
         }
     }

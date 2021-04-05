@@ -51,7 +51,7 @@ namespace ThinkInvisible.ClassicItems {
             if(!sbdy) return false;
             sbdy.ClearTimedBuffs(pillageBuff);
             sbdy.AddTimedBuff(pillageBuff, duration);
-            if(instance.CheckEmbryoProc(sbdy)) sbdy.AddTimedBuff(pillageBuff, duration);
+            if(Embryo.instance.CheckEmbryoProc(sbdy)) sbdy.AddTimedBuff(pillageBuff, duration);
             return true;
         }
 

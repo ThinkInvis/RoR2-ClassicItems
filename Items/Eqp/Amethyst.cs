@@ -18,7 +18,7 @@ namespace ThinkInvisible.ClassicItems {
             var sloc = slot.characterBody?.skillLocator;
             if(!sloc) return false;
             sloc.ApplyAmmoPack();
-            if(instance.CheckEmbryoProc(slot.characterBody)) sloc.ApplyAmmoPack();
+            if(Embryo.instance.CheckEmbryoProc(slot.characterBody)) sloc.ApplyAmmoPack();
             return true;
         }
     }

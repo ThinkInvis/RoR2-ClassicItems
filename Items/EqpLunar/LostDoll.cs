@@ -79,7 +79,7 @@ namespace ThinkInvisible.ClassicItems {
                     });
                     didHit = true;
                 }
-                if(result2 && instance.CheckEmbryoProc(slot.characterBody)) {
+                if(result2 && Embryo.instance.CheckEmbryoProc(slot.characterBody)) {
                     OrbManager.instance.AddOrb(new LostDollOrb {
                         attacker = slot.characterBody.gameObject,
                         damageColorIndex = DamageColorIndex.Default,

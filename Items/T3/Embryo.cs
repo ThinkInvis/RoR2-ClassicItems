@@ -12,48 +12,42 @@ using TILER2;
 using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
-    public static class EmbryoExtensions {
-        public static bool CheckEmbryoProc(this Equipment eqp, CharacterBody body) {
-            return Embryo.instance.CheckEmbryoProc(eqp.equipmentDef, body);
-        }
-    }
-
     public class Embryo : Item<Embryo> {
         public abstract class EmbryoHook {
             public abstract EquipmentDef targetEquipment { get; }
             public bool isInstalled { get; private set; } = false;
+            public bool isEnabled { get; private set; } = true;
             //TODO: reimplement config-based enable/disable
 
             public EmbryoHook() {
-                Embryo.instance.allGlobalHooks.Add(this);
+                Embryo.instance.allHooks.Add(this);
             }
 
-            public void Install() {
+            internal void Install() {
                 if(this.isInstalled) return;
-                if(Embryo.instance.hookedEquipmentDefs.ContainsKey(targetEquipment))
-                    throw new InvalidOperationException("Target EquipmentDef already has an EmbryoHook");
-                Embryo.instance._hookedEquipmentDefs.Add(targetEquipment, this);
                 InstallHooks();
                 this.isInstalled = true;
             }
-            public void Uninstall() {
+            internal void Uninstall() {
                 if(!this.isInstalled) return;
-                Embryo.instance._hookedEquipmentDefs.Remove(targetEquipment);
                 UninstallHooks();
                 this.isInstalled = false;
             }
 
-            public bool CheckProc(CharacterBody body) {
-                return Embryo.instance.enabled
-                    && this.isInstalled
-                    && Util.CheckRoll(Embryo.instance.GetCount(body) * Embryo.instance.procChance, body.master);
+            public void Enable() {
+                isEnabled = true;
+                if(Embryo.instance.enabled)
+                    Install();
+            }
+            public void Disable() {
+                isEnabled = false;
+                Uninstall();
             }
 
             protected internal virtual void SetupConfig() { }
             protected internal virtual void SetupAttributes() { }
 
             protected internal virtual void AddComponents(CharacterBody body) { }
-            protected internal virtual void RemoveComponents(CharacterBody body) { }
 
             protected abstract void InstallHooks();
             protected abstract void UninstallHooks();
@@ -67,33 +61,27 @@ namespace ThinkInvisible.ClassicItems {
         [AutoConfig("Percent chance of triggering an equipment twice. Stacks additively.", AutoConfigFlags.None, 0f, 100f)]
         public float procChance {get;private set;} = 30f;
 
-        private readonly Dictionary<EquipmentDef, EmbryoHook> _hookedEquipmentDefs = new Dictionary<EquipmentDef, EmbryoHook>();
-        public ReadOnlyDictionary<EquipmentDef, EmbryoHook> hookedEquipmentDefs { get; private set; }
-
-        internal List<EmbryoHook> allInternalHooks = new List<EmbryoHook>();
-        internal List<EmbryoHook> allGlobalHooks = new List<EmbryoHook>();
+        internal List<EmbryoHook> allHooks = new List<EmbryoHook>();
 
         public Embryo() {
-            allInternalHooks.Add(new EmbryoHooks.CommandMissile());
-            hookedEquipmentDefs = new ReadOnlyDictionary<EquipmentDef, EmbryoHook>(_hookedEquipmentDefs);
+            new EmbryoHooks.CommandMissile();
         }
 
         public override void SetupConfig() {
             base.SetupConfig();
 
-            foreach(var hook in allGlobalHooks)
+            foreach(var hook in allHooks)
                 hook.SetupConfig();
         }
 
-        public bool CheckEmbryoProc(EquipmentDef eqp, CharacterBody body) {
-            Embryo.instance.hookedEquipmentDefs.TryGetValue(eqp, out Embryo.EmbryoHook hook);
-            return hook?.CheckProc(body) ?? false;
+        public bool CheckEmbryoProc(CharacterBody body) {
+            return Util.CheckRoll(Embryo.instance.GetCount(body) * Embryo.instance.procChance, body.master);
         }
 
         public override void SetupAttributes() {
             base.SetupAttributes();
 
-            foreach(var hook in allGlobalHooks)
+            foreach(var hook in allHooks)
                 hook.SetupAttributes();
         }
 
@@ -116,8 +104,9 @@ namespace ThinkInvisible.ClassicItems {
         public override void Install() {
             base.Install();
 
-            foreach(var hook in allInternalHooks) {
-                hook.Install();
+            foreach(var hook in allHooks) {
+                if(hook.isEnabled)
+                    hook.Install();
             }
 
             On.RoR2.CharacterBody.OnInventoryChanged += On_CBOnInventoryChanged;
@@ -125,7 +114,7 @@ namespace ThinkInvisible.ClassicItems {
         public override void Uninstall() {
             base.Uninstall();
 
-            foreach(var hook in allInternalHooks) {
+            foreach(var hook in allHooks) {
                 hook.Uninstall();
             }
 
@@ -135,7 +124,8 @@ namespace ThinkInvisible.ClassicItems {
         private void On_CBOnInventoryChanged(On.RoR2.CharacterBody.orig_OnInventoryChanged orig, CharacterBody self) {
             orig(self);
             if(!NetworkServer.active || GetCount(self) < 1) return;
-            foreach(var hook in allGlobalHooks) {
+            foreach(var hook in allHooks) {
+                if(!hook.isEnabled) continue;
                 hook.AddComponents(self);
             }
         }

@@ -86,7 +86,7 @@ namespace ThinkInvisible.ClassicItems {
             if(!slot.characterBody || !slot.characterBody.teamComponent) return false;
             var ctrlInst = UnityEngine.Object.Instantiate(snowglobeControllerPrefab, slot.characterBody.corePosition, Quaternion.identity);
             ctrlInst.GetComponent<SnowglobeController>().myTeam = slot.characterBody.teamComponent.teamIndex;
-            if(instance.CheckEmbryoProc(slot.characterBody)) {
+            if(Embryo.instance.CheckEmbryoProc(slot.characterBody)) {
                 ctrlInst.GetComponent<SnowglobeController>().remainingTicks *= 2;
                 ctrlInst.GetComponentInChildren<PostProcessDuration>().maxDuration *= 2;
             }

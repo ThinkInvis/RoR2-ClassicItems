@@ -26,7 +26,7 @@ namespace ThinkInvisible.ClassicItems {
             var sphpos = slot.characterBody.transform.position;
             var sphrad = radius;
                 
-            if(instance.CheckEmbryoProc(slot.characterBody)) sphrad *= 2;
+            if(Embryo.instance.CheckEmbryoProc(slot.characterBody)) sphrad *= 2;
 			Collider[] sphits = Physics.OverlapSphere(sphpos, sphrad, LayerIndex.defaultLayer.mask, QueryTriggerInteraction.Collide);
             bool foundAny = false;
             foreach(Collider c in sphits) {
