@@ -67,7 +67,7 @@ namespace ThinkInvisible.ClassicItems {
             if(Compat_ItemStats.enabled) {
                 Compat_ItemStats.CreateItemStatDef(itemDef,
                     ((count, inv, master) => { return baseDuration + (count - 1) * stackDuration; },
-                    (value, inv, master) => { return $"Duration: {value.ToString("N1")} s"; }
+                    (value, inv, master) => { return $"Duration: {value:N1} s"; }
                 ));
             }
         }

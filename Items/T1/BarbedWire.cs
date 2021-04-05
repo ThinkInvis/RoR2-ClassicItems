@@ -80,7 +80,7 @@ namespace ThinkInvisible.ClassicItems {
 					((count, inv, master) => {
 						return baseRadius + (count - 1) * stackRadius;
 					},
-					(value, inv, master) => { return $"Radius: {value.ToString("N1")} m"; }
+					(value, inv, master) => { return $"Radius: {value:N1} m"; }
 				));
 			}
 		}

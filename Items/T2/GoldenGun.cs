@@ -57,7 +57,7 @@ namespace ThinkInvisible.ClassicItems {
                     ((count, inv, master) => {
                         return Run.instance.GetDifficultyScaledCost(goldAmt) * Mathf.Pow(goldReduc, count - 1);
                     },
-                    (value, inv, master) => { return $"Full Damage Cost: ${value.ToString("N0")}"; }
+                    (value, inv, master) => { return $"Full Damage Cost: ${value:N0}"; }
                 ));
             }
         }

@@ -80,7 +80,7 @@ namespace ThinkInvisible.ClassicItems {
         
 	[RequireComponent(typeof(TeamFilter))]
 	public class DiseaseWard : NetworkBehaviour {
-		float radius = 10f;
+		public float radius = 10f;
 
 		[SyncVar]
 		float damage;
