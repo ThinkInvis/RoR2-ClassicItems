@@ -149,14 +149,6 @@ namespace ThinkInvisible.ClassicItems {
                 mainConfigFile = cfgFile
             });
 
-            var itemType = typeof(Item<>);
-            var scep = (Scepter)FormatterServices.GetUninitializedObject(typeof(Scepter));
-            var embryo = (Embryo)FormatterServices.GetUninitializedObject(typeof(Embryo));
-            var scepGenType = itemType.MakeGenericType(typeof(Scepter));
-            var embGenType = itemType.MakeGenericType(typeof(Embryo));
-            scepGenType.GetProperty("instance", BindingFlags.Public | BindingFlags.Static).GetSetMethod(true).Invoke(null, new[] { scep });
-            embGenType.GetProperty("instance", BindingFlags.Public | BindingFlags.Static).GetSetMethod(true).Invoke(null, new[] { embryo });
-
             Logger.LogDebug("Loading item configs...");
             foreach(CatalogBoilerplate x in masterItemList) {
                 x.SetupConfig();
