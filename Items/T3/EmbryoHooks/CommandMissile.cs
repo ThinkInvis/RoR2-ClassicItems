@@ -42,7 +42,7 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
             var prevM = self.remainingMissiles;
             var retv = orig(self);
             var addedM = self.remainingMissiles - prevM;
-            bool boost = Util.CheckRoll(Embryo.instance.GetCount(self.characterBody) * Embryo.instance.procChance);
+            bool boost = Embryo.instance.CheckEmbryoProc(self.inventory);
             CommandMissileComponent cpt = self.characterBody?.GetComponentInChildren<CommandMissileComponent>();
 
             if(boost && cpt) {
