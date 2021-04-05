@@ -12,6 +12,7 @@ using TILER2;
 using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
+    [Obsolete("Unstable as of CI 5.0.0; currently undergoing rewrite.")]
     public class Embryo : Item<Embryo> {
         public abstract class EmbryoHook {
             public abstract EquipmentDef targetEquipment { get; }
@@ -72,6 +73,8 @@ namespace ThinkInvisible.ClassicItems {
 
             foreach(var hook in allHooks)
                 hook.SetupConfig();
+
+            this.enabled = false;
         }
 
         public bool CheckEmbryoProc(CharacterBody body) {

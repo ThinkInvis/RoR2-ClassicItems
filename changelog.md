@@ -2,6 +2,16 @@
 
 (🌧︎: Involves an accepted GitHub Pull Request from the community. Thanks for your help!)
 
+**5.0.0**
+
+- Compatibility changes for Risk of Rain 2 Anniversary Update.
+- Fixed card model text being updated while hidden, leading to NullReferenceExceptions while the HideDesc setting is enabled.
+- Filial Imprinting: attempted to fix server-only code running on clients.
+- Ancient Scepter: fixed deployables getting rerolls when their owner picks up a Scepter.
+- Beating Embryo: in-progress rewrite and public API change, currently mostly nonfunctional; item will be force-disabled during game startup.
+    - Modders: Consider public API for this item to be unstable and not included in semver until further notice.
+- Pillaged Gold: fixed this equipment being completely unusable.
+
 **4.6.4**
 
 - Added more safety checks to card model text updates (may fix a potential incompatibility).

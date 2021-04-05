@@ -48,17 +48,7 @@ For nostalgic purposes only. Here Be Dragons who hoard balance issues, because t
     - Loader: Charged Gauntlet > Megaton Gauntlet (2x damage and lunge speed, 7x knockback)  -OR-  Thunder Gauntlet > Thundercrash (3x lightning bolts fired, cone AoE becomes sphere)
     - Acrid: Epidemic > Plague (victims become walking sources of Plague, chains infinitely)
     - Captain: Orbital Probe > 21-Probe Salute (1/3 damage, 7x shots, hold primary to fire continuously)
-- Beating Embryo: "Equipment has a 30% chance to deal double the effect."
-    - Doubles *duration* on: Ocular HUD, Jade Elephant, Milky Chrysalis, Radar Scanner, Snowglobe, Pillaged Gold, Prescriptions, Safeguard Lantern, Super Massive Leech, Gorag's Opus.
-    - Doubles *range* on: Primordial Cube, Blast Shower, Skeleton Key.
-    - Doubles *count* on: The Back-up, Captain's Brooch, Sawmerang, Royal Capacitor, Recycler, Lost Doll, Gigantic Amethyst, Forgive Me Please.
-    - Doubles *fire rate and count* on: Disposable Missile Launcher.
-    - Doubles *fire rate* on: The Crowdfunder.
-    - Doubles *damage* on: Preon Accumulator.
-    - Doubles *burst heal* on: Foreign Fruit, Gnarled Woodsprite.
-    - Doubles *speed* on: Eccentric Vase.
-    - Doubles *speed and damage* on: Volcanic Egg.
-    - *Lunar* equipment will not work with Beating Embryo by default, but effects are still implemented as listed above.
+- Beating Embryo: ~~"Equipment has a 30% chance to deal double the effect."~~ Under construction!
 - Permafrost: "Chance to freeze enemies on hit."
 - Photon Jetpack: "No hands."
     - Provides flight while holding jump, using limited recharging fuel.
@@ -112,6 +102,16 @@ For details and instructions on applying these, see: https://github.com/ThinkInv
 The 5 latest updates are listed below. For a full changelog, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/changelog.md
 (🌧︎: Involves an accepted GitHub Pull Request from the community. Thanks for your help!)
 
+**5.0.0**
+
+- Compatibility changes for Risk of Rain 2 Anniversary Update.
+- Fixed card model text being updated while hidden, leading to NullReferenceExceptions while the HideDesc setting is enabled.
+- Filial Imprinting: attempted to fix server-only code running on clients.
+- Ancient Scepter: fixed deployables getting rerolls when their owner picks up a Scepter.
+- Beating Embryo: in-progress rewrite and public API change, currently mostly nonfunctional; item will be force-disabled during game startup.
+    - Modders: Consider public API for this item to be unstable and not included in semver until further notice.
+- Pillaged Gold: fixed this equipment being completely unusable.
+
 **4.6.4**
 
 - Added more safety checks to card model text updates (may fix a potential incompatibility).
@@ -128,7 +128,3 @@ The 5 latest updates are listed below. For a full changelog, see: https://github
 **4.6.1**
 
 - Fixed backwards-compatibility on Ancient Scepter and Beating Embryo.
-
-**4.6.0**
-
-- Implements changes from TILER2 3.0.0.
