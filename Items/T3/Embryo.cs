@@ -75,6 +75,7 @@ namespace ThinkInvisible.ClassicItems {
         }
 
         public bool CheckEmbryoProc(CharacterBody body) {
+            if(!this.enabled) return false;
             return Util.CheckRoll(Embryo.instance.GetCount(body) * Embryo.instance.procChance, body.master);
         }
 
