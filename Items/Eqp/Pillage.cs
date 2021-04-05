@@ -12,7 +12,7 @@ namespace ThinkInvisible.ClassicItems {
         [AutoConfig("Duration of the buff applied by Pillaged Gold.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float duration {get;private set;} = 14f;
 
-        public BuffIndex pillageBuff {get;private set;}
+        public BuffDef pillageBuff {get;private set;}
         protected override string GetNameString(string langid = null) => displayName;
         protected override string GetPickupString(string langid = null) => "For " + duration.ToString("N0") + " seconds, hitting enemies cause them to drop gold.";
         protected override string GetDescString(string langid = null) => "While active, every hit <style=cIsUtility>drops 1 gold</style> (scales with difficulty). Lasts <style=cIsUtility>" + duration.ToString("N0") + " seconds</style>.";
@@ -21,14 +21,14 @@ namespace ThinkInvisible.ClassicItems {
         public override void SetupAttributes() {
             base.SetupAttributes();
 
-            var pillageBuffDef = new R2API.CustomBuff(new BuffDef {
+            pillageBuff = new BuffDef {
                 buffColor = new Color(0.85f, 0.8f, 0.3f),
                 canStack = true,
                 isDebuff = false,
                 name = modInfo.shortIdentifier + "PillagedGold",
-                iconPath = "@ClassicItems:Assets/ClassicItems/icons/pillage_icon.png"
-            });
-            pillageBuff = R2API.BuffAPI.Add(pillageBuffDef);
+                iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/pillage_icon.png")
+            };
+            R2API.BuffAPI.Add(new R2API.CustomBuff(pillageBuff));
         }
 
         public override void Install() {

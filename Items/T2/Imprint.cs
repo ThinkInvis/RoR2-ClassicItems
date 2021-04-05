@@ -41,36 +41,36 @@ namespace ThinkInvisible.ClassicItems {
         protected override string GetDescString(string langid = null) => "Every <style=cIsUtility>" + baseCD.ToString("N0") + " seconds</style> <style=cStack>(-" + Pct(stackCDreduc) + " per stack, minimum of " + baseDuration.ToString("N0") + " seconds)</style>, gain <style=cIsHealing>+" + Pct(regenMod) + " health regen</style> OR <style=cIsUtility>+" + Pct(speedMod) + " move speed</style> OR <style=cIsDamage>+" + Pct(attackMod) + " attack speed</style> for <style=cIsUtility>" + baseDuration.ToString("N0") + " seconds</style>.";
         protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
         
-        public BuffIndex attackBuff {get; private set;}
-        public BuffIndex speedBuff {get; private set;}
-        public BuffIndex healBuff {get; private set;}
+        public BuffDef attackBuff {get; private set;}
+        public BuffDef speedBuff {get; private set;}
+        public BuffDef healBuff {get; private set;}
 
         public override void SetupAttributes() {
             base.SetupAttributes();
-            var attackBuffDef = new R2API.CustomBuff(new BuffDef {
+            attackBuff = new BuffDef {
                 buffColor = Color.red,
                 canStack = false,
                 isDebuff = false,
                 name = modInfo.shortIdentifier + "ImprintAttack",
-                iconPath = "@ClassicItems:Assets/ClassicItems/icons/Imprint_icon.png"
-            });
-            attackBuff = R2API.BuffAPI.Add(attackBuffDef);
-            var speedBuffDef = new R2API.CustomBuff(new BuffDef {
+                iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/Imprint_icon.png")
+            };
+            R2API.BuffAPI.Add(new R2API.CustomBuff(attackBuff));
+            speedBuff = new BuffDef {
                 buffColor = Color.cyan,
                 canStack = false,
                 isDebuff = false,
                 name = modInfo.shortIdentifier + "ImprintSpeed",
-                iconPath = "@ClassicItems:Assets/ClassicItems/icons/Imprint_icon.png"
-            });
-            speedBuff = R2API.BuffAPI.Add(speedBuffDef);
-            var healBuffDef = new R2API.CustomBuff(new BuffDef {
+                iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/Imprint_icon.png")
+            };
+            R2API.BuffAPI.Add(new R2API.CustomBuff(speedBuff));
+            healBuff = new BuffDef {
                 buffColor = Color.green,
                 canStack = false,
                 isDebuff = false,
                 name = modInfo.shortIdentifier + "ImprintHeal",
-                iconPath = "@ClassicItems:Assets/ClassicItems/icons/Imprint_icon.png"
-            });
-            healBuff = R2API.BuffAPI.Add(healBuffDef);
+                iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/Imprint_icon.png")
+            };
+            R2API.BuffAPI.Add(new R2API.CustomBuff(healBuff));
         }
 
         public override void SetupBehavior() {
@@ -116,7 +116,7 @@ namespace ThinkInvisible.ClassicItems {
         public CharacterBody ownerBody;
         private float stopwatch = 0f;
 
-        private static readonly BuffIndex[] rndBuffs = {
+        private static readonly BuffDef[] rndBuffs = {
             Imprint.instance.attackBuff,
             Imprint.instance.speedBuff,
             Imprint.instance.healBuff

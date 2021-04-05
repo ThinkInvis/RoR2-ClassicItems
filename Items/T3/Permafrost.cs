@@ -61,7 +61,7 @@ namespace ThinkInvisible.ClassicItems {
                 self.SetFrozen(freezeTime);
                 damageReport.victim?.body.AddTimedBuff(ClassicItemsPlugin.freezeBuff, freezeTime);
             }
-            if((self.canBeFrozen || slowUnfreezable) && damageReport.victim) damageReport.victim.body.AddTimedBuff(BuffIndex.Slow60, slowTime);
+            if((self.canBeFrozen || slowUnfreezable) && damageReport.victim) damageReport.victim.body.AddTimedBuff(RoR2Content.Buffs.Slow60, slowTime);
         }
     }
 }

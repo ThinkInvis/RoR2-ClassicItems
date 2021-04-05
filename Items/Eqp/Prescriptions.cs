@@ -3,6 +3,7 @@ using UnityEngine;
 using TILER2;
 using static TILER2.MiscUtil;
 using static TILER2.StatHooks;
+using R2API;
 
 namespace ThinkInvisible.ClassicItems {
     public class Prescriptions : Equipment<Prescriptions> {
@@ -20,7 +21,7 @@ namespace ThinkInvisible.ClassicItems {
         [AutoConfig("Base damage added while Prescriptions is active.", AutoConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float dmgBoost {get;private set;} = 10f;
 
-        public BuffIndex prescriptionsBuff {get;private set;}
+        public BuffDef prescriptionsBuff {get;private set;}
         protected override string GetNameString(string langid = null) => displayName;
         protected override string GetPickupString(string langid = null) {
             string desc = "Increase";
@@ -45,14 +46,14 @@ namespace ThinkInvisible.ClassicItems {
         public override void SetupAttributes() {
             base.SetupAttributes();
 
-            var prescriptionsBuffDef = new R2API.CustomBuff(new BuffDef {
+            prescriptionsBuff = new BuffDef {
                 buffColor = Color.red,
                 canStack = true,
                 isDebuff = false,
                 name = $"{modInfo.shortIdentifier}Prescriptions",
-                iconPath = "@ClassicItems:Assets/ClassicItems/icons/Prescriptions_icon.png"
-            });
-            prescriptionsBuff = R2API.BuffAPI.Add(prescriptionsBuffDef);
+                iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/Prescriptions_icon.png")
+            };
+            BuffAPI.Add(new CustomBuff(prescriptionsBuff));
         }
 
         public override void Install() {

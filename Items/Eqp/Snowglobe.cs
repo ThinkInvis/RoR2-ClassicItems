@@ -127,7 +127,7 @@ namespace ThinkInvisible.ClassicItems {
                     ssoh.SetFrozen(Snowglobe.instance.freezeTime);
                 }
                 if((ssoh?.canBeFrozen == true || Snowglobe.instance.slowUnfreezable) && hcpt) {
-                    hcpt.body.AddTimedBuff(BuffIndex.Slow60, Snowglobe.instance.slowTime);
+                    hcpt.body.AddTimedBuff(RoR2Content.Buffs.Slow60, Snowglobe.instance.slowTime);
                 }
 			}
         }

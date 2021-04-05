@@ -34,7 +34,7 @@ namespace ThinkInvisible.ClassicItems {
             myDef.skillName = namestr;
             myDef.skillNameToken = nametoken;
             myDef.skillDescriptionToken = newDescToken;
-            myDef.icon = Resources.Load<Sprite>("@ClassicItems:Assets/ClassicItems/icons/scepter/captain_airstrikeicon.png");
+            myDef.icon = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/scepter/captain_airstrikeicon.png");
 
             LoadoutAPI.AddSkillDef(myDef);
 
@@ -45,7 +45,7 @@ namespace ThinkInvisible.ClassicItems {
             myCallDef.isBullets = true;
             myCallDef.shootDelay = 0.07f;
             myCallDef.baseRechargeInterval = 0.07f;
-            myCallDef.icon = Resources.Load<Sprite>("@ClassicItems:Assets/ClassicItems/icons/scepter/captain_airstrikeicon.png");
+            myCallDef.icon = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/scepter/captain_airstrikeicon.png");
 
             LoadoutAPI.AddSkillDef(myCallDef);
         }

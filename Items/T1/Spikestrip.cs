@@ -56,7 +56,7 @@ namespace ThinkInvisible.ClassicItems {
             bw.Networkradius = baseRadius;
             bw.buffDuration = 0.5f;
             bw.interval = 0.5f;
-            bw.buffType = BuffIndex.Slow50;
+            bw.buffDef = RoR2Content.Buffs.Slow50;
             spikeWardPrefab = bwPrefabPrefab.InstantiateClone("SpikestripAuraPrefab");
             UnityEngine.Object.Destroy(bwPrefabPrefab);
         }

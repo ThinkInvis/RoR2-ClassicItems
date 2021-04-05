@@ -73,8 +73,8 @@ namespace ThinkInvisible.ClassicItems {
 
         public static readonly GlobalConfig globalConfig = new GlobalConfig();
 
-        public static BuffIndex freezeBuff {get;private set;}
-        public static BuffIndex fearBuff {get;private set;}
+        public static BuffDef freezeBuff {get;private set;}
+        public static BuffDef fearBuff {get;private set;}
 
         private static readonly ReadOnlyDictionary<ItemTier, string> modelNameMap = new ReadOnlyDictionary<ItemTier,string>(new Dictionary<ItemTier, string>{
             {ItemTier.Boss, "BossCard"},
@@ -194,23 +194,23 @@ namespace ThinkInvisible.ClassicItems {
 
             Logger.LogDebug("Registering shared buffs...");
             //used only for purposes of Death Mark; applied by Permafrost and Snowglobe
-            var freezeBuffDef = new CustomBuff(new BuffDef {
+            freezeBuff = new BuffDef {
                 buffColor = Color.cyan,
                 canStack = false,
                 isDebuff = true,
                 name = "CIFreeze",
-                iconPath = "@ClassicItems:Assets/ClassicItems/icons/permafrost_icon.png"
-            });
-            freezeBuff = BuffAPI.Add(freezeBuffDef);
+                iconSprite = resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/permafrost_icon.png")
+            };
+            BuffAPI.Add(new CustomBuff(freezeBuff));
 
-            var fearBuffDef = new CustomBuff(new BuffDef {
+            fearBuff = new BuffDef {
                 buffColor = Color.red,
                 canStack = false,
                 isDebuff = true,
                 name = "CIFear",
-                iconPath = "textures/miscicons/texSprintIcon"
-            });
-            fearBuff = BuffAPI.Add(fearBuffDef);
+                iconSprite = Resources.Load<Sprite>("textures/miscicons/texSprintIcon")
+            };
+            BuffAPI.Add(new CustomBuff(fearBuff));
             IL.EntityStates.AI.Walker.Combat.UpdateAI += IL_ESAIWalkerCombatUpdateAI;
 
             Logger.LogDebug("Registering item behaviors...");
@@ -343,13 +343,13 @@ namespace ThinkInvisible.ClassicItems {
             Logger.LogDebug("Processing pickup models...");
 
             if(globalConfig.allCards) {
-                var eqpCardPrefab = Resources.Load<GameObject>("@ClassicItems:Assets/ClassicItems/models/VOvr/EqpCard.prefab");
-                var lunarCardPrefab = Resources.Load<GameObject>("@ClassicItems:Assets/ClassicItems/models/VOvr/LunarCard.prefab");
-                var lunEqpCardPrefab = Resources.Load<GameObject>("@ClassicItems:Assets/ClassicItems/models/VOvr/LqpCard.prefab");
-                var t1CardPrefab = Resources.Load<GameObject>("@ClassicItems:Assets/ClassicItems/models/VOvr/CommonCard.prefab");
-                var t2CardPrefab = Resources.Load<GameObject>("@ClassicItems:Assets/ClassicItems/models/VOvr/UncommonCard.prefab");
-                var t3CardPrefab = Resources.Load<GameObject>("@ClassicItems:Assets/ClassicItems/models/VOvr/RareCard.prefab");
-                var bossCardPrefab = Resources.Load<GameObject>("@ClassicItems:Assets/ClassicItems/models/VOvr/BossCard.prefab");
+                var eqpCardPrefab = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/models/VOvr/EqpCard.prefab");
+                var lunarCardPrefab = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/models/VOvr/LunarCard.prefab");
+                var lunEqpCardPrefab = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/models/VOvr/LqpCard.prefab");
+                var t1CardPrefab = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/models/VOvr/CommonCard.prefab");
+                var t2CardPrefab = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/models/VOvr/UncommonCard.prefab");
+                var t3CardPrefab = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/models/VOvr/RareCard.prefab");
+                var bossCardPrefab = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/models/VOvr/BossCard.prefab");
 
                 int replacedItems = 0;
                 int replacedEqps = 0;

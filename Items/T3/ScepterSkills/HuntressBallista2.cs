@@ -32,7 +32,7 @@ namespace ThinkInvisible.ClassicItems {
             myDef.skillName = namestr;
             myDef.skillNameToken = nametoken;
             myDef.skillDescriptionToken = newDescToken;
-            myDef.icon = Resources.Load<Sprite>("@ClassicItems:Assets/ClassicItems/icons/scepter/huntress_ballistaicon.png");
+            myDef.icon = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/scepter/huntress_ballistaicon.png");
 
             LoadoutAPI.AddSkillDef(myDef);
             
@@ -42,7 +42,7 @@ namespace ThinkInvisible.ClassicItems {
             myCtxDef.skillName = namestr;
             myCtxDef.skillNameToken = nametoken;
             myCtxDef.skillDescriptionToken = newDescToken;
-            myCtxDef.icon = Resources.Load<Sprite>("@ClassicItems:Assets/ClassicItems/icons/scepter/huntress_ballistaicon.png");
+            myCtxDef.icon = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/scepter/huntress_ballistaicon.png");
 
             LoadoutAPI.AddSkillDef(myCtxDef);
         }

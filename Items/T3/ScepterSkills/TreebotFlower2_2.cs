@@ -31,7 +31,7 @@ namespace ThinkInvisible.ClassicItems {
             myDef.skillName = namestr;
             myDef.skillNameToken = nametoken;
             myDef.skillDescriptionToken = newDescToken;
-            myDef.icon = Resources.Load<Sprite>("@ClassicItems:Assets/ClassicItems/icons/scepter/treebot_entangleicon.png");
+            myDef.icon = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/scepter/treebot_entangleicon.png");
 
             LoadoutAPI.AddSkillDef(myDef);
         }
@@ -63,13 +63,13 @@ namespace ThinkInvisible.ClassicItems {
             if(!isBoosted) return;
             self.rootedBodies.ForEach(cb => {
                 var nbi = Scepter.instance.rng.NextElementUniform(new[] {
-                    BuffIndex.Bleeding,
-                    BuffIndex.ClayGoo,
-                    BuffIndex.Cripple,
-                    BuffIndex.HealingDisabled,
-                    BuffIndex.OnFire,
-                    BuffIndex.Weak,
-                    BuffIndex.Pulverized,
+                    RoR2Content.Buffs.Bleeding,
+                    RoR2Content.Buffs.ClayGoo,
+                    RoR2Content.Buffs.Cripple,
+                    RoR2Content.Buffs.HealingDisabled,
+                    RoR2Content.Buffs.OnFire,
+                    RoR2Content.Buffs.Weak,
+                    RoR2Content.Buffs.Pulverized,
                     ClassicItemsPlugin.freezeBuff
                 });
                 if(nbi == ClassicItemsPlugin.freezeBuff) {
@@ -78,8 +78,8 @@ namespace ThinkInvisible.ClassicItems {
                         ssoh.SetFrozen(1.5f);
                     else return;
                 }
-                if(nbi == BuffIndex.OnFire) DotController.InflictDot(cb.gameObject, self.owner, DotController.DotIndex.Burn, 1.5f, 1f);
-                if(nbi == BuffIndex.Bleeding) DotController.InflictDot(cb.gameObject, self.owner, DotController.DotIndex.Bleed, 1.5f, 1f);
+                if(nbi == RoR2Content.Buffs.OnFire) DotController.InflictDot(cb.gameObject, self.owner, DotController.DotIndex.Burn, 1.5f, 1f);
+                if(nbi == RoR2Content.Buffs.Bleeding) DotController.InflictDot(cb.gameObject, self.owner, DotController.DotIndex.Bleed, 1.5f, 1f);
                 cb.AddTimedBuff(nbi, 1.5f);
             });
         }

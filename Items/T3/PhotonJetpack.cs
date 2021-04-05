@@ -11,7 +11,7 @@ namespace ThinkInvisible.ClassicItems {
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
         public override bool itemIsAIBlacklisted {get; protected set;} = true;
 
-        public BuffIndex photonFuelBuff {get;private set;}
+        public BuffDef photonFuelBuff {get;private set;}
         
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Time in seconds that jump must be released before Photon Jetpack fuel begins recharging.",AutoConfigFlags.PreventNetMismatch,0f,float.MaxValue)]
@@ -50,14 +50,14 @@ namespace ThinkInvisible.ClassicItems {
         public override void SetupAttributes() {
             base.SetupAttributes();
 
-            var PhotonJetpackBuff = new R2API.CustomBuff(new BuffDef {
+            photonFuelBuff = new BuffDef {
                 buffColor = Color.cyan,
                 canStack = true,
                 isDebuff = false,
                 name = modInfo.shortIdentifier + "PhotonFuel",
-                iconPath = "@ClassicItems:Assets/ClassicItems/icons/PhotonJetpack_icon.png"
-            });
-            photonFuelBuff = R2API.BuffAPI.Add(PhotonJetpackBuff);
+                iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/PhotonJetpack_icon.png")
+            };
+            R2API.BuffAPI.Add(new R2API.CustomBuff(photonFuelBuff));
         }
 
         public override void SetupBehavior() {
@@ -141,7 +141,7 @@ namespace ThinkInvisible.ClassicItems {
             int tgtFuelStacks = Mathf.CeilToInt(cpt.fuel/cpt.fuelCap*100f);
             int currFuelStacks = self.GetBuffCount(photonFuelBuff);
             if(tgtFuelStacks != currFuelStacks)
-                self.SetBuffCount(photonFuelBuff, tgtFuelStacks);
+                self.SetBuffCount(photonFuelBuff.buffIndex, tgtFuelStacks);
         }
 
         private void On_CBInventoryChanged(On.RoR2.CharacterBody.orig_OnInventoryChanged orig, CharacterBody self) {
@@ -157,7 +157,7 @@ namespace ThinkInvisible.ClassicItems {
             cpt.fuelCap = stacks>0 ? baseFuel + stackFuel * (stacks-1) : 0;
             if(cpt.fuel>cpt.fuelCap) cpt.fuel=cpt.fuelCap;
             if(cpt.fuelCap == 0)
-                tgt.SetBuffCount(photonFuelBuff, 0);
+                tgt.SetBuffCount(photonFuelBuff.buffIndex, 0);
         }
     }
 

@@ -6,6 +6,7 @@ using System;
 using System.Collections.ObjectModel;
 using TILER2;
 using static TILER2.MiscUtil;
+using R2API;
 
 namespace ThinkInvisible.ClassicItems {
     public class GoldenGun : Item<GoldenGun> {
@@ -31,7 +32,7 @@ namespace ThinkInvisible.ClassicItems {
 
         private bool ilFailed = false;
         
-        public BuffIndex goldenGunBuff {get;private set;}
+        public BuffDef goldenGunBuff {get;private set;}
         protected override string GetNameString(string langid = null) => displayName;
         protected override string GetPickupString(string langid = null) => "More gold, more damage.";
         protected override string GetDescString(string langid = null) => "Deal <style=cIsDamage>bonus damage</style> based on your <style=cIsUtility>money</style>, up to <style=cIsDamage>" + Pct(damageBoost) + "</style> at <style=cIsUtility>$" + goldAmt.ToString("N0") + "</style> <style=cStack>(cost increases with difficulty, -" + Pct(goldReduc) + " per stack)</style>.";
@@ -40,14 +41,14 @@ namespace ThinkInvisible.ClassicItems {
         public override void SetupAttributes() {
             base.SetupAttributes();
 
-            var goldenGunBuffDef = new R2API.CustomBuff(new BuffDef {
+            goldenGunBuff = new BuffDef {
                 buffColor = new Color(0.85f, 0.8f, 0.3f),
                 canStack = true,
                 isDebuff = false,
                 name = $"{modInfo.shortIdentifier}GoldenGun",
-                iconPath = "@ClassicItems:Assets/ClassicItems/icons/GoldenGun_icon.png"
-            });
-            goldenGunBuff = R2API.BuffAPI.Add(goldenGunBuffDef);
+                iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/GoldenGun_icon.png")
+            };
+            BuffAPI.Add(new CustomBuff(goldenGunBuff));
         }
 
         public override void SetupBehavior() {
@@ -113,7 +114,7 @@ namespace ThinkInvisible.ClassicItems {
                 
             int currBuffStacks = cb.GetBuffCount(goldenGunBuff);
             if(tgtBuffStacks != currBuffStacks)
-                cb.SetBuffCount(goldenGunBuff, tgtBuffStacks);
+                cb.SetBuffCount(goldenGunBuff.buffIndex, tgtBuffStacks);
         }
 
         private void IL_CBTakeDamage(ILContext il) {
@@ -137,7 +138,7 @@ namespace ThinkInvisible.ClassicItems {
             ILFound = c.TryGotoNext(
                 x=>x.MatchLdloc(out locChrm),
                 x=>x.MatchCallOrCallvirt<CharacterMaster>("get_inventory"),
-                x=>x.MatchLdcI4((int)ItemIndex.Crowbar))
+                x=>x.MatchLdsfld("RoR2.RoR2Content/Items", "Crowbar"))
             && c.TryGotoPrev(MoveType.After,
                 x=>x.OpCode == OpCodes.Brfalse);
 

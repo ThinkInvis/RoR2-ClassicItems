@@ -233,7 +233,7 @@ namespace ThinkInvisible.ClassicItems {
         }
         
         private bool HandleScepterSkill(CharacterBody self, bool forceOff = false) {
-            bool hasStrides = self.inventory.GetItemCount(ItemIndex.LunarUtilityReplacement) > 0;
+            bool hasStrides = self.inventory.GetItemCount(RoR2Content.Items.LunarUtilityReplacement) > 0;
             if(self.skillLocator && self.master?.loadout != null) {
                 var bodyName = BodyCatalog.GetBodyName(self.bodyIndex);
 

@@ -66,7 +66,7 @@ namespace ThinkInvisible.ClassicItems {
                 if(icnt < 1) return;
                 var proc = cb.master ? Util.CheckRoll(procChance,cb.master) : Util.CheckRoll(procChance);
                 if(proc) {
-                    self.body.AddTimedBuff(BuffIndex.Entangle, procTime + (icnt-1) * stackTime);
+                    self.body.AddTimedBuff(RoR2Content.Buffs.Entangle, procTime + (icnt-1) * stackTime);
                 }
             }
         }
