@@ -109,7 +109,7 @@ namespace ThinkInvisible.ClassicItems {
         public override void SetupBehavior() {
             base.SetupBehavior();
 
-            FakeInventory.blacklist.Add(catalogIndex);
+            FakeInventory.blacklist.Add(itemDef);
         }
 
         public override void Install() {
