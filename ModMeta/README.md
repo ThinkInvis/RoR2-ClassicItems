@@ -102,6 +102,11 @@ For details and instructions on applying these, see: https://github.com/ThinkInv
 The 5 latest updates are listed below. For a full changelog, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/changelog.md
 (🌧︎: Involves an accepted GitHub Pull Request from the community. Thanks for your help!)
 
+**5.0.1**
+
+- Matched FakeInventory.blacklist change in TILER2 4.0.1. Fixes Ancient Scepter not being FakeInventory blacklisted, and mod not being compatible with TILER2 4.0.1.
+- Made card model setup/updates more resilient against broken items.
+
 **5.0.0**
 
 - Compatibility changes for Risk of Rain 2 Anniversary Update.
@@ -124,7 +129,3 @@ The 5 latest updates are listed below. For a full changelog, see: https://github
 **4.6.2**
 
 - Removed backcompat Scepter/Embryo patches from item list (they did NOT like being there).
-
-**4.6.1**
-
-- Fixed backwards-compatibility on Ancient Scepter and Beating Embryo.

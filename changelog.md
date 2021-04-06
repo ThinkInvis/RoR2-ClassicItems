@@ -2,6 +2,11 @@
 
 (🌧︎: Involves an accepted GitHub Pull Request from the community. Thanks for your help!)
 
+**5.0.1**
+
+- Matched FakeInventory.blacklist change in TILER2 4.0.1. Fixes Ancient Scepter not being FakeInventory blacklisted, and mod not being compatible with TILER2 4.0.1.
+- Made card model setup/updates more resilient against broken items.
+
 **5.0.0**
 
 - Compatibility changes for Risk of Rain 2 Anniversary Update.
