@@ -223,13 +223,13 @@ namespace ThinkInvisible.ClassicItems {
         }
 
         private void UpdateCardModel(CatalogBoilerplate sender) {
-            if(sender.pickupDef != null && !globalConfig.hideDesc) {
+            if(sender != null && sender.pickupDef != null && !globalConfig.hideDesc) {
                 var cobj = sender.pickupDef.displayPrefab;
-                if(!cobj) return;
+                if(cobj == null) return;
                 var ctsf = sender.pickupDef.displayPrefab.transform;
-                if(!ctsf) return;
+                if(ctsf == null) return;
                 var cfront = ctsf.Find("cardfront");
-                if(!cfront) return;
+                if(cfront == null) return;
 
                 cfront.Find("carddesc").GetComponent<TextMeshPro>().text = Language.GetString(globalConfig.longDesc ? sender.descToken : sender.pickupToken);
                 cfront.Find("cardname").GetComponent<TextMeshPro>().text = Language.GetString(sender.nameToken);
