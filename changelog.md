@@ -2,6 +2,12 @@
 
 (🌧︎: Involves an accepted GitHub Pull Request from the community. Thanks for your help!)
 
+**5.0.2**
+
+- Compatibility updates for recent Risk of Rain 2 patches.
+- Updated BetterUI compat for 2.0.2.
+- Temporarily disabled the effects of the AllCards global config option (RoR2 seems to no longer expose an easily accessible list of vanilla content to check against).
+
 **5.0.1**
 
 - Matched FakeInventory.blacklist change in TILER2 4.0.1. Fixes Ancient Scepter not being FakeInventory blacklisted, and mod not being compatible with TILER2 4.0.1.

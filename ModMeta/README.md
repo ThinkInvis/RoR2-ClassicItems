@@ -79,13 +79,15 @@ For nostalgic purposes only. Here Be Dragons who hoard balance issues, because t
 - Descriptions in the logbook match config values.
 - Some vanilla tweaks, also with config options:
     - Disables the H3AD5T V2 stomp move, which is normally triggered by holding jump in midair; this is replaced by the Headstompers item.
-    - Converts most pickup models for base game items and equipment into trading cards (disabled by default).
+    - Converts most pickup models for base game items and equipment into trading cards (disabled by default; NONFUNCTIONAL).
 
 ## Issues/TODO
 
 - More items are on the way! There's a lot to work with.
 - Stats are set close to RoR1's whenever possible. May eventually set up a config preset which balances items a little more carefully with respect to RoR2's existing content.
+- Beating Embryo is being rebuilt and is currently disabled.
 - Beating Embryo has no effect on Lunar equipments (other than those added by mods). This is a design decision, but disabled-by-default effects are planned.
+- AllCards global config option is nonfunctional.
 - Color tags on pickup model text are too bright.
 - See the GitHub repo for more!
 
@@ -101,6 +103,12 @@ For details and instructions on applying these, see: https://github.com/ThinkInv
 
 The 5 latest updates are listed below. For a full changelog, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/changelog.md
 (🌧︎: Involves an accepted GitHub Pull Request from the community. Thanks for your help!)
+
+**5.0.2**
+
+- Compatibility updates for recent Risk of Rain 2 patches.
+- Updated BetterUI compat for 2.0.2.
+- Temporarily disabled the effects of the AllCards global config option (RoR2 seems to no longer expose an easily accessible list of vanilla content to check against).
 
 **5.0.1**
 
@@ -125,7 +133,3 @@ The 5 latest updates are listed below. For a full changelog, see: https://github
 
 - Fixed card model text not updating immediately after game launch.
 - Additional language fixes for Snowglobe.
-
-**4.6.2**
-
-- Removed backcompat Scepter/Embryo patches from item list (they did NOT like being there).
