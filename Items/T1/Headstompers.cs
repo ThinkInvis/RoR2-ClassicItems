@@ -50,14 +50,14 @@ namespace ThinkInvisible.ClassicItems {
 
         public override void Install() {
             base.Install();
-            On.RoR2.CharacterMotor.OnHitGround += On_CMOnHitGround;
+            On.RoR2.CharacterMotor.OnHitGroundServer += On_CMOnHitGround;
         }
         public override void Uninstall() {
             base.Uninstall();
-            On.RoR2.CharacterMotor.OnHitGround -= On_CMOnHitGround;
+            On.RoR2.CharacterMotor.OnHitGroundServer -= On_CMOnHitGround;
         }
 
-        private void On_CMOnHitGround(On.RoR2.CharacterMotor.orig_OnHitGround orig, CharacterMotor self, CharacterMotor.HitGroundInfo ghi) {
+        private void On_CMOnHitGround(On.RoR2.CharacterMotor.orig_OnHitGroundServer orig, CharacterMotor self, CharacterMotor.HitGroundInfo ghi) {
             orig(self,ghi);
             if(!self.body) return;
             if(GetCount(self.body) > 0 && Math.Abs(ghi.velocity.y) > velThreshold) {
