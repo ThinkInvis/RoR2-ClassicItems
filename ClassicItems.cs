@@ -334,7 +334,7 @@ namespace ThinkInvisible.ClassicItems {
 
             Logger.LogDebug("Processing pickup models...");
 
-            if(globalConfig.allCards) {
+            /*if(globalConfig.allCards) {
                 var eqpCardPrefab = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/models/VOvr/EqpCard.prefab");
                 var lunarCardPrefab = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/models/VOvr/LunarCard.prefab");
                 var lunEqpCardPrefab = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/models/VOvr/LqpCard.prefab");
@@ -382,7 +382,7 @@ namespace ThinkInvisible.ClassicItems {
                 }
 
                 Logger.LogDebug("Replaced " + replacedItems + " item models and " + replacedEqps + " equipment models.");
-            }
+            }*/
 
             int replacedDescs = 0;
 
