@@ -15,6 +15,7 @@ namespace ThinkInvisible.ClassicItems {
     [Obsolete("Unstable as of CI 5.0.0; currently undergoing rewrite.")]
     public class Embryo : Item<Embryo> {
         public abstract class EmbryoHook {
+
             public abstract EquipmentDef targetEquipment { get; }
             public bool isInstalled { get; private set; } = false;
             public bool isEnabled { get; private set; } = true;
@@ -39,10 +40,12 @@ namespace ThinkInvisible.ClassicItems {
                 isEnabled = true;
                 if(Embryo.instance.enabled)
                     Install();
+                Embryo.instance.hooksEnabled[this] = true;
             }
             public void Disable() {
                 isEnabled = false;
                 Uninstall();
+                Embryo.instance.hooksEnabled[this] = false;
             }
 
             protected internal virtual void SetupConfig() { }
@@ -62,7 +65,10 @@ namespace ThinkInvisible.ClassicItems {
         [AutoConfig("Percent chance of triggering an equipment twice. Stacks additively.", AutoConfigFlags.None, 0f, 100f)]
         public float procChance {get;private set;} = 30f;
 
-        internal List<EmbryoHook> allHooks = new List<EmbryoHook>();
+        internal readonly List<EmbryoHook> allHooks = new List<EmbryoHook>();
+
+        [AutoConfig("Controls which equipments work with Beating Embryo.", AutoConfigFlags.BindDict | AutoConfigFlags.PreventNetMismatch)]
+        internal Dictionary<EmbryoHook, bool> hooksEnabled { get; } = new Dictionary<EmbryoHook, bool>();
 
         public Embryo() {
             new EmbryoHooks.CommandMissile();
@@ -70,6 +76,15 @@ namespace ThinkInvisible.ClassicItems {
 
         public override void SetupConfig() {
             base.SetupConfig();
+
+            ConfigEntryChanged += (sender,args) => {
+                var hook = (EmbryoHook)args.target.boundKey;
+                if((bool)args.newValue) {
+                    hook.Enable();
+                } else {
+                    hook.Disable();
+                }
+            };
 
             foreach(var hook in allHooks)
                 hook.SetupConfig();

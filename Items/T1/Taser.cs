@@ -41,8 +41,9 @@ namespace ThinkInvisible.ClassicItems {
                     (value, inv, master) => { return $"Duration: {value:N1} s"; }
                 ));
             }
+
             if(Compat_BetterUI.enabled)
-                Compat_BetterUI.AddEffect(catalogIndex, procChance, null, Compat_BetterUI.ChanceFormatter, Compat_BetterUI.NoStacking);
+                Compat_BetterUI.AddEffect(itemDef, procChance, null, Compat_BetterUI.ChanceFormatter, Compat_BetterUI.NoStacking);
         }
 
         public override void Install() {

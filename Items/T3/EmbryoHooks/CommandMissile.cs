@@ -9,33 +9,28 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
 
         protected override void InstallHooks() {
             On.RoR2.EquipmentSlot.FireCommandMissile += On_ESFireCommandMissile;
+            On.RoR2.EquipmentSlot.FireMissile += On_ESFireMissile;
         }
 
         protected override void UninstallHooks() {
             On.RoR2.EquipmentSlot.FireCommandMissile -= On_ESFireCommandMissile;
+            On.RoR2.EquipmentSlot.FireMissile -= On_ESFireMissile;
         }
 
         private GameObject componentPrefab;
 
         protected internal override void SetupAttributes() {
             base.SetupAttributes();
-
-            var eCptPrefab2 = new GameObject("embryoCptMissilePrefabPrefab");
-            eCptPrefab2.AddComponent<NetworkIdentity>();
-            eCptPrefab2.AddComponent<CommandMissileComponent>();
-            eCptPrefab2.AddComponent<NetworkedBodyAttachment>().forceHostAuthority = true;
-            componentPrefab = eCptPrefab2.InstantiateClone("embryoCptMissilePrefab");
-            GameObject.Destroy(eCptPrefab2);
         }
 
         protected internal override void AddComponents(CharacterBody body) {
             base.AddComponents(body);
 
-            var cpt = body.GetComponentInChildren<CommandMissileComponent>();
-            if(!cpt) {
-                var cptInst = GameObject.Instantiate(componentPrefab, body.transform);
-                cptInst.GetComponent<NetworkedBodyAttachment>().AttachToGameObjectAndSpawn(body.gameObject);
-            }
+            if(!NetworkServer.active) return;
+
+            var cpt = body.gameObject.GetComponent<CommandMissileComponent>();
+            if(!cpt)
+                body.gameObject.AddComponent<CommandMissileComponent>();
         }
 
         private bool On_ESFireCommandMissile(On.RoR2.EquipmentSlot.orig_FireCommandMissile orig, EquipmentSlot self) {
@@ -43,7 +38,7 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
             var retv = orig(self);
             var addedM = self.remainingMissiles - prevM;
             bool boost = Embryo.instance.CheckEmbryoProc(self.inventory);
-            CommandMissileComponent cpt = self.characterBody?.GetComponentInChildren<CommandMissileComponent>();
+            var cpt = self.characterBody?.gameObject.GetComponent<CommandMissileComponent>();
 
             if(boost && cpt) {
                 cpt.boostedMissiles += addedM * 2;
@@ -52,9 +47,16 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
 
             return retv;
         }
+
+        private void On_ESFireMissile(On.RoR2.EquipmentSlot.orig_FireMissile orig, EquipmentSlot self) {
+            orig(self);
+            var cpt = self.characterBody?.gameObject.GetComponent<CommandMissileComponent>();
+            if(cpt && cpt.boostedMissiles > 0)
+                self.missileTimer /= 2f;
+        }
     }
 
-    public class CommandMissileComponent : NetworkBehaviour {
+    public class CommandMissileComponent : MonoBehaviour {
         public int boostedMissiles = 0;
     }
 }

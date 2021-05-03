@@ -37,8 +37,9 @@ namespace ThinkInvisible.ClassicItems {
                     (value, inv, master) => { return $"Knockback Chance: {Pct(value, 1, 1)}"; }
                 ));
             }
+
             if(Compat_BetterUI.enabled)
-                Compat_BetterUI.AddEffect(catalogIndex, procChance, procChance, Compat_BetterUI.ChanceFormatter, Compat_BetterUI.ExponentialStacking);
+                Compat_BetterUI.AddEffect(itemDef, procChance, procChance, Compat_BetterUI.ChanceFormatter, Compat_BetterUI.ExponentialStacking);
         }
 
         public override void Install() {

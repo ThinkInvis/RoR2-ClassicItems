@@ -36,9 +36,10 @@ namespace ThinkInvisible.ClassicItems {
 				Compat_ItemStats.CreateItemStatDef(itemDef,
 					((count,inv,master)=>{return Util.ConvertAmplificationPercentageIntoReductionPercentage(procChance * count);},
 					(value,inv,master)=>{return $"Freeze Chance: {Pct(value, 1, 1f)}";}));
-			}
+            }
+
             if(Compat_BetterUI.enabled)
-                Compat_BetterUI.AddEffect(catalogIndex, procChance, procChance, Compat_BetterUI.ChanceFormatter, Compat_BetterUI.HyperbolicStacking);
+                Compat_BetterUI.AddEffect(itemDef, procChance, procChance, Compat_BetterUI.ChanceFormatter, Compat_BetterUI.HyperbolicStacking);
         }
 
         public override void Install() {

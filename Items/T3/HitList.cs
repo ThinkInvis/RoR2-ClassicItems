@@ -63,7 +63,7 @@ namespace ThinkInvisible.ClassicItems {
             hitListTally.pickupToken = "";
             hitListTally.loreToken = "";
             hitListTally.descriptionToken = "";
-            ItemAPI.Add(new CustomItem(hitListTally, new ItemDisplayRuleDict(null)));
+            ItemAPI.Add(new CustomItem(hitListTally, new ItemDisplayRuleDict()));
         }
 
         public override void Install() {
