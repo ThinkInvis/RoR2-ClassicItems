@@ -108,6 +108,15 @@ namespace ThinkInvisible.ClassicItems {
             this.enabled = false;
         }
 
+        public static bool ILInjectProcCheck(ILCursor c) {
+            bool boost = false;
+            c.Emit(OpCodes.Ldarg_0);
+            c.EmitDelegate<Action<EquipmentSlot>>((slot) => {
+                boost = Embryo.instance.CheckEmbryoProc(slot.characterBody);
+            });
+            return boost;
+        }
+
         public bool CheckEmbryoProc(CharacterBody body) {
             if(!this.enabled) return false;
             return Util.CheckRoll(Embryo.instance.GetCount(body) * procChance, body?.master);
