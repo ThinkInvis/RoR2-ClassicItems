@@ -57,6 +57,22 @@ namespace ThinkInvisible.ClassicItems {
             protected abstract void UninstallHooks();
         }
 
+        public abstract class SimpleRetriggerEmbryoHook : EmbryoHook {
+            protected override void InstallHooks() {
+                On.RoR2.EquipmentSlot.PerformEquipmentAction += EquipmentSlot_PerformEquipmentAction;
+            }
+            protected override void UninstallHooks() {
+                On.RoR2.EquipmentSlot.PerformEquipmentAction -= EquipmentSlot_PerformEquipmentAction;
+            }
+
+            private bool EquipmentSlot_PerformEquipmentAction(On.RoR2.EquipmentSlot.orig_PerformEquipmentAction orig, EquipmentSlot self, EquipmentDef equipmentDef) {
+                var retv = orig(self, equipmentDef);
+                if(equipmentDef == this.targetEquipment)
+                    retv = retv | orig(self, equipmentDef); //return true if either activation was successful
+                return retv;
+            }
+        }
+
         public override string displayName => "Beating Embryo";
 		public override ItemTier itemTier => ItemTier.Tier3;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.EquipmentRelated});
