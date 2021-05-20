@@ -17,8 +17,6 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
             On.RoR2.EquipmentSlot.FireMissile -= On_ESFireMissile;
         }
 
-        private GameObject componentPrefab;
-
         protected internal override void SetupAttributes() {
             base.SetupAttributes();
         }
