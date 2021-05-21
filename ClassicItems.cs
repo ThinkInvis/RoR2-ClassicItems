@@ -334,7 +334,17 @@ namespace ThinkInvisible.ClassicItems {
 
             Logger.LogDebug("Processing pickup models...");
 
-            /*if(globalConfig.allCards) {
+            var vanillaEquipment = new HashSet<EquipmentDef>(
+                typeof(RoR2Content.Equipment).GetFields(BindingFlags.Static | BindingFlags.Public)
+                .Where(x => x.FieldType == typeof(EquipmentDef))
+                .Select(x => (EquipmentDef)x.GetValue(null)));
+
+            var vanillaItems = new HashSet<ItemDef>(
+                typeof(RoR2Content.Items).GetFields(BindingFlags.Static | BindingFlags.Public)
+                .Where(x => x.FieldType == typeof(ItemDef))
+                .Select(x => (ItemDef)x.GetValue(null)));
+
+            if(globalConfig.allCards) {
                 var eqpCardPrefab = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/models/VOvr/EqpCard.prefab");
                 var lunarCardPrefab = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/models/VOvr/LunarCard.prefab");
                 var lunEqpCardPrefab = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/models/VOvr/LqpCard.prefab");
@@ -349,7 +359,7 @@ namespace ThinkInvisible.ClassicItems {
                 foreach(var pickup in PickupCatalog.allPickups) {
                     GameObject npfb;
                     if(pickup.interactContextToken == "EQUIPMENT_PICKUP_CONTEXT") {
-                        if(!RoR2Content.Equipment.equipmentDefs.Contains(EquipmentCatalog.GetEquipmentDef(pickup.equipmentIndex))
+                        if(!vanillaEquipment.Contains(EquipmentCatalog.GetEquipmentDef(pickup.equipmentIndex))
                         || pickup.itemIndex == ItemIndex.None)
                             continue;
                         var eqp = EquipmentCatalog.GetEquipmentDef(pickup.equipmentIndex);
@@ -357,7 +367,7 @@ namespace ThinkInvisible.ClassicItems {
                         npfb = eqp.isLunar ? lunEqpCardPrefab : eqpCardPrefab;
                         replacedEqps ++;
                     } else if(pickup.interactContextToken == "ITEM_PICKUP_CONTEXT") {
-                        if(!RoR2Content.Items.itemDefs.Contains(ItemCatalog.GetItemDef(pickup.itemIndex))
+                        if(!vanillaItems.Contains(ItemCatalog.GetItemDef(pickup.itemIndex))
                         || pickup.itemIndex == ItemIndex.None)
                         continue;
 
@@ -381,8 +391,8 @@ namespace ThinkInvisible.ClassicItems {
                     pickup.displayPrefab = npfb;
                 }
 
-                Logger.LogDebug("Replaced " + replacedItems + " item models and " + replacedEqps + " equipment models.");
-            }*/
+                Logger.LogDebug("Replaced " + replacedItems + " item models and " + replacedEqps + " vanilla equipment models.");
+            }
 
             int replacedDescs = 0;
 
