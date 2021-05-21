@@ -3,7 +3,6 @@ using MonoMod.Cil;
 using R2API;
 using RoR2;
 using System;
-using UnityEngine;
 using UnityEngine.Networking;
 
 namespace ThinkInvisible.ClassicItems.EmbryoHooks {
@@ -24,9 +23,9 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
         protected internal override void AddComponents(CharacterBody body) {
             base.AddComponents(body);
 
-            var cpt = body.gameObject.GetComponent<CritOnUseComponent>();
+            var cpt = body.gameObject.GetComponent<EmbryoCritOnUseComponent>();
             if(!cpt)
-                body.gameObject.AddComponent<CritOnUseComponent>();
+                body.gameObject.AddComponent<EmbryoCritOnUseComponent>();
         }
 
         protected internal override void SetupAttributes() {
@@ -37,12 +36,12 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
         private void EquipmentSlot_FireCritOnUse(ILContext il) {
             ILCursor c = new ILCursor(il);
 
-            CritOnUseComponent cpt = null;
+            EmbryoCritOnUseComponent cpt = null;
             bool boost = false;
             c.Emit(OpCodes.Ldarg_0);
             c.EmitDelegate<Action<EquipmentSlot>>((slot) => {
                 boost = Embryo.instance.CheckEmbryoProc(slot.characterBody);
-                cpt = slot.characterBody?.GetComponentInChildren<CritOnUseComponent>();
+                cpt = slot.characterBody?.GetComponentInChildren<EmbryoCritOnUseComponent>();
             });
 
             bool ilFound = c.TryGotoNext(
@@ -50,16 +49,13 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
                 x => x.MatchCallOrCallvirt<CharacterBody>("AddTimedBuff"));
 
             if(ilFound) {
-                //Advance cursor to the found ldcR4 (time argument of AddTimedBuff)
                 c.Index += 1;
-                //Replace original buff time with a custom function to check for Embryo proc
-                //If proc happens, doubles the buff time; otherwise returns original
                 c.EmitDelegate<Func<float, float>>((origBuffTime) => {
                     if(cpt) cpt.lastUseWasBoosted = boost;
                     return boost ? origBuffTime * 2 : origBuffTime;
                 });
             } else {
-                ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch: Blackhole; target instructions not found");
+                ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch: CritOnUse; target instructions not found");
             }
         }
 
@@ -73,14 +69,14 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
             if(ILFound) {
                 c.Emit(OpCodes.Ldarg_0);
                 c.EmitDelegate<Func<float, EquipmentSlot, float>>((origValue, slot) => {
-                    return (slot.characterBody?.GetComponentInChildren<CritOnUseComponent>()?.lastUseWasBoosted == true) ? origValue * 2f : origValue;
+                    return (slot.characterBody?.GetComponentInChildren<EmbryoCritOnUseComponent>()?.lastUseWasBoosted == true) ? origValue * 2f : origValue;
                 });
             } else {
                 ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch: CritOnUse VFX (RpcOnEquipmentActivationReceived); target instructions not found");
             }
         }
 
-        public class CritOnUseComponent : NetworkBehaviour {
+        public class EmbryoCritOnUseComponent : NetworkBehaviour {
             public bool lastUseWasBoosted = false;
         }
     }
