@@ -9,6 +9,7 @@ using UnityEngine.Networking;
 namespace ThinkInvisible.ClassicItems.EmbryoHooks {
     public class BlackHole : Embryo.EmbryoHook {
         public override EquipmentDef targetEquipment => RoR2Content.Equipment.Blackhole;
+        public override string descriptionAppendToken => "EMBRYO_DESC_APPEND_BLACKHOLE";
 
         protected override void InstallHooks() {
             IL.RoR2.EquipmentSlot.FireBlackhole += EquipmentSlot_FireBlackhole;
@@ -16,6 +17,11 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
 
         protected override void UninstallHooks() {
             IL.RoR2.EquipmentSlot.FireBlackhole -= EquipmentSlot_FireBlackhole;
+        }
+
+        protected internal override void SetupAttributes() {
+            base.SetupAttributes();
+            LanguageAPI.Add(descriptionAppendToken, "\n<style=cStack>Beating Embryo: Double pull radius.<style>");
         }
 
         private void EquipmentSlot_FireBlackhole(MonoMod.Cil.ILContext il) {

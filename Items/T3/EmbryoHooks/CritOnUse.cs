@@ -9,6 +9,7 @@ using UnityEngine.Networking;
 namespace ThinkInvisible.ClassicItems.EmbryoHooks {
     public class CritOnUse : Embryo.EmbryoHook {
         public override EquipmentDef targetEquipment => RoR2Content.Equipment.CritOnUse;
+        public override string descriptionAppendToken => "EMBRYO_DESC_APPEND_CRITONUSE";
 
         protected override void InstallHooks() {
             IL.RoR2.EquipmentSlot.FireCritOnUse += EquipmentSlot_FireCritOnUse;
@@ -26,6 +27,11 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
             var cpt = body.gameObject.GetComponent<CritOnUseComponent>();
             if(!cpt)
                 body.gameObject.AddComponent<CritOnUseComponent>();
+        }
+
+        protected internal override void SetupAttributes() {
+            base.SetupAttributes();
+            LanguageAPI.Add(descriptionAppendToken, "\n<style=cStack>Beating Embryo: Double duration.<style>");
         }
 
         private void EquipmentSlot_FireCritOnUse(ILContext il) {

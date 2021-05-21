@@ -6,6 +6,7 @@ using UnityEngine.Networking;
 namespace ThinkInvisible.ClassicItems.EmbryoHooks {
     public class CommandMissile : Embryo.EmbryoHook {
         public override EquipmentDef targetEquipment => RoR2Content.Equipment.CommandMissile;
+        public override string descriptionAppendToken => "EMBRYO_DESC_APPEND_COMMANDMISSILE";
 
         protected override void InstallHooks() {
             On.RoR2.EquipmentSlot.FireCommandMissile += On_ESFireCommandMissile;
@@ -19,6 +20,7 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
 
         protected internal override void SetupAttributes() {
             base.SetupAttributes();
+            LanguageAPI.Add(descriptionAppendToken, "\n<style=cStack>Beating Embryo: Fires twice as many missiles at double fire rate.<style>");
         }
 
         protected internal override void AddComponents(CharacterBody body) {

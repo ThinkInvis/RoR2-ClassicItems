@@ -15,8 +15,8 @@ namespace ThinkInvisible.ClassicItems {
     [Obsolete("Unstable as of CI 5.0.0; currently undergoing rewrite.")]
     public class Embryo : Item<Embryo> {
         public abstract class EmbryoHook {
-
             public abstract EquipmentDef targetEquipment { get; }
+            public virtual string descriptionAppendToken { get; } = null;
             public bool isInstalled { get; private set; } = false;
             public bool isEnabled { get; private set; } = true;
             //TODO: reimplement config-based enable/disable
@@ -58,6 +58,8 @@ namespace ThinkInvisible.ClassicItems {
         }
 
         public abstract class SimpleRetriggerEmbryoHook : EmbryoHook {
+            public override string descriptionAppendToken => $"EMBRYO_DESC_APPEND_RETRIGGER";
+
             protected override void InstallHooks() {
                 On.RoR2.EquipmentSlot.PerformEquipmentAction += EquipmentSlot_PerformEquipmentAction;
             }
@@ -134,6 +136,8 @@ namespace ThinkInvisible.ClassicItems {
 
             foreach(var hook in allHooks)
                 hook.SetupAttributes();
+
+            LanguageAPI.Add("EMBRYO_DESC_APPEND_RETRIGGER", "\n<style=cStack>Beating Embryo: Activates twice simultaneously.<style>");
         }
 
         public override void SetupBehavior() {
@@ -170,6 +174,15 @@ namespace ThinkInvisible.ClassicItems {
             }
 
             On.RoR2.CharacterBody.OnInventoryChanged -= On_CBOnInventoryChanged;
+        }
+
+        public override void InstallLanguage() {
+            base.InstallLanguage();
+            foreach(var hook in allHooks) {
+                if(hook.descriptionAppendToken == null) continue;
+                var oldDescToken = hook.targetEquipment.descriptionToken;
+                languageOverlays.Add(LanguageAPI.AddOverlay(oldDescToken, Language.GetString(oldDescToken) + Language.GetString(hook.descriptionAppendToken), Language.currentLanguageName));
+            }
         }
 
         private void On_CBOnInventoryChanged(On.RoR2.CharacterBody.orig_OnInventoryChanged orig, CharacterBody self) {
