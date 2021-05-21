@@ -16,7 +16,7 @@ namespace ThinkInvisible.ClassicItems {
         
         public override string targetBody => "TreebotBody";
         public override SkillSlot targetSlot => SkillSlot.Special;
-        public override int targetVariantIndex => 0;
+        public override int targetVariantIndex => 1;
 
         internal override void SetupAttributes() {
             var oldDef = Resources.Load<SkillDef>("skilldefs/treebotbody/TreebotBodyFireFlower2");
@@ -31,7 +31,7 @@ namespace ThinkInvisible.ClassicItems {
             myDef.skillName = namestr;
             myDef.skillNameToken = nametoken;
             myDef.skillDescriptionToken = newDescToken;
-            myDef.icon = Resources.Load<Sprite>("@ClassicItems:Assets/ClassicItems/icons/scepter/treebot_entangleicon.png");
+            myDef.icon = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/scepter/treebot_entangleicon.png");
 
             LoadoutAPI.AddSkillDef(myDef);
         }
@@ -49,27 +49,27 @@ namespace ThinkInvisible.ClassicItems {
         private void On_TreebotFlower2Enter(On.EntityStates.Treebot.TreebotFlower.TreebotFlower2Projectile.orig_OnEnter orig, TreebotFlower2Projectile self) {
 			var owner = self.outer.GetComponent<ProjectileController>()?.owner;
             var origRadius = TreebotFlower2Projectile.radius;
-            if(Scepter_V2.instance.GetCount(owner.GetComponent<CharacterBody>()) > 0) TreebotFlower2Projectile.radius *= 2f;
+            if(Scepter.instance.GetCount(owner.GetComponent<CharacterBody>()) > 0) TreebotFlower2Projectile.radius *= 2f;
             orig(self);
             TreebotFlower2Projectile.radius = origRadius;
         }
 
         private void On_TreebotFlower2RootPulse(On.EntityStates.Treebot.TreebotFlower.TreebotFlower2Projectile.orig_RootPulse orig, TreebotFlower2Projectile self) {
-            var isBoosted = Scepter_V2.instance.GetCount(self.owner?.GetComponent<CharacterBody>()) > 0;
+            var isBoosted = Scepter.instance.GetCount(self.owner?.GetComponent<CharacterBody>()) > 0;
             var origRadius = TreebotFlower2Projectile.radius;
             if(isBoosted) TreebotFlower2Projectile.radius *= 2f;
             orig(self);
             TreebotFlower2Projectile.radius = origRadius;
             if(!isBoosted) return;
             self.rootedBodies.ForEach(cb => {
-                var nbi = Scepter_V2.instance.rng.NextElementUniform(new[] {
-                    BuffIndex.Bleeding,
-                    BuffIndex.ClayGoo,
-                    BuffIndex.Cripple,
-                    BuffIndex.HealingDisabled,
-                    BuffIndex.OnFire,
-                    BuffIndex.Weak,
-                    BuffIndex.Pulverized,
+                var nbi = Scepter.instance.rng.NextElementUniform(new[] {
+                    RoR2Content.Buffs.Bleeding,
+                    RoR2Content.Buffs.ClayGoo,
+                    RoR2Content.Buffs.Cripple,
+                    RoR2Content.Buffs.HealingDisabled,
+                    RoR2Content.Buffs.OnFire,
+                    RoR2Content.Buffs.Weak,
+                    RoR2Content.Buffs.Pulverized,
                     ClassicItemsPlugin.freezeBuff
                 });
                 if(nbi == ClassicItemsPlugin.freezeBuff) {
@@ -78,8 +78,8 @@ namespace ThinkInvisible.ClassicItems {
                         ssoh.SetFrozen(1.5f);
                     else return;
                 }
-                if(nbi == BuffIndex.OnFire) DotController.InflictDot(cb.gameObject, self.owner, DotController.DotIndex.Burn, 1.5f, 1f);
-                if(nbi == BuffIndex.Bleeding) DotController.InflictDot(cb.gameObject, self.owner, DotController.DotIndex.Bleed, 1.5f, 1f);
+                if(nbi == RoR2Content.Buffs.OnFire) DotController.InflictDot(cb.gameObject, self.owner, DotController.DotIndex.Burn, 1.5f, 1f);
+                if(nbi == RoR2Content.Buffs.Bleeding) DotController.InflictDot(cb.gameObject, self.owner, DotController.DotIndex.Bleed, 1.5f, 1f);
                 cb.AddTimedBuff(nbi, 1.5f);
             });
         }

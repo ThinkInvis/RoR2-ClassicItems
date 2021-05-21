@@ -4,7 +4,7 @@ using TILER2;
 using static TILER2.StatHooks;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Vial : Item_V2<Vial> {
+    public class Vial : Item<Vial> {
         public override string displayName => "Mysterious Vial";
 		public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Healing});
@@ -24,7 +24,7 @@ namespace ThinkInvisible.ClassicItems {
             if(Compat_ItemStats.enabled) {
                 Compat_ItemStats.CreateItemStatDef(itemDef,
                     ((count, inv, master) => { return addRegen * count; },
-                    (value, inv, master) => { return $"Regen Bonus: {value.ToString("N1")} HP/s"; }
+                    (value, inv, master) => { return $"Regen Bonus: {value:N1} HP/s"; }
                 ));
             }
         }

@@ -4,7 +4,7 @@ using TILER2;
 using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Amethyst : Equipment_V2<Amethyst> {
+    public class Amethyst : Equipment<Amethyst> {
         public override string displayName => "Gigantic Amethyst";
 
         public override float cooldown {get;protected set;} = 8f;
@@ -18,7 +18,7 @@ namespace ThinkInvisible.ClassicItems {
             var sloc = slot.characterBody?.skillLocator;
             if(!sloc) return false;
             sloc.ApplyAmmoPack();
-            if(instance.CheckEmbryoProc(slot.characterBody)) sloc.ApplyAmmoPack();
+            if(Embryo.instance.CheckEmbryoProc(slot.characterBody)) sloc.ApplyAmmoPack();
             return true;
         }
     }

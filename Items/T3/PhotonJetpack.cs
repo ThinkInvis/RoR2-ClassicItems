@@ -3,15 +3,16 @@ using UnityEngine;
 using System.Collections.ObjectModel;
 using TILER2;
 using static TILER2.MiscUtil;
+using R2API;
 
 namespace ThinkInvisible.ClassicItems {
-    public class PhotonJetpack : Item_V2<PhotonJetpack> {
+    public class PhotonJetpack : Item<PhotonJetpack> {
         public override string displayName => "Photon Jetpack";
 		public override ItemTier itemTier => ItemTier.Tier3;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
         public override bool itemIsAIBlacklisted {get; protected set;} = true;
 
-        public BuffIndex photonFuelBuff {get;private set;}
+        public BuffDef photonFuelBuff {get;private set;}
         
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Time in seconds that jump must be released before Photon Jetpack fuel begins recharging.",AutoConfigFlags.PreventNetMismatch,0f,float.MaxValue)]
@@ -63,14 +64,14 @@ namespace ThinkInvisible.ClassicItems {
         public override void SetupAttributes() {
             base.SetupAttributes();
 
-            var PhotonJetpackBuff = new R2API.CustomBuff(new BuffDef {
-                buffColor = Color.cyan,
-                canStack = true,
-                isDebuff = false,
-                name = modInfo.shortIdentifier + "PhotonFuel",
-                iconPath = "@ClassicItems:Assets/ClassicItems/icons/PhotonJetpack_icon.png"
-            });
-            photonFuelBuff = R2API.BuffAPI.Add(PhotonJetpackBuff);
+            photonFuelBuff = ScriptableObject.CreateInstance<BuffDef>();
+            photonFuelBuff.buffColor = Color.cyan;
+            photonFuelBuff.canStack = true;
+            photonFuelBuff.isDebuff = false;
+            photonFuelBuff.name = modInfo.shortIdentifier + "PhotonFuel";
+            photonFuelBuff.iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/PhotonJetpack_icon.png");
+
+            BuffAPI.Add(new CustomBuff(photonFuelBuff));
         }
 
         public override void SetupBehavior() {
@@ -78,10 +79,8 @@ namespace ThinkInvisible.ClassicItems {
 
             if(Compat_ItemStats.enabled) {
                 Compat_ItemStats.CreateItemStatDef(itemDef,
-                    ((count, inv, master) => { return baseFuel + (count - 1) * stackFuel +
-                        ((extraJumpInteraction == ExtraJumpInteractionType.ConvertJumpsToFuel && master.hasBody)
-                        ? ((master.GetBody().maxJumpCount - 1) * jumpFuel) : 0); },
-                    (value, inv, master) => { return $"Fuel: {value.ToString("N1")} s"; }
+                    ((count, inv, master) => { return baseFuel + (count - 1) * stackFuel; },
+                    (value, inv, master) => { return $"Fuel: {value:N1} s"; }
                 ));
             }
         }
@@ -156,7 +155,7 @@ namespace ThinkInvisible.ClassicItems {
             int tgtFuelStacks = Mathf.CeilToInt(cpt.fuel/cpt.fuelCap*100f);
             int currFuelStacks = self.GetBuffCount(photonFuelBuff);
             if(tgtFuelStacks != currFuelStacks)
-                self.SetBuffCount(photonFuelBuff, tgtFuelStacks);
+                self.SetBuffCount(photonFuelBuff.buffIndex, tgtFuelStacks);
         }
 
         private void On_CBInventoryChanged(On.RoR2.CharacterBody.orig_OnInventoryChanged orig, CharacterBody self) {
@@ -174,7 +173,7 @@ namespace ThinkInvisible.ClassicItems {
                 cpt.fuelCap += (tgt.maxJumpCount - 1) * jumpFuel;
             if(cpt.fuel>cpt.fuelCap) cpt.fuel=cpt.fuelCap;
             if(cpt.fuelCap == 0)
-                tgt.SetBuffCount(photonFuelBuff, 0);
+                tgt.SetBuffCount(photonFuelBuff.buffIndex, 0);
         }
     }
 

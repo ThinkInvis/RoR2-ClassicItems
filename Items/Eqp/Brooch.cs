@@ -9,7 +9,7 @@ using TILER2;
 using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Brooch : Equipment_V2<Brooch> {
+    public class Brooch : Equipment<Brooch> {
         public override string displayName => "Captain's Brooch";
 
         float baseCost = 25f;
@@ -93,7 +93,7 @@ namespace ThinkInvisible.ClassicItems {
             if(SceneCatalog.mostRecentSceneDef.baseSceneName == "bazaar") return false;
             bool s1 = TrySpawnChest(slot.characterBody.transform);
             bool s2 = false;
-            if(instance.CheckEmbryoProc(slot.characterBody)) s2 = TrySpawnChest(slot.characterBody.transform);
+            if(Embryo.instance.CheckEmbryoProc(slot.characterBody)) s2 = TrySpawnChest(slot.characterBody.transform);
             return s1 || s2;
         }
 

@@ -29,7 +29,7 @@ namespace ThinkInvisible.ClassicItems {
             myDef.skillName = namestr;
             myDef.skillNameToken = nametoken;
             myDef.skillDescriptionToken = newDescToken;
-            myDef.icon = Resources.Load<Sprite>("@ClassicItems:Assets/ClassicItems/icons/scepter/toolbot_dashicon.png");
+            myDef.icon = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/scepter/toolbot_dashicon.png");
 
             LoadoutAPI.AddSkillDef(myDef);
         }
@@ -58,7 +58,7 @@ namespace ThinkInvisible.ClassicItems {
         private void On_ToolbotDashEnter(On.EntityStates.Toolbot.ToolbotDash.orig_OnEnter orig, EntityStates.Toolbot.ToolbotDash self) {
             orig(self);
             if(!self.outer.commonComponents.characterBody) return;
-            if(Scepter_V2.instance.GetCount(self.outer.commonComponents.characterBody) < 1) return;
+            if(Scepter.instance.GetCount(self.outer.commonComponents.characterBody) < 1) return;
             var cpt = self.outer.commonComponents.characterBody.GetComponent<ScepterToolbotDashTracker>();
             if(!cpt) cpt = self.outer.commonComponents.characterBody.gameObject.AddComponent<ScepterToolbotDashTracker>();
             cpt.enabled = true;

@@ -32,7 +32,7 @@ namespace ThinkInvisible.ClassicItems {
             myDef.skillName = namestr;
             myDef.skillNameToken = nametoken;
             myDef.skillDescriptionToken = newDescToken;
-            myDef.icon = Resources.Load<Sprite>("@ClassicItems:Assets/ClassicItems/icons/scepter/huntress_ballistaicon.png");
+            myDef.icon = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/scepter/huntress_ballistaicon.png");
 
             LoadoutAPI.AddSkillDef(myDef);
             
@@ -42,7 +42,7 @@ namespace ThinkInvisible.ClassicItems {
             myCtxDef.skillName = namestr;
             myCtxDef.skillNameToken = nametoken;
             myCtxDef.skillDescriptionToken = newDescToken;
-            myCtxDef.icon = Resources.Load<Sprite>("@ClassicItems:Assets/ClassicItems/icons/scepter/huntress_ballistaicon.png");
+            myCtxDef.icon = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/scepter/huntress_ballistaicon.png");
 
             LoadoutAPI.AddSkillDef(myCtxDef);
         }
@@ -60,7 +60,7 @@ namespace ThinkInvisible.ClassicItems {
 
         private void On_FireArrowSnipeFire(On.EntityStates.Huntress.Weapon.FireArrowSnipe.orig_FireBullet orig, FireArrowSnipe self, Ray aimRay) {
             orig(self, aimRay);
-            if(Scepter_V2.instance.GetCount(self.outer.commonComponents.characterBody) < 1) return;
+            if(Scepter.instance.GetCount(self.outer.commonComponents.characterBody) < 1) return;
 
             for(var i = 1; i < 6; i++) {
                 var sprRay = new Ray(aimRay.origin, aimRay.direction);
@@ -80,7 +80,7 @@ namespace ThinkInvisible.ClassicItems {
             orig(self);
             var sloc = self.outer.commonComponents.skillLocator;
             if(!sloc || !sloc.primary) return;
-            if(Scepter_V2.instance.GetCount(self.outer.commonComponents.characterBody) > 0) {
+            if(Scepter.instance.GetCount(self.outer.commonComponents.characterBody) > 0) {
 				sloc.primary.UnsetSkillOverride(self, AimArrowSnipe.primarySkillDef, GenericSkill.SkillOverridePriority.Contextual);
                 sloc.primary.SetSkillOverride(self, myCtxDef, GenericSkill.SkillOverridePriority.Contextual);
             }
@@ -90,7 +90,7 @@ namespace ThinkInvisible.ClassicItems {
             orig(self);
             var sloc = self.outer.commonComponents.skillLocator;
             if(!sloc || !sloc.primary) return;
-            if(Scepter_V2.instance.GetCount(self.outer.commonComponents.characterBody) > 0)
+            if(Scepter.instance.GetCount(self.outer.commonComponents.characterBody) > 0)
                 sloc.primary.UnsetSkillOverride(self, myCtxDef, GenericSkill.SkillOverridePriority.Contextual);
         }
     }

@@ -35,7 +35,7 @@ namespace ThinkInvisible.ClassicItems {
             myDef.skillName = namestr;
             myDef.skillNameToken = nametoken;
             myDef.skillDescriptionToken = newDescToken;
-            myDef.icon = Resources.Load<Sprite>("@ClassicItems:Assets/ClassicItems/icons/scepter/croco_firediseaseicon.png");
+            myDef.icon = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/scepter/croco_firediseaseicon.png");
 
             LoadoutAPI.AddSkillDef(myDef);
 
@@ -63,7 +63,7 @@ namespace ThinkInvisible.ClassicItems {
 
         private void On_LightningOrbArrival(On.RoR2.Orbs.LightningOrb.orig_OnArrival orig, LightningOrb self) {
             orig(self);
-            if(self.lightningType != LightningOrb.LightningType.CrocoDisease || Scepter_V2.instance.GetCount(self.attacker?.GetComponent<CharacterBody>()) < 1) return;
+            if(self.lightningType != LightningOrb.LightningType.CrocoDisease || Scepter.instance.GetCount(self.attacker?.GetComponent<CharacterBody>()) < 1) return;
             if(!self.target || !self.target.healthComponent) return;
 
             var cpt = self.target.healthComponent.gameObject.GetComponentInChildren<DiseaseWard>()?.gameObject;
@@ -80,7 +80,7 @@ namespace ThinkInvisible.ClassicItems {
         
 	[RequireComponent(typeof(TeamFilter))]
 	public class DiseaseWard : NetworkBehaviour {
-		float radius = 10f;
+		public float radius = 10f;
 
 		[SyncVar]
 		float damage;

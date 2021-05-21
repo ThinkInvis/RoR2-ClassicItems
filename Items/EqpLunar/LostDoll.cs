@@ -7,7 +7,7 @@ using static TILER2.MiscUtil;
 
 
 namespace ThinkInvisible.ClassicItems {
-    public class LostDoll : Equipment_V2<LostDoll> {
+    public class LostDoll : Equipment<LostDoll> {
         public override string displayName => "Lost Doll";
 
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
@@ -79,7 +79,7 @@ namespace ThinkInvisible.ClassicItems {
                     });
                     didHit = true;
                 }
-                if(result2 && instance.CheckEmbryoProc(slot.characterBody)) {
+                if(result2 && Embryo.instance.CheckEmbryoProc(slot.characterBody)) {
                     OrbManager.instance.AddOrb(new LostDollOrb {
                         attacker = slot.characterBody.gameObject,
                         damageColorIndex = DamageColorIndex.Default,

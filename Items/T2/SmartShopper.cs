@@ -5,7 +5,7 @@ using TILER2;
 using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
-    public class SmartShopper : Item_V2<SmartShopper> {
+    public class SmartShopper : Item<SmartShopper> {
         public override string displayName => "Smart Shopper";
 		public override ItemTier itemTier => ItemTier.Tier2;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});

@@ -2,6 +2,36 @@
 
 (🌧︎: Involves an accepted GitHub Pull Request from the community. Thanks for your help!)
 
+**5.0.2**
+
+- Compatibility updates for recent Risk of Rain 2 patches.
+- Updated BetterUI compat for 2.0.2.
+- Temporarily disabled the effects of the AllCards global config option (RoR2 seems to no longer expose an easily accessible list of vanilla content to check against).
+
+**5.0.1**
+
+- Matched FakeInventory.blacklist change in TILER2 4.0.1. Fixes Ancient Scepter not being FakeInventory blacklisted, and mod not being compatible with TILER2 4.0.1.
+- Made card model setup/updates more resilient against broken items.
+
+**5.0.0**
+
+- Compatibility changes for Risk of Rain 2 Anniversary Update.
+- Fixed card model text being updated while hidden, leading to NullReferenceExceptions while the HideDesc setting is enabled.
+- Filial Imprinting: attempted to fix server-only code running on clients.
+- Ancient Scepter: fixed deployables getting rerolls when their owner picks up a Scepter.
+- Beating Embryo: in-progress rewrite and public API change, currently mostly nonfunctional; item will be force-disabled during game startup.
+    - Modders: Consider public API for this item to be unstable and not included in semver until further notice.
+- Pillaged Gold: fixed this equipment being completely unusable.
+
+**4.6.4**
+
+- Added more safety checks to card model text updates (may fix a potential incompatibility).
+
+**4.6.3**
+
+- Fixed card model text not updating immediately after game launch.
+- Additional language fixes for Snowglobe.
+
 **4.6.2**
 
 - Removed backcompat Scepter/Embryo patches from item list (they did NOT like being there).

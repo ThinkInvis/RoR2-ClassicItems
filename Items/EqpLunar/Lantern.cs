@@ -7,7 +7,7 @@ using static TILER2.MiscUtil;
 using System.Collections.Generic;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Lantern : Equipment_V2<Lantern> {
+    public class Lantern : Equipment<Lantern> {
         public override string displayName => "Safeguard Lantern";
 
 		[AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
@@ -69,7 +69,7 @@ namespace ThinkInvisible.ClassicItems {
 			lw.damage = slot.characterBody.damage * damage;
 			lw.duration = duration;
 			lw.radius = range;
-            if(instance.CheckEmbryoProc(slot.characterBody)) {
+            if(Embryo.instance.CheckEmbryoProc(slot.characterBody)) {
 				lw.duration *= 2;
             }
             return true;

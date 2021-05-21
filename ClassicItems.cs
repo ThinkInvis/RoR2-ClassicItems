@@ -16,6 +16,7 @@ using System.Collections.ObjectModel;
 using TILER2;
 using static TILER2.MiscUtil;
 using System.Runtime.Serialization;
+using System.Linq;
 
 //TODO:
 // Add missing documentation in... a whole lotta places... whoops.
@@ -30,13 +31,13 @@ namespace ThinkInvisible.ClassicItems {
     [BepInDependency(R2API.R2API.PluginGUID, R2API.R2API.PluginVersion)]
     [BepInDependency(TILER2Plugin.ModGuid, TILER2Plugin.ModVer)]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
-    [R2APISubmoduleDependency(nameof(ItemAPI), nameof(LanguageAPI), nameof(ResourcesAPI), nameof(PlayerAPI), nameof(PrefabAPI), nameof(BuffAPI), nameof(LoadoutAPI))]
+    [R2APISubmoduleDependency(nameof(ItemAPI), nameof(LanguageAPI), nameof(ResourcesAPI), nameof(PrefabAPI), nameof(BuffAPI), nameof(LoadoutAPI), nameof(ProjectileAPI))]
     public class ClassicItemsPlugin:BaseUnityPlugin {
         public const string ModVer =
             #if DEBUG
                 "0." +
             #endif
-            "4.6.2";
+            "5.0.2";
         public const string ModName = "ClassicItems";
         public const string ModGuid = "com.ThinkInvisible.ClassicItems";
 
@@ -73,8 +74,8 @@ namespace ThinkInvisible.ClassicItems {
 
         public static readonly GlobalConfig globalConfig = new GlobalConfig();
 
-        public static BuffIndex freezeBuff {get;private set;}
-        public static BuffIndex fearBuff {get;private set;}
+        public static BuffDef freezeBuff {get;private set;}
+        public static BuffDef fearBuff {get;private set;}
 
         private static readonly ReadOnlyDictionary<ItemTier, string> modelNameMap = new ReadOnlyDictionary<ItemTier,string>(new Dictionary<ItemTier, string>{
             {ItemTier.Boss, "BossCard"},
@@ -86,7 +87,9 @@ namespace ThinkInvisible.ClassicItems {
 
         internal static BepInEx.Logging.ManualLogSource _logger;
 
-        #if DEBUG
+        internal static AssetBundle resources;
+
+#if DEBUG
         public void Update() {
             var i3 = Input.GetKeyDown(KeyCode.F3);
             var i4 = Input.GetKeyDown(KeyCode.F4);
@@ -106,7 +109,7 @@ namespace ThinkInvisible.ClassicItems {
                 PickupDropletController.CreatePickupDroplet(spawnList[Run.instance.spawnRng.RangeInt(0,spawnList.Count)], trans.position, new Vector3(0f, -5f, 0f));
             }
         }
-        #endif
+#endif
 
         private void Awake() {
             _logger = Logger;
@@ -119,9 +122,7 @@ namespace ThinkInvisible.ClassicItems {
 
             Logger.LogDebug("Loading assets...");
             using(var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("ClassicItems.classicitems_assets")) {
-                var bundle = AssetBundle.LoadFromStream(stream);
-                var provider = new AssetBundleResourcesProvider("@ClassicItems", bundle);
-                ResourcesAPI.AddProvider(provider);
+                resources = AssetBundle.LoadFromStream(stream);
             }
 
             cfgFile = new ConfigFile(Path.Combine(Paths.ConfigPath, ModGuid + ".cfg"), true);
@@ -148,14 +149,6 @@ namespace ThinkInvisible.ClassicItems {
                 mainConfigFile = cfgFile
             });
 
-            var itemType = typeof(Item<>);
-            var scep = (Scepter)FormatterServices.GetUninitializedObject(typeof(Scepter));
-            var embryo = (Embryo)FormatterServices.GetUninitializedObject(typeof(Embryo));
-            var scepGenType = itemType.MakeGenericType(typeof(Scepter));
-            var embGenType = itemType.MakeGenericType(typeof(Embryo));
-            scepGenType.GetProperty("instance", BindingFlags.Public | BindingFlags.Static).GetSetMethod(true).Invoke(null, new[] { scep });
-            embGenType.GetProperty("instance", BindingFlags.Public | BindingFlags.Static).GetSetMethod(true).Invoke(null, new[] { embryo });
-
             Logger.LogDebug("Loading item configs...");
             foreach(CatalogBoilerplate x in masterItemList) {
                 x.SetupConfig();
@@ -165,13 +158,13 @@ namespace ThinkInvisible.ClassicItems {
             
             foreach(CatalogBoilerplate x in masterItemList) {
                 string mpnOvr = null;
-                if(x is Item_V2 item) mpnOvr = "@ClassicItems:Assets/ClassicItems/models/" + modelNameMap[item.itemTier] + ".prefab";
-                else if(x is Equipment_V2 eqp) mpnOvr = "@ClassicItems:Assets/ClassicItems/models/" + (eqp.isLunar ? "LqpCard.prefab" : "EqpCard.prefab");
-                var ipnOvr = "@ClassicItems:Assets/ClassicItems/icons/" + x.name.Replace("_V2", "") + "_icon.png";
+                if(x is Item item) mpnOvr = "Assets/ClassicItems/models/" + modelNameMap[item.itemTier] + ".prefab";
+                else if(x is Equipment eqp) mpnOvr = "Assets/ClassicItems/models/" + (eqp.isLunar ? "LqpCard.prefab" : "EqpCard.prefab");
+                var ipnOvr = "Assets/ClassicItems/icons/" + x.name.Replace("_V2", "") + "_icon.png";
 
                 if(mpnOvr != null) {
-                    typeof(CatalogBoilerplate).GetProperty(nameof(CatalogBoilerplate.modelResourcePath)).SetValue(x, mpnOvr);
-                    typeof(CatalogBoilerplate).GetProperty(nameof(CatalogBoilerplate.iconResourcePath)).SetValue(x, ipnOvr);
+                    typeof(CatalogBoilerplate).GetProperty(nameof(CatalogBoilerplate.modelResource)).SetValue(x, resources.LoadAsset<GameObject>(mpnOvr));
+                    typeof(CatalogBoilerplate).GetProperty(nameof(CatalogBoilerplate.iconResource)).SetValue(x, resources.LoadAsset<Sprite>(ipnOvr));
                 }
                 
                 x.SetupAttributes();
@@ -194,23 +187,22 @@ namespace ThinkInvisible.ClassicItems {
 
             Logger.LogDebug("Registering shared buffs...");
             //used only for purposes of Death Mark; applied by Permafrost and Snowglobe
-            var freezeBuffDef = new CustomBuff(new BuffDef {
-                buffColor = Color.cyan,
-                canStack = false,
-                isDebuff = true,
-                name = "CIFreeze",
-                iconPath = "@ClassicItems:Assets/ClassicItems/icons/permafrost_icon.png"
-            });
-            freezeBuff = BuffAPI.Add(freezeBuffDef);
+            freezeBuff = ScriptableObject.CreateInstance<BuffDef>();
+            freezeBuff.buffColor = Color.cyan;
+            freezeBuff.canStack = false;
+            freezeBuff.isDebuff = true;
+            freezeBuff.name = "CIFreeze";
+            freezeBuff.iconSprite = resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/permafrost_icon.png");
+            BuffAPI.Add(new CustomBuff(freezeBuff));
 
-            var fearBuffDef = new CustomBuff(new BuffDef {
-                buffColor = Color.red,
-                canStack = false,
-                isDebuff = true,
-                name = "CIFear",
-                iconPath = "textures/miscicons/texSprintIcon"
-            });
-            fearBuff = BuffAPI.Add(fearBuffDef);
+            fearBuff = ScriptableObject.CreateInstance<BuffDef>();
+            fearBuff.buffColor = Color.red;
+            fearBuff.canStack = false;
+            fearBuff.isDebuff = true;
+            fearBuff.name = "CIFear";
+            fearBuff.iconSprite = Resources.Load<Sprite>("textures/miscicons/texSprintIcon");
+
+            BuffAPI.Add(new CustomBuff(fearBuff));
             IL.EntityStates.AI.Walker.Combat.UpdateAI += IL_ESAIWalkerCombatUpdateAI;
 
             Logger.LogDebug("Registering item behaviors...");
@@ -222,28 +214,35 @@ namespace ThinkInvisible.ClassicItems {
             Logger.LogDebug("Initial setup done!");
         }
 
+        bool pluginIsStarted = false;
         private void Language_onCurrentLanguageChanged() {
+            if(!pluginIsStarted) return;
             foreach(CatalogBoilerplate bpl in masterItemList) {
                 UpdateCardModel(bpl);
             }
         }
 
         private void UpdateCardModel(CatalogBoilerplate sender) {
-            if(sender.pickupDef != null) {
-                var ctsf = sender.pickupDef.displayPrefab?.transform;
-                if(!ctsf) return;
+            if(sender != null && sender.pickupDef != null && !globalConfig.hideDesc) {
+                var cobj = sender.pickupDef.displayPrefab;
+                if(cobj == null) return;
+                var ctsf = sender.pickupDef.displayPrefab.transform;
+                if(ctsf == null) return;
                 var cfront = ctsf.Find("cardfront");
-                if(!cfront) return;
+                if(cfront == null) return;
 
                 cfront.Find("carddesc").GetComponent<TextMeshPro>().text = Language.GetString(globalConfig.longDesc ? sender.descToken : sender.pickupToken);
                 cfront.Find("cardname").GetComponent<TextMeshPro>().text = Language.GetString(sender.nameToken);
-            }
-            if(sender.logbookEntry != null) {
-                sender.logbookEntry.modelPrefab = sender.pickupDef.displayPrefab;
+
+                if(sender.logbookEntry != null) {
+                    sender.logbookEntry.modelPrefab = sender.pickupDef.displayPrefab;
+                }
             }
         }
 
         private void Start() {
+            pluginIsStarted = true;
+
             Logger.LogDebug("Performing late setup:");
 
             Logger.LogDebug("Late setup for individual items...");
@@ -335,14 +334,14 @@ namespace ThinkInvisible.ClassicItems {
 
             Logger.LogDebug("Processing pickup models...");
 
-            if(globalConfig.allCards) {
-                var eqpCardPrefab = Resources.Load<GameObject>("@ClassicItems:Assets/ClassicItems/models/VOvr/EqpCard.prefab");
-                var lunarCardPrefab = Resources.Load<GameObject>("@ClassicItems:Assets/ClassicItems/models/VOvr/LunarCard.prefab");
-                var lunEqpCardPrefab = Resources.Load<GameObject>("@ClassicItems:Assets/ClassicItems/models/VOvr/LqpCard.prefab");
-                var t1CardPrefab = Resources.Load<GameObject>("@ClassicItems:Assets/ClassicItems/models/VOvr/CommonCard.prefab");
-                var t2CardPrefab = Resources.Load<GameObject>("@ClassicItems:Assets/ClassicItems/models/VOvr/UncommonCard.prefab");
-                var t3CardPrefab = Resources.Load<GameObject>("@ClassicItems:Assets/ClassicItems/models/VOvr/RareCard.prefab");
-                var bossCardPrefab = Resources.Load<GameObject>("@ClassicItems:Assets/ClassicItems/models/VOvr/BossCard.prefab");
+            /*if(globalConfig.allCards) {
+                var eqpCardPrefab = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/models/VOvr/EqpCard.prefab");
+                var lunarCardPrefab = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/models/VOvr/LunarCard.prefab");
+                var lunEqpCardPrefab = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/models/VOvr/LqpCard.prefab");
+                var t1CardPrefab = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/models/VOvr/CommonCard.prefab");
+                var t2CardPrefab = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/models/VOvr/UncommonCard.prefab");
+                var t3CardPrefab = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/models/VOvr/RareCard.prefab");
+                var bossCardPrefab = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/models/VOvr/BossCard.prefab");
 
                 int replacedItems = 0;
                 int replacedEqps = 0;
@@ -350,13 +349,17 @@ namespace ThinkInvisible.ClassicItems {
                 foreach(var pickup in PickupCatalog.allPickups) {
                     GameObject npfb;
                     if(pickup.interactContextToken == "EQUIPMENT_PICKUP_CONTEXT") {
-                        if(pickup.equipmentIndex >= EquipmentIndex.Count || pickup.equipmentIndex < 0) continue;
+                        if(!RoR2Content.Equipment.equipmentDefs.Contains(EquipmentCatalog.GetEquipmentDef(pickup.equipmentIndex))
+                        || pickup.itemIndex == ItemIndex.None)
+                            continue;
                         var eqp = EquipmentCatalog.GetEquipmentDef(pickup.equipmentIndex);
                         if(!eqp.canDrop) continue;
                         npfb = eqp.isLunar ? lunEqpCardPrefab : eqpCardPrefab;
                         replacedEqps ++;
                     } else if(pickup.interactContextToken == "ITEM_PICKUP_CONTEXT") {
-                        if(pickup.itemIndex >= ItemIndex.Count || pickup.itemIndex < 0) continue;
+                        if(!RoR2Content.Items.itemDefs.Contains(ItemCatalog.GetItemDef(pickup.itemIndex))
+                        || pickup.itemIndex == ItemIndex.None)
+                        continue;
 
                         var item = ItemCatalog.GetItemDef(pickup.itemIndex);
                         switch(item.tier) {
@@ -379,7 +382,7 @@ namespace ThinkInvisible.ClassicItems {
                 }
 
                 Logger.LogDebug("Replaced " + replacedItems + " item models and " + replacedEqps + " equipment models.");
-            }
+            }*/
 
             int replacedDescs = 0;
 

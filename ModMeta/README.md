@@ -48,17 +48,7 @@ For nostalgic purposes only. Here Be Dragons who hoard balance issues, because t
     - Loader: Charged Gauntlet > Megaton Gauntlet (2x damage and lunge speed, 7x knockback)  -OR-  Thunder Gauntlet > Thundercrash (3x lightning bolts fired, cone AoE becomes sphere)
     - Acrid: Epidemic > Plague (victims become walking sources of Plague, chains infinitely)
     - Captain: Orbital Probe > 21-Probe Salute (1/3 damage, 7x shots, hold primary to fire continuously)
-- Beating Embryo: "Equipment has a 30% chance to deal double the effect."
-    - Doubles *duration* on: Ocular HUD, Jade Elephant, Milky Chrysalis, Radar Scanner, Snowglobe, Pillaged Gold, Prescriptions, Safeguard Lantern, Super Massive Leech, Gorag's Opus.
-    - Doubles *range* on: Primordial Cube, Blast Shower, Skeleton Key.
-    - Doubles *count* on: The Back-up, Captain's Brooch, Sawmerang, Royal Capacitor, Recycler, Lost Doll, Gigantic Amethyst, Forgive Me Please.
-    - Doubles *fire rate and count* on: Disposable Missile Launcher.
-    - Doubles *fire rate* on: The Crowdfunder.
-    - Doubles *damage* on: Preon Accumulator.
-    - Doubles *burst heal* on: Foreign Fruit, Gnarled Woodsprite.
-    - Doubles *speed* on: Eccentric Vase.
-    - Doubles *speed and damage* on: Volcanic Egg.
-    - *Lunar* equipment will not work with Beating Embryo by default, but effects are still implemented as listed above.
+- Beating Embryo: ~~"Equipment has a 30% chance to deal double the effect."~~ Under construction!
 - Permafrost: "Chance to freeze enemies on hit."
 - Photon Jetpack: "No hands."
     - Provides flight while holding jump, using limited recharging fuel.
@@ -89,13 +79,15 @@ For nostalgic purposes only. Here Be Dragons who hoard balance issues, because t
 - Descriptions in the logbook match config values.
 - Some vanilla tweaks, also with config options:
     - Disables the H3AD5T V2 stomp move, which is normally triggered by holding jump in midair; this is replaced by the Headstompers item.
-    - Converts most pickup models for base game items and equipment into trading cards (disabled by default).
+    - Converts most pickup models for base game items and equipment into trading cards (disabled by default; NONFUNCTIONAL).
 
 ## Issues/TODO
 
 - More items are on the way! There's a lot to work with.
 - Stats are set close to RoR1's whenever possible. May eventually set up a config preset which balances items a little more carefully with respect to RoR2's existing content.
+- Beating Embryo is being rebuilt and is currently disabled.
 - Beating Embryo has no effect on Lunar equipments (other than those added by mods). This is a design decision, but disabled-by-default effects are planned.
+- AllCards global config option is nonfunctional.
 - Color tags on pickup model text are too bright.
 - See the GitHub repo for more!
 
@@ -112,25 +104,32 @@ For details and instructions on applying these, see: https://github.com/ThinkInv
 The 5 latest updates are listed below. For a full changelog, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/changelog.md
 (🌧︎: Involves an accepted GitHub Pull Request from the community. Thanks for your help!)
 
-**4.6.2**
+**5.0.2**
 
-- Removed backcompat Scepter/Embryo patches from item list (they did NOT like being there).
+- Compatibility updates for recent Risk of Rain 2 patches.
+- Updated BetterUI compat for 2.0.2.
+- Temporarily disabled the effects of the AllCards global config option (RoR2 seems to no longer expose an easily accessible list of vanilla content to check against).
 
-**4.6.1**
+**5.0.1**
 
-- Fixed backwards-compatibility on Ancient Scepter and Beating Embryo.
+- Matched FakeInventory.blacklist change in TILER2 4.0.1. Fixes Ancient Scepter not being FakeInventory blacklisted, and mod not being compatible with TILER2 4.0.1.
+- Made card model setup/updates more resilient against broken items.
 
-**4.6.0**
+**5.0.0**
 
-- Implements changes from TILER2 3.0.0.
+- Compatibility changes for Risk of Rain 2 Anniversary Update.
+- Fixed card model text being updated while hidden, leading to NullReferenceExceptions while the HideDesc setting is enabled.
+- Filial Imprinting: attempted to fix server-only code running on clients.
+- Ancient Scepter: fixed deployables getting rerolls when their owner picks up a Scepter.
+- Beating Embryo: in-progress rewrite and public API change, currently mostly nonfunctional; item will be force-disabled during game startup.
+    - Modders: Consider public API for this item to be unstable and not included in semver until further notice.
+- Pillaged Gold: fixed this equipment being completely unusable.
 
-**4.5.5**
+**4.6.4**
 
-- 🌧︎ A handful of additional language fixes.
-- Implements changes from TILER2 2.2.3.
-	- Ancient Scepter is now FakeInventory blacklisted. Fixes incompatibility with Tinker's Satchel (in combination with a Tinker's Satchel update).
+- Added more safety checks to card model text updates (may fix a potential incompatibility).
 
-**4.5.4**
+**4.6.3**
 
-- 🌧︎ Large batch of language tweaks. Many item/equipment descriptions now hide sections if e.g. a relevant config option is set to 0.
-- Fixed several issues with Beating Embryo modded equipment support.
+- Fixed card model text not updating immediately after game launch.
+- Additional language fixes for Snowglobe.

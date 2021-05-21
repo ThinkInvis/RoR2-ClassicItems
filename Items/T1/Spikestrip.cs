@@ -7,7 +7,7 @@ using TILER2;
 using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Spikestrip : Item_V2<Spikestrip> {
+    public class Spikestrip : Item<Spikestrip> {
         public override string displayName => "Spikestrip";
 		public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
@@ -56,7 +56,7 @@ namespace ThinkInvisible.ClassicItems {
             bw.Networkradius = baseRadius;
             bw.buffDuration = 0.5f;
             bw.interval = 0.5f;
-            bw.buffType = BuffIndex.Slow50;
+            bw.buffDef = RoR2Content.Buffs.Slow50;
             spikeWardPrefab = bwPrefabPrefab.InstantiateClone("SpikestripAuraPrefab");
             UnityEngine.Object.Destroy(bwPrefabPrefab);
         }
@@ -67,7 +67,7 @@ namespace ThinkInvisible.ClassicItems {
             if(Compat_ItemStats.enabled) {
                 Compat_ItemStats.CreateItemStatDef(itemDef,
                     ((count, inv, master) => { return baseDuration + (count - 1) * stackDuration; },
-                    (value, inv, master) => { return $"Duration: {value.ToString("N1")} s"; }
+                    (value, inv, master) => { return $"Duration: {value:N1} s"; }
                 ));
             }
         }

@@ -5,7 +5,7 @@ using TILER2;
 using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
-    public class FireShield : Item_V2<FireShield> {
+    public class FireShield : Item<FireShield> {
         public override string displayName => "Fire Shield";
 		public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});

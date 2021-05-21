@@ -32,7 +32,7 @@ namespace ThinkInvisible.ClassicItems {
             myDef.skillName = namestr;
             myDef.skillNameToken = nametoken;
             myDef.skillDescriptionToken = newDescToken;
-            myDef.icon = Resources.Load<Sprite>("@ClassicItems:Assets/ClassicItems/icons/scepter/huntress_arrowrainicon.png");
+            myDef.icon = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/scepter/huntress_arrowrainicon.png");
 
             LoadoutAPI.AddSkillDef(myDef);
 
@@ -56,7 +56,7 @@ namespace ThinkInvisible.ClassicItems {
             flashlight.GetComponent<Light>().range = 15f;
             flashlight.gameObject.SetActive(true);
 
-            ProjectileCatalog.getAdditionalEntries += (list) => list.Add(projReplacer);
+            ProjectileAPI.Add(projReplacer);
         }
 
         internal override void LoadBehavior() {
@@ -69,7 +69,7 @@ namespace ThinkInvisible.ClassicItems {
 
         private void On_ArrowRain_DoFireArrowRain(On.EntityStates.Huntress.ArrowRain.orig_DoFireArrowRain orig, ArrowRain self) {
             var origPrefab = ArrowRain.projectilePrefab;
-            if(Scepter_V2.instance.GetCount(self.outer.commonComponents.characterBody) > 0) ArrowRain.projectilePrefab = projReplacer;
+            if(Scepter.instance.GetCount(self.outer.commonComponents.characterBody) > 0) ArrowRain.projectilePrefab = projReplacer;
             orig(self);
             ArrowRain.projectilePrefab = origPrefab;
         }

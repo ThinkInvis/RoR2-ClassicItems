@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using static TILER2.StatHooks;
 
 namespace ThinkInvisible.ClassicItems {
-    public class HitList : Item_V2<HitList> {
+    public class HitList : Item<HitList> {
         public override string displayName => "The Hit List";
 		public override ItemTier itemTier => ItemTier.Tier3;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
@@ -31,38 +31,39 @@ namespace ThinkInvisible.ClassicItems {
         protected override string GetDescString(string langid = null) => "Every <style=cIsUtility>" + cooldown.ToString("N0") + " seconds</style>, <style=cIsUtility>1</style> <style=cStack>(+1 per stack)</style> random enemy will be <style=cIsUtility>marked</style> for the same duration. Killing <style=cIsUtility>marked</style> enemies gives you <style=cIsDamage>+" + procDamage.ToString("N1") + " permanent base damage</style> <style=cStack>(up to a maximum of " + maxDamage.ToString("N1") + ")</style>.";
         protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
-        public ItemIndex hitListTally {get; private set;}
-        public BuffIndex markDebuff {get; private set;}
-        public BuffIndex tallyBuff {get; private set;}
+        public ItemDef hitListTally {get; private set;}
+        public BuffDef markDebuff {get; private set;}
+        public BuffDef tallyBuff {get; private set;}
 
         public override void SetupAttributes() {
             base.SetupAttributes();
 
-            var markDebuffDef = new CustomBuff(new BuffDef {
-                buffColor = Color.yellow,
-                canStack = false,
-                isDebuff = true,
-                name = modInfo.shortIdentifier + "HitListDebuff",
-                iconPath = "@ClassicItems:Assets/ClassicItems/icons/hitlist_debuff_icon.png"
-            });
-            markDebuff = BuffAPI.Add(markDebuffDef);
+            markDebuff = ScriptableObject.CreateInstance<BuffDef>();
+            markDebuff.buffColor = Color.yellow;
+            markDebuff.canStack = false;
+            markDebuff.isDebuff = true;
+            markDebuff.name = modInfo.shortIdentifier + "HitListDebuff";
+            markDebuff.iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/hitlist_debuff_icon.png");
+            BuffAPI.Add(new CustomBuff(markDebuff));
 
-            var tallyBuffDef = new CustomBuff(new BuffDef {
-                buffColor = Color.yellow,
-                canStack = true,
-                isDebuff = false,
-                name = modInfo.shortIdentifier + "HitListBuff",
-                iconPath = "@ClassicItems:Assets/ClassicItems/icons/hitlist_buff_icon.png"
-            });
-            tallyBuff = BuffAPI.Add(tallyBuffDef);
+            tallyBuff = ScriptableObject.CreateInstance<BuffDef>();
+            tallyBuff.buffColor = Color.yellow;
+            tallyBuff.canStack = true;
+            tallyBuff.isDebuff = false;
+            tallyBuff.name = modInfo.shortIdentifier + "HitListBuff";
+            tallyBuff.iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/hitlist_buff_icon.png");
+            BuffAPI.Add(new CustomBuff(tallyBuff));
 
-            var hitListTallyDef = new CustomItem(new ItemDef {
-                hidden = true,
-                name = modInfo.shortIdentifier + "INTERNALTally",
-                tier = ItemTier.NoTier,
-                canRemove = false
-            }, new ItemDisplayRuleDict(null));
-            hitListTally = ItemAPI.Add(hitListTallyDef);
+            hitListTally = ScriptableObject.CreateInstance<ItemDef>();
+            hitListTally.hidden = true;
+            hitListTally.name = modInfo.shortIdentifier + "INTERNALTally";
+            hitListTally.tier = ItemTier.NoTier;
+            hitListTally.canRemove = false;
+            hitListTally.nameToken = "";
+            hitListTally.pickupToken = "";
+            hitListTally.loreToken = "";
+            hitListTally.descriptionToken = "";
+            ItemAPI.Add(new CustomItem(hitListTally, new ItemDisplayRuleDict()));
         }
 
         public override void Install() {
@@ -137,7 +138,7 @@ namespace ThinkInvisible.ClassicItems {
         private void Evt_TILER2GetStatCoefficients(CharacterBody sender, StatHookEventArgs args) {
             var add = Mathf.Clamp(procDamage * (sender.inventory?.GetItemCount(hitListTally) ?? 0), 0f, maxDamage);
             args.baseDamageAdd += add;
-            sender.SetBuffCount(tallyBuff, Mathf.FloorToInt(add/procDamage));
+            sender.SetBuffCount(tallyBuff.buffIndex, Mathf.FloorToInt(add/procDamage));
         }
     }
 }

@@ -6,7 +6,7 @@ using static TILER2.MiscUtil;
 using static TILER2.StatHooks;
 
 namespace ThinkInvisible.ClassicItems {
-    public class RustyJetpack : Item_V2<RustyJetpack> {
+    public class RustyJetpack : Item<RustyJetpack> {
         public override string displayName => "Rusty Jetpack";
 		public override ItemTier itemTier => ItemTier.Tier2;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
@@ -30,7 +30,7 @@ namespace ThinkInvisible.ClassicItems {
 			if(Compat_ItemStats.enabled) {
 				Compat_ItemStats.CreateItemStatDef(itemDef,
 					((count,inv,master)=>{return jumpMult*count;},
-					(value,inv,master)=>{return $"Jump Power: +{value.ToString("N1")}";}));
+					(value,inv,master)=>{return $"Jump Power: +{value:N1}";}));
 			}
         }
         

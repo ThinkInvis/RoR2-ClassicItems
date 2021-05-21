@@ -9,7 +9,7 @@ using static TILER2.MiscUtil;
 using System.Collections.Generic;
 
 namespace ThinkInvisible.ClassicItems {
-    public class BarbedWire : Item_V2<BarbedWire> {
+    public class BarbedWire : Item<BarbedWire> {
 		public override string displayName => "Barbed Wire";
 		public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
@@ -80,7 +80,7 @@ namespace ThinkInvisible.ClassicItems {
 					((count, inv, master) => {
 						return baseRadius + (count - 1) * stackRadius;
 					},
-					(value, inv, master) => { return $"Radius: {value.ToString("N1")} m"; }
+					(value, inv, master) => { return $"Radius: {value:N1} m"; }
 				));
 			}
 		}

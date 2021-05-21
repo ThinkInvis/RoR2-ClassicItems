@@ -3,9 +3,10 @@ using UnityEngine;
 using TILER2;
 using static TILER2.MiscUtil;
 using static TILER2.StatHooks;
+using R2API;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Prescriptions : Equipment_V2<Prescriptions> {
+    public class Prescriptions : Equipment<Prescriptions> {
         public override string displayName => "Prescriptions";
 
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
@@ -20,7 +21,7 @@ namespace ThinkInvisible.ClassicItems {
         [AutoConfig("Base damage added while Prescriptions is active.", AutoConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float dmgBoost {get;private set;} = 10f;
 
-        public BuffIndex prescriptionsBuff {get;private set;}
+        public BuffDef prescriptionsBuff {get;private set;}
         protected override string GetNameString(string langid = null) => displayName;
         protected override string GetPickupString(string langid = null) {
             string desc = "Increase";
@@ -45,14 +46,13 @@ namespace ThinkInvisible.ClassicItems {
         public override void SetupAttributes() {
             base.SetupAttributes();
 
-            var prescriptionsBuffDef = new R2API.CustomBuff(new BuffDef {
-                buffColor = Color.red,
-                canStack = true,
-                isDebuff = false,
-                name = $"{modInfo.shortIdentifier}Prescriptions",
-                iconPath = "@ClassicItems:Assets/ClassicItems/icons/Prescriptions_icon.png"
-            });
-            prescriptionsBuff = R2API.BuffAPI.Add(prescriptionsBuffDef);
+            prescriptionsBuff = ScriptableObject.CreateInstance<BuffDef>();
+            prescriptionsBuff.buffColor = Color.red;
+            prescriptionsBuff.canStack = true;
+            prescriptionsBuff.isDebuff = false;
+            prescriptionsBuff.name = $"{modInfo.shortIdentifier}Prescriptions";
+            prescriptionsBuff.iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/Prescriptions_icon.png");
+            BuffAPI.Add(new CustomBuff(prescriptionsBuff));
         }
 
         public override void Install() {
@@ -77,7 +77,7 @@ namespace ThinkInvisible.ClassicItems {
             if(!sbdy) return false;
             sbdy.ClearTimedBuffs(prescriptionsBuff);
             sbdy.AddTimedBuff(prescriptionsBuff, duration);
-            if(instance.CheckEmbryoProc(sbdy)) sbdy.AddTimedBuff(prescriptionsBuff, duration);
+            if(Embryo.instance.CheckEmbryoProc(sbdy)) sbdy.AddTimedBuff(prescriptionsBuff, duration);
             return true;
         }
     }

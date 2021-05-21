@@ -4,9 +4,10 @@ using System.Collections.ObjectModel;
 using TILER2;
 using static TILER2.MiscUtil;
 using static TILER2.StatHooks;
+using R2API;
 
 namespace ThinkInvisible.ClassicItems {
-    public class SnakeEyes : Item_V2<SnakeEyes> {
+    public class SnakeEyes : Item<SnakeEyes> {
         public override string displayName => "Snake Eyes";
 		public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
@@ -25,7 +26,7 @@ namespace ThinkInvisible.ClassicItems {
         [AutoConfig("If true, deployables (e.g. Engineer turrets) with Snake Eyes will gain/lose buff stacks whenever their master does. If false, Snake Eyes will not work on deployables at all.")]
         public bool inclDeploys {get;private set;} = true;
 
-        public BuffIndex snakeEyesBuff {get;private set;}
+        public BuffDef snakeEyesBuff {get;private set;}
 
         protected override string GetNameString(string langid = null) => displayName;
         protected override string GetPickupString(string langid = null) => "Gain increased crit chance on failing a shrine. Removed on succeeding a shrine.";
@@ -35,14 +36,13 @@ namespace ThinkInvisible.ClassicItems {
         public override void SetupAttributes() {
             base.SetupAttributes();
 
-            var snakeEyesBuffDef = new R2API.CustomBuff(new BuffDef {
-                buffColor = Color.red,
-                canStack = true,
-                isDebuff = false,
-                name = $"{modInfo.shortIdentifier}SnakeEyes",
-                iconPath = "@ClassicItems:Assets/ClassicItems/icons/SnakeEyes_icon.png"
-            });
-            snakeEyesBuff = R2API.BuffAPI.Add(snakeEyesBuffDef);
+            snakeEyesBuff = ScriptableObject.CreateInstance<BuffDef>();
+            snakeEyesBuff.buffColor = Color.red;
+            snakeEyesBuff.canStack = true;
+            snakeEyesBuff.isDebuff = false;
+            snakeEyesBuff.name = $"{modInfo.shortIdentifier}SnakeEyes";
+            snakeEyesBuff.iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/SnakeEyes_icon.png");
+            BuffAPI.Add(new CustomBuff(snakeEyesBuff));
         }
 
         public override void SetupBehavior() {
@@ -81,11 +81,11 @@ namespace ThinkInvisible.ClassicItems {
                     }
                 }
             } else {
-                tgtBody.SetBuffCount(snakeEyesBuff, 0);
+                tgtBody.SetBuffCount(snakeEyesBuff.buffIndex, 0);
                 if(!inclDeploys) return;
                 var dplist = tgtBody.master?.deployablesList;
                 if(dplist != null) foreach(DeployableInfo d in dplist) {
-                    d.deployable.gameObject.GetComponent<CharacterMaster>()?.GetBody()?.SetBuffCount(snakeEyesBuff, 0);
+                    d.deployable.gameObject.GetComponent<CharacterMaster>()?.GetBody()?.SetBuffCount(snakeEyesBuff.buffIndex, 0);
                 }
             }
         }

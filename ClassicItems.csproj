@@ -21,6 +21,9 @@
       <HintPath>..\REF\BepInEx\core\BepInEx.dll</HintPath>
       <Private>false</Private>
     </Reference>
+    <Reference Include="HGCSharpUtils">
+      <HintPath>lib\HGCSharpUtils.dll</HintPath>
+    </Reference>
     <Reference Include="ItemStats">
       <HintPath>lib\ItemStats.dll</HintPath>
     </Reference>

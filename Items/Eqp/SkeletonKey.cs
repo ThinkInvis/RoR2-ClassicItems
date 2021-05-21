@@ -5,7 +5,7 @@ using static TILER2.MiscUtil;
 
 
 namespace ThinkInvisible.ClassicItems {
-    public class SkeletonKey : Equipment_V2<SkeletonKey> {
+    public class SkeletonKey : Equipment<SkeletonKey> {
         public override string displayName => "Skeleton Key";
 
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
@@ -26,7 +26,7 @@ namespace ThinkInvisible.ClassicItems {
             var sphpos = slot.characterBody.transform.position;
             var sphrad = radius;
                 
-            if(instance.CheckEmbryoProc(slot.characterBody)) sphrad *= 2;
+            if(Embryo.instance.CheckEmbryoProc(slot.characterBody)) sphrad *= 2;
 			Collider[] sphits = Physics.OverlapSphere(sphpos, sphrad, LayerIndex.defaultLayer.mask, QueryTriggerInteraction.Collide);
             bool foundAny = false;
             foreach(Collider c in sphits) {

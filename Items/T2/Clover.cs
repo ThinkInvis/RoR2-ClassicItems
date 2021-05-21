@@ -5,7 +5,7 @@ using TILER2;
 using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Clover : Item_V2<Clover> {
+    public class Clover : Item<Clover> {
         public override string displayName => "56 Leaf Clover";
 		public override ItemTier itemTier => ItemTier.Tier2;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
@@ -61,6 +61,7 @@ namespace ThinkInvisible.ClassicItems {
         protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
         public override void SetupBehavior() {
+            base.SetupBehavior();
 			if(Compat_ItemStats.enabled) {
 				Compat_ItemStats.CreateItemStatDef(itemDef,
 					((count,inv,master)=>{

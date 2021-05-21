@@ -34,7 +34,7 @@ namespace ThinkInvisible.ClassicItems {
             myDef.skillName = namestr;
             myDef.skillNameToken = nametoken;
             myDef.skillDescriptionToken = newDescToken;
-            myDef.icon = Resources.Load<Sprite>("@ClassicItems:Assets/ClassicItems/icons/scepter/captain_airstrikeicon.png");
+            myDef.icon = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/scepter/captain_airstrikeicon.png");
 
             LoadoutAPI.AddSkillDef(myDef);
 
@@ -42,10 +42,9 @@ namespace ThinkInvisible.ClassicItems {
             myCallDef = CloneSkillDef(oldCallDef);
             myCallDef.baseMaxStock = 21;
             myCallDef.mustKeyPress = false;
-            myCallDef.isBullets = true;
-            myCallDef.shootDelay = 0.07f;
+            myCallDef.isCombatSkill = true;
             myCallDef.baseRechargeInterval = 0.07f;
-            myCallDef.icon = Resources.Load<Sprite>("@ClassicItems:Assets/ClassicItems/icons/scepter/captain_airstrikeicon.png");
+            myCallDef.icon = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/scepter/captain_airstrikeicon.png");
 
             LoadoutAPI.AddSkillDef(myCallDef);
         }
@@ -69,7 +68,7 @@ namespace ThinkInvisible.ClassicItems {
         }
         
         private bool On_CallAirstrikeBaseKeyIsDown(On.EntityStates.Captain.Weapon.CallAirstrikeBase.orig_KeyIsDown orig, CallAirstrikeBase self) {
-            if(Scepter_V2.instance.GetCount(self.outer.commonComponents.characterBody) > 0) return false;
+            if(Scepter.instance.GetCount(self.outer.commonComponents.characterBody) > 0) return false;
             return orig(self);
         }
 
@@ -89,7 +88,7 @@ namespace ThinkInvisible.ClassicItems {
 
         private void On_CallAirstrikeBaseEnter(On.EntityStates.Captain.Weapon.CallAirstrikeBase.orig_OnEnter orig, CallAirstrikeBase self) {
             orig(self);
-            if(Scepter_V2.instance.GetCount(self.outer.commonComponents.characterBody) > 0) {
+            if(Scepter.instance.GetCount(self.outer.commonComponents.characterBody) > 0) {
                 self.damageCoefficient = 5f;
                 self.AddRecoil(-1f, 1f, -1f, 1f);
             }
@@ -97,7 +96,7 @@ namespace ThinkInvisible.ClassicItems {
 
         private void On_SetupAirstrikeStateEnter(On.EntityStates.Captain.Weapon.SetupAirstrike.orig_OnEnter orig, EntityStates.Captain.Weapon.SetupAirstrike self) {
             var origOverride = SetupAirstrike.primarySkillDef;
-            if(Scepter_V2.instance.GetCount(self.outer.commonComponents.characterBody) > 0) {
+            if(Scepter.instance.GetCount(self.outer.commonComponents.characterBody) > 0) {
                 SetupAirstrike.primarySkillDef = myCallDef;
             }
             orig(self);

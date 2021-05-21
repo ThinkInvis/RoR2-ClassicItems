@@ -32,7 +32,7 @@ namespace ThinkInvisible.ClassicItems {
             myDef.skillName = namestr;
             myDef.skillNameToken = nametoken;
             myDef.skillDescriptionToken = newDescToken;
-            myDef.icon = Resources.Load<Sprite>("@ClassicItems:Assets/ClassicItems/icons/scepter/commando_grenadeicon.png");
+            myDef.icon = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/scepter/commando_grenadeicon.png");
 
             LoadoutAPI.AddSkillDef(myDef);
 
@@ -41,22 +41,22 @@ namespace ThinkInvisible.ClassicItems {
             pie.blastDamageCoefficient *= 0.5f;
             pie.bonusBlastForce *= 0.5f;
 
-            ProjectileCatalog.getAdditionalEntries += (list) => list.Add(projReplacer);
+            ProjectileAPI.Add(projReplacer);
         }
         
         internal override void LoadBehavior() {
-            On.EntityStates.Commando.CommandoWeapon.FireFMJ.Fire += On_FireFMJFire;
+            On.EntityStates.GenericProjectileBaseState.FireProjectile += On_FireFMJFire;
         }
 
         internal override void UnloadBehavior() {
-            On.EntityStates.Commando.CommandoWeapon.FireFMJ.Fire -= On_FireFMJFire;
+            On.EntityStates.GenericProjectileBaseState.FireProjectile -= On_FireFMJFire;
         }
 
-        private void On_FireFMJFire(On.EntityStates.Commando.CommandoWeapon.FireFMJ.orig_Fire orig, FireFMJ self) {
+        private void On_FireFMJFire(On.EntityStates.GenericProjectileBaseState.orig_FireProjectile orig, EntityStates.GenericProjectileBaseState self) {
             var cc = self.outer.commonComponents;
             bool isBoosted = self is ThrowGrenade
                 && Util.HasEffectiveAuthority(self.outer.networkIdentity)
-                && Scepter_V2.instance.GetCount(cc.characterBody) > 0;
+                && Scepter.instance.GetCount(cc.characterBody) > 0;
             if(isBoosted) self.projectilePrefab = projReplacer;
             orig(self);
             if(isBoosted) {

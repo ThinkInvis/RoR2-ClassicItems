@@ -5,7 +5,7 @@ using TILER2;
 using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
-    public class BoxingGloves : Item_V2<BoxingGloves> {
+    public class BoxingGloves : Item<BoxingGloves> {
         public override string displayName => "Boxing Gloves";
 		public override ItemTier itemTier => ItemTier.Tier2;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
@@ -37,8 +37,9 @@ namespace ThinkInvisible.ClassicItems {
                     (value, inv, master) => { return $"Knockback Chance: {Pct(value, 1, 1)}"; }
                 ));
             }
+
             if(Compat_BetterUI.enabled)
-                Compat_BetterUI.AddEffect(catalogIndex, procChance, procChance, Compat_BetterUI.ChanceFormatter, Compat_BetterUI.ExponentialStacking);
+                Compat_BetterUI.AddEffect(itemDef, procChance, procChance, Compat_BetterUI.ChanceFormatter, Compat_BetterUI.ExponentialStacking);
         }
 
         public override void Install() {

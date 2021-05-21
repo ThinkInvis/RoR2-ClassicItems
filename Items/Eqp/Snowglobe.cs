@@ -9,7 +9,7 @@ using static TILER2.MiscUtil;
 using System.Collections.Generic;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Snowglobe : Equipment_V2<Snowglobe> {
+    public class Snowglobe : Equipment<Snowglobe> {
         public override string displayName => "Snowglobe";
 
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
@@ -86,7 +86,7 @@ namespace ThinkInvisible.ClassicItems {
             if(!slot.characterBody || !slot.characterBody.teamComponent) return false;
             var ctrlInst = UnityEngine.Object.Instantiate(snowglobeControllerPrefab, slot.characterBody.corePosition, Quaternion.identity);
             ctrlInst.GetComponent<SnowglobeController>().myTeam = slot.characterBody.teamComponent.teamIndex;
-            if(instance.CheckEmbryoProc(slot.characterBody)) {
+            if(Embryo.instance.CheckEmbryoProc(slot.characterBody)) {
                 ctrlInst.GetComponent<SnowglobeController>().remainingTicks *= 2;
                 ctrlInst.GetComponentInChildren<PostProcessDuration>().maxDuration *= 2;
             }
@@ -127,7 +127,7 @@ namespace ThinkInvisible.ClassicItems {
                     ssoh.SetFrozen(Snowglobe.instance.freezeTime);
                 }
                 if((ssoh?.canBeFrozen == true || Snowglobe.instance.slowUnfreezable) && hcpt) {
-                    hcpt.body.AddTimedBuff(BuffIndex.Slow60, Snowglobe.instance.slowTime);
+                    hcpt.body.AddTimedBuff(RoR2Content.Buffs.Slow60, Snowglobe.instance.slowTime);
                 }
 			}
         }

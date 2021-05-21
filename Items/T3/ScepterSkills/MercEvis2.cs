@@ -30,7 +30,7 @@ namespace ThinkInvisible.ClassicItems {
             myDef.skillName = namestr;
             myDef.skillNameToken = nametoken;
             myDef.skillDescriptionToken = newDescToken;
-            myDef.icon = Resources.Load<Sprite>("@ClassicItems:Assets/ClassicItems/icons/scepter/merc_evisicon.png");
+            myDef.icon = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/scepter/merc_evisicon.png");
 
             LoadoutAPI.AddSkillDef(myDef);
         }
@@ -46,14 +46,14 @@ namespace ThinkInvisible.ClassicItems {
         }
         private void Evt_GEMOnCharacterDeathGlobal(DamageReport rep) {
             var attackerState = rep.attackerBody?.GetComponent<EntityStateMachine>()?.state;
-            if(attackerState is Evis asEvis && Scepter_V2.instance.GetCount(rep.attackerBody) > 0
+            if(attackerState is Evis asEvis && Scepter.instance.GetCount(rep.attackerBody) > 0
                 && Vector3.Distance(rep.attackerBody.transform.position, rep.victim.transform.position) < Evis.maxRadius)
                 asEvis.stopwatch = 0f;
         }
 
         private void On_EvisFixedUpdate(On.EntityStates.Merc.Evis.orig_FixedUpdate orig, Evis self) {
             var origDuration = Evis.duration;
-            if(Scepter_V2.instance.GetCount(self.outer.commonComponents.characterBody) > 0) Evis.duration *= 2f;
+            if(Scepter.instance.GetCount(self.outer.commonComponents.characterBody) > 0) Evis.duration *= 2f;
             orig(self);
             Evis.duration = origDuration;
         }

@@ -4,7 +4,7 @@ using TILER2;
 using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Permafrost : Item_V2<Permafrost> {
+    public class Permafrost : Item<Permafrost> {
         public override string displayName => "Permafrost";
 		public override ItemTier itemTier => ItemTier.Tier3;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
@@ -36,9 +36,10 @@ namespace ThinkInvisible.ClassicItems {
 				Compat_ItemStats.CreateItemStatDef(itemDef,
 					((count,inv,master)=>{return Util.ConvertAmplificationPercentageIntoReductionPercentage(procChance * count);},
 					(value,inv,master)=>{return $"Freeze Chance: {Pct(value, 1, 1f)}";}));
-			}
+            }
+
             if(Compat_BetterUI.enabled)
-                Compat_BetterUI.AddEffect(catalogIndex, procChance, procChance, Compat_BetterUI.ChanceFormatter, Compat_BetterUI.HyperbolicStacking);
+                Compat_BetterUI.AddEffect(itemDef, procChance, procChance, Compat_BetterUI.ChanceFormatter, Compat_BetterUI.HyperbolicStacking);
         }
 
         public override void Install() {
@@ -61,7 +62,7 @@ namespace ThinkInvisible.ClassicItems {
                 self.SetFrozen(freezeTime);
                 damageReport.victim?.body.AddTimedBuff(ClassicItemsPlugin.freezeBuff, freezeTime);
             }
-            if((self.canBeFrozen || slowUnfreezable) && damageReport.victim) damageReport.victim.body.AddTimedBuff(BuffIndex.Slow60, slowTime);
+            if((self.canBeFrozen || slowUnfreezable) && damageReport.victim) damageReport.victim.body.AddTimedBuff(RoR2Content.Buffs.Slow60, slowTime);
         }
     }
 }

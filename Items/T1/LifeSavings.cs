@@ -7,7 +7,7 @@ using TILER2;
 using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
-    public class LifeSavings : Item_V2<LifeSavings> {
+    public class LifeSavings : Item<LifeSavings> {
         public override string displayName => "Life Savings";
         public override bool itemIsAIBlacklisted {get; protected set;} = true;
         public override ItemTier itemTier => ItemTier.Tier1;
@@ -40,7 +40,7 @@ namespace ThinkInvisible.ClassicItems {
             if(Compat_ItemStats.enabled) {
                 Compat_ItemStats.CreateItemStatDef(itemDef,
                     ((count, inv, master) => { return LifeSavingsComponent.CalculateMoneyIncrease(Mathf.FloorToInt(count)); },
-                    (value, inv, master) => { return $"Money Per Second: ${value.ToString("N1")}"; }
+                    (value, inv, master) => { return $"Money Per Second: ${value:N1}"; }
                 ));
             }
         }

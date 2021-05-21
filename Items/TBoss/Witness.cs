@@ -5,7 +5,7 @@ using TILER2;
 using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Witness : Item_V2<Witness> {
+    public class Witness : Item<Witness> {
         public override string displayName => "Burning Witness";
 		public override ItemTier itemTier => ItemTier.Boss;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage, ItemTag.Utility, ItemTag.OnKillEffect});

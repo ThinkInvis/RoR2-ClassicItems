@@ -5,7 +5,7 @@ using TILER2;
 using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
-    public class Taser : Item_V2<Taser> {
+    public class Taser : Item<Taser> {
         public override string displayName => "Taser";
 		public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
@@ -38,11 +38,12 @@ namespace ThinkInvisible.ClassicItems {
             if(Compat_ItemStats.enabled) {
                 Compat_ItemStats.CreateItemStatDef(itemDef,
                     ((count, inv, master) => { return procTime + (count - 1) * stackTime; },
-                    (value, inv, master) => { return $"Duration: {value.ToString("N1")} s"; }
+                    (value, inv, master) => { return $"Duration: {value:N1} s"; }
                 ));
             }
+
             if(Compat_BetterUI.enabled)
-                Compat_BetterUI.AddEffect(catalogIndex, procChance, null, Compat_BetterUI.ChanceFormatter, Compat_BetterUI.NoStacking);
+                Compat_BetterUI.AddEffect(itemDef, procChance, null, Compat_BetterUI.ChanceFormatter, Compat_BetterUI.NoStacking);
         }
 
         public override void Install() {
@@ -66,7 +67,7 @@ namespace ThinkInvisible.ClassicItems {
                 if(icnt < 1) return;
                 var proc = cb.master ? Util.CheckRoll(procChance,cb.master) : Util.CheckRoll(procChance);
                 if(proc) {
-                    self.body.AddTimedBuff(BuffIndex.Entangle, procTime + (icnt-1) * stackTime);
+                    self.body.AddTimedBuff(RoR2Content.Buffs.Entangle, procTime + (icnt-1) * stackTime);
                 }
             }
         }
