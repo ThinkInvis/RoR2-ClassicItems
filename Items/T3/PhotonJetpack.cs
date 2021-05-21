@@ -46,7 +46,7 @@ namespace ThinkInvisible.ClassicItems {
         }
 
         [AutoConfig("What to do when both Photon Jetpack and extra jumps may be used.", AutoConfigFlags.PreventNetMismatch)]
-        public ExtraJumpInteractionType extraJumpInteraction { get; private set; } = ExtraJumpInteractionType.UseJetpackFirst;
+        public ExtraJumpInteractionType extraJumpInteraction { get; private set; } = ExtraJumpInteractionType.UseJumpsFirst;
 
         [AutoConfig("If ExtraJumpInteraction is ConvertJumpsToFuel: seconds of fuel to provide per extra jump.", AutoConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float jumpFuel { get; private set; } = 0.8f;
@@ -92,21 +92,45 @@ namespace ThinkInvisible.ClassicItems {
             base.Install();
             On.RoR2.CharacterBody.OnInventoryChanged += On_CBInventoryChanged;
             On.RoR2.CharacterBody.FixedUpdate += On_CBFixedUpdate;
+            On.EntityStates.GenericCharacterMain.ProcessJump += GenericCharacterMain_ProcessJump;
             ConfigEntryChanged += Evt_ConfigEntryChanged;
         }
-
         public override void Uninstall() {
             base.Uninstall();
             On.RoR2.CharacterBody.OnInventoryChanged -= On_CBInventoryChanged;
             On.RoR2.CharacterBody.FixedUpdate -= On_CBFixedUpdate;
+            On.EntityStates.GenericCharacterMain.ProcessJump -= GenericCharacterMain_ProcessJump;
             ConfigEntryChanged -= Evt_ConfigEntryChanged;
         }
 
         private void Evt_ConfigEntryChanged(object sender, AutoConfigUpdateActionEventArgs args) {
-            if(args.target.boundProperty.Name == nameof(baseFuel) || args.target.boundProperty.Name == nameof(stackFuel))
+            if(args.target.boundProperty.Name == nameof(baseFuel)
+            || args.target.boundProperty.Name == nameof(stackFuel)
+            || args.target.boundProperty.Name == nameof(extraJumpInteraction))
                 AliveList().ForEach(cm => {
                     if(cm.hasBody) UpdatePhotonFuel(cm.GetBody());
                 });
+        }
+
+        private void GenericCharacterMain_ProcessJump(On.EntityStates.GenericCharacterMain.orig_ProcessJump orig, EntityStates.GenericCharacterMain self) {
+            int origJumps = 0;
+            bool doJumpOverride = false;
+            if(self.hasCharacterMotor && self.characterBody && !self.characterMotor.isGrounded &&
+                (
+                    (
+                        extraJumpInteraction == ExtraJumpInteractionType.UseJetpackFirst
+                        && (self.characterBody.GetComponent<PhotonJetpackComponent>()?.fuel ?? 0) > 0
+                    )
+                    || extraJumpInteraction == ExtraJumpInteractionType.ConvertJumpsToFuel
+                )
+            ) {
+                doJumpOverride = true;
+                origJumps = self.characterMotor.jumpCount;
+                self.characterMotor.jumpCount = self.characterBody.maxJumpCount;
+            }
+            orig(self);
+            if(doJumpOverride)
+                self.characterMotor.jumpCount = origJumps;
         }
 
         private void On_CBFixedUpdate(On.RoR2.CharacterBody.orig_FixedUpdate orig, CharacterBody self) {
@@ -117,27 +141,21 @@ namespace ThinkInvisible.ClassicItems {
             if(!self.characterMotor || !cpt || cpt.fuelCap == 0) return;
 
             uint oldstate = cpt.flyState;
-
-            //0: on ground, or midair with jumps remaining
-            //1: in air, no jumps remaining, space is held from last jump/from running out of fuel
-            //2: in air, no jumps remaining, space may be held but has been released at least once since the last state=1
+            uint newstate = oldstate;
 
             bool jumpDn = self.inputBank.jump.down;
-            bool hasJumps = self.characterMotor.jumpCount < self.maxJumpCount;
             bool isGrounded = self.characterMotor.isGrounded;
+            bool hasJumps = self.characterMotor.jumpCount < self.maxJumpCount;
+            bool isJumpIndependent = extraJumpInteraction != ExtraJumpInteractionType.UseJumpsFirst;
 
-            uint newstate = oldstate;
-            if(isGrounded || hasJumps) {
+            if(isGrounded || (hasJumps && !isJumpIndependent)) {
                 newstate = 0;
-            } else if(!hasJumps) {
+            } else if(!hasJumps || isJumpIndependent) {
                 if(jumpDn && oldstate == 0) newstate = 1;
                 if(!jumpDn && oldstate == 1) newstate = 2;
             }
 
-            //float photonFuelCap = cpt.fuelCap;
-                
             if(newstate == 2 && jumpDn) {
-                //float fuel = (float)cPl.VGet(self, "photonJetpackFuel", 0.0f);
                 if(cpt.fuel > 0.0f) {
                     cpt.cooldown = rchDelay;
                     cpt.fuel -= Time.fixedDeltaTime;
@@ -150,7 +168,7 @@ namespace ThinkInvisible.ClassicItems {
             } else {
                 cpt.cooldown -= Time.fixedDeltaTime;
                 if(cpt.cooldown < 0.0f)
-                    cpt.fuel = Mathf.Min(cpt.fuel+rchRate * Time.fixedDeltaTime, cpt.fuelCap);
+                    cpt.fuel = Mathf.Min(cpt.fuel + rchRate * Time.fixedDeltaTime, cpt.fuelCap);
             }
 
             cpt.flyState = newstate;
