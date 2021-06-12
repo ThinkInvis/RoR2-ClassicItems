@@ -53,7 +53,7 @@ namespace ThinkInvisible.ClassicItems {
             broochPrefab.directorCreditCost = 0;
             broochPrefab.sendOverNetwork = true;
             broochPrefab.skipSpawnWhenSacrificeArtifactEnabled = false;
-            broochPrefab.prefab = PrefabAPI.InstantiateClone(broochPrefab.prefab, "chestBrooch");
+            broochPrefab.prefab = PrefabAPI.InstantiateClone(broochPrefab.prefab, "chestBrooch", true);
 
             broochPrefab.prefab.AddComponent<CaptainsBroochDroppod>().enabled = !safeMode;
 

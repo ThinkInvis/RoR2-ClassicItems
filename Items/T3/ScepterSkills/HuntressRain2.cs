@@ -36,7 +36,7 @@ namespace ThinkInvisible.ClassicItems {
 
             LoadoutAPI.AddSkillDef(myDef);
 
-            projReplacer = Resources.Load<GameObject>("prefabs/projectiles/HuntressArrowRain").InstantiateClone("CIScepHuntressRain");
+            projReplacer = Resources.Load<GameObject>("prefabs/projectiles/HuntressArrowRain").InstantiateClone("CIScepHuntressRain", true);
             projReplacer.GetComponent<ProjectileDamage>().damageType |= DamageType.IgniteOnHit;
             projReplacer.GetComponent<ProjectileDotZone>().lifetime *= 1.5f;
             projReplacer.transform.localScale = new Vector3(22.5f, 15f, 22.5f);

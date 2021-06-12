@@ -50,7 +50,7 @@ namespace ThinkInvisible.ClassicItems {
 			var dw = dwPrefabPrefab.AddComponent<DiseaseWard>();
 			dw.rangeIndicator = dwPrefabPrefab.GetComponent<MeshRenderer>().transform;
 			dw.interval = 1f;
-			diseaseWardPrefab = dwPrefabPrefab.InstantiateClone("CIDiseaseWardAuraPrefab");
+			diseaseWardPrefab = dwPrefabPrefab.InstantiateClone("CIDiseaseWardAuraPrefab", true);
 			UnityEngine.Object.Destroy(dwPrefabPrefab);
         }
 

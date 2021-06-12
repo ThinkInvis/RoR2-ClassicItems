@@ -23,9 +23,9 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
             base.SetupAttributes();
             LanguageAPI.Add(descriptionAppendToken, "\n<style=cStack>Beating Embryo: Double transit speed.<style>");
 
-            boostedGatewayPrefab = Resources.Load<GameObject>("Prefabs/NetworkedObjects/Zipline").InstantiateClone("EmbryoBoostedGatewayPrefab");
+            boostedGatewayPrefab = Resources.Load<GameObject>("Prefabs/NetworkedObjects/Zipline").InstantiateClone("EmbryoBoostedGatewayPrefab", true);
             var ziplineCtrl = boostedGatewayPrefab.GetComponent<ZiplineController>();
-            ziplineCtrl.ziplineVehiclePrefab = ziplineCtrl.ziplineVehiclePrefab.InstantiateClone("EmbryoBoostedGatewayVehiclePrefab");
+            ziplineCtrl.ziplineVehiclePrefab = ziplineCtrl.ziplineVehiclePrefab.InstantiateClone("EmbryoBoostedGatewayVehiclePrefab", true);
             var zvh = ziplineCtrl.ziplineVehiclePrefab.GetComponent<ZiplineVehicle>();
             zvh.maxSpeed *= 2f;
             zvh.acceleration *= 2f;

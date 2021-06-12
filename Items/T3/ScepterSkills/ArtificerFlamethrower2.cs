@@ -38,7 +38,7 @@ namespace ThinkInvisible.ClassicItems {
 
             LoadoutAPI.AddSkillDef(myDef);
 
-            projCloud = Resources.Load<GameObject>("prefabs/projectiles/BeetleQueenAcid").InstantiateClone("CIScepMageFlamethrowerCloud");
+            projCloud = Resources.Load<GameObject>("prefabs/projectiles/BeetleQueenAcid").InstantiateClone("CIScepMageFlamethrowerCloud", true);
             var pdz = projCloud.GetComponent<ProjectileDotZone>();
             pdz.lifetime = 10f;
             pdz.impactEffect = null;

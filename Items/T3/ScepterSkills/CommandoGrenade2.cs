@@ -36,7 +36,7 @@ namespace ThinkInvisible.ClassicItems {
 
             LoadoutAPI.AddSkillDef(myDef);
 
-            projReplacer = Resources.Load<GameObject>("prefabs/projectiles/CommandoGrenadeProjectile").InstantiateClone("CIScepCommandoGrenade");
+            projReplacer = Resources.Load<GameObject>("prefabs/projectiles/CommandoGrenadeProjectile").InstantiateClone("CIScepCommandoGrenade", true);
             var pie = projReplacer.GetComponent<ProjectileImpactExplosion>();
             pie.blastDamageCoefficient *= 0.5f;
             pie.bonusBlastForce *= 0.5f;

@@ -55,7 +55,7 @@ namespace ThinkInvisible.ClassicItems {
 			lw.duration = duration;
 			lw.radius = range;
 			lw.damage = 0f;
-			lanternWardPrefab = lPrefabPrefab.InstantiateClone("LanternAuraPrefab");
+			lanternWardPrefab = lPrefabPrefab.InstantiateClone("LanternAuraPrefab", true);
 			UnityEngine.Object.Destroy(lPrefabPrefab);
 		}
 

@@ -63,7 +63,7 @@ namespace ThinkInvisible.ClassicItems {
 			var bw = bwPrefabPrefab.AddComponent<BarbedWard>();
 			bw.rangeIndicator = bwPrefabPrefab.GetComponent<MeshRenderer>().transform;
 			bw.interval = 1f;
-			barbedWardPrefab = bwPrefabPrefab.InstantiateClone("BarbedWardAuraPrefab");
+			barbedWardPrefab = bwPrefabPrefab.InstantiateClone("BarbedWardAuraPrefab", true);
 			UnityEngine.Object.Destroy(bwPrefabPrefab);
 		}
 

@@ -78,7 +78,7 @@ namespace ThinkInvisible.ClassicItems {
             ppdIn.ppWeightCurve = new AnimationCurve(new Keyframe(0f, 0f), new Keyframe(0.1f, 1f), new Keyframe(0.9f, 1f), new Keyframe(1f, 0f));
             ppdIn.destroyOnEnd = true;
 
-            snowglobeControllerPrefab = ctrlPfb2.InstantiateClone("snowglobeControllerPrefab");
+            snowglobeControllerPrefab = ctrlPfb2.InstantiateClone("snowglobeControllerPrefab", true);
             UnityEngine.Object.Destroy(ctrlPfb2);
         }
 
