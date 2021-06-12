@@ -1,11 +1,11 @@
 {
   "name": "ClassicItems",
-  "version_number": "5.0.2",
+  "version_number": "5.1.0",
   "website_url": "https://github.com/ThinkInvis/RoR2-ClassicItems",
   "description": "Adds items from Risk of Rain 1 which didn't make the cut.",
   "dependencies": [
     "bbepis-BepInExPack-5.4.9",
-    "tristanmcpherson-R2API-3.0.30",
-    "ThinkInvis-TILER2-4.0.3"
+    "tristanmcpherson-R2API-3.0.43",
+    "ThinkInvis-TILER2-5.0.0"
   ]
 }

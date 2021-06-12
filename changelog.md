@@ -2,6 +2,14 @@
 
 (🌧︎: Involves an accepted GitHub Pull Request from the community. Thanks for your help!)
 
+**5.1.0**
+
+- Some progress towards Beating Embryo rework. More equipment behaviors are implemented, but the item is still WIP.
+- Switched from now-removed TILER2.StatHooks to R2API.RecalculateStatsAPI.
+- Fixed another incompatibility with most recent R2API.
+- Fixed AllCards global config option.
+- Added a config option to Photon Jetpack which controls how it interacts with extra jumps.
+
 **5.0.2**
 
 - Compatibility updates for recent Risk of Rain 2 patches.
