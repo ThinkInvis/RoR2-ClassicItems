@@ -6,7 +6,7 @@ using static TILER2.MiscUtil;
 using R2API;
 using System.Linq;
 using System.Collections.Generic;
-using static TILER2.StatHooks;
+using static R2API.RecalculateStatsAPI;
 
 namespace ThinkInvisible.ClassicItems {
     public class HitList : Item<HitList> {

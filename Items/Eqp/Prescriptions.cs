@@ -2,7 +2,7 @@
 using UnityEngine;
 using TILER2;
 using static TILER2.MiscUtil;
-using static TILER2.StatHooks;
+using static R2API.RecalculateStatsAPI;
 using R2API;
 
 namespace ThinkInvisible.ClassicItems {

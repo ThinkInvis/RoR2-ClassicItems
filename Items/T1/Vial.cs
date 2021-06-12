@@ -1,7 +1,7 @@
 ﻿using RoR2;
 using System.Collections.ObjectModel;
 using TILER2;
-using static TILER2.StatHooks;
+using static R2API.RecalculateStatsAPI;
 
 namespace ThinkInvisible.ClassicItems {
     public class Vial : Item<Vial> {
