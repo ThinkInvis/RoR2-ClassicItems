@@ -72,7 +72,7 @@ namespace ThinkInvisible.ClassicItems {
             if(!cpt || !cpt.enabled) return;
             new BlastAttack {
                 attacker = self.outer.commonComponents.characterBody.gameObject,
-                attackerFiltering = AttackerFiltering.NeverHit,
+                attackerFiltering = AttackerFiltering.NeverHitSelf,
                 baseDamage = cpt.trackedDamageTaken * 2f,
                 baseForce = 1000f,
                 bonusForce = Vector3.up * 500f,
