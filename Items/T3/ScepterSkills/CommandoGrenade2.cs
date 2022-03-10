@@ -34,14 +34,14 @@ namespace ThinkInvisible.ClassicItems {
             myDef.skillDescriptionToken = newDescToken;
             myDef.icon = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/scepter/commando_grenadeicon.png");
 
-            LoadoutAPI.AddSkillDef(myDef);
+            ContentAddition.AddSkillDef(myDef);
 
             projReplacer = Resources.Load<GameObject>("prefabs/projectiles/CommandoGrenadeProjectile").InstantiateClone("CIScepCommandoGrenade", true);
             var pie = projReplacer.GetComponent<ProjectileImpactExplosion>();
             pie.blastDamageCoefficient *= 0.5f;
             pie.bonusBlastForce *= 0.5f;
 
-            ProjectileAPI.Add(projReplacer);
+            ContentAddition.AddProjectile(projReplacer);
         }
         
         internal override void LoadBehavior() {

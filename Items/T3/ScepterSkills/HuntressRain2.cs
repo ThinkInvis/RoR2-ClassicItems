@@ -34,7 +34,7 @@ namespace ThinkInvisible.ClassicItems {
             myDef.skillDescriptionToken = newDescToken;
             myDef.icon = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/scepter/huntress_arrowrainicon.png");
 
-            LoadoutAPI.AddSkillDef(myDef);
+            ContentAddition.AddSkillDef(myDef);
 
             projReplacer = Resources.Load<GameObject>("prefabs/projectiles/HuntressArrowRain").InstantiateClone("CIScepHuntressRain", true);
             projReplacer.GetComponent<ProjectileDamage>().damageType |= DamageType.IgniteOnHit;
@@ -56,7 +56,7 @@ namespace ThinkInvisible.ClassicItems {
             flashlight.GetComponent<Light>().range = 15f;
             flashlight.gameObject.SetActive(true);
 
-            ProjectileAPI.Add(projReplacer);
+            ContentAddition.AddProjectile(projReplacer);
         }
 
         internal override void LoadBehavior() {

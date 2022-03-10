@@ -32,7 +32,7 @@ namespace ThinkInvisible.ClassicItems {
             myDef.skillDescriptionToken = newDescToken;
             myDef.icon = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/scepter/merc_evisicon.png");
 
-            LoadoutAPI.AddSkillDef(myDef);
+            ContentAddition.AddSkillDef(myDef);
         }
 
         internal override void LoadBehavior() {

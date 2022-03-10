@@ -71,7 +71,7 @@ namespace ThinkInvisible.ClassicItems {
             photonFuelBuff.name = modInfo.shortIdentifier + "PhotonFuel";
             photonFuelBuff.iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/PhotonJetpack_icon.png");
 
-            BuffAPI.Add(new CustomBuff(photonFuelBuff));
+            ContentAddition.AddBuffDef(photonFuelBuff);
         }
 
         public override void SetupBehavior() {

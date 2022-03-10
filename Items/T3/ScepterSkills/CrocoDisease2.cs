@@ -37,7 +37,7 @@ namespace ThinkInvisible.ClassicItems {
             myDef.skillDescriptionToken = newDescToken;
             myDef.icon = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/scepter/croco_firediseaseicon.png");
 
-            LoadoutAPI.AddSkillDef(myDef);
+            ContentAddition.AddSkillDef(myDef);
 
 			var mshPrefab = Resources.Load<GameObject>("Prefabs/NetworkedObjects/MushroomWard");
 

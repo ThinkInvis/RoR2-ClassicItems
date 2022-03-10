@@ -31,7 +31,7 @@ namespace ThinkInvisible.ClassicItems {
     [BepInDependency(R2API.R2API.PluginGUID, R2API.R2API.PluginVersion)]
     [BepInDependency(TILER2Plugin.ModGuid, TILER2Plugin.ModVer)]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
-    [R2APISubmoduleDependency(nameof(ItemAPI), nameof(LanguageAPI), nameof(ResourcesAPI), nameof(PrefabAPI), nameof(BuffAPI), nameof(LoadoutAPI), nameof(ProjectileAPI), nameof(RecalculateStatsAPI))]
+    [R2APISubmoduleDependency(nameof(ItemAPI), nameof(LanguageAPI), nameof(PrefabAPI), nameof(LoadoutAPI), nameof(RecalculateStatsAPI))]
     public class ClassicItemsPlugin:BaseUnityPlugin {
         public const string ModVer =
             #if DEBUG
@@ -193,7 +193,7 @@ namespace ThinkInvisible.ClassicItems {
             freezeBuff.isDebuff = true;
             freezeBuff.name = "CIFreeze";
             freezeBuff.iconSprite = resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/permafrost_icon.png");
-            BuffAPI.Add(new CustomBuff(freezeBuff));
+            ContentAddition.AddBuffDef(freezeBuff);
 
             fearBuff = ScriptableObject.CreateInstance<BuffDef>();
             fearBuff.buffColor = Color.red;
@@ -202,7 +202,7 @@ namespace ThinkInvisible.ClassicItems {
             fearBuff.name = "CIFear";
             fearBuff.iconSprite = Resources.Load<Sprite>("textures/miscicons/texSprintIcon");
 
-            BuffAPI.Add(new CustomBuff(fearBuff));
+            ContentAddition.AddBuffDef(fearBuff);
             IL.EntityStates.AI.Walker.Combat.UpdateAI += IL_ESAIWalkerCombatUpdateAI;
 
             Logger.LogDebug("Registering item behaviors...");

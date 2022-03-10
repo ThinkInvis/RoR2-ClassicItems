@@ -34,7 +34,7 @@ namespace ThinkInvisible.ClassicItems {
             myDef.skillDescriptionToken = newDescToken;
             myDef.icon = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/scepter/huntress_ballistaicon.png");
 
-            LoadoutAPI.AddSkillDef(myDef);
+            ContentAddition.AddSkillDef(myDef);
             
             var oldCtxDef = Resources.Load<SkillDef>("skilldefs/huntressbody/FireArrowSnipe");
             myCtxDef = CloneSkillDef(oldCtxDef);
@@ -44,7 +44,7 @@ namespace ThinkInvisible.ClassicItems {
             myCtxDef.skillDescriptionToken = newDescToken;
             myCtxDef.icon = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/scepter/huntress_ballistaicon.png");
 
-            LoadoutAPI.AddSkillDef(myCtxDef);
+            ContentAddition.AddSkillDef(myCtxDef);
         }
 
         internal override void LoadBehavior() {

@@ -1,6 +1,7 @@
 ﻿using RoR2;
 using UnityEngine;
 using UnityEngine.Networking;
+using R2API;
 using TILER2;
 using static TILER2.MiscUtil;
 
@@ -27,7 +28,7 @@ namespace ThinkInvisible.ClassicItems {
             pillageBuff.isDebuff = false;
             pillageBuff.name = modInfo.shortIdentifier + "PillagedGold";
             pillageBuff.iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/pillage_icon.png");
-            R2API.BuffAPI.Add(new R2API.CustomBuff(pillageBuff));
+            ContentAddition.AddBuffDef(pillageBuff);
         }
 
         public override void Install() {

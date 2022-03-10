@@ -37,7 +37,7 @@ namespace ThinkInvisible.ClassicItems {
             myDef.skillDescriptionToken = newDescToken;
             myDef.icon = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/scepter/loader_chargezapfisticon.png");
 
-            LoadoutAPI.AddSkillDef(myDef);
+            ContentAddition.AddSkillDef(myDef);
 
             projReplacer = Resources.Load<GameObject>("prefabs/projectiles/LoaderZapCone").InstantiateClone("CIScepLoaderThundercrash", true);
             var proxb = projReplacer.GetComponent<ProjectileProximityBeamController>();
@@ -45,7 +45,7 @@ namespace ThinkInvisible.ClassicItems {
             proxb.maxAngleFilter = 180f;
             projReplacer.transform.Find("Effect").localScale *= 3f;
 
-            ProjectileAPI.Add(projReplacer);
+            ContentAddition.AddProjectile(projReplacer);
         }
 
         internal override void LoadBehavior() {

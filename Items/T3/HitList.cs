@@ -44,7 +44,7 @@ namespace ThinkInvisible.ClassicItems {
             markDebuff.isDebuff = true;
             markDebuff.name = modInfo.shortIdentifier + "HitListDebuff";
             markDebuff.iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/hitlist_debuff_icon.png");
-            BuffAPI.Add(new CustomBuff(markDebuff));
+            ContentAddition.AddBuffDef(markDebuff);
 
             tallyBuff = ScriptableObject.CreateInstance<BuffDef>();
             tallyBuff.buffColor = Color.yellow;
@@ -52,7 +52,7 @@ namespace ThinkInvisible.ClassicItems {
             tallyBuff.isDebuff = false;
             tallyBuff.name = modInfo.shortIdentifier + "HitListBuff";
             tallyBuff.iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/hitlist_buff_icon.png");
-            BuffAPI.Add(new CustomBuff(tallyBuff));
+            ContentAddition.AddBuffDef(tallyBuff);
 
             hitListTally = ScriptableObject.CreateInstance<ItemDef>();
             hitListTally.hidden = true;

@@ -52,7 +52,7 @@ namespace ThinkInvisible.ClassicItems {
             prescriptionsBuff.isDebuff = false;
             prescriptionsBuff.name = $"{modInfo.shortIdentifier}Prescriptions";
             prescriptionsBuff.iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/Prescriptions_icon.png");
-            BuffAPI.Add(new CustomBuff(prescriptionsBuff));
+            ContentAddition.AddBuffDef(prescriptionsBuff);
         }
 
         public override void Install() {

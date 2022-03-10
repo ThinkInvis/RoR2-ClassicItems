@@ -36,7 +36,7 @@ namespace ThinkInvisible.ClassicItems {
             myDef.skillDescriptionToken = newDescToken;
             myDef.icon = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/scepter/mage_flamethrowericon.png");
 
-            LoadoutAPI.AddSkillDef(myDef);
+            ContentAddition.AddSkillDef(myDef);
 
             projCloud = Resources.Load<GameObject>("prefabs/projectiles/BeetleQueenAcid").InstantiateClone("CIScepMageFlamethrowerCloud", true);
             var pdz = projCloud.GetComponent<ProjectileDotZone>();
@@ -82,7 +82,7 @@ namespace ThinkInvisible.ClassicItems {
                 lightCpt.range = 5f;
             }
 
-            ProjectileAPI.Add(projCloud);
+            ContentAddition.AddProjectile(projCloud);
         }
 
         internal override void LoadBehavior() {

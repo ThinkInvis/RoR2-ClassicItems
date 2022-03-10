@@ -47,7 +47,7 @@ namespace ThinkInvisible.ClassicItems {
             goldenGunBuff.isDebuff = false;
             goldenGunBuff.name = $"{modInfo.shortIdentifier}GoldenGun";
             goldenGunBuff.iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/GoldenGun_icon.png");
-            BuffAPI.Add(new CustomBuff(goldenGunBuff));
+            ContentAddition.AddBuffDef(goldenGunBuff);
         }
 
         public override void SetupBehavior() {

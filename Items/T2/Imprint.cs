@@ -5,6 +5,7 @@ using TILER2;
 using static TILER2.MiscUtil;
 using static R2API.RecalculateStatsAPI;
 using UnityEngine.Networking;
+using R2API;
 
 namespace ThinkInvisible.ClassicItems {
     public class Imprint : Item<Imprint> {
@@ -53,21 +54,21 @@ namespace ThinkInvisible.ClassicItems {
             attackBuff.isDebuff = false;
             attackBuff.name = modInfo.shortIdentifier + "ImprintAttack";
             attackBuff.iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/Imprint_icon.png");
-            R2API.BuffAPI.Add(new R2API.CustomBuff(attackBuff));
+            ContentAddition.AddBuffDef(attackBuff);
             speedBuff = ScriptableObject.CreateInstance<BuffDef>();
             speedBuff.buffColor = Color.cyan;
             speedBuff.canStack = false;
             speedBuff.isDebuff = false;
             speedBuff.name = modInfo.shortIdentifier + "ImprintSpeed";
             speedBuff.iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/Imprint_icon.png");
-            R2API.BuffAPI.Add(new R2API.CustomBuff(speedBuff));
+            ContentAddition.AddBuffDef(speedBuff);
             healBuff = ScriptableObject.CreateInstance<BuffDef>();
             healBuff.buffColor = Color.green;
             healBuff.canStack = false;
             healBuff.isDebuff = false;
             healBuff.name = modInfo.shortIdentifier + "ImprintHeal";
             healBuff.iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/Imprint_icon.png");
-            R2API.BuffAPI.Add(new R2API.CustomBuff(healBuff));
+            ContentAddition.AddBuffDef(healBuff);
         }
 
         public override void SetupBehavior() {

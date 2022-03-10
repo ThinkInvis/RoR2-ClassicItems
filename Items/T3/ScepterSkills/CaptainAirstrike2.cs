@@ -36,7 +36,7 @@ namespace ThinkInvisible.ClassicItems {
             myDef.skillDescriptionToken = newDescToken;
             myDef.icon = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/scepter/captain_airstrikeicon.png");
 
-            LoadoutAPI.AddSkillDef(myDef);
+            ContentAddition.AddSkillDef(myDef);
 
             var oldCallDef = Resources.Load<SkillDef>("skilldefs/captainbody/CallAirstrike");
             myCallDef = CloneSkillDef(oldCallDef);
@@ -46,7 +46,7 @@ namespace ThinkInvisible.ClassicItems {
             myCallDef.baseRechargeInterval = 0.07f;
             myCallDef.icon = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/scepter/captain_airstrikeicon.png");
 
-            LoadoutAPI.AddSkillDef(myCallDef);
+            ContentAddition.AddSkillDef(myCallDef);
         }
 
         internal override void LoadBehavior() {

@@ -42,7 +42,7 @@ namespace ThinkInvisible.ClassicItems {
             snakeEyesBuff.isDebuff = false;
             snakeEyesBuff.name = $"{modInfo.shortIdentifier}SnakeEyes";
             snakeEyesBuff.iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/SnakeEyes_icon.png");
-            BuffAPI.Add(new CustomBuff(snakeEyesBuff));
+            ContentAddition.AddBuffDef(snakeEyesBuff);
         }
 
         public override void SetupBehavior() {

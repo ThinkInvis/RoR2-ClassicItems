@@ -33,7 +33,7 @@ namespace ThinkInvisible.ClassicItems {
             myDef.icon = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/scepter/engi_turreticon.png");
             myDef.baseMaxStock += 1;
 
-            LoadoutAPI.AddSkillDef(myDef);
+            ContentAddition.AddSkillDef(myDef);
         }
     }
 }
