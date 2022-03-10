@@ -102,7 +102,7 @@ namespace ThinkInvisible.ClassicItems {
                 c.Emit(OpCodes.Ldarg_0);
                 c.EmitDelegate<Func<BulletAttack,EntityStates.Mage.Weapon.Flamethrower,BulletAttack>>((origAttack,state) => {
                     if(Scepter.instance.GetCount(state.outer.commonComponents.characterBody) < 1) return origAttack;
-                    origAttack.hitCallback = (ref BulletAttack.BulletHit h) => {
+                    origAttack.hitCallback = (BulletAttack self, ref BulletAttack.BulletHit h) => {
                         ProjectileManager.instance.FireProjectile(new FireProjectileInfo {
                             crit = false,
                             damage = origAttack.damage,
@@ -115,7 +115,7 @@ namespace ThinkInvisible.ClassicItems {
                             projectilePrefab = projCloud,
                             target = null
                         });
-                        return origAttack.DefaultHitCallback(ref h);
+                        return BulletAttack.defaultHitCallback(origAttack, ref h);
                     };
                     return origAttack;
                 });
