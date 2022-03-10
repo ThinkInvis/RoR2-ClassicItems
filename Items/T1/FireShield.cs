@@ -94,7 +94,7 @@ namespace ThinkInvisible.ClassicItems {
                 crit = Util.CheckRoll(self.body.crit, self.body.master),
                 damageColorIndex = DamageColorIndex.Item,
                 falloffModel = BlastAttack.FalloffModel.Linear,
-                attackerFiltering = AttackerFiltering.NeverHit,
+                attackerFiltering = AttackerFiltering.NeverHitSelf,
 				teamIndex = self.body.teamComponent?.teamIndex ?? default,
 				damageType = DamageType.AOE,
 				procCoefficient = 1.0f
