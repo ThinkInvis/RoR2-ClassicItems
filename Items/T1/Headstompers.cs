@@ -84,7 +84,7 @@ namespace ThinkInvisible.ClassicItems {
 					origin = ghi.position,
 					scale = 10f
                 };
-				EffectManager.SpawnEffect(Resources.Load<GameObject>("Prefabs/Effects/ImpactEffects/BootShockwave"), effectData, true);
+				EffectManager.SpawnEffect(LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/ImpactEffects/BootShockwave"), effectData, true);
             }
         }
     }

@@ -18,7 +18,7 @@ namespace ThinkInvisible.ClassicItems {
         public override int targetVariantIndex => 0;
 
         internal override void SetupAttributes() {
-            var oldDef = Resources.Load<SkillDef>("skilldefs/mercbody/MercBodyEvis");
+            var oldDef = LegacyResourcesAPI.Load<SkillDef>("skilldefs/mercbody/MercBodyEvis");
             myDef = CloneSkillDef(oldDef);
 
             var nametoken = "CLASSICITEMS_SCEPMERC_EVISNAME";

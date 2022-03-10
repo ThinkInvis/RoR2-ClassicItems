@@ -18,7 +18,7 @@ namespace ThinkInvisible.ClassicItems {
         public override int targetVariantIndex => 1;
 
         internal override void SetupAttributes() {
-            var oldDef = Resources.Load<SkillDef>("skilldefs/magebody/MageBodyFlyUp");
+            var oldDef = LegacyResourcesAPI.Load<SkillDef>("skilldefs/magebody/MageBodyFlyUp");
             myDef = CloneSkillDef(oldDef);
 
             var nametoken = "CLASSICITEMS_SCEPMAGE_FLYUPNAME";

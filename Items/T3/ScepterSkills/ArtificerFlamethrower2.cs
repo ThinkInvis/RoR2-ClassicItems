@@ -22,7 +22,7 @@ namespace ThinkInvisible.ClassicItems {
         public override int targetVariantIndex => 0;
 
         internal override void SetupAttributes() {
-            var oldDef = Resources.Load<SkillDef>("skilldefs/magebody/MageBodyFlamethrower");
+            var oldDef = LegacyResourcesAPI.Load<SkillDef>("skilldefs/magebody/MageBodyFlamethrower");
             myDef = CloneSkillDef(oldDef);
 
             var nametoken = "CLASSICITEMS_SCEPMAGE_FLAMETHROWERNAME";
@@ -38,7 +38,7 @@ namespace ThinkInvisible.ClassicItems {
 
             ContentAddition.AddSkillDef(myDef);
 
-            projCloud = Resources.Load<GameObject>("prefabs/projectiles/BeetleQueenAcid").InstantiateClone("CIScepMageFlamethrowerCloud", true);
+            projCloud = LegacyResourcesAPI.Load<GameObject>("prefabs/projectiles/BeetleQueenAcid").InstantiateClone("CIScepMageFlamethrowerCloud", true);
             var pdz = projCloud.GetComponent<ProjectileDotZone>();
             pdz.lifetime = 10f;
             pdz.impactEffect = null;
@@ -48,7 +48,7 @@ namespace ThinkInvisible.ClassicItems {
             fxObj.Find("Decal").gameObject.SetActive(false);
             fxObj.Find("Gas").gameObject.SetActive(false);
             foreach(var x in fxObj.GetComponents<AnimateShaderAlpha>()) {x.enabled = false;}
-            var fxcloud = UnityEngine.Object.Instantiate(Resources.Load<GameObject>("prefabs/FireTrail").GetComponent<DamageTrail>().segmentPrefab, fxObj.transform);
+            var fxcloud = UnityEngine.Object.Instantiate(LegacyResourcesAPI.Load<GameObject>("prefabs/FireTrail").GetComponent<DamageTrail>().segmentPrefab, fxObj.transform);
             var psmain = fxcloud.GetComponent<ParticleSystem>().main;
             psmain.duration = 10f;
             psmain.gravityModifier = -0.05f;

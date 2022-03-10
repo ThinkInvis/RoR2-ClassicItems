@@ -23,7 +23,7 @@ namespace ThinkInvisible.ClassicItems {
         public override int targetVariantIndex => 1;
 
         internal override void SetupAttributes() {
-            var oldDef = Resources.Load<SkillDef>("skilldefs/loaderbody/ChargeZapFist");
+            var oldDef = LegacyResourcesAPI.Load<SkillDef>("skilldefs/loaderbody/ChargeZapFist");
             myDef = CloneSkillDef(oldDef);
 
             var nametoken = "CLASSICITEMS_SCEPLOADER_CHARGEZAPFISTNAME";
@@ -39,7 +39,7 @@ namespace ThinkInvisible.ClassicItems {
 
             ContentAddition.AddSkillDef(myDef);
 
-            projReplacer = Resources.Load<GameObject>("prefabs/projectiles/LoaderZapCone").InstantiateClone("CIScepLoaderThundercrash", true);
+            projReplacer = LegacyResourcesAPI.Load<GameObject>("prefabs/projectiles/LoaderZapCone").InstantiateClone("CIScepLoaderThundercrash", true);
             var proxb = projReplacer.GetComponent<ProjectileProximityBeamController>();
             proxb.attackFireCount *= 3;
             proxb.maxAngleFilter = 180f;
@@ -61,7 +61,7 @@ namespace ThinkInvisible.ClassicItems {
             orig(self);
             if(!(self is ChargeZapFist) || Scepter.instance.GetCount(self.outer.commonComponents.characterBody) < 1) return;
 			var mTsf = self.outer.commonComponents.modelLocator?.modelTransform?.GetComponent<ChildLocator>()?.FindChild(BaseChargeFist.chargeVfxChildLocatorName);
-            EffectManager.SpawnEffect(Resources.Load<GameObject>("prefabs/effects/MageLightningBombExplosion"),
+            EffectManager.SpawnEffect(LegacyResourcesAPI.Load<GameObject>("prefabs/effects/MageLightningBombExplosion"),
                 new EffectData {
                     origin = mTsf?.position ?? self.outer.commonComponents.transform.position,
                     scale = 3f
@@ -77,7 +77,7 @@ namespace ThinkInvisible.ClassicItems {
                 c.EmitDelegate<Func<GameObject, SwingZapFist, GameObject>>((origProj, state) => {
                     if(Scepter.instance.GetCount(state.outer.commonComponents.characterBody) < 1) return origProj;
 			        var mTsf = state.outer.commonComponents.modelLocator?.modelTransform?.GetComponent<ChildLocator>()?.FindChild(state.swingEffectMuzzleString);
-                    EffectManager.SpawnEffect(Resources.Load<GameObject>("prefabs/effects/ImpactEffects/LightningStrikeImpact"),
+                    EffectManager.SpawnEffect(LegacyResourcesAPI.Load<GameObject>("prefabs/effects/ImpactEffects/LightningStrikeImpact"),
                         new EffectData {
                             origin = mTsf?.position ?? state.outer.commonComponents.transform.position,
                             scale = 1f

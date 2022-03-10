@@ -52,7 +52,7 @@ namespace ThinkInvisible.ClassicItems {
             ctrlPfb2.AddComponent<NetworkIdentity>();
             ctrlPfb2.AddComponent<SnowglobeController>();
 
-            var msTemp = Resources.Load<GameObject>("Prefabs/NetworkedObjects/MeteorStorm");
+            var msTemp = LegacyResourcesAPI.Load<GameObject>("Prefabs/NetworkedObjects/MeteorStorm");
 
             var ppvOrig = msTemp.transform.GetChild(0).gameObject.GetComponent<PostProcessVolume>();
             var ppvIn = UnityEngine.Object.Instantiate(msTemp.transform.GetChild(0).gameObject);

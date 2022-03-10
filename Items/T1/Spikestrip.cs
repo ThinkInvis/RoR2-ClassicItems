@@ -38,7 +38,7 @@ namespace ThinkInvisible.ClassicItems {
         public override void SetupAttributes() {
             base.SetupAttributes();
 
-            var mshPrefab = Resources.Load<GameObject>("Prefabs/NetworkedObjects/MushroomWard");
+            var mshPrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/NetworkedObjects/MushroomWard");
 
             var bwPrefabPrefab = new GameObject("SpikestripAuraPrefabPrefab");
             bwPrefabPrefab.AddComponent<NetworkIdentity>();

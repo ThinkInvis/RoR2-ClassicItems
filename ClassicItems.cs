@@ -200,7 +200,7 @@ namespace ThinkInvisible.ClassicItems {
             fearBuff.canStack = false;
             fearBuff.isDebuff = true;
             fearBuff.name = "CIFear";
-            fearBuff.iconSprite = Resources.Load<Sprite>("textures/miscicons/texSprintIcon");
+            fearBuff.iconSprite = LegacyResourcesAPI.Load<Sprite>("textures/miscicons/texSprintIcon");
 
             ContentAddition.AddBuffDef(fearBuff);
             IL.EntityStates.AI.Walker.Combat.UpdateAI += IL_ESAIWalkerCombatUpdateAI;
@@ -396,8 +396,8 @@ namespace ThinkInvisible.ClassicItems {
 
             int replacedDescs = 0;
 
-            var tmpfont = Resources.Load<TMP_FontAsset>("tmpfonts/misc/tmpRiskOfRainFont Bold OutlineSDF");
-            var tmpmtl = Resources.Load<Material>("tmpfonts/misc/tmpRiskOfRainFont Bold OutlineSDF");
+            var tmpfont = LegacyResourcesAPI.Load<TMP_FontAsset>("tmpfonts/misc/tmpRiskOfRainFont Bold OutlineSDF");
+            var tmpmtl = LegacyResourcesAPI.Load<Material>("tmpfonts/misc/tmpRiskOfRainFont Bold OutlineSDF");
 
             foreach(var pickup in PickupCatalog.allPickups) {
                 //pattern-match for CI card prefabs

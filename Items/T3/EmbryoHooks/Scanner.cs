@@ -23,7 +23,7 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
             base.SetupAttributes();
             LanguageAPI.Add(descriptionAppendToken, "\n<style=cStack>Beating Embryo: Double duration.<style>");
 
-            boostedScannerPrefab = Resources.Load<GameObject>("Prefabs/NetworkedObjects/ChestScanner").InstantiateClone("EmbryoBoostedScannerPrefab", true);
+            boostedScannerPrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/NetworkedObjects/ChestScanner").InstantiateClone("EmbryoBoostedScannerPrefab", true);
             boostedScannerPrefab.GetComponent<ChestRevealer>().revealDuration *= 2f;
         }
 

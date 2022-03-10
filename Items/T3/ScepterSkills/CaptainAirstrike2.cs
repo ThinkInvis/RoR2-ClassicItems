@@ -22,7 +22,7 @@ namespace ThinkInvisible.ClassicItems {
         public override int targetVariantIndex => 0;
 
         internal override void SetupAttributes() {
-            var oldDef = Resources.Load<SkillDef>("skilldefs/captainbody/PrepAirstrike");
+            var oldDef = LegacyResourcesAPI.Load<SkillDef>("skilldefs/captainbody/PrepAirstrike");
             myDef = CloneSkillDef(oldDef);
 
             var nametoken = "CLASSICITEMS_SCEPCAPTAIN_AIRSTRIKENAME";
@@ -38,7 +38,7 @@ namespace ThinkInvisible.ClassicItems {
 
             ContentAddition.AddSkillDef(myDef);
 
-            var oldCallDef = Resources.Load<SkillDef>("skilldefs/captainbody/CallAirstrike");
+            var oldCallDef = LegacyResourcesAPI.Load<SkillDef>("skilldefs/captainbody/CallAirstrike");
             myCallDef = CloneSkillDef(oldCallDef);
             myCallDef.baseMaxStock = 21;
             myCallDef.mustKeyPress = false;

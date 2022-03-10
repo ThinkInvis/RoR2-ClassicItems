@@ -23,7 +23,7 @@ namespace ThinkInvisible.ClassicItems {
         public override int targetVariantIndex => 0;
 
         internal override void SetupAttributes() {
-            var oldDef = Resources.Load<SkillDef>("skilldefs/crocobody/CrocoDisease");
+            var oldDef = LegacyResourcesAPI.Load<SkillDef>("skilldefs/crocobody/CrocoDisease");
             myDef = CloneSkillDef(oldDef);
 
             var nametoken = "CLASSICITEMS_SCEPCROCO_DISEASENAME";
@@ -39,7 +39,7 @@ namespace ThinkInvisible.ClassicItems {
 
             ContentAddition.AddSkillDef(myDef);
 
-			var mshPrefab = Resources.Load<GameObject>("Prefabs/NetworkedObjects/MushroomWard");
+			var mshPrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/NetworkedObjects/MushroomWard");
 
 			var dwPrefabPrefab = new GameObject("CIDiseaseAuraPrefabPrefab");
 			dwPrefabPrefab.AddComponent<TeamFilter>();

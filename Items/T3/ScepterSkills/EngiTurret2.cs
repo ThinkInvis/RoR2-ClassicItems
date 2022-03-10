@@ -18,7 +18,7 @@ namespace ThinkInvisible.ClassicItems {
         public override int targetVariantIndex => 0;
 
         internal override void SetupAttributes() {
-            oldDef = Resources.Load<SkillDef>("skilldefs/engibody/EngiBodyPlaceTurret");
+            oldDef = LegacyResourcesAPI.Load<SkillDef>("skilldefs/engibody/EngiBodyPlaceTurret");
             myDef = CloneSkillDef(oldDef);
 
             var nametoken = "CLASSICITEMS_SCEPENGI_TURRETNAME";

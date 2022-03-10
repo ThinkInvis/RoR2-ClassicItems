@@ -19,7 +19,7 @@ namespace ThinkInvisible.ClassicItems {
         public override int targetVariantIndex => 1;
 
         internal override void SetupAttributes() {
-            var oldDef = Resources.Load<SkillDef>("skilldefs/treebotbody/TreebotBodyFireFlower2");
+            var oldDef = LegacyResourcesAPI.Load<SkillDef>("skilldefs/treebotbody/TreebotBodyFireFlower2");
             myDef = CloneSkillDef(oldDef);
 
             var nametoken = "CLASSICITEMS_SCEPTREEBOT_FLOWER2NAME";

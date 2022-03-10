@@ -49,7 +49,7 @@ namespace ThinkInvisible.ClassicItems {
 
         public override void SetupBehavior() {
             base.SetupBehavior();
-            broochPrefab = UnityEngine.Object.Instantiate(Resources.Load<InteractableSpawnCard>("SpawnCards/InteractableSpawnCard/iscChest1"));
+            broochPrefab = UnityEngine.Object.Instantiate(LegacyResourcesAPI.Load<InteractableSpawnCard>("SpawnCards/InteractableSpawnCard/iscChest1"));
             broochPrefab.directorCreditCost = 0;
             broochPrefab.sendOverNetwork = true;
             broochPrefab.skipSpawnWhenSacrificeArtifactEnabled = false;
@@ -186,7 +186,7 @@ namespace ThinkInvisible.ClassicItems {
 
         [ClientRpc]
         public void RpcLanded() {
-            EffectManager.SpawnEffect(Resources.Load<GameObject>("Prefabs/Effects/ImpactEffects/PodGroundImpact"), new EffectData {
+            EffectManager.SpawnEffect(LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/ImpactEffects/PodGroundImpact"), new EffectData {
 				origin = this.gameObject.transform.position,
 				rotation = this.gameObject.transform.rotation,
                 scale = 0.25f
@@ -197,7 +197,7 @@ namespace ThinkInvisible.ClassicItems {
 
         [ClientRpc]
         public void RpcUnlanded() {
-            EffectManager.SpawnEffect(Resources.Load<GameObject>("Prefabs/Effects/ImpactEffects/PodGroundImpact"), new EffectData {
+            EffectManager.SpawnEffect(LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/ImpactEffects/PodGroundImpact"), new EffectData {
 				origin = this.gameObject.transform.position,
 				rotation = this.gameObject.transform.rotation,
                 scale = 0.25f

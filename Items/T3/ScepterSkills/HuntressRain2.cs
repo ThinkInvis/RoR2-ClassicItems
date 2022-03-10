@@ -20,7 +20,7 @@ namespace ThinkInvisible.ClassicItems {
         public override int targetVariantIndex => 0;
 
         internal override void SetupAttributes() {
-            var oldDef = Resources.Load<SkillDef>("skilldefs/huntressbody/HuntressBodyArrowRain");
+            var oldDef = LegacyResourcesAPI.Load<SkillDef>("skilldefs/huntressbody/HuntressBodyArrowRain");
             myDef = CloneSkillDef(oldDef);
 
             var nametoken = "CLASSICITEMS_SCEPHUNTRESS_RAINNAME";
@@ -36,7 +36,7 @@ namespace ThinkInvisible.ClassicItems {
 
             ContentAddition.AddSkillDef(myDef);
 
-            projReplacer = Resources.Load<GameObject>("prefabs/projectiles/HuntressArrowRain").InstantiateClone("CIScepHuntressRain", true);
+            projReplacer = LegacyResourcesAPI.Load<GameObject>("prefabs/projectiles/HuntressArrowRain").InstantiateClone("CIScepHuntressRain", true);
             projReplacer.GetComponent<ProjectileDamage>().damageType |= DamageType.IgniteOnHit;
             projReplacer.GetComponent<ProjectileDotZone>().lifetime *= 1.5f;
             projReplacer.transform.localScale = new Vector3(22.5f, 15f, 22.5f);

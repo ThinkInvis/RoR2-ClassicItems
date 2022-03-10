@@ -17,7 +17,7 @@ namespace ThinkInvisible.ClassicItems {
         public override int targetVariantIndex => 0;
 
         internal override void SetupAttributes() {
-            var oldDef = Resources.Load<SkillDef>("skilldefs/toolbotbody/ToolbotBodyToolbotDash");
+            var oldDef = LegacyResourcesAPI.Load<SkillDef>("skilldefs/toolbotbody/ToolbotBodyToolbotDash");
             myDef = CloneSkillDef(oldDef);
 
             var nametoken = "CLASSICITEMS_SCEPTOOLBOT_DASHNAME";
@@ -86,7 +86,7 @@ namespace ThinkInvisible.ClassicItems {
                 radius = 20f,
                 teamIndex = self.outer.commonComponents.teamComponent?.teamIndex ?? default
             }.Fire();
-            EffectManager.SpawnEffect(Resources.Load<GameObject>("prefabs/effects/omnieffect/OmniExplosionVFX"),
+            EffectManager.SpawnEffect(LegacyResourcesAPI.Load<GameObject>("prefabs/effects/omnieffect/OmniExplosionVFX"),
                 new EffectData {
                     origin = self.outer.commonComponents.transform.position,
                     scale = 20f

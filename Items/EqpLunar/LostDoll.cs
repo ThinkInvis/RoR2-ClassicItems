@@ -121,7 +121,7 @@ namespace ThinkInvisible.ClassicItems {
 				genericFloat = base.duration
 			};
 			effectData.SetHurtBoxReference(this.target);
-			GameObject effectPrefab = Resources.Load<GameObject>("Prefabs/Effects/OrbEffects/InfusionOrbEffect");
+			GameObject effectPrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/OrbEffects/InfusionOrbEffect");
 			EffectManager.SpawnEffect(effectPrefab, effectData, true);
 		}
 

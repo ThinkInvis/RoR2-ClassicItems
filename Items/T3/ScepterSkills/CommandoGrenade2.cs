@@ -20,7 +20,7 @@ namespace ThinkInvisible.ClassicItems {
         public override int targetVariantIndex => 1;
 
         internal override void SetupAttributes() {
-            var oldDef = Resources.Load<SkillDef>("skilldefs/commandobody/ThrowGrenade");
+            var oldDef = LegacyResourcesAPI.Load<SkillDef>("skilldefs/commandobody/ThrowGrenade");
             myDef = CloneSkillDef(oldDef);
 
             var nametoken = "CLASSICITEMS_SCEPCOMMANDO_GRENADENAME";
@@ -36,7 +36,7 @@ namespace ThinkInvisible.ClassicItems {
 
             ContentAddition.AddSkillDef(myDef);
 
-            projReplacer = Resources.Load<GameObject>("prefabs/projectiles/CommandoGrenadeProjectile").InstantiateClone("CIScepCommandoGrenade", true);
+            projReplacer = LegacyResourcesAPI.Load<GameObject>("prefabs/projectiles/CommandoGrenadeProjectile").InstantiateClone("CIScepCommandoGrenade", true);
             var pie = projReplacer.GetComponent<ProjectileImpactExplosion>();
             pie.blastDamageCoefficient *= 0.5f;
             pie.bonusBlastForce *= 0.5f;

@@ -52,7 +52,7 @@ namespace ThinkInvisible.ClassicItems {
 		public override void SetupAttributes() {
 			base.SetupAttributes();
 
-			var mshPrefab = Resources.Load<GameObject>("Prefabs/NetworkedObjects/MushroomWard");
+			var mshPrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/NetworkedObjects/MushroomWard");
 
 			var bwPrefabPrefab = new GameObject("BarbedWardAuraPrefabPrefab");
 			bwPrefabPrefab.AddComponent<TeamFilter>();
@@ -150,7 +150,7 @@ namespace ThinkInvisible.ClassicItems {
 				genericFloat = duration
 			};
 			effectData.SetHurtBoxReference(target);
-			EffectManager.SpawnEffect(Resources.Load<GameObject>("Prefabs/Effects/OrbEffects/RazorwireOrbEffect"), effectData, true);
+			EffectManager.SpawnEffect(LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/OrbEffects/RazorwireOrbEffect"), effectData, true);
 		}
 	}
 

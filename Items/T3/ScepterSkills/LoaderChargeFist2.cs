@@ -18,7 +18,7 @@ namespace ThinkInvisible.ClassicItems {
         public override int targetVariantIndex => 0;
 
         internal override void SetupAttributes() {
-            var oldDef = Resources.Load<SkillDef>("skilldefs/loaderbody/ChargeFist");
+            var oldDef = LegacyResourcesAPI.Load<SkillDef>("skilldefs/loaderbody/ChargeFist");
             myDef = CloneSkillDef(oldDef);
 
             var nametoken = "CLASSICITEMS_SCEPLOADER_CHARGEFISTNAME";
@@ -59,7 +59,7 @@ namespace ThinkInvisible.ClassicItems {
         private void BaseSwingChargedFist_OnMeleeHitAuthority(On.EntityStates.Loader.BaseSwingChargedFist.orig_OnMeleeHitAuthority orig, BaseSwingChargedFist self) {
             if(Scepter.instance.GetCount(self.outer.commonComponents.characterBody) < 1) return;
 			var mTsf = self.outer.commonComponents.modelLocator?.modelTransform?.GetComponent<ChildLocator>()?.FindChild(self.swingEffectMuzzleString);
-            EffectManager.SpawnEffect(Resources.Load<GameObject>("prefabs/effects/omnieffect/OmniExplosionVFXCommandoGrenade"),
+            EffectManager.SpawnEffect(LegacyResourcesAPI.Load<GameObject>("prefabs/effects/omnieffect/OmniExplosionVFXCommandoGrenade"),
                 new EffectData {
                     origin = mTsf?.position ?? self.outer.commonComponents.transform.position,
                     scale = 5f

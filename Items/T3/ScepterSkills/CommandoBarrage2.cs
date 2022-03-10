@@ -18,7 +18,7 @@ namespace ThinkInvisible.ClassicItems {
         public override int targetVariantIndex => 0;
 
         internal override void SetupAttributes() {
-            var oldDef = Resources.Load<SkillDef>("skilldefs/commandobody/CommandoBodyBarrage");
+            var oldDef = LegacyResourcesAPI.Load<SkillDef>("skilldefs/commandobody/CommandoBodyBarrage");
             myDef = CloneSkillDef(oldDef);
 
             var nametoken = "CLASSICITEMS_SCEPCOMMANDO_BARRAGENAME";

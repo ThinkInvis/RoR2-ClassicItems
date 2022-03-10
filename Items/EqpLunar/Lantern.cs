@@ -42,7 +42,7 @@ namespace ThinkInvisible.ClassicItems {
 
 		public override void SetupAttributes() {
 			base.SetupAttributes();
-			var mshPrefab = Resources.Load<GameObject>("Prefabs/NetworkedObjects/WarbannerWard").transform.Find("Indicator");
+			var mshPrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/NetworkedObjects/WarbannerWard").transform.Find("Indicator");
 
 			var lPrefabPrefab = new GameObject("LanternAuraPrefabPrefab");
 			lPrefabPrefab.AddComponent<TeamFilter>();

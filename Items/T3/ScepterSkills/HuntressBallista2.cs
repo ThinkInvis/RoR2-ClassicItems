@@ -20,7 +20,7 @@ namespace ThinkInvisible.ClassicItems {
         public override int targetVariantIndex => 1;
 
         internal override void SetupAttributes() {
-            var oldDef = Resources.Load<SkillDef>("skilldefs/huntressbody/AimArrowSnipe");
+            var oldDef = LegacyResourcesAPI.Load<SkillDef>("skilldefs/huntressbody/AimArrowSnipe");
             myDef = CloneSkillDef(oldDef);
 
             var nametoken = "CLASSICITEMS_SCEPHUNTRESS_BALLISTANAME";
@@ -36,7 +36,7 @@ namespace ThinkInvisible.ClassicItems {
 
             ContentAddition.AddSkillDef(myDef);
             
-            var oldCtxDef = Resources.Load<SkillDef>("skilldefs/huntressbody/FireArrowSnipe");
+            var oldCtxDef = LegacyResourcesAPI.Load<SkillDef>("skilldefs/huntressbody/FireArrowSnipe");
             myCtxDef = CloneSkillDef(oldCtxDef);
 
             myCtxDef.skillName = namestr;
