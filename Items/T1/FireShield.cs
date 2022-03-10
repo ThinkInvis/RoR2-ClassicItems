@@ -76,7 +76,7 @@ namespace ThinkInvisible.ClassicItems {
                 return;
 
             Vector3 corePos = Util.GetCorePosition(self.body);
-			var thisThingsGonnaX = GlobalEventManager.instance.explodeOnDeathPrefab;
+			var thisThingsGonnaX = GlobalEventManager.CommonAssets.explodeOnDeathPrefab;
 			var x = thisThingsGonnaX.GetComponent<DelayBlast>();
 			EffectManager.SpawnEffect(x.explosionEffect, new EffectData {
 				origin = corePos,
