@@ -120,8 +120,10 @@ namespace ThinkInvisible.ClassicItems {
                     (
                         extraJumpInteraction == ExtraJumpInteractionType.UseJetpackFirst
                         && (self.characterBody.GetComponent<PhotonJetpackComponent>()?.fuel ?? 0) > 0
+                    ) || (
+                        extraJumpInteraction == ExtraJumpInteractionType.ConvertJumpsToFuel
+                        && GetCount(self.characterBody) > 0
                     )
-                    || extraJumpInteraction == ExtraJumpInteractionType.ConvertJumpsToFuel
                 )
             ) {
                 doJumpOverride = true;
