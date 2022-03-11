@@ -212,7 +212,6 @@ namespace ThinkInvisible.ClassicItems {
 			List<TeamComponent> teamMembers = new List<TeamComponent>();
 			bool isFF = FriendlyFireManager.friendlyFireMode != FriendlyFireManager.FriendlyFireMode.Off;
 			if(isFF || teamFilter.teamIndex != TeamIndex.Monster) teamMembers.AddRange(TeamComponent.GetTeamMembers(TeamIndex.Monster));
-			if(isFF || teamFilter.teamIndex != TeamIndex.Neutral) teamMembers.AddRange(TeamComponent.GetTeamMembers(TeamIndex.Neutral));
 			if(isFF || teamFilter.teamIndex != TeamIndex.Player) teamMembers.AddRange(TeamComponent.GetTeamMembers(TeamIndex.Player));
 			float sqrad = radius * radius;
 			teamMembers.Remove(owner.GetComponent<TeamComponent>());
