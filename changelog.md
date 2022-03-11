@@ -2,6 +2,13 @@
 
 (🌧︎: Involves an accepted GitHub Pull Request from the community. Thanks for your help!)
 
+**5.1.1**
+
+- Compatibility update for Risk of Rain 2 Expansion 1 (SotV).
+- Updated R2API dependency to 4.0.11.
+- Updated BepInEx dependency to 5.4.1902.
+- Updated TILER2 dependency to 5.0.3.
+
 **5.1.0**
 
 - Some progress towards Beating Embryo rework. More equipment behaviors are implemented, but the item is still WIP.

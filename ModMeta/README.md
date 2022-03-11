@@ -87,7 +87,7 @@ For nostalgic purposes only. Here Be Dragons who hoard balance issues, because t
 - Stats are set close to RoR1's whenever possible. May eventually set up a config preset which balances items a little more carefully with respect to RoR2's existing content.
 - Beating Embryo is being rebuilt and is currently disabled.
 - Beating Embryo has no effect on Lunar equipments (other than those added by mods). This is a design decision, but disabled-by-default effects are planned.
-- AllCards global config option is nonfunctional.
+- As of SotV, new characters, and some new skills for old characters, are missing Ancient Scepter skills.
 - Color tags on pickup model text are too bright.
 - See the GitHub repo for more!
 
@@ -103,6 +103,13 @@ For details and instructions on applying these, see: https://github.com/ThinkInv
 
 The 5 latest updates are listed below. For a full changelog, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/changelog.md
 (🌧︎: Involves an accepted GitHub Pull Request from the community. Thanks for your help!)
+
+**5.1.1**
+
+- Compatibility update for Risk of Rain 2 Expansion 1 (SotV).
+- Updated R2API dependency to 4.0.11.
+- Updated BepInEx dependency to 5.4.1902.
+- Updated TILER2 dependency to 5.0.3.
 
 **5.1.0**
 
@@ -132,12 +139,3 @@ The 5 latest updates are listed below. For a full changelog, see: https://github
 - Beating Embryo: in-progress rewrite and public API change, currently mostly nonfunctional; item will be force-disabled during game startup.
     - Modders: Consider public API for this item to be unstable and not included in semver until further notice.
 - Pillaged Gold: fixed this equipment being completely unusable.
-
-**4.6.4**
-
-- Added more safety checks to card model text updates (may fix a potential incompatibility).
-
-**4.6.3**
-
-- Fixed card model text not updating immediately after game launch.
-- Additional language fixes for Snowglobe.
