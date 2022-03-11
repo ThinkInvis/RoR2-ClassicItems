@@ -460,8 +460,9 @@ namespace ThinkInvisible.ClassicItems {
                     cdsc.margin = new Vector4(4f, 1.874178f, 4f, 1.015695f);
                     cdsc.enableAutoSizing = true;
                     cdsc.overrideColorTags = false;
-                    cdsc.fontSizeMin = 0.1f;
-                    cdsc.fontSizeMax = 0.8f;
+                    cdsc.fontSizeMin = 1f;
+                    cdsc.fontSizeMax = 8f;
+                    cdsc.fontSize = 1f;
                     _ = cdsc.renderer;
                     cdsc.font = tmpfont;
                     cdsc.material = tmpmtl;
@@ -475,8 +476,9 @@ namespace ThinkInvisible.ClassicItems {
                     cname.margin = new Vector4(6.0f, 1.2f, 6.0f, 1.4f);
                     cname.enableAutoSizing = true;
                     cname.overrideColorTags = true;
-                    cname.fontSizeMin = 0.1f;
-                    cname.fontSizeMax = 1.0f;
+                    cname.fontSizeMin = 1f;
+                    cname.fontSizeMax = 10f;
+                    cname.fontSize = 1f;
                     _ = cname.renderer;
                     cname.font = tmpfont;
                     cname.material = tmpmtl;
