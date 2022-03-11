@@ -17,6 +17,7 @@ using TILER2;
 using static TILER2.MiscUtil;
 using System.Runtime.Serialization;
 using System.Linq;
+using RoR2.ExpansionManagement;
 
 //TODO:
 // Add missing documentation in... a whole lotta places... whoops.
@@ -490,7 +491,7 @@ namespace ThinkInvisible.ClassicItems {
             Logger.LogDebug((globalConfig.hideDesc ? "Destroyed " : "Inserted ") + replacedDescs + " pickup model descriptions.");
         }
 
-        private RoR2.UI.LogBook.Entry[] On_LogbookBuildPickupEntries(On.RoR2.UI.LogBook.LogBookController.orig_BuildPickupEntries orig) {
+        private RoR2.UI.LogBook.Entry[] On_LogbookBuildPickupEntries(On.RoR2.UI.LogBook.LogBookController.orig_BuildPickupEntries orig, Dictionary<ExpansionDef, bool> expansionAvailability) {
             var retv = orig();
             Logger.LogDebug("Processing logbook models...");
             int replacedModels = 0;

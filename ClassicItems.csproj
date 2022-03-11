@@ -37,9 +37,8 @@
     <Reference Include="ItemStats">
       <HintPath>lib\ItemStats.dll</HintPath>
     </Reference>
-    <Reference Include="MMHOOK_Assembly-CSharp">
-      <HintPath>..\REF\BepInEx\plugins\R2API\MMHOOK_Assembly-CSharp.dll</HintPath>
-      <Private>false</Private>
+    <Reference Include="MMHOOK_RoR2">
+      <HintPath>lib\MMHOOK_RoR2.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Cecil">
       <HintPath>..\REF\BepInEx\core\Mono.Cecil.dll</HintPath>
