@@ -492,7 +492,7 @@ namespace ThinkInvisible.ClassicItems {
         }
 
         private RoR2.UI.LogBook.Entry[] On_LogbookBuildPickupEntries(On.RoR2.UI.LogBook.LogBookController.orig_BuildPickupEntries orig, Dictionary<ExpansionDef, bool> expansionAvailability) {
-            var retv = orig();
+            var retv = orig(expansionAvailability);
             Logger.LogDebug("Processing logbook models...");
             int replacedModels = 0;
             foreach(RoR2.UI.LogBook.Entry e in retv) {
