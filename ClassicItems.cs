@@ -250,8 +250,6 @@ namespace ThinkInvisible.ClassicItems {
             T2Module.SetupAll_PluginStart(masterItemList);
 
             Logger.LogDebug("Late setup done!");
-
-            CatalogBoilerplate.ConsoleDump(Logger, masterItemList);
         }
 
         private void IL_ESAIWalkerCombatUpdateAI(ILContext il) {
