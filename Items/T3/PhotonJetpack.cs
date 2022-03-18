@@ -74,7 +74,7 @@ namespace ThinkInvisible.ClassicItems {
             photonFuelBuff.canStack = true;
             photonFuelBuff.isDebuff = false;
             photonFuelBuff.name = modInfo.shortIdentifier + "PhotonFuel";
-            photonFuelBuff.iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/PhotonJetpack_icon.png");
+            photonFuelBuff.iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/PhotonJetpack_icon.png");
 
             ContentAddition.AddBuffDef(photonFuelBuff);
         }

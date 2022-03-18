@@ -32,7 +32,7 @@ namespace ThinkInvisible.ClassicItems {
             pillageBuff.canStack = true;
             pillageBuff.isDebuff = false;
             pillageBuff.name = modInfo.shortIdentifier + "PillagedGold";
-            pillageBuff.iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/pillage_icon.png");
+            pillageBuff.iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/pillage_icon.png");
             ContentAddition.AddBuffDef(pillageBuff);
         }
 

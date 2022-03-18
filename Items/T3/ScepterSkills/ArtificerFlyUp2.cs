@@ -30,7 +30,7 @@ namespace ThinkInvisible.ClassicItems {
             myDef.skillName = namestr;
             myDef.skillNameToken = nametoken;
             myDef.skillDescriptionToken = newDescToken;
-            myDef.icon = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/scepter/mage_flyupicon.png");
+            myDef.icon = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ScepterSkillIcons/mage_flyupicon.png");
 
             ContentAddition.AddSkillDef(myDef);
         }

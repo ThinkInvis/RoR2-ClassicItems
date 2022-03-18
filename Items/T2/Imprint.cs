@@ -58,21 +58,21 @@ namespace ThinkInvisible.ClassicItems {
             attackBuff.canStack = false;
             attackBuff.isDebuff = false;
             attackBuff.name = modInfo.shortIdentifier + "ImprintAttack";
-            attackBuff.iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/Imprint_icon.png");
+            attackBuff.iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/Imprint_icon.png");
             ContentAddition.AddBuffDef(attackBuff);
             speedBuff = ScriptableObject.CreateInstance<BuffDef>();
             speedBuff.buffColor = Color.cyan;
             speedBuff.canStack = false;
             speedBuff.isDebuff = false;
             speedBuff.name = modInfo.shortIdentifier + "ImprintSpeed";
-            speedBuff.iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/Imprint_icon.png");
+            speedBuff.iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/Imprint_icon.png");
             ContentAddition.AddBuffDef(speedBuff);
             healBuff = ScriptableObject.CreateInstance<BuffDef>();
             healBuff.buffColor = Color.green;
             healBuff.canStack = false;
             healBuff.isDebuff = false;
             healBuff.name = modInfo.shortIdentifier + "ImprintHeal";
-            healBuff.iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/Imprint_icon.png");
+            healBuff.iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/Imprint_icon.png");
             ContentAddition.AddBuffDef(healBuff);
         }
 

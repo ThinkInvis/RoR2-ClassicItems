@@ -56,7 +56,7 @@ namespace ThinkInvisible.ClassicItems {
             prescriptionsBuff.canStack = true;
             prescriptionsBuff.isDebuff = false;
             prescriptionsBuff.name = $"{modInfo.shortIdentifier}Prescriptions";
-            prescriptionsBuff.iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/Prescriptions_icon.png");
+            prescriptionsBuff.iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/Prescriptions_icon.png");
             ContentAddition.AddBuffDef(prescriptionsBuff);
         }
 

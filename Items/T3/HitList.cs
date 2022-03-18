@@ -48,7 +48,7 @@ namespace ThinkInvisible.ClassicItems {
             markDebuff.canStack = false;
             markDebuff.isDebuff = true;
             markDebuff.name = modInfo.shortIdentifier + "HitListDebuff";
-            markDebuff.iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/hitlist_debuff_icon.png");
+            markDebuff.iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/hitlist_debuff_icon.png");
             ContentAddition.AddBuffDef(markDebuff);
 
             tallyBuff = ScriptableObject.CreateInstance<BuffDef>();
@@ -56,7 +56,7 @@ namespace ThinkInvisible.ClassicItems {
             tallyBuff.canStack = true;
             tallyBuff.isDebuff = false;
             tallyBuff.name = modInfo.shortIdentifier + "HitListBuff";
-            tallyBuff.iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/hitlist_buff_icon.png");
+            tallyBuff.iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/hitlist_buff_icon.png");
             ContentAddition.AddBuffDef(tallyBuff);
 
             hitListTally = ScriptableObject.CreateInstance<ItemDef>();

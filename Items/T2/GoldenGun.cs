@@ -51,7 +51,7 @@ namespace ThinkInvisible.ClassicItems {
             goldenGunBuff.canStack = true;
             goldenGunBuff.isDebuff = false;
             goldenGunBuff.name = $"{modInfo.shortIdentifier}GoldenGun";
-            goldenGunBuff.iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/GoldenGun_icon.png");
+            goldenGunBuff.iconSprite = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/goldengun_icon.png");
             ContentAddition.AddBuffDef(goldenGunBuff);
         }
 
