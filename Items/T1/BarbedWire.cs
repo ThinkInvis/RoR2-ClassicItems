@@ -214,12 +214,9 @@ namespace ThinkInvisible.ClassicItems {
 
 		[Server]
 		private void ServerProc() {
-			List<TeamComponent> teamMembers = new List<TeamComponent>();
-			bool isFF = FriendlyFireManager.friendlyFireMode != FriendlyFireManager.FriendlyFireMode.Off;
-			if(isFF || teamFilter.teamIndex != TeamIndex.Monster) teamMembers.AddRange(TeamComponent.GetTeamMembers(TeamIndex.Monster));
-			if(isFF || teamFilter.teamIndex != TeamIndex.Player) teamMembers.AddRange(TeamComponent.GetTeamMembers(TeamIndex.Player));
-			float sqrad = radius * radius;
+			var teamMembers = ClassicItemsPlugin.GatherEnemies(teamFilter.teamIndex, TeamIndex.Neutral);
 			teamMembers.Remove(owner.GetComponent<TeamComponent>());
+			float sqrad = radius * radius;
 			foreach(TeamComponent tcpt in teamMembers) {
 				if ((tcpt.transform.position - transform.position).sqrMagnitude <= sqrad) {
 					if (tcpt.body && tcpt.body.mainHurtBox && tcpt.body.isActiveAndEnabled && damage > 0f) {

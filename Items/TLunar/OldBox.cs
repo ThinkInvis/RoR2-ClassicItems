@@ -77,9 +77,7 @@ namespace ThinkInvisible.ClassicItems {
 				scale = radius
 			}, true);*/
 
-            var tind = TeamIndex.Monster | TeamIndex.Neutral | TeamIndex.Player;
-			tind &= ~self.body.teamComponent.teamIndex;
-			ReadOnlyCollection<TeamComponent> teamMembers = TeamComponent.GetTeamMembers(tind);
+            var teamMembers = ClassicItemsPlugin.GatherEnemies(self.body.teamComponent.teamIndex);
 			float sqrad = radius * radius;
 			foreach(TeamComponent tcpt in teamMembers) {
 				if ((tcpt.transform.position - self.body.corePosition).sqrMagnitude <= sqrad) {

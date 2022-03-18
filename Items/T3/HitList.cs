@@ -93,7 +93,7 @@ namespace ThinkInvisible.ClassicItems {
 
             stopwatch = cooldown;
             var alive = AliveList();
-            int[] totalVsTeam = {0, 0, 0};
+            int[] totalVsTeam = {0, 0, 0, 0, 0};
             int totalVsAll = 0;
             foreach(var cm in alive) {
                 var icnt = GetCount(cm);
@@ -103,6 +103,8 @@ namespace ThinkInvisible.ClassicItems {
                     if(cm.teamIndex != TeamIndex.Neutral) totalVsTeam[0] += icnt;
                     if(cm.teamIndex != TeamIndex.Player) totalVsTeam[1] += icnt;
                     if(cm.teamIndex != TeamIndex.Monster) totalVsTeam[2] += icnt;
+                    if(cm.teamIndex != TeamIndex.Void) totalVsTeam[3] += icnt;
+                    if(cm.teamIndex != TeamIndex.Lunar) totalVsTeam[4] += icnt; //TODO base this on Enum.GetValues instead
                 }
             }
             if(totalVsAll > 0) {
@@ -119,9 +121,11 @@ namespace ThinkInvisible.ClassicItems {
                 List<CharacterMaster>[] aliveTeam = {
                     alive.Where(cm => cm.teamIndex == TeamIndex.Neutral).ToList(),
                     alive.Where(cm => cm.teamIndex == TeamIndex.Player).ToList(),
-                    alive.Where(cm => cm.teamIndex == TeamIndex.Monster).ToList()
+                    alive.Where(cm => cm.teamIndex == TeamIndex.Monster).ToList(),
+                    alive.Where(cm => cm.teamIndex == TeamIndex.Void).ToList(),
+                    alive.Where(cm => cm.teamIndex == TeamIndex.Lunar).ToList()
                 };
-                for(var list = 0; list <= 2; list++) {
+                for(var list = 0; list <= 4; list++) {
                     for(var i = 0; i < totalVsTeam[list]; i++) {                        
                         if(aliveTeam[list].Count <= 0) break;
                         var next = rng.NextElementUniform(aliveTeam[list]);

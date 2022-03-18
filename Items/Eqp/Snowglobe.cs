@@ -118,12 +118,8 @@ namespace ThinkInvisible.ClassicItems {
         }
 
         private void DoFreeze() {
-			List<TeamComponent> teamMembers = new List<TeamComponent>();
-			bool isFF = FriendlyFireManager.friendlyFireMode != FriendlyFireManager.FriendlyFireMode.Off;
-			if(isFF || myTeam != TeamIndex.Monster) teamMembers.AddRange(TeamComponent.GetTeamMembers(TeamIndex.Monster));
-			if(isFF || myTeam != TeamIndex.Neutral) teamMembers.AddRange(TeamComponent.GetTeamMembers(TeamIndex.Neutral));
-			if(isFF || myTeam != TeamIndex.Player) teamMembers.AddRange(TeamComponent.GetTeamMembers(TeamIndex.Player));
-			foreach(TeamComponent tcpt in teamMembers) {
+            var teamMembers = ClassicItemsPlugin.GatherEnemies(myTeam);
+            foreach(TeamComponent tcpt in teamMembers) {
                 if(!Util.CheckRoll(Snowglobe.instance.procRate)) continue;
                 var ssoh = tcpt.gameObject.GetComponent<SetStateOnHurt>();
                 var hcpt = tcpt.gameObject.GetComponent<HealthComponent>();
