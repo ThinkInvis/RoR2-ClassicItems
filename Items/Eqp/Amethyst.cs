@@ -1,6 +1,7 @@
 ﻿using BepInEx.Configuration;
 using RoR2;
 using TILER2;
+using UnityEngine;
 using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
@@ -20,6 +21,11 @@ namespace ThinkInvisible.ClassicItems {
             sloc.ApplyAmmoPack();
             if(Embryo.instance.CheckEmbryoProc(slot.characterBody)) sloc.ApplyAmmoPack();
             return true;
+        }
+
+        public Amethyst() {
+            iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/amethyst_icon.png");
+            modelResource = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/Prefabs/GiganticAmethyst.prefab");
         }
     }
 }

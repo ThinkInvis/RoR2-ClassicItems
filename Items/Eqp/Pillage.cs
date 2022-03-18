@@ -19,6 +19,11 @@ namespace ThinkInvisible.ClassicItems {
         protected override string GetDescString(string langid = null) => "While active, every hit <style=cIsUtility>drops 1 gold</style> (scales with difficulty). Lasts <style=cIsUtility>" + duration.ToString("N0") + " seconds</style>.";
         protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
+        public Pillage() {
+            iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/pillage_icon.png");
+            modelResource = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/Prefabs/Pillage.prefab");
+        }
+
         public override void SetupAttributes() {
             base.SetupAttributes();
 

@@ -35,6 +35,11 @@ namespace ThinkInvisible.ClassicItems {
         }
         protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
+        public Spikestrip() {
+            iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/spikestrip_icon.png");
+            modelResource = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/Prefabs/SpikeStrip.prefab");
+        }
+
         public override void SetupAttributes() {
             base.SetupAttributes();
 

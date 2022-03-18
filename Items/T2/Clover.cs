@@ -2,6 +2,7 @@
 using System;
 using System.Collections.ObjectModel;
 using TILER2;
+using UnityEngine;
 using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
@@ -59,6 +60,11 @@ namespace ThinkInvisible.ClassicItems {
             return desc;
         }
         protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
+
+        public Clover() {
+            iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/clover_icon.png");
+            modelResource = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/Prefabs/Clover.prefab");
+        }
 
         public override void SetupBehavior() {
             base.SetupBehavior();

@@ -46,6 +46,11 @@ namespace ThinkInvisible.ClassicItems {
         public BuffDef speedBuff {get; private set;}
         public BuffDef healBuff {get; private set;}
 
+        public Imprint() {
+            iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/imprint_icon.png");
+            modelResource = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/Prefabs/Imprint.prefab");
+        }
+
         public override void SetupAttributes() {
             base.SetupAttributes();
             attackBuff = ScriptableObject.CreateInstance<BuffDef>();

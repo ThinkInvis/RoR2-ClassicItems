@@ -35,6 +35,11 @@ namespace ThinkInvisible.ClassicItems {
 
         private bool ILFailed = false;
 
+        public Brooch() {
+            iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/brooch_icon.png");
+            modelResource = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/Prefabs/CaptainsBrooch.prefab");
+        }
+
         public override void SetupConfig() {
             base.SetupConfig();
 

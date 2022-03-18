@@ -1,6 +1,7 @@
 ﻿using RoR2;
 using System.Collections.ObjectModel;
 using TILER2;
+using UnityEngine;
 using static R2API.RecalculateStatsAPI;
 
 namespace ThinkInvisible.ClassicItems {
@@ -17,6 +18,11 @@ namespace ThinkInvisible.ClassicItems {
         protected override string GetPickupString(string langid = null) => "Increased health regeneration.";        
         protected override string GetDescString(string langid = null) => "Increases <style=cIsHealing>health regen by +" + addRegen.ToString("N1") + "/s</style> <style=cStack>(+" + addRegen.ToString("N1") + "/s per stack)</style>.";        
         protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
+
+        public Vial() {
+            iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/vial_icon.png");
+            modelResource = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/Prefabs/MysteriousVial.prefab");
+        }
 
         public override void SetupBehavior() {
             base.SetupBehavior();

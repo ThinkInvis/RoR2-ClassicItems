@@ -34,6 +34,11 @@ namespace ThinkInvisible.ClassicItems {
         protected override string GetDescString(string langid = null) => "Generates <style=cIsUtility>$" + gainPerSec.ToString("N0") + "</style> <style=cStack>(+$" + gainPerSec.ToString("N0") + " per stack)</style> every second. <style=cStack>Generates less below " + invertCount.ToString("N0") + " stacks.</style>";
         protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
+        public LifeSavings() {
+            iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/lifesavings_icon.png");
+            modelResource = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/Prefabs/LifeSavings.prefab");
+        }
+
         public override void SetupBehavior() {
             base.SetupBehavior();
 

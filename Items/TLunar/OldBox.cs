@@ -30,6 +30,11 @@ namespace ThinkInvisible.ClassicItems {
         protected override string GetDescString(string langid = null) => "<style=cDeath>When hit for more than " + Pct(healthThreshold) + " max health</style> <style=cStack>(/2 per stack)</style>, <style=cIsUtility>fear enemies</style> within <style=cIsUtility>" + radius.ToString("N0") + " m</style> for <style=cIsUtility>" + duration.ToString("N1") + " seconds</style>. <style=cIsUtility>Feared enemies will run out of melee</style>, <style=cDeath>but that won't stop them from performing ranged attacks</style>.";
         protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
+        public OldBox() {
+            iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/oldbox_icon.png");
+            modelResource = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/Prefabs/OldBox.prefab");
+        }
+
         public override void SetupBehavior() {
             base.SetupBehavior();
             if(Compat_ItemStats.enabled) {

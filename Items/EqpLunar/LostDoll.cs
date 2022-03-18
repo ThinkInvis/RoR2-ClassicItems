@@ -37,7 +37,10 @@ namespace ThinkInvisible.ClassicItems {
         }
         protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
-        public LostDoll() { }
+        public LostDoll() {
+            iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/lostdoll_icon.png");
+            modelResource = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/Prefabs/LostDoll.prefab");
+        }
 
         protected override bool PerformEquipmentAction(EquipmentSlot slot) {
             if(!slot.characterBody || !slot.characterBody.teamComponent) return false;

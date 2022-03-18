@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using R2API;
 using System.Linq;
 using System;
+using UnityEngine;
 
 namespace ThinkInvisible.ClassicItems {
     public abstract class ScepterSkill {
@@ -58,6 +59,9 @@ namespace ThinkInvisible.ClassicItems {
         internal List<ScepterSkill> skills = new List<ScepterSkill>();
 
         public Scepter() {
+            iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/scepter_icon.png");
+            modelResource = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/Prefabs/Scepter.prefab");
+
             skills.Add(new ArtificerFlamethrower2());
             skills.Add(new ArtificerFlyUp2());
             skills.Add(new CaptainAirstrike2());

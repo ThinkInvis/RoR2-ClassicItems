@@ -24,6 +24,11 @@ namespace ThinkInvisible.ClassicItems {
         protected override string GetDescString(string langid = null) => "<style=cIsUtility>Reduces gravity</style> by <style=cIsUtility>" + Pct(gravMod) + "</style> while <style=cIsUtility>holding jump</style>. Increases <style=cIsUtility>jump power</style> by <style=cIsUtility>" + Pct(jumpMult) + "</style> <style=cStack>(+" + Pct(jumpMult)  + " per stack, linear)</style>.";        
         protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
+        public RustyJetpack() {
+            iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/rustyjetpack_icon.png");
+            modelResource = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/Prefabs/RustyJetpack.prefab");
+        }
+
         public override void SetupBehavior() {
             base.SetupBehavior();
 

@@ -38,6 +38,11 @@ namespace ThinkInvisible.ClassicItems {
         }
         protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
+        public TeleSight() {
+            iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/telesight_icon.png");
+            modelResource = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/Prefabs/TeleSight.prefab");
+        }
+
         public override void SetupBehavior() {
             base.SetupBehavior();
             if(Compat_ItemStats.enabled) {

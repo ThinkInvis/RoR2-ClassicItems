@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using TILER2;
 using static TILER2.MiscUtil;
 using static R2API.RecalculateStatsAPI;
+using UnityEngine;
 
 namespace ThinkInvisible.ClassicItems {
     public class BitterRoot : Item<BitterRoot> {
@@ -28,6 +29,11 @@ namespace ThinkInvisible.ClassicItems {
             return desc;
         }
         protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
+
+        public BitterRoot() {
+            iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/bitterroot_icon.png");
+            modelResource = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/Prefabs/BitterRoot.prefab");
+        }
 
         public override void SetupBehavior() {
             base.SetupBehavior();

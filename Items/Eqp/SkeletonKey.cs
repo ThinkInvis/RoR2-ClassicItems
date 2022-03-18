@@ -18,7 +18,10 @@ namespace ThinkInvisible.ClassicItems {
         protected override string GetDescString(string langid = null) => "Opens all <style=cIsUtility>chests</style> within <style=cIsUtility>" + radius.ToString("N0") + " m</style> for <style=cIsUtility>no cost</style>.";        
         protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
         
-        public SkeletonKey() { }
+        public SkeletonKey() {
+            iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/skeletonkey_icon.png");
+            modelResource = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/Prefabs/SkeletonKey.prefab");
+        }
 
         protected override bool PerformEquipmentAction(EquipmentSlot slot) {
             if(!slot.characterBody) return false;

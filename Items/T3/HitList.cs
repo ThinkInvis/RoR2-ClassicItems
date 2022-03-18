@@ -35,6 +35,11 @@ namespace ThinkInvisible.ClassicItems {
         public BuffDef markDebuff {get; private set;}
         public BuffDef tallyBuff {get; private set;}
 
+        public HitList() {
+            iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/hitlist_icon.png");
+            modelResource = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/Prefabs/HitList.prefab");
+        }
+
         public override void SetupAttributes() {
             base.SetupAttributes();
 

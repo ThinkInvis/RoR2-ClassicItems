@@ -37,6 +37,11 @@ namespace ThinkInvisible.ClassicItems {
             $"over {duration:N0} seconds</style>.";
         protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
+        public Snowglobe() {
+            iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/snowglobe_icon.png");
+            modelResource = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/Prefabs/Snowglobe.prefab");
+        }
+
         public override void SetupConfig() {
             base.SetupConfig();
             ConfigEntryChanged += (sender, args) => {

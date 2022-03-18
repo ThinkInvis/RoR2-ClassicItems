@@ -41,6 +41,11 @@ namespace ThinkInvisible.ClassicItems {
         }
         protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
+        public FireShield() {
+            iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/fireshield_icon.png");
+            modelResource = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/Prefabs/FireShield.prefab");
+        }
+
         public override void SetupBehavior() {
             base.SetupBehavior();
 

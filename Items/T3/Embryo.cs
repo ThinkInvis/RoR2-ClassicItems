@@ -89,6 +89,9 @@ namespace ThinkInvisible.ClassicItems {
         internal Dictionary<EmbryoHook, bool> hooksEnabled { get; } = new Dictionary<EmbryoHook, bool>();
 
         public Embryo() {
+            iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/embryo_icon.png");
+            modelResource = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/Prefabs/Embryo.prefab");
+
             new EmbryoHooks.CommandMissile();
         }
 

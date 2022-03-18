@@ -32,6 +32,11 @@ namespace ThinkInvisible.ClassicItems {
         }
         protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
+        public Taser() {
+            iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/taser_icon.png");
+            modelResource = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/Prefabs/Taser.prefab");
+        }
+
         public override void SetupBehavior() {
             base.SetupBehavior();
 
