@@ -2,6 +2,19 @@
 
 (🌧︎: Involves an accepted GitHub Pull Request from the community. Thanks for your help!)
 
+**6.0.0**
+
+- Item models!
+	- We got 'em!
+	- They're not very good, but we got 'em!
+- Removed Headstompers.
+	- These were too close in functionality to the H3AD-5T v2.
+	- Also, I really didn't want to model a boot.
+- Removed the trading card item model override feature.
+	- This will be migrated to a standalone mod in the near future.
+- Fixed Barbed Wire, Snowglobe, et. al. not working on Void/Lunar enemies.
+- Updated TILER2 dependency to 6.0.2.
+
 **5.1.1**
 
 - Compatibility update for Risk of Rain 2 Expansion 1 (SotV).

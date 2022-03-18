@@ -38,7 +38,7 @@ namespace ThinkInvisible.ClassicItems {
             #if DEBUG
                 "0." +
             #endif
-            "5.1.1";
+            "6.0.0";
         public const string ModName = "ClassicItems";
         public const string ModGuid = "com.ThinkInvisible.ClassicItems";
 
@@ -128,7 +128,7 @@ namespace ThinkInvisible.ClassicItems {
             freezeBuff.canStack = false;
             freezeBuff.isDebuff = true;
             freezeBuff.name = "CIFreeze";
-            freezeBuff.iconSprite = resources.LoadAsset<Sprite>("Assets/ClassicItems/icons/permafrost_icon.png");
+            freezeBuff.iconSprite = resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/permafrost_icon.png");
             ContentAddition.AddBuffDef(freezeBuff);
 
             fearBuff = ScriptableObject.CreateInstance<BuffDef>();

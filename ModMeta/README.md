@@ -77,18 +77,15 @@ For nostalgic purposes only. Here Be Dragons who hoard balance issues, because t
 - More config options for various aspects of item effects (how much regen a Mysterious Vial provides, which equipments Beating Embryo affects...).
 - Most config options can be changed mid-run by using TILER2's AIC console commands.
 - Descriptions in the logbook match config values.
-- Some vanilla tweaks, also with config options:
-    - Disables the H3AD5T V2 stomp move, which is normally triggered by holding jump in midair; this is replaced by the Headstompers item.
-    - Converts most pickup models for base game items and equipment into trading cards (disabled by default; NONFUNCTIONAL).
 
 ## Issues/TODO
 
-- More items are on the way! There's a lot to work with.
+- Item models are a quick first pass -- improvements may be made.
+    - Item displays may also happen at some point.
 - Stats are set close to RoR1's whenever possible. May eventually set up a config preset which balances items a little more carefully with respect to RoR2's existing content.
 - Beating Embryo is being rebuilt and is currently disabled.
 - Beating Embryo has no effect on Lunar equipments (other than those added by mods). This is a design decision, but disabled-by-default effects are planned.
 - As of SotV, new characters, and some new skills for old characters, are missing Ancient Scepter skills.
-- Color tags on pickup model text are too bright.
 - See the GitHub repo for more!
 
 ## Modder Resources
@@ -103,6 +100,19 @@ For details and instructions on applying these, see: https://github.com/ThinkInv
 
 The 5 latest updates are listed below. For a full changelog, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/changelog.md
 (🌧︎: Involves an accepted GitHub Pull Request from the community. Thanks for your help!)
+
+**6.0.0**
+
+- Item models!
+	- We got 'em!
+	- They're not very good, but we got 'em!
+- Removed Headstompers.
+	- These were too close in functionality to the H3AD-5T v2.
+	- Also, I really didn't want to model a boot.
+- Removed the trading card item model override feature.
+	- This will be migrated to a standalone mod in the near future.
+- Fixed Barbed Wire, Snowglobe, et. al. not working on Void/Lunar enemies.
+- Updated TILER2 dependency to 6.0.2.
 
 **5.1.1**
 
@@ -129,13 +139,3 @@ The 5 latest updates are listed below. For a full changelog, see: https://github
 
 - Matched FakeInventory.blacklist change in TILER2 4.0.1. Fixes Ancient Scepter not being FakeInventory blacklisted, and mod not being compatible with TILER2 4.0.1.
 - Made card model setup/updates more resilient against broken items.
-
-**5.0.0**
-
-- Compatibility changes for Risk of Rain 2 Anniversary Update.
-- Fixed card model text being updated while hidden, leading to NullReferenceExceptions while the HideDesc setting is enabled.
-- Filial Imprinting: attempted to fix server-only code running on clients.
-- Ancient Scepter: fixed deployables getting rerolls when their owner picks up a Scepter.
-- Beating Embryo: in-progress rewrite and public API change, currently mostly nonfunctional; item will be force-disabled during game startup.
-    - Modders: Consider public API for this item to be unstable and not included in semver until further notice.
-- Pillaged Gold: fixed this equipment being completely unusable.
