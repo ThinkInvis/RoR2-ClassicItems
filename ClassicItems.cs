@@ -47,22 +47,6 @@ namespace ThinkInvisible.ClassicItems {
         internal static FilingDictionary<CatalogBoilerplate> masterItemList = new FilingDictionary<CatalogBoilerplate>();
         
         public class GlobalConfig:AutoConfigContainer {
-            [AutoConfig("If true, replaces the pickup models for most vanilla items and equipments with trading cards.",
-                AutoConfigFlags.DeferForever)]
-            public bool allCards {get; private set;} = false;
-
-            [AutoConfig("If true, hides the dynamic description text on trading card-style pickup models. Enabling this may slightly improve performance.",
-                AutoConfigFlags.DeferForever)]
-            public bool hideDesc {get; private set;} = false;
-            
-            [AutoConfig("If true, descriptions on trading card-style pickup models will be the (typically longer) description text of the item. If false, pickup text will be used instead.",
-                AutoConfigFlags.DeferForever)]
-            public bool longDesc {get; private set;} = true;
-
-            [AutoConfig("If true, trading card-style pickup models will have customized spin behavior which makes descriptions more readable. Disabling this may slightly improve compatibility and performance.",
-                AutoConfigFlags.DeferForever)]
-            public bool spinMod {get; private set;} = true;
-            
             [AutoConfig("If true, disables the Rusty Jetpack gravity reduction while Photon Jetpack is active. If false, there shall be yeet.",
                 AutoConfigFlags.PreventNetMismatch)]
             public bool coolYourJets {get; private set;} = true;
@@ -72,14 +56,6 @@ namespace ThinkInvisible.ClassicItems {
 
         public static BuffDef freezeBuff {get;private set;}
         public static BuffDef fearBuff {get;private set;}
-
-        private static readonly ReadOnlyDictionary<ItemTier, string> modelNameMap = new ReadOnlyDictionary<ItemTier,string>(new Dictionary<ItemTier, string>{
-            {ItemTier.Boss, "BossCard"},
-            {ItemTier.Lunar, "LunarCard"},
-            {ItemTier.Tier1, "CommonCard"},
-            {ItemTier.Tier2, "UncommonCard"},
-            {ItemTier.Tier3, "RareCard"}
-        });
 
         internal static BepInEx.Logging.ManualLogSource _logger;
 
@@ -141,29 +117,9 @@ namespace ThinkInvisible.ClassicItems {
             }
 
             Logger.LogDebug("Registering item attributes...");
-            
             foreach(CatalogBoilerplate x in masterItemList) {
-                string mpnOvr = null;
-                if(x is Item item) mpnOvr = "Assets/ClassicItems/models/" + modelNameMap[item.itemTier] + ".prefab";
-                else if(x is Equipment eqp) mpnOvr = "Assets/ClassicItems/models/" + (eqp.isLunar ? "LqpCard.prefab" : "EqpCard.prefab");
-                var ipnOvr = "Assets/ClassicItems/icons/" + x.name.Replace("_V2", "") + "_icon.png";
-
-                if(mpnOvr != null) {
-                    typeof(CatalogBoilerplate).GetProperty(nameof(CatalogBoilerplate.modelResource)).SetValue(x, resources.LoadAsset<GameObject>(mpnOvr));
-                    typeof(CatalogBoilerplate).GetProperty(nameof(CatalogBoilerplate.iconResource)).SetValue(x, resources.LoadAsset<Sprite>(ipnOvr));
-                }
-                
                 x.SetupAttributes();
             }
-
-            Logger.LogDebug("Tweaking vanilla stuff...");
-
-            On.RoR2.PickupCatalog.Init += On_PickupCatalogInit;
-            On.RoR2.UI.LogBook.LogBookController.BuildPickupEntries += On_LogbookBuildPickupEntries;
-            Language.onCurrentLanguageChanged += Language_onCurrentLanguageChanged;
-
-            if(globalConfig.spinMod)
-                IL.RoR2.PickupDisplay.Update += IL_PickupDisplayUpdate;
 
             Logger.LogDebug("Registering shared buffs...");
             //used only for purposes of Death Mark; applied by Permafrost and Snowglobe
@@ -194,35 +150,7 @@ namespace ThinkInvisible.ClassicItems {
             Logger.LogDebug("Initial setup done!");
         }
 
-        bool pluginIsStarted = false;
-        private void Language_onCurrentLanguageChanged() {
-            if(!pluginIsStarted) return;
-            foreach(CatalogBoilerplate bpl in masterItemList) {
-                UpdateCardModel(bpl);
-            }
-        }
-
-        private void UpdateCardModel(CatalogBoilerplate sender) {
-            if(sender != null && sender.pickupDef != null && !globalConfig.hideDesc) {
-                var cobj = sender.pickupDef.displayPrefab;
-                if(cobj == null) return;
-                var ctsf = sender.pickupDef.displayPrefab.transform;
-                if(ctsf == null) return;
-                var cfront = ctsf.Find("cardfront");
-                if(cfront == null) return;
-
-                cfront.Find("carddesc").GetComponent<TextMeshPro>().text = Language.GetString(globalConfig.longDesc ? sender.descToken : sender.pickupToken);
-                cfront.Find("cardname").GetComponent<TextMeshPro>().text = Language.GetString(sender.nameToken);
-
-                if(sender.logbookEntry != null) {
-                    sender.logbookEntry.modelPrefab = sender.pickupDef.displayPrefab;
-                }
-            }
-        }
-
         private void Start() {
-            pluginIsStarted = true;
-
             Logger.LogDebug("Performing late setup:");
 
             Logger.LogDebug("Late setup for individual items...");
@@ -254,225 +182,5 @@ namespace ThinkInvisible.ClassicItems {
                 Logger.LogError("Failed to apply shared buff IL patch (CIFear)");
             }
         }
-
-        private void IL_PickupDisplayUpdate(ILContext il) {
-            ILCursor c = new ILCursor(il);
-
-            bool ILFound = c.TryGotoNext(MoveType.After,
-                x=>x.MatchLdfld<PickupDisplay>("modelObject"));
-            GameObject puo = null;
-            if(ILFound) {
-                c.Emit(OpCodes.Dup);
-                c.EmitDelegate<Action<GameObject>>(x=>{
-                    puo=x;
-                });
-            } else {
-                Logger.LogError("Failed to apply vanilla IL patch (pickup model spin modifier)");
-                return;
-            }
-
-            ILFound = c.TryGotoNext(MoveType.After,
-                x=>x.MatchLdarg(0),
-                x=>x.MatchLdfld<PickupDisplay>("spinSpeed"),
-                x=>x.MatchLdarg(0),
-                x=>x.MatchLdfld<PickupDisplay>("localTime"),
-                x=>x.MatchMul());
-            if(ILFound) {
-                c.EmitDelegate<Func<float,float>>((origAngle) => {
-                    if(!puo || !puo.GetComponent<SpinModFlag>() || !NetworkClient.active || PlayerCharacterMasterController.instances.Count == 0) return origAngle;
-                    var body = PlayerCharacterMasterController.instances[0].master.GetBody();
-                    if(!body) return origAngle;
-                    var btsf = body.coreTransform;
-                    if(!btsf) btsf = body.transform;
-                    return RoR2.Util.QuaternionSafeLookRotation(btsf.position - puo.transform.position).eulerAngles.y
-                        + (float)Math.Tanh(((origAngle/100.0f) % 6.2832f - 3.1416f) * 2f) * 180f
-                        + 180f
-                        - (puo.transform.parent?.eulerAngles.y ?? 0f);
-                });
-            } else {
-                Logger.LogError("Failed to apply vanilla IL patch (pickup model spin modifier)");
-            }
-
-        }
-        private void On_PickupCatalogInit(On.RoR2.PickupCatalog.orig_Init orig) {
-            orig();
-
-            Logger.LogDebug("Processing pickup models...");
-
-            var vanillaEquipment = new HashSet<EquipmentDef>(
-                typeof(RoR2Content.Equipment).GetFields(BindingFlags.Static | BindingFlags.Public)
-                .Where(x => x.FieldType == typeof(EquipmentDef))
-                .Select(x => (EquipmentDef)x.GetValue(null)));
-
-            var vanillaItems = new HashSet<ItemDef>(
-                typeof(RoR2Content.Items).GetFields(BindingFlags.Static | BindingFlags.Public)
-                .Where(x => x.FieldType == typeof(ItemDef))
-                .Select(x => (ItemDef)x.GetValue(null)));
-
-            if(globalConfig.allCards) {
-                var eqpCardPrefab = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/models/VOvr/EqpCard.prefab");
-                var lunarCardPrefab = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/models/VOvr/LunarCard.prefab");
-                var lunEqpCardPrefab = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/models/VOvr/LqpCard.prefab");
-                var t1CardPrefab = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/models/VOvr/CommonCard.prefab");
-                var t2CardPrefab = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/models/VOvr/UncommonCard.prefab");
-                var t3CardPrefab = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/models/VOvr/RareCard.prefab");
-                var bossCardPrefab = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/models/VOvr/BossCard.prefab");
-
-                int replacedItems = 0;
-                int replacedEqps = 0;
-
-                foreach(var pickup in PickupCatalog.allPickups) {
-                    GameObject npfb;
-                    if(pickup.interactContextToken == "EQUIPMENT_PICKUP_CONTEXT") {
-                        if(!vanillaEquipment.Contains(EquipmentCatalog.GetEquipmentDef(pickup.equipmentIndex))
-                        || pickup.itemIndex == ItemIndex.None)
-                            continue;
-                        var eqp = EquipmentCatalog.GetEquipmentDef(pickup.equipmentIndex);
-                        if(!eqp.canDrop) continue;
-                        npfb = eqp.isLunar ? lunEqpCardPrefab : eqpCardPrefab;
-                        replacedEqps ++;
-                    } else if(pickup.interactContextToken == "ITEM_PICKUP_CONTEXT") {
-                        if(!vanillaItems.Contains(ItemCatalog.GetItemDef(pickup.itemIndex))
-                        || pickup.itemIndex == ItemIndex.None)
-                        continue;
-
-                        var item = ItemCatalog.GetItemDef(pickup.itemIndex);
-                        switch(item.tier) {
-                            case ItemTier.Tier1:
-                                npfb = t1CardPrefab; break;
-                            case ItemTier.Tier2:
-                                npfb = t2CardPrefab; break;
-                            case ItemTier.Tier3:
-                                npfb = t3CardPrefab; break;
-                            case ItemTier.Lunar:
-                                npfb = lunarCardPrefab; break;
-                            case ItemTier.Boss:
-                                npfb = bossCardPrefab; break;
-                            default:
-                                continue;
-                        }
-                        replacedItems ++;
-                    } else continue;
-                    pickup.displayPrefab = npfb;
-                }
-
-                Logger.LogDebug("Replaced " + replacedItems + " item models and " + replacedEqps + " vanilla equipment models.");
-            }
-
-            int replacedDescs = 0;
-
-            var tmpfont = LegacyResourcesAPI.Load<TMP_FontAsset>("tmpfonts/misc/tmpRiskOfRainFont Bold OutlineSDF");
-            var tmpmtl = LegacyResourcesAPI.Load<Material>("tmpfonts/misc/tmpRiskOfRainFont Bold OutlineSDF");
-
-            foreach(var pickup in PickupCatalog.allPickups) {
-                //pattern-match for CI card prefabs
-                var ctsf = pickup.displayPrefab?.transform;
-                if(!ctsf) continue;
-
-                var cfront = ctsf.Find("cardfront");
-                if(cfront == null) continue;
-                var croot = cfront.Find("carddesc");
-                var cnroot = cfront.Find("cardname");
-                var csprite = ctsf.Find("ovrsprite");
-
-                if(croot == null || cnroot == null || csprite == null) continue;
-                
-                //instantiate and update references
-                pickup.displayPrefab = pickup.displayPrefab.InstantiateClone($"CIPickupCardPrefab{pickup.pickupIndex}", false);
-                ctsf = pickup.displayPrefab.transform;
-                cfront = ctsf.Find("cardfront");
-                croot = cfront.Find("carddesc");
-                cnroot = cfront.Find("cardname");
-                csprite = ctsf.Find("ovrsprite");
-                
-                csprite.GetComponent<MeshRenderer>().material.mainTexture = pickup.iconTexture;
-
-                if(globalConfig.spinMod)
-                    pickup.displayPrefab.AddComponent<SpinModFlag>();
-
-                string pname;
-                string pdesc;
-                Color prar = new Color(1f, 0f, 1f);
-                if(pickup.interactContextToken == "EQUIPMENT_PICKUP_CONTEXT") {
-                    var eqp = EquipmentCatalog.GetEquipmentDef(pickup.equipmentIndex);
-                    if(eqp == null) continue;
-                    pname = Language.GetString(eqp.nameToken);
-                    pdesc = Language.GetString(globalConfig.longDesc ? eqp.descriptionToken : eqp.pickupToken);
-                    prar = new Color(1f, 0.7f, 0.4f);
-                } else if(pickup.interactContextToken == "ITEM_PICKUP_CONTEXT") {
-                    var item = ItemCatalog.GetItemDef(pickup.itemIndex);
-                    if(item == null) continue;
-                    pname = Language.GetString(item.nameToken);
-                    pdesc = Language.GetString(globalConfig.longDesc ? item.descriptionToken : item.pickupToken);
-                    switch(item.tier) {
-                        case ItemTier.Boss: prar = new Color(1f, 1f, 0f); break;
-                        case ItemTier.Lunar: prar = new Color(0f, 0.6f, 1f); break;
-                        case ItemTier.Tier1: prar = new Color(0.8f, 0.8f, 0.8f); break;
-                        case ItemTier.Tier2: prar = new Color(0.2f, 1f, 0.2f); break;
-                        case ItemTier.Tier3: prar = new Color(1f, 0.2f, 0.2f); break;
-                    }
-                } else continue;
-
-                if(globalConfig.hideDesc) {
-                    Destroy(croot.gameObject);
-                    Destroy(cnroot.gameObject);
-                } else {
-                    var cdsc = croot.gameObject.AddComponent<TextMeshPro>();
-                    cdsc.richText = true;
-                    cdsc.enableWordWrapping = true;
-                    cdsc.alignment = TextAlignmentOptions.Center;
-                    cdsc.margin = new Vector4(4f, 1.874178f, 4f, 1.015695f);
-                    cdsc.enableAutoSizing = true;
-                    cdsc.overrideColorTags = false;
-                    cdsc.fontSizeMin = 1f;
-                    cdsc.fontSizeMax = 8f;
-                    cdsc.fontSize = 1f;
-                    _ = cdsc.renderer;
-                    cdsc.font = tmpfont;
-                    cdsc.material = tmpmtl;
-                    cdsc.color = Color.black;
-                    cdsc.text = pdesc;
-
-                    var cname = cnroot.gameObject.AddComponent<TextMeshPro>();
-                    cname.richText = true;
-                    cname.enableWordWrapping = false;
-                    cname.alignment = TextAlignmentOptions.Center;
-                    cname.margin = new Vector4(6.0f, 1.2f, 6.0f, 1.4f);
-                    cname.enableAutoSizing = true;
-                    cname.overrideColorTags = true;
-                    cname.fontSizeMin = 1f;
-                    cname.fontSizeMax = 10f;
-                    cname.fontSize = 1f;
-                    _ = cname.renderer;
-                    cname.font = tmpfont;
-                    cname.material = tmpmtl;
-                    cname.outlineColor = prar;
-                    cname.outlineWidth = 0.15f;
-                    cname.color = Color.black;
-                    cname.fontStyle = FontStyles.Bold;
-                    cname.text = pname;
-                }
-                replacedDescs ++;
-            }
-            Logger.LogDebug((globalConfig.hideDesc ? "Destroyed " : "Inserted ") + replacedDescs + " pickup model descriptions.");
-        }
-
-        private RoR2.UI.LogBook.Entry[] On_LogbookBuildPickupEntries(On.RoR2.UI.LogBook.LogBookController.orig_BuildPickupEntries orig, Dictionary<ExpansionDef, bool> expansionAvailability) {
-            var retv = orig(expansionAvailability);
-            Logger.LogDebug("Processing logbook models...");
-            int replacedModels = 0;
-            foreach(RoR2.UI.LogBook.Entry e in retv) {
-                if(!(e.extraData is PickupIndex)) continue;
-                if(e.modelPrefab == null) continue;
-                if(e.modelPrefab.transform.Find("cardfront")) {
-                    e.modelPrefab = PickupCatalog.GetPickupDef((PickupIndex)e.extraData).displayPrefab;
-                    replacedModels++;
-                }
-            }
-            Logger.LogDebug("Modified " + replacedModels + " logbook models.");
-            return retv;
-        }
     }
-
-    public class SpinModFlag : MonoBehaviour {}
 }
