@@ -47,11 +47,6 @@ namespace ThinkInvisible.ClassicItems {
         internal static FilingDictionary<CatalogBoilerplate> masterItemList = new FilingDictionary<CatalogBoilerplate>();
         
         public class GlobalConfig:AutoConfigContainer {
-            [AutoConfig("If true, removes the hold-space-to-stomp functionality of H3AD-5T V2 (due to overlap in functionality with ClassicItems Headstompers). H3AD-5T V2 will still increase jump height and prevent fall damage.",
-                AutoConfigFlags.PreventNetMismatch)]
-            public bool hSV2NoStomp {get;private set;} = false;
-            internal bool hSV2Bound = false;
-
             [AutoConfig("If true, replaces the pickup models for most vanilla items and equipments with trading cards.",
                 AutoConfigFlags.DeferForever)]
             public bool allCards {get; private set;} = false;
@@ -131,16 +126,6 @@ namespace ThinkInvisible.ClassicItems {
             Logger.LogDebug("Loading global configs...");
 
             globalConfig.BindAll(cfgFile, "ClassicItems", "Global");
-            globalConfig.ConfigEntryChanged += (sender, args) => {
-                if(args.target.boundProperty.Name == nameof(globalConfig.hSV2NoStomp)) {
-                    var toBind = (bool)args.newValue == true;
-                    if(toBind && !globalConfig.hSV2Bound) {
-                        IL.EntityStates.Headstompers.HeadstompersIdle.FixedUpdate += IL_ESHeadstompersIdleFixedUpdate;
-                    } else if(!toBind) {
-                        IL.EntityStates.Headstompers.HeadstompersIdle.FixedUpdate -= IL_ESHeadstompersIdleFixedUpdate;
-                    }
-                }
-            };
 
             Logger.LogDebug("Instantiating item classes...");
             masterItemList = T2Module.InitAll<CatalogBoilerplate>(new T2Module.ModInfo {
@@ -172,12 +157,6 @@ namespace ThinkInvisible.ClassicItems {
             }
 
             Logger.LogDebug("Tweaking vanilla stuff...");
-
-            //Remove the H3AD-5T V2 state transition from idle to stomp, as Headstompers has similar functionality
-            if(globalConfig.hSV2NoStomp && !globalConfig.hSV2Bound) {
-                globalConfig.hSV2Bound = true;
-                IL.EntityStates.Headstompers.HeadstompersIdle.FixedUpdate += IL_ESHeadstompersIdleFixedUpdate;
-            }
 
             On.RoR2.PickupCatalog.Init += On_PickupCatalogInit;
             On.RoR2.UI.LogBook.LogBookController.BuildPickupEntries += On_LogbookBuildPickupEntries;
@@ -314,19 +293,6 @@ namespace ThinkInvisible.ClassicItems {
                 Logger.LogError("Failed to apply vanilla IL patch (pickup model spin modifier)");
             }
 
-        }
-        private void IL_ESHeadstompersIdleFixedUpdate(ILContext il) {
-            ILCursor c = new ILCursor(il);
-            bool ILFound = c.TryGotoNext(
-                x=>x.MatchLdarg(0),
-                x=>x.OpCode == OpCodes.Ldfld,
-                x=>x.MatchNewobj<EntityStates.Headstompers.HeadstompersCharge>(),
-                x=>x.MatchCallOrCallvirt<EntityStateMachine>("SetNextState"));
-            if(ILFound) {
-                c.RemoveRange(4);
-            } else {
-                Logger.LogError("Failed to apply vanilla IL patch (HSV2NoStomp)");
-            }
         }
         private void On_PickupCatalogInit(On.RoR2.PickupCatalog.orig_Init orig) {
             orig();
