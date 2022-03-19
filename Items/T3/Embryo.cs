@@ -152,8 +152,6 @@ namespace ThinkInvisible.ClassicItems {
         }
 
         public bool CheckEmbryoProc(Inventory inv) {
-            ClassicItemsPlugin._logger.LogWarning($"Embryo.CheckProc: enab {this.enabled}, inv {inv}");
-            ClassicItemsPlugin._logger.LogWarning($"Count {GetCount(inv)} --> chance {GetCount(inv) * procChance}");
             if(!this.enabled) return false;
             return Util.CheckRoll(GetCount(inv) * procChance, inv?.gameObject?.GetComponent<CharacterMaster>());
         }
