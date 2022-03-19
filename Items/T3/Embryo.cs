@@ -109,8 +109,6 @@ namespace ThinkInvisible.ClassicItems {
 
             foreach(var hook in allHooks)
                 hook.SetupConfig();
-
-            this.enabled = false;
         }
 
         public static bool ILInjectProcCheck(ILCursor c) {
