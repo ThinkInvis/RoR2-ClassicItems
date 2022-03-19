@@ -12,7 +12,7 @@ using TILER2;
 using static TILER2.MiscUtil;
 
 namespace ThinkInvisible.ClassicItems {
-    [Obsolete("Unstable as of CI 5.0.0; currently undergoing rewrite.")]
+    //[Obsolete("Unstable as of CI 5.0.0; currently undergoing rewrite.")]
     public class Embryo : Item<Embryo> {
         public abstract class EmbryoHook {
             public abstract EquipmentDef targetEquipment { get; }
