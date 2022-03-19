@@ -16,12 +16,28 @@ namespace ThinkInvisible.ClassicItems {
     //[Obsolete("Unstable as of CI 5.0.0; currently undergoing rewrite.")]
     public class Embryo : Item<Embryo> {
         public abstract class EmbryoHook {
+            private static readonly HashSet<EquipmentDef> registeredDefs = new HashSet<EquipmentDef>();
+
             public abstract EquipmentDef targetEquipment { get; }
             public virtual string descriptionAppendToken { get; } = null;
             public bool isInstalled { get; private set; } = false;
             public bool isEnabled { get; private set; } = true;
 
             public EmbryoHook() {
+                if(this.targetEquipment == null) {
+                    ClassicItemsPlugin._logger.LogError($"Attempt to register EmbryoHook for null EquipmentDef; skipping");
+                    return;
+                }
+
+                if(registeredDefs.Contains(this.targetEquipment)) {
+                    ClassicItemsPlugin._logger.LogError($"An EmbryoHook has already been registered for the equipment {targetEquipment} ({targetEquipment.nameToken}); skipping");
+                    return;
+                }
+
+                ClassicItemsPlugin._logger.LogDebug($"Added EmbryoHook for EquipmentDef {targetEquipment} ({targetEquipment.nameToken})");
+
+                registeredDefs.Add(this.targetEquipment);
+
                 Embryo.instance.allHooks.Add(this);
                 Embryo.instance.hooksEnabled.Add(this, isEnabled);
             }
