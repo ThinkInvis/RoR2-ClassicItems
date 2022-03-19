@@ -10,6 +10,7 @@ using UnityEngine.Networking;
 using R2API;
 using TILER2;
 using static TILER2.MiscUtil;
+using R2API.Utils;
 
 namespace ThinkInvisible.ClassicItems {
     //[Obsolete("Unstable as of CI 5.0.0; currently undergoing rewrite.")]
