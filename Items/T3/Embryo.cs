@@ -23,6 +23,7 @@ namespace ThinkInvisible.ClassicItems {
 
             public EmbryoHook() {
                 Embryo.instance.allHooks.Add(this);
+                Embryo.instance.hooksEnabled.Add(this, isEnabled);
             }
 
             internal void Install() {
