@@ -51,8 +51,10 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
         private void On_ESFireMissile(On.RoR2.EquipmentSlot.orig_FireMissile orig, EquipmentSlot self) {
             orig(self);
             var cpt = self.characterBody?.gameObject.GetComponent<EmbryoCommandMissileComponent>();
-            if(cpt && cpt.boostedMissiles > 0)
+            if(cpt && cpt.boostedMissiles > 0) {
                 self.missileTimer /= 2f;
+                cpt.boostedMissiles--;
+            }
         }
     }
 
