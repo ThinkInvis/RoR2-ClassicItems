@@ -94,8 +94,11 @@ namespace ThinkInvisible.ClassicItems {
 
             private bool EquipmentSlot_PerformEquipmentAction(On.RoR2.EquipmentSlot.orig_PerformEquipmentAction orig, EquipmentSlot self, EquipmentDef equipmentDef) {
                 var retv = orig(self, equipmentDef);
-                if(equipmentDef == this.targetEquipment)
-                    retv = retv | orig(self, equipmentDef); //return true if either activation was successful
+                var proc = Embryo.instance.CheckEmbryoProc(self.inventory);
+                if(proc > 0 && equipmentDef == this.targetEquipment) {
+                    for(var i = 0; i < proc; i++)
+                        retv |= orig(self, equipmentDef); //return true if any activation was successful
+                }
                 return retv;
             }
         }
@@ -108,6 +111,10 @@ namespace ThinkInvisible.ClassicItems {
         [AutoConfig("Percent chance of triggering an equipment twice. Stacks additively.", AutoConfigFlags.None, 0f, 100f)]
         public float procChance {get;private set;} = 30f;
 
+        [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
+        [AutoConfig("If true, proc chance past 100% can triple-, quadruple-, etc.-proc.", AutoConfigFlags.None)]
+        public bool canMultiproc { get; private set; } = true;
+
         internal readonly List<EmbryoHook> allHooks = new List<EmbryoHook>();
 
         internal Dictionary<EmbryoHook, bool> hooksEnabled { get; } = new Dictionary<EmbryoHook, bool>();
@@ -116,7 +123,18 @@ namespace ThinkInvisible.ClassicItems {
             iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/embryo_icon.png");
             modelResource = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/Prefabs/Embryo.prefab");
 
+            new EmbryoHooks.BFG();
+            new EmbryoHooks.BlackHole();
             new EmbryoHooks.CommandMissile();
+            new EmbryoHooks.CritOnUse();
+            new EmbryoHooks.DeathProjectile();
+            new EmbryoHooks.DroneBackup();
+            new EmbryoHooks.Fruit();
+            new EmbryoHooks.Gateway();
+            new EmbryoHooks.Lightning();
+            new EmbryoHooks.PassiveHealing();
+            new EmbryoHooks.Saw();
+            new EmbryoHooks.Scanner();
         }
 
         public override void SetupConfig() {
@@ -137,8 +155,8 @@ namespace ThinkInvisible.ClassicItems {
                 hook.SetupConfig();
         }
 
-        public static bool ILInjectProcCheck(ILCursor c) {
-            bool boost = false;
+        public static int ILInjectProcCheck(ILCursor c) {
+            int boost = 0;
             c.Emit(OpCodes.Ldarg_0);
             c.EmitDelegate<Action<EquipmentSlot>>((slot) => {
                 boost = Embryo.instance.CheckEmbryoProc(slot.characterBody);
@@ -146,14 +164,20 @@ namespace ThinkInvisible.ClassicItems {
             return boost;
         }
 
-        public bool CheckEmbryoProc(CharacterBody body) {
-            if(!this.enabled) return false;
-            return Util.CheckRoll(Embryo.instance.GetCount(body) * procChance, body?.master);
+        public int CheckEmbryoProc(CharacterBody body) {
+            if(!this.enabled) return 0;
+            if(!canMultiproc)
+                return Util.CheckRoll(GetCount(body) * procChance, body?.master) ? 1 : 0;
+            var totalChance = GetCount(body) * procChance;
+            return Mathf.FloorToInt(totalChance) + (Util.CheckRoll((totalChance % 100f) / 100, body?.master) ? 1 : 0);
         }
 
-        public bool CheckEmbryoProc(Inventory inv) {
-            if(!this.enabled) return false;
-            return Util.CheckRoll(GetCount(inv) * procChance, inv?.gameObject?.GetComponent<CharacterMaster>());
+        public int CheckEmbryoProc(Inventory inv) {
+            if(!this.enabled) return 0;
+            if(!canMultiproc)
+                return Util.CheckRoll(GetCount(inv) * procChance, inv?.gameObject?.GetComponent<CharacterMaster>()) ? 1 : 0;
+            var totalChance = GetCount(inv) * procChance;
+            return Mathf.FloorToInt(totalChance) + (Util.CheckRoll((totalChance % 100f) / 100, inv?.gameObject?.GetComponent<CharacterMaster>()) ? 1 : 0);
         }
 
         public override void SetupAttributes() {
