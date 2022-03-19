@@ -26,7 +26,7 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
         private void EquipmentSlot_FireFireBallDash(ILContext il) {
             var c = new ILCursor(il);
 
-            var boost = Embryo.InjectLastProcCheckIL(il);
+            var boost = Embryo.InjectLastProcCheckIL(c);
 
             bool ILFound = c.TryGotoNext(
                 x => x.MatchLdstr("Prefabs/NetworkedObjects/FireballVehicle"))
