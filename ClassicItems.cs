@@ -42,7 +42,7 @@ namespace ThinkInvisible.ClassicItems {
         public const string ModName = "ClassicItems";
         public const string ModGuid = "com.ThinkInvisible.ClassicItems";
 
-        private static ConfigFile cfgFile;
+        internal static ConfigFile cfgFile;
         
         internal static FilingDictionary<CatalogBoilerplate> masterItemList = new FilingDictionary<CatalogBoilerplate>();
         
