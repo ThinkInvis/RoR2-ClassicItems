@@ -2,7 +2,7 @@
 using UnityEngine;
 using TILER2;
 using static TILER2.MiscUtil;
-
+using R2API;
 
 namespace ThinkInvisible.ClassicItems {
     public class SkeletonKey : Equipment<SkeletonKey> {
@@ -23,13 +23,19 @@ namespace ThinkInvisible.ClassicItems {
             modelResource = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/Prefabs/SkeletonKey.prefab");
         }
 
+        public override void SetupAttributes() {
+            base.SetupAttributes();
+
+            LanguageAPI.Add("EMBRYO_DESC_APPEND_CI_SKELETONKEY", "\n<style=cStack>Beating Embryo: Double range.<style>");
+        }
+
         protected override bool PerformEquipmentAction(EquipmentSlot slot) {
             if(!slot.characterBody) return false;
             if(SceneCatalog.mostRecentSceneDef.baseSceneName == "bazaar") return false;
             var sphpos = slot.characterBody.transform.position;
             var sphrad = radius;
-                
-            if(Embryo.instance.CheckEmbryoProc(slot.characterBody)) sphrad *= 2;
+
+            sphrad *= Embryo.CheckLastEmbryoProc(slot.characterBody) + 1;
 			Collider[] sphits = Physics.OverlapSphere(sphpos, sphrad, LayerIndex.defaultLayer.mask, QueryTriggerInteraction.Collide);
             bool foundAny = false;
             foreach(Collider c in sphits) {
@@ -46,5 +52,14 @@ namespace ThinkInvisible.ClassicItems {
             }
             return foundAny;
         }
+    }
+    public class SkeletonKeyEmbryoHook : Embryo.EmbryoHook {
+        public override EquipmentDef targetEquipment => SkeletonKey.instance.equipmentDef;
+        public override string descriptionAppendToken => $"EMBRYO_DESC_APPEND_CI_SKELETONKEY";
+
+        //only here for lang override, will be handled in PerformEquipmentAction in module
+        protected override void InstallHooks() { }
+
+        protected override void UninstallHooks() { }
     }
 }

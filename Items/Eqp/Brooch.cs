@@ -96,10 +96,7 @@ namespace ThinkInvisible.ClassicItems {
         protected override bool PerformEquipmentAction(EquipmentSlot slot) {
             if(!slot.characterBody) return false;
             if(SceneCatalog.mostRecentSceneDef.baseSceneName == "bazaar") return false;
-            bool s1 = TrySpawnChest(slot.characterBody.transform);
-            bool s2 = false;
-            if(Embryo.instance.CheckEmbryoProc(slot.characterBody)) s2 = TrySpawnChest(slot.characterBody.transform);
-            return s1 || s2;
+            return TrySpawnChest(slot.characterBody.transform);
         }
 
         private bool TrySpawnChest(Transform trans) {
@@ -131,6 +128,9 @@ namespace ThinkInvisible.ClassicItems {
                 }
             } else return true;
         }
+    }
+    public class BroochEmbryoHook : Embryo.SimpleRetriggerEmbryoHook {
+        public override EquipmentDef targetEquipment => Brooch.instance.equipmentDef;
     }
     internal class CaptainsBroochDroppod:NetworkBehaviour {
         ShakeEmitter shkm;

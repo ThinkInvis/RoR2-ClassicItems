@@ -57,8 +57,9 @@ namespace ThinkInvisible.ClassicItems {
             var sbdy = slot.characterBody;
             if(!sbdy) return false;
             sbdy.ClearTimedBuffs(pillageBuff);
-            sbdy.AddTimedBuff(pillageBuff, duration);
-            if(Embryo.instance.CheckEmbryoProc(sbdy)) sbdy.AddTimedBuff(pillageBuff, duration);
+            var boost = Embryo.CheckLastEmbryoProc(slot) + 1;
+            for(var i = 0; i < boost; i++)
+                sbdy.AddTimedBuff(pillageBuff, duration);
             return true;
         }
 
@@ -79,5 +80,14 @@ namespace ThinkInvisible.ClassicItems {
             else
                 chrm.GiveMoney((uint)mamt);
         }
+    }
+    public class PillageEmbryoHook : Embryo.EmbryoHook {
+        public override EquipmentDef targetEquipment => Pillage.instance.equipmentDef;
+        public override string descriptionAppendToken => $"EMBRYO_DESC_APPEND_RETRIGGER";
+
+        //only here for lang override, will be handled in PerformEquipmentAction in module
+        protected override void InstallHooks() { }
+
+        protected override void UninstallHooks() { }
     }
 }

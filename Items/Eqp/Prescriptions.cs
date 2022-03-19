@@ -81,9 +81,19 @@ namespace ThinkInvisible.ClassicItems {
             var sbdy = slot.characterBody;
             if(!sbdy) return false;
             sbdy.ClearTimedBuffs(prescriptionsBuff);
-            sbdy.AddTimedBuff(prescriptionsBuff, duration);
-            if(Embryo.instance.CheckEmbryoProc(sbdy)) sbdy.AddTimedBuff(prescriptionsBuff, duration);
+            var boost = Embryo.CheckLastEmbryoProc(slot) + 1;
+            for(var i = 0; i < boost; i++)
+                sbdy.AddTimedBuff(prescriptionsBuff, duration);
             return true;
         }
+    }
+    public class PrescriptionsEmbryoHook : Embryo.EmbryoHook {
+        public override EquipmentDef targetEquipment => Prescriptions.instance.equipmentDef;
+        public override string descriptionAppendToken => $"EMBRYO_DESC_APPEND_RETRIGGER";
+
+        //only here for lang override, will be handled in PerformEquipmentAction in module
+        protected override void InstallHooks() { }
+
+        protected override void UninstallHooks() { }
     }
 }

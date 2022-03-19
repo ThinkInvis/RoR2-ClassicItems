@@ -85,16 +85,17 @@ namespace ThinkInvisible.ClassicItems {
 
             snowglobeControllerPrefab = ctrlPfb2.InstantiateClone("snowglobeControllerPrefab", true);
             UnityEngine.Object.Destroy(ctrlPfb2);
+
+            LanguageAPI.Add("EMBRYO_DESC_APPEND_CI_SNOWGLOBE", "\n<style=cStack>Beating Embryo: Double duration.<style>");
         }
 
         protected override bool PerformEquipmentAction(EquipmentSlot slot) {
             if(!slot.characterBody || !slot.characterBody.teamComponent) return false;
             var ctrlInst = UnityEngine.Object.Instantiate(snowglobeControllerPrefab, slot.characterBody.corePosition, Quaternion.identity);
             ctrlInst.GetComponent<SnowglobeController>().myTeam = slot.characterBody.teamComponent.teamIndex;
-            if(Embryo.instance.CheckEmbryoProc(slot.characterBody)) {
-                ctrlInst.GetComponent<SnowglobeController>().remainingTicks *= 2;
-                ctrlInst.GetComponentInChildren<PostProcessDuration>().maxDuration *= 2;
-            }
+            var boost = Embryo.CheckLastEmbryoProc(slot.characterBody) + 1;
+            ctrlInst.GetComponent<SnowglobeController>().remainingTicks *= boost;
+            ctrlInst.GetComponentInChildren<PostProcessDuration>().maxDuration *= boost;
             NetworkServer.Spawn(ctrlInst);
             return true;
         }
@@ -132,5 +133,14 @@ namespace ThinkInvisible.ClassicItems {
                 }
 			}
         }
-	}
+    }
+    public class SnowglobeEmbryoHook : Embryo.EmbryoHook {
+        public override EquipmentDef targetEquipment => Snowglobe.instance.equipmentDef;
+        public override string descriptionAppendToken => $"EMBRYO_DESC_APPEND_CI_SNOWGLOBE";
+
+        //only here for lang override, will be handled in PerformEquipmentAction in module
+        protected override void InstallHooks() { }
+
+        protected override void UninstallHooks() { }
+    }
 }
