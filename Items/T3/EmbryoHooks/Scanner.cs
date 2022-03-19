@@ -21,7 +21,7 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
 
         protected internal override void SetupAttributes() {
             base.SetupAttributes();
-            LanguageAPI.Add(descriptionAppendToken, "\n<style=cStack>Beating Embryo: Double duration.<style>");
+            LanguageAPI.Add(descriptionAppendToken, "\n<style=cStack>Beating Embryo: Double duration. Cannot multiproc.<style>");
 
             boostedScannerPrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/NetworkedObjects/ChestScanner").InstantiateClone("EmbryoBoostedScannerPrefab", true);
             boostedScannerPrefab.GetComponent<ChestRevealer>().revealDuration *= 2f;
@@ -30,7 +30,7 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
         private void EquipmentSlot_FireScanner(ILContext il) {
             ILCursor c = new ILCursor(il);
 
-            bool boost = Embryo.ILInjectProcCheck(c);
+            var boost = Embryo.InjectLastProcCheckIL(c);
 
             bool ilFound = c.TryGotoNext(MoveType.After,
                 x => x.MatchLdstr("Prefabs/NetworkedObjects/ChestScanner"),
@@ -38,7 +38,7 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
 
             if(ilFound) {
                 c.EmitDelegate<Func<GameObject, GameObject>>((obj) => {
-                    return boost ? boostedScannerPrefab : obj;
+                    return (boost > 0) ? boostedScannerPrefab : obj;
                 });
             } else {
                 ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch: Scanner; target instructions not found");

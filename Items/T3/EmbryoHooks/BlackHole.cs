@@ -22,10 +22,10 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
             LanguageAPI.Add(descriptionAppendToken, "\n<style=cStack>Beating Embryo: Double pull radius.<style>");
         }
 
-        private void EquipmentSlot_FireBlackhole(MonoMod.Cil.ILContext il) {
+        private void EquipmentSlot_FireBlackhole(ILContext il) {
             ILCursor c = new ILCursor(il);
 
-            bool boost = Embryo.ILInjectProcCheck(c);
+            var boost = Embryo.InjectLastProcCheckIL(c);
 
             bool ilFound = c.TryGotoNext(MoveType.After,
                 x => x.MatchLdstr("Prefabs/Projectiles/GravSphere"),
@@ -34,7 +34,7 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
             if(ilFound) {
                 c.EmitDelegate<Func<GameObject, GameObject>>((obj) => {
                     var newobj = UnityEngine.Object.Instantiate(obj);
-                    if(boost) newobj.GetComponent<RadialForce>().radius *= 2;
+                    newobj.GetComponent<RadialForce>().radius *= boost + 1;
                     return newobj;
                 });
             } else {

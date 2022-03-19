@@ -13,12 +13,10 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
 
         protected override void InstallHooks() {
             IL.RoR2.EquipmentSlot.FixedUpdate += EquipmentSlot_FixedUpdate;
-            On.RoR2.EquipmentSlot.FireBfg += On_ESFireBfg;
         }
 
         protected override void UninstallHooks() {
             IL.RoR2.EquipmentSlot.FixedUpdate -= EquipmentSlot_FixedUpdate;
-            On.RoR2.EquipmentSlot.FireBfg -= On_ESFireBfg;
         }
 
         protected internal override void SetupAttributes() {
@@ -26,26 +24,10 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
             LanguageAPI.Add(descriptionAppendToken, "\n<style=cStack>Beating Embryo: Double impact damage.<style>");
         }
 
-        protected internal override void AddComponents(CharacterBody body) {
-            base.AddComponents(body);
-
-            if(!NetworkServer.active) return;
-
-            var cpt = body.gameObject.GetComponent<EmbryoBFGComponent>();
-            if(!cpt)
-                body.gameObject.AddComponent<EmbryoBFGComponent>();
-        }
-
         private void EquipmentSlot_FixedUpdate(ILContext il) {
             ILCursor c = new ILCursor(il);
 
-            EmbryoBFGComponent cpt = null;
-            bool boost = false;
-            c.Emit(OpCodes.Ldarg_0);
-            c.EmitDelegate<Action<EquipmentSlot>>((slot) => {
-                boost = Embryo.instance.CheckEmbryoProc(slot.characterBody);
-                cpt = slot.characterBody?.GetComponentInChildren<EmbryoBFGComponent>();
-            });
+            var boost = Embryo.InjectLastProcCheckIL(c);
 
             bool ilFound = c.TryGotoNext(
                     x => x.MatchLdstr("Prefabs/Projectiles/BeamSphere"))
@@ -57,30 +39,11 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
             if(ilFound) {
                 c.Index += 2;
                 c.EmitDelegate<Func<float, float>>((origDamage) => {
-                    if(cpt && cpt.boostedBFGs > 0) {
-                        cpt.boostedBFGs--;
-                        return origDamage * 2f;
-                    }
-                    return origDamage;
+                    return origDamage * (boost + 1);
                 });
             } else {
                 ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch: BFG (FixedUpdate)");
             }
         }
-
-        private bool On_ESFireBfg(On.RoR2.EquipmentSlot.orig_FireBfg orig, EquipmentSlot self) {
-            var retv = orig(self);
-            bool boost = Embryo.instance.CheckEmbryoProc(self.inventory);
-            var cpt = self.characterBody?.gameObject.GetComponent<EmbryoBFGComponent>();
-
-            if(boost && cpt)
-                cpt.boostedBFGs++;
-
-            return retv;
-        }
-    }
-
-    public class EmbryoBFGComponent : MonoBehaviour {
-        public int boostedBFGs = 0;
     }
 }

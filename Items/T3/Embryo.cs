@@ -94,8 +94,9 @@ namespace ThinkInvisible.ClassicItems {
 
             private bool EquipmentSlot_PerformEquipmentAction(On.RoR2.EquipmentSlot.orig_PerformEquipmentAction orig, EquipmentSlot self, EquipmentDef equipmentDef) {
                 var retv = orig(self, equipmentDef);
-                var proc = Embryo.instance.CheckEmbryoProc(self.inventory);
-                if(proc > 0 && equipmentDef == this.targetEquipment) {
+                if(equipmentDef != this.targetEquipment) return retv;
+                var proc = CheckLastEmbryoProc(self);
+                if(proc > 0) {
                     for(var i = 0; i < proc; i++)
                         retv |= orig(self, equipmentDef); //return true if any activation was successful
                 }
@@ -155,16 +156,41 @@ namespace ThinkInvisible.ClassicItems {
                 hook.SetupConfig();
         }
 
-        public static int ILInjectProcCheck(ILCursor c) {
+        public static int InjectLastProcCheckIL(ILCursor c) {
             int boost = 0;
             c.Emit(OpCodes.Ldarg_0);
             c.EmitDelegate<Action<EquipmentSlot>>((slot) => {
-                boost = Embryo.instance.CheckEmbryoProc(slot.characterBody);
+                boost = CheckLastEmbryoProc(slot);
             });
             return boost;
         }
 
-        public int CheckEmbryoProc(CharacterBody body) {
+        public static (int boost, TComponent cpt) InjectLastProcCheckIL<TComponent>(ILCursor c) where TComponent : MonoBehaviour {
+            int boost = 0;
+            TComponent cpt = null;
+            c.Emit(OpCodes.Ldarg_0);
+            c.EmitDelegate<Action<EquipmentSlot>>((slot) => {
+                boost = CheckLastEmbryoProc(slot);
+                cpt = slot.characterBody?.GetComponentInChildren<TComponent>();
+            });
+            return (boost, cpt);
+        }
+
+        public static (int boost, TComponent cpt) InjectLastProcCheckDirect<TComponent>(EquipmentSlot slot) where TComponent : MonoBehaviour {
+            int boost = CheckLastEmbryoProc(slot);
+            var cpt = slot.characterBody?.gameObject.GetComponent<TComponent>();
+            return (boost, cpt);
+        }
+
+        public static int CheckLastEmbryoProc(CharacterBody body) {
+            return body?.GetComponent<EmbryoTrackLastComponent>()?.lastBoost ?? 0;
+        }
+
+        public static int CheckLastEmbryoProc(EquipmentSlot slot) {
+            return slot?.characterBody?.GetComponent<EmbryoTrackLastComponent>()?.lastBoost ?? 0;
+        }
+
+        private int _CheckEmbryoProc(CharacterBody body) {
             if(!this.enabled) return 0;
             if(!canMultiproc)
                 return Util.CheckRoll(GetCount(body) * procChance, body?.master) ? 1 : 0;
@@ -172,12 +198,20 @@ namespace ThinkInvisible.ClassicItems {
             return Mathf.FloorToInt(totalChance) + (Util.CheckRoll((totalChance % 100f) / 100, body?.master) ? 1 : 0);
         }
 
-        public int CheckEmbryoProc(Inventory inv) {
+        public static int CheckEmbryoProc(CharacterBody body) {
+            return Embryo.instance._CheckEmbryoProc(body);
+        }
+
+        private int _CheckEmbryoProc(Inventory inv) {
             if(!this.enabled) return 0;
             if(!canMultiproc)
                 return Util.CheckRoll(GetCount(inv) * procChance, inv?.gameObject?.GetComponent<CharacterMaster>()) ? 1 : 0;
             var totalChance = GetCount(inv) * procChance;
             return Mathf.FloorToInt(totalChance) + (Util.CheckRoll((totalChance % 100f) / 100, inv?.gameObject?.GetComponent<CharacterMaster>()) ? 1 : 0);
+        }
+
+        public static int CheckEmbryoProc(Inventory inv) {
+            return Embryo.instance._CheckEmbryoProc(inv);
         }
 
         public override void SetupAttributes() {
@@ -214,7 +248,9 @@ namespace ThinkInvisible.ClassicItems {
             }
 
             On.RoR2.CharacterBody.OnInventoryChanged += On_CBOnInventoryChanged;
+            On.RoR2.EquipmentSlot.PerformEquipmentAction += EquipmentSlot_PerformEquipmentAction;
         }
+
         public override void Uninstall() {
             base.Uninstall();
 
@@ -223,6 +259,7 @@ namespace ThinkInvisible.ClassicItems {
             }
 
             On.RoR2.CharacterBody.OnInventoryChanged -= On_CBOnInventoryChanged;
+            On.RoR2.EquipmentSlot.PerformEquipmentAction -= EquipmentSlot_PerformEquipmentAction;
         }
 
         public override void InstallLanguage() {
@@ -237,10 +274,25 @@ namespace ThinkInvisible.ClassicItems {
         private void On_CBOnInventoryChanged(On.RoR2.CharacterBody.orig_OnInventoryChanged orig, CharacterBody self) {
             orig(self);
             if(!NetworkServer.active || GetCount(self) < 1) return;
+            var cpt = self.gameObject.GetComponent<EmbryoTrackLastComponent>();
+            if(!cpt)
+                self.gameObject.AddComponent<EmbryoTrackLastComponent>();
             foreach(var hook in allHooks) {
                 if(!hook.isEnabled) continue;
                 hook.AddComponents(self);
             }
         }
+
+        private bool EquipmentSlot_PerformEquipmentAction(On.RoR2.EquipmentSlot.orig_PerformEquipmentAction orig, EquipmentSlot self, EquipmentDef equipmentDef) {
+            int boost = CheckEmbryoProc(self.characterBody);
+            var cpt = self.characterBody?.gameObject.GetComponent<EmbryoTrackLastComponent>();
+            if(cpt) cpt.lastBoost = boost;
+
+            return orig(self, equipmentDef);
+        }
+    }
+
+    public class EmbryoTrackLastComponent : MonoBehaviour {
+        public int lastBoost = 0;
     }
 }

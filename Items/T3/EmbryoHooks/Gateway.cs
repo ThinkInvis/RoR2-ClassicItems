@@ -21,7 +21,7 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
 
         protected internal override void SetupAttributes() {
             base.SetupAttributes();
-            LanguageAPI.Add(descriptionAppendToken, "\n<style=cStack>Beating Embryo: Double transit speed.<style>");
+            LanguageAPI.Add(descriptionAppendToken, "\n<style=cStack>Beating Embryo: Double transit speed. Cannot multiproc.<style>");
 
             boostedGatewayPrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/NetworkedObjects/Zipline").InstantiateClone("EmbryoBoostedGatewayPrefab", true);
             var ziplineCtrl = boostedGatewayPrefab.GetComponent<ZiplineController>();
@@ -34,7 +34,7 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
         private void EquipmentSlot_FireGateway(ILContext il) {
             ILCursor c = new ILCursor(il);
 
-            bool boost = Embryo.ILInjectProcCheck(c);
+            var boost = Embryo.InjectLastProcCheckIL(c);
 
             bool ilFound = c.TryGotoNext(MoveType.After,
                 x => x.MatchLdstr("Prefabs/NetworkedObjects/Zipline"),
@@ -42,7 +42,7 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
 
             if(ilFound) {
                 c.EmitDelegate<Func<GameObject, GameObject>>((obj) => {
-                    return boost ? boostedGatewayPrefab : obj;
+                    return (boost > 0) ? boostedGatewayPrefab : obj;
                 });
             } else {
                 ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch: Gateway; target instructions not found");

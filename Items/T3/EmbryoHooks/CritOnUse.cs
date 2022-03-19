@@ -36,13 +36,7 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
         private void EquipmentSlot_FireCritOnUse(ILContext il) {
             ILCursor c = new ILCursor(il);
 
-            EmbryoCritOnUseComponent cpt = null;
-            bool boost = false;
-            c.Emit(OpCodes.Ldarg_0);
-            c.EmitDelegate<Action<EquipmentSlot>>((slot) => {
-                boost = Embryo.instance.CheckEmbryoProc(slot.characterBody);
-                cpt = slot.characterBody?.GetComponentInChildren<EmbryoCritOnUseComponent>();
-            });
+            var boost = Embryo.InjectLastProcCheckIL(c);
 
             bool ilFound = c.TryGotoNext(
                 x => x.OpCode == OpCodes.Ldc_R4,
@@ -51,8 +45,7 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
             if(ilFound) {
                 c.Index += 1;
                 c.EmitDelegate<Func<float, float>>((origBuffTime) => {
-                    if(cpt) cpt.lastUseWasBoosted = boost;
-                    return boost ? origBuffTime * 2 : origBuffTime;
+                    return origBuffTime * (boost + 1);
                 });
             } else {
                 ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch: CritOnUse; target instructions not found");
@@ -62,6 +55,8 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
         private void IL_ESRpcOnEquipmentActivationReceived(ILContext il) {
             ILCursor c = new ILCursor(il);
 
+            var boost = Embryo.InjectLastProcCheckIL(c);
+
             bool ILFound = c.TryGotoNext(MoveType.After,
                 x => x.MatchLdstr("activeDuration"),
                 x => x.MatchLdcR4(out _));
@@ -69,15 +64,11 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
             if(ILFound) {
                 c.Emit(OpCodes.Ldarg_0);
                 c.EmitDelegate<Func<float, EquipmentSlot, float>>((origValue, slot) => {
-                    return (slot.characterBody?.GetComponentInChildren<EmbryoCritOnUseComponent>()?.lastUseWasBoosted == true) ? origValue * 2f : origValue;
+                    return origValue * (boost + 1);
                 });
             } else {
                 ClassicItemsPlugin._logger.LogError("Failed to apply Beating Embryo IL patch: CritOnUse VFX (RpcOnEquipmentActivationReceived); target instructions not found");
             }
-        }
-
-        public class EmbryoCritOnUseComponent : NetworkBehaviour {
-            public bool lastUseWasBoosted = false;
         }
     }
 }

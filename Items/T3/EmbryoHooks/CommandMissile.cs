@@ -37,12 +37,12 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
             var prevM = self.remainingMissiles;
             var retv = orig(self);
             var addedM = self.remainingMissiles - prevM;
-            bool boost = Embryo.instance.CheckEmbryoProc(self.inventory);
-            var cpt = self.characterBody?.gameObject.GetComponent<EmbryoCommandMissileComponent>();
+            var (boost, cpt) = Embryo.InjectLastProcCheckDirect<EmbryoCommandMissileComponent>(self);
 
-            if(boost && cpt) {
-                cpt.boostedMissiles += addedM * 2;
-                self.remainingMissiles += addedM;
+            if(boost > 0 && cpt) {
+                var procM = addedM * boost;
+                cpt.boostedMissiles += procM + addedM;
+                self.remainingMissiles += procM;
             }
 
             return retv;
@@ -52,7 +52,7 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
             orig(self);
             var cpt = self.characterBody?.gameObject.GetComponent<EmbryoCommandMissileComponent>();
             if(cpt && cpt.boostedMissiles > 0) {
-                self.missileTimer /= 2f;
+                self.missileTimer /= Mathf.Floor(cpt.boostedMissiles/12) + 2;
                 cpt.boostedMissiles--;
             }
         }
