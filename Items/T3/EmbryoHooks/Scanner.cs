@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace ThinkInvisible.ClassicItems.EmbryoHooks {
     public class Scanner : Embryo.EmbryoHook {
-        public override EquipmentDef targetEquipment => RoR2Content.Equipment.Scanner;
+        public override EquipmentDef targetEquipment => LegacyResourcesAPI.Load<EquipmentDef>("EquipmentDefs/Scanner");
         public override string descriptionAppendToken => "EMBRYO_DESC_APPEND_SCANNER";
 
         protected override void InstallHooks() {

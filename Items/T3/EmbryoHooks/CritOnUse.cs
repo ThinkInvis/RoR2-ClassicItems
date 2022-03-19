@@ -7,7 +7,7 @@ using UnityEngine.Networking;
 
 namespace ThinkInvisible.ClassicItems.EmbryoHooks {
     public class CritOnUse : Embryo.EmbryoHook {
-        public override EquipmentDef targetEquipment => RoR2Content.Equipment.CritOnUse;
+        public override EquipmentDef targetEquipment => LegacyResourcesAPI.Load<EquipmentDef>("EquipmentDefs/CritOnUse");
         public override string descriptionAppendToken => "EMBRYO_DESC_APPEND_CRITONUSE";
 
         protected override void InstallHooks() {

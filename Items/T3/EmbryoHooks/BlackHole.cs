@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace ThinkInvisible.ClassicItems.EmbryoHooks {
     public class BlackHole : Embryo.EmbryoHook {
-        public override EquipmentDef targetEquipment => RoR2Content.Equipment.Blackhole;
+        public override EquipmentDef targetEquipment => LegacyResourcesAPI.Load<EquipmentDef>("EquipmentDefs/BlackHole");
         public override string descriptionAppendToken => "EMBRYO_DESC_APPEND_BLACKHOLE";
 
         protected override void InstallHooks() {

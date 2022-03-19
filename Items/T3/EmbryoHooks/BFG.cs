@@ -8,7 +8,7 @@ using UnityEngine.Networking;
 
 namespace ThinkInvisible.ClassicItems.EmbryoHooks {
     public class BFG : Embryo.EmbryoHook {
-        public override EquipmentDef targetEquipment => RoR2Content.Equipment.BFG;
+        public override EquipmentDef targetEquipment => LegacyResourcesAPI.Load<EquipmentDef>("EquipmentDefs/BFG");
         public override string descriptionAppendToken => "EMBRYO_DESC_APPEND_BFG";
 
         protected override void InstallHooks() {
