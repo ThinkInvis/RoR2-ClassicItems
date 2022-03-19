@@ -19,7 +19,6 @@ namespace ThinkInvisible.ClassicItems {
             public virtual string descriptionAppendToken { get; } = null;
             public bool isInstalled { get; private set; } = false;
             public bool isEnabled { get; private set; } = true;
-            //TODO: reimplement config-based enable/disable
 
             public EmbryoHook() {
                 Embryo.instance.allHooks.Add(this);
