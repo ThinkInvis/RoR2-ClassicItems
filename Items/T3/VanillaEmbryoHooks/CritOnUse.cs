@@ -20,14 +20,6 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
             IL.RoR2.EquipmentSlot.RpcOnClientEquipmentActivationRecieved -= IL_ESRpcOnEquipmentActivationReceived;
         }
 
-        protected internal override void AddComponents(CharacterBody body) {
-            base.AddComponents(body);
-
-            var cpt = body.gameObject.GetComponent<EmbryoCritOnUseComponent>();
-            if(!cpt)
-                body.gameObject.AddComponent<EmbryoCritOnUseComponent>();
-        }
-
         protected internal override void SetupAttributes() {
             base.SetupAttributes();
             LanguageAPI.Add(descriptionAppendToken, "\n<style=cStack>Beating Embryo: Double duration.<style>");
