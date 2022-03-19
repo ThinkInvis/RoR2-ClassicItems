@@ -126,16 +126,24 @@ namespace ThinkInvisible.ClassicItems {
 
             new EmbryoHooks.BFG();
             new EmbryoHooks.BlackHole();
+            new EmbryoHooks.Cleanse();
             new EmbryoHooks.CommandMissile();
             new EmbryoHooks.CritOnUse();
             new EmbryoHooks.DeathProjectile();
             new EmbryoHooks.DroneBackup();
+            new EmbryoHooks.FireBallDash();
             new EmbryoHooks.Fruit();
+            new EmbryoHooks.GainArmor();
             new EmbryoHooks.Gateway();
+            new EmbryoHooks.GoldGat();
+            new EmbryoHooks.Jetpack();
+            new EmbryoHooks.LifestealOnHit();
             new EmbryoHooks.Lightning();
             new EmbryoHooks.PassiveHealing();
+            new EmbryoHooks.Recycle();
             new EmbryoHooks.Saw();
             new EmbryoHooks.Scanner();
+            new EmbryoHooks.TeamWarCry();
         }
 
         public override void SetupConfig() {
