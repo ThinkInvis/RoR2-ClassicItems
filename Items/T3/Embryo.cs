@@ -23,6 +23,14 @@ namespace ThinkInvisible.ClassicItems {
             public bool isInstalled { get; private set; } = false;
             public bool isEnabled { get; private set; } = true;
 
+            public string SubEnableName { get {
+                    var spl = targetEquipment.nameToken.Split('_').ToList();
+                    //compat with modded items that don't follow vanilla token format
+                    if(spl.Last() == "NAME") spl.RemoveAt(spl.Count - 1);
+                    if(spl.First() == "EQUIPMENT") spl.RemoveAt(0);
+                    return String.Join("_", spl);
+                } }
+
             public EmbryoHook() {
                 if(this.targetEquipment == null) {
                     ClassicItemsPlugin._logger.LogError($"Attempt to register EmbryoHook for null EquipmentDef; skipping");
@@ -114,7 +122,7 @@ namespace ThinkInvisible.ClassicItems {
         public override void SetupConfig() {
             base.SetupConfig();
 
-            Bind(typeof(Embryo).GetPropertyCached(nameof(hooksEnabled)), ClassicItemsPlugin.cfgFile, "ClassicItems", "Items.Embryo.SubEnable", new AutoConfigAttribute("<AIC.DictKey>", "If false, this equipment's Beating Embryo functionality will be disabled.", AutoConfigFlags.BindDict | AutoConfigFlags.PreventNetMismatch));
+            Bind(typeof(Embryo).GetPropertyCached(nameof(hooksEnabled)), ClassicItemsPlugin.cfgFile, "ClassicItems", "Items.Embryo.SubEnable", new AutoConfigAttribute($"<AIC.DictKeyProp.{nameof(EmbryoHook.SubEnableName)}>", "If false, this equipment's Beating Embryo functionality will be disabled.", AutoConfigFlags.BindDict | AutoConfigFlags.PreventNetMismatch));
 
             ConfigEntryChanged += (sender,args) => {
                 var hook = (EmbryoHook)args.target.boundKey;
