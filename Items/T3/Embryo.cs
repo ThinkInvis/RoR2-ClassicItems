@@ -85,7 +85,6 @@ namespace ThinkInvisible.ClassicItems {
 
         internal readonly List<EmbryoHook> allHooks = new List<EmbryoHook>();
 
-        [AutoConfig("Controls which equipments work with Beating Embryo.", AutoConfigFlags.BindDict | AutoConfigFlags.PreventNetMismatch)]
         internal Dictionary<EmbryoHook, bool> hooksEnabled { get; } = new Dictionary<EmbryoHook, bool>();
 
         public Embryo() {
@@ -97,6 +96,8 @@ namespace ThinkInvisible.ClassicItems {
 
         public override void SetupConfig() {
             base.SetupConfig();
+
+            Bind(typeof(Embryo).GetPropertyCached(nameof(hooksEnabled)), ClassicItemsPlugin.cfgFile, "ClassicItems", "Items.Embryo.SubEnable", new AutoConfigAttribute("<AIC.DictKey>", "If false, this equipment's Beating Embryo functionality will be disabled.", AutoConfigFlags.BindDict | AutoConfigFlags.PreventNetMismatch));
 
             ConfigEntryChanged += (sender,args) => {
                 var hook = (EmbryoHook)args.target.boundKey;
