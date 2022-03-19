@@ -18,8 +18,6 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
             IL.EntityStates.GoldGat.GoldGatFire.FireBullet -= GoldGatFire_FireBullet;
         }
 
-        GameObject boostedGatewayPrefab;
-
         protected internal override void SetupAttributes() {
             base.SetupAttributes();
             LanguageAPI.Add(descriptionAppendToken, "\n<style=cStack>Beating Embryo: Double fire rate. Procs per individual shot.<style>");
