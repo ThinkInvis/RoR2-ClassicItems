@@ -48,22 +48,13 @@ namespace ThinkInvisible.ClassicItems {
             var teamMembers = ClassicItemsPlugin.GatherEnemies(slot.characterBody.teamComponent.teamIndex);
 			float lowestDist = float.MaxValue;
 			HurtBox result = null;
-            float secondLowestDist = float.MaxValue;
-            HurtBox result2 = null;
             foreach(TeamComponent tcpt in teamMembers) {
                 if(!tcpt.body || !tcpt.body.isActiveAndEnabled || !tcpt.body.mainHurtBox) continue;
 				float currDist = Vector3.SqrMagnitude(tcpt.transform.position - tpos);
 				if(currDist < lowestDist) {
-                    secondLowestDist = lowestDist;
-                    result2 = result;
-
 					lowestDist = currDist;
 					result = tcpt.body.mainHurtBox;
 				}
-                if(currDist < secondLowestDist && currDist > lowestDist) {
-                    secondLowestDist = currDist;
-                    result2 = tcpt.body.mainHurtBox;
-                }
 			}
             var myHcpt = slot.characterBody?.healthComponent ?? null;
             bool didHit = false;
@@ -76,20 +67,6 @@ namespace ThinkInvisible.ClassicItems {
                         isCrit = false,
                         origin = slot.characterBody.corePosition,
                         target = result,
-                        procCoefficient = 0f,
-                        procChainMask = default,
-                        scale = 10f
-                    });
-                    didHit = true;
-                }
-                if(result2 && Embryo.instance.CheckEmbryoProc(slot.characterBody)) {
-                    OrbManager.instance.AddOrb(new LostDollOrb {
-                        attacker = slot.characterBody.gameObject,
-                        damageColorIndex = DamageColorIndex.Default,
-                        damageValue = myHcpt.fullCombinedHealth * damageGiven,
-                        isCrit = false,
-                        origin = slot.characterBody.corePosition,
-                        target = result2,
                         procCoefficient = 0f,
                         procChainMask = default,
                         scale = 10f

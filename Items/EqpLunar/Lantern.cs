@@ -74,9 +74,6 @@ namespace ThinkInvisible.ClassicItems {
 			lw.damage = slot.characterBody.damage * damage;
 			lw.duration = duration;
 			lw.radius = range;
-            if(Embryo.instance.CheckEmbryoProc(slot.characterBody)) {
-				lw.duration *= 2;
-            }
             return true;
         }
 	}
