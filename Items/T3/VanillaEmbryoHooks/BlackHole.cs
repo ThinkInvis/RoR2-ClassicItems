@@ -30,7 +30,7 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
 
             bool ilFound = c.TryGotoNext(MoveType.After,
                 x => x.MatchLdstr("Prefabs/Projectiles/GravSphere"),
-                x => x.MatchCallOrCallvirt<Resources>("Load"));
+                x => x.MatchCallOrCallvirt("RoR2.LegacyResourcesAPI", "Load"));
 
             if(ilFound) {
                 c.EmitDelegate<Func<GameObject, GameObject>>((obj) => {

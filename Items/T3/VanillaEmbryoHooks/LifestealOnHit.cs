@@ -28,7 +28,7 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
             var boost = Embryo.InjectLastProcCheckIL(c);
 
             bool ilFound = c.TryGotoNext(MoveType.After,
-                x => x.MatchLdsfld<RoR2Content>("Buffs::LifeSteal"),
+                x => x.MatchLdsfld("RoR2.RoR2Content/Buffs", "LifeSteal"),
                 x => x.MatchCallOrCallvirt<CharacterBody>(nameof(CharacterBody.HasBuff)),
                 x => x.MatchBrfalse(out _),
                 x => x.MatchLdarg(1),

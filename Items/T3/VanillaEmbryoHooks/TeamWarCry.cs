@@ -28,7 +28,6 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
             var boost = Embryo.InjectLastProcCheckIL(c);
 
             bool ILFound = c.TryGotoNext(MoveType.After,
-                x => x.MatchLdcI4(out _),
                 x => x.MatchLdcR4(out _),
                 x => x.MatchCallOrCallvirt<CharacterBody>("AddTimedBuff"));
 
@@ -42,7 +41,6 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
             }
 
             ILFound = c.TryGotoNext(MoveType.After,
-                x => x.MatchLdcI4(out _),
                 x => x.MatchLdcR4(out _),
                 x => x.MatchCallOrCallvirt<CharacterBody>("AddTimedBuff"));
 
