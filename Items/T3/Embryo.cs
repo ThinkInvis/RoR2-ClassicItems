@@ -158,16 +158,24 @@ namespace ThinkInvisible.ClassicItems {
 
         public static (int boost, TComponent cpt) InjectLastProcCheckDirect<TComponent>(EquipmentSlot slot) where TComponent : MonoBehaviour {
             int boost = CheckLastEmbryoProc(slot);
-            var cpt = slot.characterBody?.gameObject.GetComponent<TComponent>();
+            TComponent cpt = null;
+            if(slot && slot.characterBody)
+                cpt = slot.characterBody.gameObject.GetComponent<TComponent>();
             return (boost, cpt);
         }
 
         public static int CheckLastEmbryoProc(CharacterBody body) {
-            return body?.GetComponent<EmbryoTrackLastComponent>()?.lastBoost ?? 0;
+            if(!body) return 0;
+            var cpt = body.GetComponent<EmbryoTrackLastComponent>();
+            if(!cpt) return 0;
+            return cpt.lastBoost;
         }
 
         public static int CheckLastEmbryoProc(EquipmentSlot slot) {
-            return slot?.characterBody?.GetComponent<EmbryoTrackLastComponent>()?.lastBoost ?? 0;
+            if(!slot || !slot.characterBody) return 0;
+            var cpt = slot.characterBody.GetComponent<EmbryoTrackLastComponent>();
+            if(!cpt) return 0;
+            return cpt.lastBoost;
         }
 
         private int _CheckEmbryoProc(CharacterBody body) {
