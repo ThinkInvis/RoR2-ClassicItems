@@ -137,6 +137,7 @@ namespace ThinkInvisible.ClassicItems {
     public class SnowglobeEmbryoHook : Embryo.EmbryoHook {
         public override EquipmentDef targetEquipment => Snowglobe.instance.equipmentDef;
         public override string descriptionAppendToken => $"EMBRYO_DESC_APPEND_CI_SNOWGLOBE";
+        public override string configDisplayName => "Snowglobe";
 
         //only here for lang override, will be handled in PerformEquipmentAction in module
         protected override void InstallHooks() { }

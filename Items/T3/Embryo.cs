@@ -11,44 +11,19 @@ using R2API;
 using TILER2;
 using static TILER2.MiscUtil;
 using R2API.Utils;
+using System.Reflection;
 
 namespace ThinkInvisible.ClassicItems {
     //[Obsolete("Unstable as of CI 5.0.0; currently undergoing rewrite.")]
     public class Embryo : Item<Embryo> {
         public abstract class EmbryoHook {
-            private static readonly HashSet<EquipmentDef> registeredDefs = new HashSet<EquipmentDef>();
-
             public abstract EquipmentDef targetEquipment { get; }
+            public abstract string configDisplayName { get; }
             public virtual string descriptionAppendToken { get; } = null;
             public bool isInstalled { get; private set; } = false;
             public bool isEnabled { get; private set; } = true;
 
-            public string SubEnableName { get {
-                    var spl = targetEquipment.nameToken.Split('_').ToList();
-                    //compat with modded items that don't follow vanilla token format
-                    if(spl.Last() == "NAME") spl.RemoveAt(spl.Count - 1);
-                    if(spl.First() == "EQUIPMENT") spl.RemoveAt(0);
-                    return String.Join("_", spl);
-                } }
-
-            public EmbryoHook() {
-                if(this.targetEquipment == null) {
-                    ClassicItemsPlugin._logger.LogError($"Attempt to register EmbryoHook for null EquipmentDef; skipping");
-                    return;
-                }
-
-                if(registeredDefs.Contains(this.targetEquipment)) {
-                    ClassicItemsPlugin._logger.LogError($"An EmbryoHook has already been registered for the equipment {targetEquipment} ({targetEquipment.nameToken}); skipping");
-                    return;
-                }
-
-                ClassicItemsPlugin._logger.LogDebug($"Added EmbryoHook for EquipmentDef {targetEquipment} ({targetEquipment.nameToken})");
-
-                registeredDefs.Add(this.targetEquipment);
-
-                Embryo.instance.allHooks.Add(this);
-                Embryo.instance.hooksEnabled.Add(this, isEnabled);
-            }
+            public EmbryoHook() { }
 
             internal void Install() {
                 if(this.isInstalled) return;
@@ -124,44 +99,37 @@ namespace ThinkInvisible.ClassicItems {
             iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/embryo_icon.png");
             modelResource = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/Prefabs/Embryo.prefab");
 
-            new EmbryoHooks.BFG();
-            new EmbryoHooks.BlackHole();
-            new EmbryoHooks.Cleanse();
-            new EmbryoHooks.CommandMissile();
-            new EmbryoHooks.CritOnUse();
-            new EmbryoHooks.DeathProjectile();
-            new EmbryoHooks.DroneBackup();
-            new EmbryoHooks.FireBallDash();
-            new EmbryoHooks.Fruit();
-            new EmbryoHooks.GainArmor();
-            new EmbryoHooks.Gateway();
-            new EmbryoHooks.GoldGat();
-            new EmbryoHooks.Jetpack();
-            new EmbryoHooks.LifestealOnHit();
-            new EmbryoHooks.Lightning();
-            new EmbryoHooks.PassiveHealing();
-            new EmbryoHooks.Recycle();
-            new EmbryoHooks.Saw();
-            new EmbryoHooks.Scanner();
-            new EmbryoHooks.TeamWarCry();
+            InitAllEmbryoHooksInMyAssembly();
+        }
+
+        public static void InitAllEmbryoHooksInMyAssembly()  {
+            var callingAssembly = Assembly.GetCallingAssembly();
+            foreach(Type type in callingAssembly.GetTypes().Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(typeof(EmbryoHook)))) {
+                var newModule = (EmbryoHook)Activator.CreateInstance(type, nonPublic: true);
+                Embryo.instance.allHooks.Add(newModule);
+                Embryo.instance.hooksEnabled.Add(newModule, true);
+            }
         }
 
         public override void SetupConfig() {
             base.SetupConfig();
 
-            Bind(typeof(Embryo).GetPropertyCached(nameof(hooksEnabled)), ClassicItemsPlugin.cfgFile, "ClassicItems", "Items.Embryo.SubEnable", new AutoConfigAttribute($"<AIC.DictKeyProp.{nameof(EmbryoHook.SubEnableName)}>", "If false, this equipment's Beating Embryo functionality will be disabled.", AutoConfigFlags.BindDict | AutoConfigFlags.PreventNetMismatch));
+            foreach(var hook in allHooks) {
+                hook.SetupConfig();
+            }
+
+            Bind(typeof(Embryo).GetPropertyCached(nameof(hooksEnabled)), ClassicItemsPlugin.cfgFile, "ClassicItems", "Items.Embryo.SubEnable", new AutoConfigAttribute($"<AIC.DictKeyProp.{nameof(EmbryoHook.configDisplayName)}>", "If false, this equipment's Beating Embryo functionality will be disabled.", AutoConfigFlags.BindDict | AutoConfigFlags.PreventNetMismatch));
 
             ConfigEntryChanged += (sender,args) => {
-                var hook = (EmbryoHook)args.target.boundKey;
-                if((bool)args.newValue) {
-                    hook.Enable();
-                } else {
-                    hook.Disable();
+                if(args.target.boundProperty.Name == nameof(hooksEnabled)) {
+                    var hook = (EmbryoHook)args.target.boundKey;
+                    if((bool)args.newValue) {
+                        hook.Enable();
+                    } else {
+                        hook.Disable();
+                    }
                 }
             };
-
-            foreach(var hook in allHooks)
-                hook.SetupConfig();
         }
 
         public static int InjectLastProcCheckIL(ILCursor c) {

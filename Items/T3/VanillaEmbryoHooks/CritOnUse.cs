@@ -9,6 +9,7 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
     public class CritOnUse : Embryo.EmbryoHook {
         public override EquipmentDef targetEquipment => LegacyResourcesAPI.Load<EquipmentDef>("EquipmentDefs/CritOnUse");
         public override string descriptionAppendToken => "EMBRYO_DESC_APPEND_CRITONUSE";
+        public override string configDisplayName => "OcularHUD";
 
         protected override void InstallHooks() {
             IL.RoR2.EquipmentSlot.FireCritOnUse += EquipmentSlot_FireCritOnUse;

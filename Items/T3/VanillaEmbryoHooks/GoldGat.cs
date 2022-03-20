@@ -9,6 +9,7 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
     public class GoldGat : Embryo.EmbryoHook {
         public override EquipmentDef targetEquipment => LegacyResourcesAPI.Load<EquipmentDef>("EquipmentDefs/GoldGat");
         public override string descriptionAppendToken => "EMBRYO_DESC_APPEND_GOLDGAT";
+        public override string configDisplayName => "TheCrowdfunder";
 
         protected override void InstallHooks() {
             IL.EntityStates.GoldGat.GoldGatFire.FireBullet += GoldGatFire_FireBullet;

@@ -9,6 +9,7 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
     public class Recycle : Embryo.EmbryoHook {
         public override EquipmentDef targetEquipment => LegacyResourcesAPI.Load<EquipmentDef>("EquipmentDefs/Recycle");
         public override string descriptionAppendToken => "EMBRYO_DESC_APPEND_RECYCLE";
+        public override string configDisplayName => "Recycler";
 
         protected override void InstallHooks() {
             IL.RoR2.EquipmentSlot.FireRecycle += EquipmentSlot_FireRecycle;

@@ -10,6 +10,7 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
     public class Cleanse : Embryo.EmbryoHook {
         public override EquipmentDef targetEquipment => LegacyResourcesAPI.Load<EquipmentDef>("EquipmentDefs/Cleanse");
         public override string descriptionAppendToken => "EMBRYO_DESC_APPEND_CLEANSE";
+        public override string configDisplayName => "BlastShower";
 
         protected override void InstallHooks() {
             IL.RoR2.Util.CleanseBody += IL_UtilCleanseBody;

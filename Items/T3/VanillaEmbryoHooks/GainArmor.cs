@@ -7,6 +7,7 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
     public class GainArmor : Embryo.EmbryoHook {
         public override EquipmentDef targetEquipment => LegacyResourcesAPI.Load<EquipmentDef>("EquipmentDefs/GainArmor");
         public override string descriptionAppendToken => "EMBRYO_DESC_APPEND_GAINARMOR";
+        public override string configDisplayName => "JadeElephant";
 
         protected override void InstallHooks() {
             RecalculateStatsAPI.GetStatCoefficients += RecalculateStatsAPI_GetStatCoefficients;

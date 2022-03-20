@@ -131,6 +131,7 @@ namespace ThinkInvisible.ClassicItems {
     }
     public class BroochEmbryoHook : Embryo.SimpleRetriggerEmbryoHook {
         public override EquipmentDef targetEquipment => Brooch.instance.equipmentDef;
+        public override string configDisplayName => "CaptainsBrooch";
     }
     internal class CaptainsBroochDroppod:NetworkBehaviour {
         ShakeEmitter shkm;

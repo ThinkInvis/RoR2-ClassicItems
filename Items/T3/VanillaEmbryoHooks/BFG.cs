@@ -10,6 +10,7 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
     public class BFG : Embryo.EmbryoHook {
         public override EquipmentDef targetEquipment => LegacyResourcesAPI.Load<EquipmentDef>("EquipmentDefs/BFG");
         public override string descriptionAppendToken => "EMBRYO_DESC_APPEND_BFG";
+        public override string configDisplayName => "PreonAccumulator";
 
         protected override void InstallHooks() {
             IL.RoR2.EquipmentSlot.FixedUpdate += EquipmentSlot_FixedUpdate;

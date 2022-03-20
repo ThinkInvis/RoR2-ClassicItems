@@ -7,6 +7,7 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
     public class CommandMissile : Embryo.EmbryoHook {
         public override EquipmentDef targetEquipment => LegacyResourcesAPI.Load<EquipmentDef>("EquipmentDefs/CommandMissile");
         public override string descriptionAppendToken => "EMBRYO_DESC_APPEND_COMMANDMISSILE";
+        public override string configDisplayName => "DisposableMissileLauncher";
 
         protected override void InstallHooks() {
             On.RoR2.EquipmentSlot.FireCommandMissile += On_ESFireCommandMissile;

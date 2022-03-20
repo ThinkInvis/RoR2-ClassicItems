@@ -8,6 +8,7 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
     public class Gateway : Embryo.EmbryoHook {
         public override EquipmentDef targetEquipment => LegacyResourcesAPI.Load<EquipmentDef>("EquipmentDefs/Gateway");
         public override string descriptionAppendToken => "EMBRYO_DESC_APPEND_GATEWAY";
+        public override string configDisplayName => "EccentricVase";
 
         protected override void InstallHooks() {
             IL.RoR2.EquipmentSlot.FireGateway += EquipmentSlot_FireGateway;

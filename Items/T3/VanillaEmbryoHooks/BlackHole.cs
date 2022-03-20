@@ -8,6 +8,7 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
     public class BlackHole : Embryo.EmbryoHook {
         public override EquipmentDef targetEquipment => LegacyResourcesAPI.Load<EquipmentDef>("EquipmentDefs/BlackHole");
         public override string descriptionAppendToken => "EMBRYO_DESC_APPEND_BLACKHOLE";
+        public override string configDisplayName => "PrimordialCube";
 
         protected override void InstallHooks() {
             IL.RoR2.EquipmentSlot.FireBlackhole += EquipmentSlot_FireBlackhole;

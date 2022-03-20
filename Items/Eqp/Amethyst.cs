@@ -32,5 +32,6 @@ namespace ThinkInvisible.ClassicItems {
 
     public class AmethystEmbryoHook : Embryo.SimpleRetriggerEmbryoHook {
         public override EquipmentDef targetEquipment => Amethyst.instance.equipmentDef;
+        public override string configDisplayName => "GiganticAmethyst";
     }
 }

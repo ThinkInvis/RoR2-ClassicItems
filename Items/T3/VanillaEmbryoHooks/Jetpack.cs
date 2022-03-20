@@ -10,6 +10,7 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
     public class Jetpack : Embryo.EmbryoHook {
         public override EquipmentDef targetEquipment => LegacyResourcesAPI.Load<EquipmentDef>("EquipmentDefs/Jetpack");
         public override string descriptionAppendToken => "EMBRYO_DESC_APPEND_JETPACK";
+        public override string configDisplayName => "MilkyChrysalis";
 
         protected override void InstallHooks() {
             On.RoR2.EquipmentSlot.FireJetpack += EquipmentSlot_FireJetpack;

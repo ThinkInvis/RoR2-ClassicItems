@@ -7,6 +7,7 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
     public class LifestealOnHit : Embryo.EmbryoHook {
         public override EquipmentDef targetEquipment => LegacyResourcesAPI.Load<EquipmentDef>("EquipmentDefs/LifestealOnHit");
         public override string descriptionAppendToken => "EMBRYO_DESC_APPEND_LIFESTEALONHIT";
+        public override string configDisplayName => "SuperMassiveLeech";
 
         protected override void InstallHooks() {
             IL.RoR2.GlobalEventManager.OnHitEnemy += GlobalEventManager_OnHitEnemy;

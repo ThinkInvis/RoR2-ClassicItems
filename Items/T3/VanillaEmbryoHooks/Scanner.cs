@@ -8,6 +8,7 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
     public class Scanner : Embryo.EmbryoHook {
         public override EquipmentDef targetEquipment => LegacyResourcesAPI.Load<EquipmentDef>("EquipmentDefs/Scanner");
         public override string descriptionAppendToken => "EMBRYO_DESC_APPEND_SCANNER";
+        public override string configDisplayName => "RadarScanner";
 
         protected override void InstallHooks() {
             IL.RoR2.EquipmentSlot.FireScanner += EquipmentSlot_FireScanner;

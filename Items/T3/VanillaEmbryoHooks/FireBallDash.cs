@@ -9,6 +9,7 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
     public class FireBallDash : Embryo.EmbryoHook {
         public override EquipmentDef targetEquipment => LegacyResourcesAPI.Load<EquipmentDef>("EquipmentDefs/FireBallDash");
         public override string descriptionAppendToken => "EMBRYO_DESC_APPEND_FIREBALLDASH";
+        public override string configDisplayName => "VolcanicEgg";
 
         protected override void InstallHooks() {
             IL.RoR2.EquipmentSlot.FireFireBallDash += EquipmentSlot_FireFireBallDash;

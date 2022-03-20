@@ -56,6 +56,7 @@ namespace ThinkInvisible.ClassicItems {
     public class SkeletonKeyEmbryoHook : Embryo.EmbryoHook {
         public override EquipmentDef targetEquipment => SkeletonKey.instance.equipmentDef;
         public override string descriptionAppendToken => $"EMBRYO_DESC_APPEND_CI_SKELETONKEY";
+        public override string configDisplayName => "SkeletonKey";
 
         //only here for lang override, will be handled in PerformEquipmentAction in module
         protected override void InstallHooks() { }

@@ -8,6 +8,7 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
     public class TeamWarCry : Embryo.EmbryoHook {
         public override EquipmentDef targetEquipment => LegacyResourcesAPI.Load<EquipmentDef>("EquipmentDefs/TeamWarCry");
         public override string descriptionAppendToken => "EMBRYO_DESC_APPEND_TEAMWARCRY";
+        public override string configDisplayName => "GoragsOpus";
 
         protected override void InstallHooks() {
             IL.RoR2.EquipmentSlot.FireTeamWarCry += EquipmentSlot_FireTeamWarCry;

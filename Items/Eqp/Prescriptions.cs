@@ -90,6 +90,7 @@ namespace ThinkInvisible.ClassicItems {
     public class PrescriptionsEmbryoHook : Embryo.EmbryoHook {
         public override EquipmentDef targetEquipment => Prescriptions.instance.equipmentDef;
         public override string descriptionAppendToken => $"EMBRYO_DESC_APPEND_RETRIGGER";
+        public override string configDisplayName => "Prescriptions";
 
         //only here for lang override, will be handled in PerformEquipmentAction in module
         protected override void InstallHooks() { }

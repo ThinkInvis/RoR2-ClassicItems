@@ -84,6 +84,7 @@ namespace ThinkInvisible.ClassicItems {
     public class PillageEmbryoHook : Embryo.EmbryoHook {
         public override EquipmentDef targetEquipment => Pillage.instance.equipmentDef;
         public override string descriptionAppendToken => $"EMBRYO_DESC_APPEND_RETRIGGER";
+        public override string configDisplayName => "PillagedGold";
 
         //only here for lang override, will be handled in PerformEquipmentAction in module
         protected override void InstallHooks() { }
