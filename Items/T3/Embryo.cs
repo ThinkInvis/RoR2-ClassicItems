@@ -113,6 +113,10 @@ namespace ThinkInvisible.ClassicItems {
 
         public override void SetupConfig() {
             base.SetupConfig();
+        }
+
+        public override void SetupLate() {
+            base.SetupLate();
 
             foreach(var hook in allHooks) {
                 hook.SetupConfig();
@@ -120,7 +124,7 @@ namespace ThinkInvisible.ClassicItems {
 
             Bind(typeof(Embryo).GetPropertyCached(nameof(hooksEnabled)), ClassicItemsPlugin.cfgFile, "ClassicItems", "Items.Embryo.SubEnable", new AutoConfigAttribute($"<AIC.DictKeyProp.{nameof(EmbryoHook.configDisplayName)}>", "If false, this equipment's Beating Embryo functionality will be disabled.", AutoConfigFlags.BindDict | AutoConfigFlags.PreventNetMismatch));
 
-            ConfigEntryChanged += (sender,args) => {
+            ConfigEntryChanged += (sender, args) => {
                 if(args.target.boundProperty.Name == nameof(hooksEnabled)) {
                     var hook = (EmbryoHook)args.target.boundKey;
                     if((bool)args.newValue) {
