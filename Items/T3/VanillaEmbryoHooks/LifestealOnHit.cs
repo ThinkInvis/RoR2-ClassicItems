@@ -1,4 +1,5 @@
-﻿using R2API;
+﻿using Mono.Cecil.Cil;
+using R2API;
 using RoR2;
 using MonoMod.Cil;
 using System;
@@ -25,7 +26,11 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
         private void GlobalEventManager_OnHitEnemy(ILContext il) {
             ILCursor c = new ILCursor(il);
 
-            var boost = Embryo.InjectLastProcCheckIL(c);
+            int boost = 0;
+            c.Emit(OpCodes.Ldarg_0);
+            c.EmitDelegate<Action<EquipmentSlot>>((slot) => {
+                boost = Embryo.CheckLastEmbryoProc(slot);
+            });
 
             bool ilFound = c.TryGotoNext(MoveType.After,
                 x => x.MatchLdsfld("RoR2.RoR2Content/Buffs", "LifeSteal"),

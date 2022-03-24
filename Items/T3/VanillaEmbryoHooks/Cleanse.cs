@@ -28,7 +28,11 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
         private void IL_UtilCleanseBody(ILContext il) {
             ILCursor c = new ILCursor(il);
 
-            var boost = Embryo.InjectLastProcCheckIL(c);
+            int boost = 0;
+            c.Emit(OpCodes.Ldarg_0);
+            c.EmitDelegate<Action<EquipmentSlot>>((slot) => {
+                boost = Embryo.CheckLastEmbryoProc(slot);
+            });
 
             bool ILFound = c.TryGotoNext(
                 x => x.MatchCall<Vector3>("get_sqrMagnitude"),

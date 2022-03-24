@@ -29,7 +29,11 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
         private void EquipmentSlot_FireCritOnUse(ILContext il) {
             ILCursor c = new ILCursor(il);
 
-            var boost = Embryo.InjectLastProcCheckIL(c);
+            int boost = 0;
+            c.Emit(OpCodes.Ldarg_0);
+            c.EmitDelegate<Action<EquipmentSlot>>((slot) => {
+                boost = Embryo.CheckLastEmbryoProc(slot);
+            });
 
             bool ilFound = c.TryGotoNext(
                 x => x.OpCode == OpCodes.Ldc_R4,
@@ -48,7 +52,11 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
         private void IL_ESRpcOnEquipmentActivationReceived(ILContext il) {
             ILCursor c = new ILCursor(il);
 
-            var boost = Embryo.InjectLastProcCheckIL(c);
+            int boost = 0;
+            c.Emit(OpCodes.Ldarg_0);
+            c.EmitDelegate<Action<EquipmentSlot>>((slot) => {
+                boost = Embryo.CheckLastEmbryoProc(slot);
+            });
 
             bool ILFound = c.TryGotoNext(MoveType.After,
                 x => x.MatchLdstr("activeDuration"),

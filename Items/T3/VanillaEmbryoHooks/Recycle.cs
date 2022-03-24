@@ -28,7 +28,11 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
         private void EquipmentSlot_FireRecycle(ILContext il) {
             ILCursor c = new ILCursor(il);
 
-            var boost = Embryo.InjectLastProcCheckIL(c);
+            int boost = 0;
+            c.Emit(OpCodes.Ldarg_0);
+            c.EmitDelegate<Action<EquipmentSlot>>((slot) => {
+                boost = Embryo.CheckLastEmbryoProc(slot);
+            });
 
             bool ILFound = c.TryGotoNext(
                 x => x.MatchLdloc(out _),
@@ -40,6 +44,7 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
                 c.Emit(OpCodes.Dup);
                 c.Index++;
                 c.EmitDelegate<Func<GenericPickupController, bool, bool>>((pctrl, origRecyc) => {
+                    Debug.Log($"setting recyc flag {boost} {pctrl} {pctrl?.GetComponent<EmbryoRecycleFlag>()?.ToString() ?? "NULL"}");
                     if(boost > 0 && pctrl && pctrl.GetComponent<EmbryoRecycleFlag>() == null) {
                         pctrl.gameObject.AddComponent<EmbryoRecycleFlag>();
                         return false;

@@ -1,4 +1,5 @@
-﻿using MonoMod.Cil;
+﻿using Mono.Cecil.Cil;
+using MonoMod.Cil;
 using R2API;
 using RoR2;
 using System;
@@ -26,7 +27,11 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
         private void EquipmentSlot_FireBlackhole(ILContext il) {
             ILCursor c = new ILCursor(il);
 
-            var boost = Embryo.InjectLastProcCheckIL(c);
+            int boost = 0;
+            c.Emit(OpCodes.Ldarg_0);
+            c.EmitDelegate<Action<EquipmentSlot>>((slot) => {
+                boost = Embryo.CheckLastEmbryoProc(slot);
+            });
 
             bool ilFound = c.TryGotoNext(MoveType.After,
                 x => x.MatchLdstr("Prefabs/Projectiles/GravSphere"),

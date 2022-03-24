@@ -46,7 +46,13 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
         private void JetpackController_FixedUpdate(ILContext il) {
             ILCursor c = new ILCursor(il);
 
-            var (boost, cpt) = Embryo.InjectLastProcCheckIL<EmbryoJetpackComponent>(c);
+            int boost = 0;
+            EmbryoJetpackComponent cpt = null;
+            c.Emit(OpCodes.Ldarg_0);
+            c.EmitDelegate<Action<EquipmentSlot>>((slot) => {
+                boost = Embryo.CheckLastEmbryoProc(slot);
+                cpt = slot?.characterBody?.GetComponent<EmbryoJetpackComponent>();
+            });
 
             bool ILFound = c.TryGotoNext(
                 x => x.MatchCallOrCallvirt<UnityEngine.Time>("get_fixedDeltaTime"),

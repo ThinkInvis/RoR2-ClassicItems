@@ -136,26 +136,6 @@ namespace ThinkInvisible.ClassicItems {
             };
         }
 
-        public static int InjectLastProcCheckIL(ILCursor c) {
-            int boost = 0;
-            c.Emit(OpCodes.Ldarg_0);
-            c.EmitDelegate<Action<EquipmentSlot>>((slot) => {
-                boost = CheckLastEmbryoProc(slot);
-            });
-            return boost;
-        }
-
-        public static (int boost, TComponent cpt) InjectLastProcCheckIL<TComponent>(ILCursor c) where TComponent : MonoBehaviour {
-            int boost = 0;
-            TComponent cpt = null;
-            c.Emit(OpCodes.Ldarg_0);
-            c.EmitDelegate<Action<EquipmentSlot>>((slot) => {
-                boost = CheckLastEmbryoProc(slot);
-                cpt = slot.characterBody?.GetComponentInChildren<TComponent>();
-            });
-            return (boost, cpt);
-        }
-
         public static (int boost, TComponent cpt) InjectLastProcCheckDirect<TComponent>(EquipmentSlot slot) where TComponent : MonoBehaviour {
             int boost = CheckLastEmbryoProc(slot);
             TComponent cpt = null;

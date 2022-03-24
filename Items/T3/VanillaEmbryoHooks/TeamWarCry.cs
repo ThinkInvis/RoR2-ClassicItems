@@ -25,7 +25,11 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
         private void EquipmentSlot_FireTeamWarCry(ILContext il) {
             ILCursor c = new ILCursor(il);
 
-            var boost = Embryo.InjectLastProcCheckIL(c);
+            int boost = 0;
+            c.Emit(OpCodes.Ldarg_0);
+            c.EmitDelegate<Action<EquipmentSlot>>((slot) => {
+                boost = Embryo.CheckLastEmbryoProc(slot);
+            });
 
             bool ILFound = c.TryGotoNext(MoveType.After,
                 x => x.MatchLdcR4(out _),
