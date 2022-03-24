@@ -47,7 +47,10 @@ namespace ThinkInvisible.ClassicItems {
         
         [AutoConfig("If true, Dragon's Breath will use significantly lighter particle effects and no dynamic lighting.", AutoConfigFlags.DeferForever)]
         public bool artiFlamePerformanceMode {get; private set;} = false;
-        
+
+        [AutoConfig("If true, other mods will be able to override default Ancient Scepter skills with their own.", AutoConfigFlags.DeferForever)]
+        public bool allow3POverride { get; private set; } = true;
+
         //TODO: test w/ stage changes
         public enum StridesInteractionMode {
             StridesTakesPrecedence, ScepterTakesPrecedence, ScepterRerolls
@@ -199,13 +202,23 @@ namespace ThinkInvisible.ClassicItems {
         private readonly Dictionary<string, SkillSlot> scepterSlots = new Dictionary<string, SkillSlot>();
 
         public bool RegisterScepterSkill(SkillDef replacingDef, string targetBodyName, SkillSlot targetSlot, int targetVariant) {
-            if(targetVariant < 0) {
-                ClassicItemsPlugin._logger.LogError("Can't register a scepter skill to negative variant index");
+            if(replacingDef == null) {
+                ClassicItemsPlugin._logger.LogError("Can't register a null scepter skill");
                 return false;
             }
-            if(scepterReplacers.Exists(x => x.bodyName == targetBodyName && (x.slotIndex != targetSlot || x.variantIndex == targetVariant))) {
-                ClassicItemsPlugin._logger.LogError("A scepter skill already exists for this character; can't add multiple for different slots nor for the same variant");
+            if(targetVariant < 0) {
+                ClassicItemsPlugin._logger.LogError($"Can't register scepter skill {replacingDef.skillNameToken} to negative variant index");
                 return false;
+            }
+            var existing = scepterReplacers.Find(x => x.bodyName == targetBodyName && (x.slotIndex != targetSlot || x.variantIndex == targetVariant));
+            if(existing != null) {
+                if(allow3POverride) {
+                    ClassicItemsPlugin._logger.LogDebug($"{targetBodyName}/{targetSlot}/{targetVariant}: overriding existing replacer {existing.replDef.skillNameToken} with {replacingDef.skillNameToken}");
+                    scepterReplacers.Remove(existing);
+                } else {
+                    ClassicItemsPlugin._logger.LogError($"A scepter skill already exists for {targetBodyName}/{targetSlot}/{targetVariant}; can't add multiple for different slots nor for the same variant (attemping to add {replacingDef.skillNameToken})");
+                    return false;
+                }
             }
             scepterReplacers.Add(new ScepterReplacer {bodyName = targetBodyName, slotIndex = targetSlot, variantIndex = targetVariant, replDef = replacingDef});
             scepterSlots[targetBodyName] = targetSlot;
