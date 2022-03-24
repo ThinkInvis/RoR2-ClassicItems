@@ -119,7 +119,7 @@ namespace ThinkInvisible.ClassicItems {
         }
 
         private void DoFreeze() {
-            var teamMembers = ClassicItemsPlugin.GatherEnemies(myTeam);
+            var teamMembers = GatherEnemies(myTeam);
             foreach(TeamComponent tcpt in teamMembers) {
                 if(!Util.CheckRoll(Snowglobe.instance.procRate)) continue;
                 var ssoh = tcpt.gameObject.GetComponent<SetStateOnHurt>();

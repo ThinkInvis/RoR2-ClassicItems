@@ -182,16 +182,5 @@ namespace ThinkInvisible.ClassicItems {
                 Logger.LogError("Failed to apply shared buff IL patch (CIFear)");
             }
         }
-
-        public static List<TeamComponent> GatherEnemies(TeamIndex allyIndex, params TeamIndex[] ignore) {
-            var retv = new List<TeamComponent>();
-            bool isFF = FriendlyFireManager.friendlyFireMode != FriendlyFireManager.FriendlyFireMode.Off;
-            var scan = ((TeamIndex[])Enum.GetValues(typeof(TeamIndex))).Except(ignore);
-            foreach(var ind in scan) {
-                if(isFF || allyIndex != ind)
-                    retv.AddRange(TeamComponent.GetTeamMembers(ind));
-            }
-            return retv;
-        }
     }
 }

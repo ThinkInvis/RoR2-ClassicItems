@@ -77,7 +77,7 @@ namespace ThinkInvisible.ClassicItems {
 				scale = radius
 			}, true);*/
 
-            var teamMembers = ClassicItemsPlugin.GatherEnemies(self.body.teamComponent.teamIndex);
+            var teamMembers = GatherEnemies(self.body.teamComponent.teamIndex);
 			float sqrad = radius * radius;
 			foreach(TeamComponent tcpt in teamMembers) {
 				if ((tcpt.transform.position - self.body.corePosition).sqrMagnitude <= sqrad) {

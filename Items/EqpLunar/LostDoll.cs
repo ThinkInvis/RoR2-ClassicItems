@@ -45,7 +45,7 @@ namespace ThinkInvisible.ClassicItems {
         protected override bool PerformEquipmentAction(EquipmentSlot slot) {
             if(!slot.characterBody || !slot.characterBody.teamComponent) return false;
             var tpos = slot.characterBody.transform.position;
-            var teamMembers = ClassicItemsPlugin.GatherEnemies(slot.characterBody.teamComponent.teamIndex);
+            var teamMembers = GatherEnemies(slot.characterBody.teamComponent.teamIndex);
 			float lowestDist = float.MaxValue;
 			HurtBox result = null;
             foreach(TeamComponent tcpt in teamMembers) {

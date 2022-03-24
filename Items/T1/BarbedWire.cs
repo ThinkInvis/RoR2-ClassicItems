@@ -214,7 +214,7 @@ namespace ThinkInvisible.ClassicItems {
 
 		[Server]
 		private void ServerProc() {
-			var teamMembers = ClassicItemsPlugin.GatherEnemies(teamFilter.teamIndex, TeamIndex.Neutral);
+			var teamMembers = GatherEnemies(teamFilter.teamIndex, TeamIndex.Neutral);
 			teamMembers.Remove(owner.GetComponent<TeamComponent>());
 			float sqrad = radius * radius;
 			foreach(TeamComponent tcpt in teamMembers) {
