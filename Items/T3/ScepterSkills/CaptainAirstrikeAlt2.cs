@@ -18,14 +18,14 @@ namespace ThinkInvisible.ClassicItems {
         
         public override string oldDescToken {get; protected set;}
         public override string newDescToken {get; protected set;}
-        public override string overrideStr => "\n<color=#d299ff>SCEPTER: Covers a massive radius.</color>";
+        public override string overrideStr => "\n<color=#d299ff>SCEPTER: Call down the ENTIRE UES Safe Travels to cover a massive radius. You brought spares.</color>";
 
         public override string targetBody => "CaptainBody";
         public override SkillSlot targetSlot => SkillSlot.Utility;
-        public override int targetVariantIndex => 0;
+        public override int targetVariantIndex => 1;
 
         internal override void SetupAttributes() {
-            var oldDef = LegacyResourcesAPI.Load<SkillDef>("skilldefs/captainbody/PrepAirstrike");
+            var oldDef = LegacyResourcesAPI.Load<SkillDef>("skilldefs/captainbody/PrepAirstrikeAlt");
             myDef = CloneSkillDef(oldDef);
 
             var nametoken = "CLASSICITEMS_SCEPCAPTAIN_AIRSTRIKEALTNAME";
@@ -47,16 +47,19 @@ namespace ThinkInvisible.ClassicItems {
 
             ContentAddition.AddSkillDef(myCallDef);
 
-            projReplacer = LegacyResourcesAPI.Load<GameObject>("Prefabs/Projectiles/CaptainAirstrikeAltProjectile").InstantiateClone("CIScepCaptainAirstrikeAlt", true);
+            projReplacer = LegacyResourcesAPI.Load<GameObject>("Prefabs/Projectiles/CaptainAirstrikeAltProjectile").InstantiateClone("CIScepCaptainAirstrikeAltTemp", false);
             projReplacer.GetComponent<ProjectileImpactExplosion>().blastRadius *= 8f;
             var pc = projReplacer.GetComponent<ProjectileController>();
 
-            ghostReplacer = pc.ghostPrefab.InstantiateClone("CIScepCaptainAirstrikeAltGhost");
-            ghostReplacer.transform.Find("Indicator").localScale.Scale(new Vector3(8f, 8f, 2f));
-            ghostReplacer.transform.Find("AreaIndicatorCenter").localScale.Scale(new Vector3(8f, 8f, 2f));
-            ghostReplacer.transform.Find("AirstrikeOrientation").Find("FallingProjectile").localScale.Scale(new Vector3(4f, 4f, 4f));
+            ghostReplacer = LegacyResourcesAPI.Load<GameObject>("Prefabs/ProjectileGhosts/CaptainAirstrikeAltGhost").InstantiateClone("CIScepCaptainAirstrikeAltGhostTemp", false);
+            ghostReplacer.transform.Find("Indicator").lossyScale.Scale(new Vector3(8f, 8f, 2f));
+            ghostReplacer.transform.Find("AreaIndicatorCenter").lossyScale.Scale(new Vector3(8f, 8f, 2f));
+            ghostReplacer.transform.Find("AirstrikeOrientation").Find("FallingProjectile").lossyScale.Scale(new Vector3(4f, 4f, 4f));
+            ghostReplacer = ghostReplacer.InstantiateClone("CIScepCaptainAirstrikeAltGhost", false);
 
             pc.ghostPrefab = ghostReplacer;
+
+            projReplacer = projReplacer.InstantiateClone("CIScepCaptainAirstrikeAlt", true);
 
             ContentAddition.AddProjectile(projReplacer);
         }
@@ -72,11 +75,17 @@ namespace ThinkInvisible.ClassicItems {
         private void AimThrowableBase_FireProjectile(On.EntityStates.AimThrowableBase.orig_FireProjectile orig, EntityStates.AimThrowableBase self) {
             bool isScep = Scepter.instance.GetCount(self.outer.commonComponents.characterBody) > 0;
             var origPrefab = self.projectilePrefab;
-            if(isScep)
+            if(isScep && self is CallAirstrikeAlt caa) {
                 self.projectilePrefab = projReplacer;
+                caa.airstrikeRadius *= 8f;
+                caa.detonationRadius *= 8f;
+            }
             orig(self);
-            if(isScep)
+            if(isScep && self is CallAirstrikeAlt caa2) {
                 self.projectilePrefab = origPrefab;
+                caa2.airstrikeRadius /= 8f;
+                caa2.detonationRadius /= 8f;
+            }
         }
     }
 }

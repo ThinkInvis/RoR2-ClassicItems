@@ -68,7 +68,7 @@ namespace ThinkInvisible.ClassicItems {
             skills.Add(new ArtificerFlamethrower2());
             skills.Add(new ArtificerFlyUp2());
             skills.Add(new CaptainAirstrike2());
-            skills.Add(new CaptainAirstrikeAlt2());
+            //skills.Add(new CaptainAirstrikeAlt2());
             skills.Add(new CommandoBarrage2());
             skills.Add(new CommandoGrenade2());
             skills.Add(new CrocoDisease2());
