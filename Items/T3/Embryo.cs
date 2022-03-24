@@ -14,7 +14,7 @@ using R2API.Utils;
 using System.Reflection;
 
 namespace ThinkInvisible.ClassicItems {
-    //[Obsolete("Unstable as of CI 5.0.0; currently undergoing rewrite.")]
+    [Obsolete("Unstable as of CI 5.0.0; currently undergoing rewrite. Does not have full support for equipment from other mods yet.")]
     public class Embryo : Item<Embryo> {
         public abstract class EmbryoHook {
             public abstract EquipmentDef targetEquipment { get; }
