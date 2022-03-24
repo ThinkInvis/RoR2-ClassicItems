@@ -38,6 +38,7 @@ For nostalgic purposes only. Here Be Dragons who hoard balance issues, because t
 - Smart Shopper: "Enemies drop more gold."
 #### Tier 3
 - Ancient Scepter: "Upgrades your 4th skill."
+    <details><summary>Specific skill details...</summary>
     - Commando: Suppressive Fire > Death Blossom (2x shots, fire rate, and accuracy)  -OR-  Grenade > Carpet Bomb (0.5x damage, throw a spread of 8 at once)
     - Huntress: Arrow Rain > Burning Rain (1.5x duration and radius, burns)  -OR-  Ballista > Rabauld (5 extra weaker projectiles per shot, for 2.5x TOTAL damage)
     - MUL-T: Transport Mode > Breach Mode (0.5x incoming damage, 2x duration; after stopping, retaliate with a stunning explosion for 100% of unmodified damage taken)
@@ -48,7 +49,10 @@ For nostalgic purposes only. Here Be Dragons who hoard balance issues, because t
     - Loader: Charged Gauntlet > Megaton Gauntlet (2x damage and lunge speed, 7x knockback)  -OR-  Thunder Gauntlet > Thundercrash (3x lightning bolts fired, cone AoE becomes sphere)
     - Acrid: Epidemic > Plague (victims become walking sources of Plague, chains infinitely)
     - Captain: Orbital Probe > 21-Probe Salute (1/3 damage, 7x shots, hold primary to fire continuously)
-- Beating Embryo: ~~"Equipment has a 30% chance to deal double the effect."~~ Under construction!
+    </details>
+- Beating Embryo: "Equipment has a 30% chance to deal double the effect."
+    - Has a config option to enable multiple stacks for x3, x4, etc.
+    - No support for mod-added equipment (yet).
 - Permafrost: "Chance to freeze enemies on hit."
 - Photon Jetpack: "No hands."
     - Provides flight while holding jump, using limited recharging fuel.
@@ -101,6 +105,16 @@ For details and instructions on applying these, see: https://github.com/ThinkInv
 The 5 latest updates are listed below. For a full changelog, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/changelog.md
 (🌧︎: Involves an accepted GitHub Pull Request from the community. Thanks for your help!)
 
+**6.1.0**
+
+- Reimplemented Beating Embryo for internal items. Beating Embryo is no longer force-disabled.
+    - API for adding functionality to other mods' items is not yet restored.
+- Fixed missing icon on Ancient Scepter.
+- Ancient Scepter now has a config option to allow other mods to override its default skill replacers (enabled by default).
+- Internal AssetBundle is now exposed for other mods to reference.
+- Migrated GatherEnemies util method to TILER2.
+- Updated TILER2 dependency to 6.1.2.
+
 **6.0.0**
 
 - Item models!
@@ -134,8 +148,3 @@ The 5 latest updates are listed below. For a full changelog, see: https://github
 - Compatibility updates for recent Risk of Rain 2 patches.
 - Updated BetterUI compat for 2.0.2.
 - Temporarily disabled the effects of the AllCards global config option (RoR2 seems to no longer expose an easily accessible list of vanilla content to check against).
-
-**5.0.1**
-
-- Matched FakeInventory.blacklist change in TILER2 4.0.1. Fixes Ancient Scepter not being FakeInventory blacklisted, and mod not being compatible with TILER2 4.0.1.
-- Made card model setup/updates more resilient against broken items.
