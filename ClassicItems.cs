@@ -59,7 +59,7 @@ namespace ThinkInvisible.ClassicItems {
 
         internal static BepInEx.Logging.ManualLogSource _logger;
 
-        internal static AssetBundle resources;
+        public static AssetBundle resources { get; private set; }
 
 #if DEBUG
         public void Update() {
