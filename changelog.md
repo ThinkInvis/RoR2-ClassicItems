@@ -2,6 +2,10 @@
 
 (🌧︎: Involves an accepted GitHub Pull Request from the community. Thanks for your help!)
 
+**6.1.1**
+
+- Fixed Embryo LifestealOnHit hook causing rampant NRE spam.
+
 **6.1.0**
 
 - Reimplemented Beating Embryo for internal items. Beating Embryo is no longer force-disabled.

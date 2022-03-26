@@ -115,6 +115,10 @@ For details and instructions on applying these, see: https://github.com/ThinkInv
 The 5 latest updates are listed below. For a full changelog, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/changelog.md
 (🌧︎: Involves an accepted GitHub Pull Request from the community. Thanks for your help!)
 
+**6.1.1**
+
+- Fixed Embryo LifestealOnHit hook causing rampant NRE spam.
+
 **6.1.0**
 
 - Reimplemented Beating Embryo for internal items. Beating Embryo is no longer force-disabled.
@@ -152,9 +156,3 @@ The 5 latest updates are listed below. For a full changelog, see: https://github
 - Fixed another incompatibility with most recent R2API.
 - Fixed AllCards global config option.
 - Added a config option to Photon Jetpack which controls how it interacts with extra jumps.
-
-**5.0.2**
-
-- Compatibility updates for recent Risk of Rain 2 patches.
-- Updated BetterUI compat for 2.0.2.
-- Temporarily disabled the effects of the AllCards global config option (RoR2 seems to no longer expose an easily accessible list of vanilla content to check against).
