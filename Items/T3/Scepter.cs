@@ -62,7 +62,7 @@ namespace ThinkInvisible.ClassicItems {
         internal List<ScepterSkill> skills = new List<ScepterSkill>();
 
         public Scepter() {
-            iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/scepter_icon.png");
+            iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/scepter_icon.png");
             modelResource = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/Prefabs/Scepter.prefab");
 
             skills.Add(new ArtificerFlamethrower2());
