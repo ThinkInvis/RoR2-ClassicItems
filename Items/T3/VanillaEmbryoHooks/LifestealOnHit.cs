@@ -26,13 +26,9 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
         private void GlobalEventManager_OnHitEnemy(ILContext il) {
             ILCursor c = new ILCursor(il);
 
-            int boost = 0;
-            c.Emit(OpCodes.Ldarg_0);
-            c.EmitDelegate<Action<EquipmentSlot>>((slot) => {
-                boost = Embryo.CheckLastEmbryoProc(slot);
-            });
-
+            int bodyIndex = 0;
             bool ilFound = c.TryGotoNext(MoveType.After,
+                x => x.MatchLdloc(out bodyIndex),
                 x => x.MatchLdsfld("RoR2.RoR2Content/Buffs", "LifeSteal"),
                 x => x.MatchCallOrCallvirt<CharacterBody>(nameof(CharacterBody.HasBuff)),
                 x => x.MatchBrfalse(out _),
@@ -41,7 +37,9 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
                 x => x.MatchLdcR4(out _));
 
             if(ilFound) {
-                c.EmitDelegate<Func<float, float>>((origAmt) => {
+                c.Emit(OpCodes.Ldloc, bodyIndex);
+                c.EmitDelegate<Func<float, CharacterBody, float>>((origAmt, body) => {
+                    var boost = Embryo.CheckLastEmbryoProc(body);
                     return origAmt * (boost + 1);
                 });
             } else {
