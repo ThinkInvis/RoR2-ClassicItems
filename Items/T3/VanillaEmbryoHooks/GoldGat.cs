@@ -21,7 +21,7 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
 
         protected internal override void SetupAttributes() {
             base.SetupAttributes();
-            LanguageAPI.Add(descriptionAppendToken, "\n<style=cStack>Beating Embryo: Double fire rate. Procs per individual shot.<style>");
+            LanguageAPI.Add(descriptionAppendToken, "\n<style=cStack>Beating Embryo: Double fire rate. Procs per individual shot.</style>");
         }
 
         private void GoldGatFire_FireBullet(ILContext il) {

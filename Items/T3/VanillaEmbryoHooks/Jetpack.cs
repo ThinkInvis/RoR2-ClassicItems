@@ -33,7 +33,7 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
 
         protected internal override void SetupAttributes() {
             base.SetupAttributes();
-            LanguageAPI.Add(descriptionAppendToken, "\n<style=cStack>Jetpack: Double flight duration.<style>");
+            LanguageAPI.Add(descriptionAppendToken, "\n<style=cStack>Jetpack: Double flight duration.</style>");
         }
 
         private bool EquipmentSlot_FireJetpack(On.RoR2.EquipmentSlot.orig_FireJetpack orig, EquipmentSlot self) {

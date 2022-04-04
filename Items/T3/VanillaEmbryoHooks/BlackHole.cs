@@ -21,7 +21,7 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
 
         protected internal override void SetupAttributes() {
             base.SetupAttributes();
-            LanguageAPI.Add(descriptionAppendToken, "\n<style=cStack>Beating Embryo: Double pull radius.<style>");
+            LanguageAPI.Add(descriptionAppendToken, "\n<style=cStack>Beating Embryo: Double pull radius.</style>");
         }
 
         private void EquipmentSlot_FireBlackhole(ILContext il) {

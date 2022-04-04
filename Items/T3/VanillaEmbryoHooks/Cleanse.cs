@@ -22,7 +22,7 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
 
         protected internal override void SetupAttributes() {
             base.SetupAttributes();
-            LanguageAPI.Add(descriptionAppendToken, "\n<style=cStack>Beating Embryo: Double cleanse radius.<style>");
+            LanguageAPI.Add(descriptionAppendToken, "\n<style=cStack>Beating Embryo: Double cleanse radius.</style>");
         }
 
         private void IL_UtilCleanseBody(ILContext il) {

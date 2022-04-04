@@ -23,7 +23,7 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
 
         protected internal override void SetupAttributes() {
             base.SetupAttributes();
-            LanguageAPI.Add(descriptionAppendToken, "\n<style=cStack>Beating Embryo: Double duration.<style>");
+            LanguageAPI.Add(descriptionAppendToken, "\n<style=cStack>Beating Embryo: Double duration.</style>");
         }
 
         private void EquipmentSlot_FireCritOnUse(ILContext il) {

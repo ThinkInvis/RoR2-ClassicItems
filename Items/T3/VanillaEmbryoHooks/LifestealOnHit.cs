@@ -20,7 +20,7 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
 
         protected internal override void SetupAttributes() {
             base.SetupAttributes();
-            LanguageAPI.Add(descriptionAppendToken, "\n<style=cStack>Beating Embryo: Double lifesteal amount.<style>");
+            LanguageAPI.Add(descriptionAppendToken, "\n<style=cStack>Beating Embryo: Double lifesteal amount.</style>");
         }
 
         private void GlobalEventManager_OnHitEnemy(ILContext il) {

@@ -23,7 +23,7 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
 
         protected internal override void SetupAttributes() {
             base.SetupAttributes();
-            LanguageAPI.Add(descriptionAppendToken, "\n<style=cStack>Beating Embryo: Double transit speed. Cannot multiproc.<style>");
+            LanguageAPI.Add(descriptionAppendToken, "\n<style=cStack>Beating Embryo: Double transit speed. Cannot multiproc.</style>");
 
             boostedGatewayPrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/NetworkedObjects/Zipline").InstantiateClone("EmbryoBoostedGatewayPrefab", true);
             var ziplineCtrl = boostedGatewayPrefab.GetComponent<ZiplineController>();

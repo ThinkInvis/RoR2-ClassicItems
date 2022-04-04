@@ -86,7 +86,7 @@ namespace ThinkInvisible.ClassicItems {
             snowglobeControllerPrefab = ctrlPfb2.InstantiateClone("snowglobeControllerPrefab", true);
             UnityEngine.Object.Destroy(ctrlPfb2);
 
-            LanguageAPI.Add("EMBRYO_DESC_APPEND_CI_SNOWGLOBE", "\n<style=cStack>Beating Embryo: Double duration.<style>");
+            LanguageAPI.Add("EMBRYO_DESC_APPEND_CI_SNOWGLOBE", "\n<style=cStack>Beating Embryo: Double duration.</style>");
         }
 
         protected override bool PerformEquipmentAction(EquipmentSlot slot) {

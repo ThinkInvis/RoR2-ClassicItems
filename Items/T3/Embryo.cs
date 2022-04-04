@@ -188,7 +188,7 @@ namespace ThinkInvisible.ClassicItems {
             foreach(var hook in allHooks)
                 hook.SetupAttributes();
 
-            LanguageAPI.Add("EMBRYO_DESC_APPEND_RETRIGGER", "\n<style=cStack>Beating Embryo: Activates twice simultaneously.<style>");
+            LanguageAPI.Add("EMBRYO_DESC_APPEND_RETRIGGER", "\n<style=cStack>Beating Embryo: Activates twice simultaneously.</style>");
         }
 
         public override void SetupBehavior() {

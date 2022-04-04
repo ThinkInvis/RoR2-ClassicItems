@@ -21,7 +21,7 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
 
         protected internal override void SetupAttributes() {
             base.SetupAttributes();
-            LanguageAPI.Add(descriptionAppendToken, "\n<style=cStack>Beating Embryo: Fires twice as many missiles at double fire rate.<style>");
+            LanguageAPI.Add(descriptionAppendToken, "\n<style=cStack>Beating Embryo: Fires twice as many missiles at double fire rate.</style>");
         }
 
         protected internal override void AddComponents(CharacterBody body) {

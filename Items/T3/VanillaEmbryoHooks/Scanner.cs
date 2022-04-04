@@ -23,7 +23,7 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
 
         protected internal override void SetupAttributes() {
             base.SetupAttributes();
-            LanguageAPI.Add(descriptionAppendToken, "\n<style=cStack>Beating Embryo: Double duration. Cannot multiproc.<style>");
+            LanguageAPI.Add(descriptionAppendToken, "\n<style=cStack>Beating Embryo: Double duration. Cannot multiproc.</style>");
 
             boostedScannerPrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/NetworkedObjects/ChestScanner").InstantiateClone("EmbryoBoostedScannerPrefab", true);
             boostedScannerPrefab.GetComponent<ChestRevealer>().revealDuration *= 2f;

@@ -26,7 +26,7 @@ namespace ThinkInvisible.ClassicItems {
         public override void SetupAttributes() {
             base.SetupAttributes();
 
-            LanguageAPI.Add("EMBRYO_DESC_APPEND_CI_SKELETONKEY", "\n<style=cStack>Beating Embryo: Double range.<style>");
+            LanguageAPI.Add("EMBRYO_DESC_APPEND_CI_SKELETONKEY", "\n<style=cStack>Beating Embryo: Double range.</style>");
         }
 
         protected override bool PerformEquipmentAction(EquipmentSlot slot) {

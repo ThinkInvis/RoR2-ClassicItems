@@ -22,7 +22,7 @@ namespace ThinkInvisible.ClassicItems.EmbryoHooks {
 
         protected internal override void SetupAttributes() {
             base.SetupAttributes();
-            LanguageAPI.Add(descriptionAppendToken, "\n<style=cStack>Beating Embryo: Recycle twice. Cannot multiproc.<style>"); //todo: recycle into an option with 1 item per proc
+            LanguageAPI.Add(descriptionAppendToken, "\n<style=cStack>Beating Embryo: Recycle twice. Cannot multiproc.</style>"); //todo: recycle into an option with 1 item per proc
         }
 
         private void EquipmentSlot_FireRecycle(ILContext il) {
