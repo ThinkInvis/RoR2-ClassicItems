@@ -163,7 +163,7 @@ namespace ThinkInvisible.ClassicItems {
             if(!canMultiproc)
                 return Util.CheckRoll(GetCount(body) * procChance, body?.master) ? 1 : 0;
             var totalChance = GetCount(body) * procChance;
-            return Mathf.FloorToInt(totalChance) + (Util.CheckRoll((totalChance % 100f) / 100, body?.master) ? 1 : 0);
+            return Mathf.FloorToInt(totalChance / 100f) + (Util.CheckRoll((totalChance % 100f) / 100, body?.master) ? 1 : 0);
         }
 
         public static int CheckEmbryoProc(CharacterBody body) {
@@ -175,7 +175,7 @@ namespace ThinkInvisible.ClassicItems {
             if(!canMultiproc)
                 return Util.CheckRoll(GetCount(inv) * procChance, inv?.gameObject?.GetComponent<CharacterMaster>()) ? 1 : 0;
             var totalChance = GetCount(inv) * procChance;
-            return Mathf.FloorToInt(totalChance) + (Util.CheckRoll((totalChance % 100f) / 100, inv?.gameObject?.GetComponent<CharacterMaster>()) ? 1 : 0);
+            return Mathf.FloorToInt(totalChance / 100f) + (Util.CheckRoll((totalChance % 100f) / 100, inv?.gameObject?.GetComponent<CharacterMaster>()) ? 1 : 0);
         }
 
         public static int CheckEmbryoProc(Inventory inv) {
