@@ -15,7 +15,5 @@ See [this source file](Compat/ShareSuite.cs) for a partial example.
 
 The following public members of ClassicItems are explicitly intended to help increase compatibility with other mods.
 
-- `public void ThinkInvisible.ClassicItems.Embryo.instance.Compat_Register(EquipmentIndex ind)`: Calling this on your mod's equipment will stop Beating Embryo from naively triggering the equipment twice when it procs with SubEnableModded on.
-- `public void ThinkInvisible.ClassicItems.Embryo.instance.Compat_Unregister(EquipmentIndex ind)`: Reverses the effects of Compat_Register.
-- `public bool ThinkInvisible.ClassicItems.Embryo.instance.CheckProc(CharacterBody body)`: Returns true if Embryo is enabled and a roll against proc chance * CharacterBody's item count succeeds. Use in combination with Compat_Register to set up your own proc behavior.
+- `public bool ThinkInvisible.ClassicItems.Embryo.instance.CheckLastEmbryoProc(CharacterBody body -OR- EquipmentSlot slot)`: At the start of `EquipmentSlot.PerformEquipmentAction`, a single roll for Beating Embryo procs will be performed and its value stored on the EquipmentSlot. This method returns whatever the value of that roll was. Equal to 0 if no proc, 1+ if a proc occurred and the equipment effect should be doubled. Values above 1 may occur when multi-stacking is enabled in the config; it is recommended to implement linear stacking in this case (activate or increase effects by 2x, 3x, 4x, etc.).
 - `public bool ThinkInvisible.ClassicItems.Scepter.instance.RegisterScepterSkill(SkillDef replacingDef, string targetBodyName, SkillSlot targetSlot, int targetVariant)`: Add a SkillDef to the library of skill replacers for when an Ancient Scepter is obtained. Returns true on success.
