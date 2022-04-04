@@ -1,6 +1,4 @@
-﻿using Mono.Cecil.Cil;
-using MonoMod.Cil;
-using RoR2;
+﻿using RoR2;
 using System;
 using UnityEngine;
 using System.Linq;
@@ -217,6 +215,9 @@ namespace ThinkInvisible.ClassicItems {
 
             On.RoR2.CharacterBody.OnInventoryChanged += On_CBOnInventoryChanged;
             On.RoR2.EquipmentSlot.PerformEquipmentAction += EquipmentSlot_PerformEquipmentAction;
+            On.RoR2.UI.EquipmentIcon.Update += EquipmentIcon_Update;
+            On.RoR2.UI.TooltipController.SetTooltipProvider += TooltipController_SetTooltipProvider;
+            //On.RoR2.UI.EquipmentIcon.SetDisplayData += EquipmentIcon_SetDisplayData; //ValueType MMHOOK bug
         }
 
         public override void Uninstall() {
@@ -228,14 +229,37 @@ namespace ThinkInvisible.ClassicItems {
 
             On.RoR2.CharacterBody.OnInventoryChanged -= On_CBOnInventoryChanged;
             On.RoR2.EquipmentSlot.PerformEquipmentAction -= EquipmentSlot_PerformEquipmentAction;
+            On.RoR2.UI.EquipmentIcon.Update -= EquipmentIcon_Update;
+            On.RoR2.UI.TooltipController.SetTooltipProvider -= TooltipController_SetTooltipProvider;
         }
 
-        public override void InstallLanguage() {
-            base.InstallLanguage();
-            foreach(var hook in allHooks) {
-                if(hook.descriptionAppendToken == null) continue;
-                var oldDescToken = hook.targetEquipment.descriptionToken;
-                languageOverlays.Add(LanguageAPI.AddOverlay(oldDescToken, Language.GetString(oldDescToken) + Language.GetString(hook.descriptionAppendToken), Language.currentLanguageName));
+
+        private void TooltipController_SetTooltipProvider(On.RoR2.UI.TooltipController.orig_SetTooltipProvider orig, RoR2.UI.TooltipController self, RoR2.UI.TooltipProvider provider) {
+            orig(self, provider);
+            if(provider && provider.TryGetComponent<EmbryoTooltipAppendComponent>(out var append)) {
+                self.bodyLabel.text += append.appendContent ?? "";
+            }
+        }
+
+        private void EquipmentIcon_Update(On.RoR2.UI.EquipmentIcon.orig_Update orig, RoR2.UI.EquipmentIcon self) {
+            orig(self);
+            if(self && GetCount(self.targetInventory) > 0 && self.targetEquipmentSlot && self.tooltipProvider) {
+                string toAppend = null;
+                var edef = EquipmentCatalog.GetEquipmentDef(self.targetEquipmentSlot.equipmentIndex);
+                if(edef) {
+                    foreach(var hook in allHooks) {
+                        if(hook.targetEquipment == edef) {
+                            toAppend = Language.GetString(hook.descriptionAppendToken);
+                            break;
+                        }
+                    }
+                }
+                if(toAppend != null) {
+                    var append = self.tooltipProvider.gameObject.GetComponent<EmbryoTooltipAppendComponent>();
+                    if(!append)
+                        append = self.tooltipProvider.gameObject.AddComponent<EmbryoTooltipAppendComponent>();
+                    append.appendContent = toAppend;
+                }
             }
         }
 
@@ -262,5 +286,10 @@ namespace ThinkInvisible.ClassicItems {
 
     public class EmbryoTrackLastComponent : MonoBehaviour {
         public int lastBoost = 0;
+    }
+
+    [RequireComponent(typeof(RoR2.UI.TooltipProvider))]
+    public class EmbryoTooltipAppendComponent : MonoBehaviour {
+        public string appendContent = null;
     }
 }
