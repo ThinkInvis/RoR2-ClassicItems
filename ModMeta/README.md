@@ -97,7 +97,7 @@ For nostalgic purposes only. Here Be Dragons who hoard balance issues, because t
 - Item models are a quick first pass -- improvements may be made.
     - Item displays may also happen at some point.
 - Stats are set close to RoR1's whenever possible. May eventually set up a config preset which balances items a little more carefully with respect to RoR2's existing content.
-- Beating Embryo is being rebuilt and is currently disabled.
+- Beating Embryo is being rebuilt and currently has no support for other mods to add their own effects.
 - Beating Embryo has no effect on Lunar equipments (other than those added by mods). This is a design decision, but disabled-by-default effects are planned.
 - As of SotV, new characters, and some new skills for old characters, are missing Ancient Scepter skills.
 - See the GitHub repo for more!
