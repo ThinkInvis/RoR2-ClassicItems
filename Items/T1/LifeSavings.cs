@@ -18,7 +18,7 @@ namespace ThinkInvisible.ClassicItems {
         public float gainPerSec {get;private set;} = 1f;
 
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
-        [AutoConfig("With <InvertCount stacks, number of stacks affects time per interval instead of multiplying money gained.", AutoConfigFlags.PreventNetMismatch, 0, int.MaxValue)]
+        [AutoConfig("With less than InvertCount stacks, number of stacks affects time per interval instead of multiplying money gained.", AutoConfigFlags.PreventNetMismatch, 0, int.MaxValue)]
         public int invertCount {get;private set;} = 3;
 
         [AutoConfig("If true, Life Savings stacks on deployables (e.g. Engineer turrets) will send money to their master.",
