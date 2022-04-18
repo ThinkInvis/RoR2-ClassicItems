@@ -53,67 +53,50 @@ namespace ThinkInvisible.ClassicItems {
         public override void Install() {
             base.Install();
             On.RoR2.CharacterBody.OnInventoryChanged += On_CBOnInventoryChanged;
-            On.RoR2.SceneExitController.Begin += On_SECBegin;
-            On.EntityStates.SpawnTeleporterState.OnExit += On_EntSTSOnExit;
             On.RoR2.CharacterMaster.AddDeployable += On_CMAddDeployable;
             On.RoR2.CharacterMaster.RemoveDeployable += On_CMRemoveDeployable;
         }
+
         public override void Uninstall() {
             base.Uninstall();
             On.RoR2.CharacterBody.OnInventoryChanged -= On_CBOnInventoryChanged;
-            On.RoR2.SceneExitController.Begin -= On_SECBegin;
-            On.EntityStates.SpawnTeleporterState.OnExit -= On_EntSTSOnExit;
             On.RoR2.CharacterMaster.AddDeployable -= On_CMAddDeployable;
             On.RoR2.CharacterMaster.RemoveDeployable -= On_CMRemoveDeployable;
         }
 
-        private void On_EntSTSOnExit(On.EntityStates.SpawnTeleporterState.orig_OnExit orig, EntityStates.SpawnTeleporterState self) {
-            orig(self);
-            if(!NetworkServer.active) return;
-            var cpt = self.outer.commonComponents.characterBody.GetComponent<LifeSavingsComponent>();
-            if(cpt) cpt.holdIt = false;
-        }
-
-        private void On_SECBegin(On.RoR2.SceneExitController.orig_Begin orig, SceneExitController self) {
-            orig(self);
-            if(!NetworkServer.active) return;
-            foreach(NetworkUser networkUser in NetworkUser.readOnlyInstancesList) {
-				if(networkUser.master.hasBody) {
-                    var cpt = networkUser.master.GetBody().GetComponent<LifeSavingsComponent>();
-                    if(cpt) cpt.holdIt = true;
-				}
-            }
-        }
-
         private void On_CBOnInventoryChanged(On.RoR2.CharacterBody.orig_OnInventoryChanged orig, CharacterBody self) {
             orig(self);
-            var cpt = self.GetComponent<LifeSavingsComponent>();
-            if(!cpt) cpt = self.gameObject.AddComponent<LifeSavingsComponent>();
+            if(!self.master || !NetworkServer.active) return;
+            var cpt = self.master.gameObject.GetComponent<LifeSavingsComponent>();
+            if(!cpt) cpt = self.master.gameObject.AddComponent<LifeSavingsComponent>();
             if(NetworkServer.active) cpt.ServerUpdateIcnt();
         }
 
         private void On_CMAddDeployable(On.RoR2.CharacterMaster.orig_AddDeployable orig, CharacterMaster self, Deployable dpl, DeployableSlot dpls) {
             orig(self, dpl, dpls);
-            if(inclDeploys && self.hasBody) {
-                self.GetBody().GetComponent<LifeSavingsComponent>()?.ServerUpdateIcnt();
+            if(inclDeploys && self.hasBody && NetworkServer.active && self.GetBody().TryGetComponent<LifeSavingsComponent>(out var cpt)) {
+                cpt.ServerUpdateIcnt();
             }
         }
         private void On_CMRemoveDeployable(On.RoR2.CharacterMaster.orig_RemoveDeployable orig, CharacterMaster self, Deployable dpl) {
             orig(self, dpl);
-            if(inclDeploys && self.hasBody) {
-                self.GetBody().GetComponent<LifeSavingsComponent>()?.ServerUpdateIcnt();
+            if(inclDeploys && self.hasBody && NetworkServer.active && self.GetBody().TryGetComponent<LifeSavingsComponent>(out var cpt)) {
+                cpt.ServerUpdateIcnt();
             }
         }
     }
         
+    [RequireComponent(typeof(CharacterMaster))]
     public class LifeSavingsComponent : NetworkBehaviour {
         private float moneyBuffer = 0f;
-        [SyncVar]
-        public bool holdIt = true; //https://www.youtube.com/watch?v=vDMwDT6BhhE
-        [SyncVar]
         public int icnt = 0;
 
-        [Server]
+        CharacterMaster master;
+
+        public void Awake() {
+            master = GetComponent<CharacterMaster>();
+        }
+
         public void ServerUpdateIcnt() {
             var body = this.gameObject.GetComponent<CharacterBody>();
             icnt = LifeSavings.instance.GetCount(body);
@@ -126,19 +109,17 @@ namespace ThinkInvisible.ClassicItems {
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Used by UnityEngine")]
         private void FixedUpdate() {
-            var body = this.gameObject.GetComponent<CharacterBody>();
-            if(body.inventory && body.master) {
-                if(icnt > 0)
-                    moneyBuffer += Time.fixedDeltaTime * CalculateMoneyIncrease(icnt);
-                //Disable during pre-teleport money drain so it doesn't softlock
-                //Accumulator is emptied into actual money variable whenever a tick passes and it has enough for a change in integer value
-                if(moneyBuffer >= 1.0f && !holdIt && (LifeSavings.instance.ignoreTimestop || !Run.instance.isRunStopwatchPaused)){
-                    if(Compat_ShareSuite.enabled && Compat_ShareSuite.MoneySharing())
-                        Compat_ShareSuite.GiveMoney((uint)Math.Floor(moneyBuffer));
-                    else
-                        body.master.GiveMoney((uint)Math.Floor(moneyBuffer));
-                    moneyBuffer %= 1.0f;
-                }
+            if(!NetworkServer.active) return;
+            if(icnt > 0)
+                moneyBuffer += Time.fixedDeltaTime * CalculateMoneyIncrease(icnt);
+            //Disable during pre-teleport money drain so it doesn't softlock
+            //Accumulator is emptied into actual money variable whenever a tick passes and it has enough for a change in integer value
+            if(moneyBuffer >= 1.0f && !SceneExitController.isRunning && (LifeSavings.instance.ignoreTimestop || !Run.instance.isRunStopwatchPaused)){
+                if(Compat_ShareSuite.enabled && Compat_ShareSuite.MoneySharing())
+                    Compat_ShareSuite.GiveMoney((uint)Math.Floor(moneyBuffer));
+                else
+                    master.GiveMoney((uint)Math.Floor(moneyBuffer));
+                moneyBuffer %= 1.0f;
             }
         }
     }
