@@ -13,10 +13,14 @@ namespace ThinkInvisible.ClassicItems {
         [AutoConfig("Duration of the buff applied by Pillaged Gold.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float duration {get;private set;} = 14f;
 
+        [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
+        [AutoConfig("Money per hit provided during Pillaged Gold effect.", AutoConfigFlags.None, 0f, float.MaxValue)]
+        public float amount { get; private set; } = 1f;
+
         public BuffDef pillageBuff {get;private set;}
         protected override string GetNameString(string langid = null) => displayName;
-        protected override string GetPickupString(string langid = null) => "For " + duration.ToString("N0") + " seconds, hitting enemies cause them to drop gold.";
-        protected override string GetDescString(string langid = null) => "While active, every hit <style=cIsUtility>drops 1 gold</style> (scales with difficulty). Lasts <style=cIsUtility>" + duration.ToString("N0") + " seconds</style>.";
+        protected override string GetPickupString(string langid = null) => $"For {duration.ToString("N0")} seconds, hitting enemies cause them to drop gold.";
+        protected override string GetDescString(string langid = null) => $"While active, every hit <style=cIsUtility>drops {amount:N1} gold</style> (scales with difficulty). Lasts <style=cIsUtility>{duration:N0} seconds</style>.";
         protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
         public Pillage() {
@@ -73,12 +77,24 @@ namespace ThinkInvisible.ClassicItems {
             CharacterMaster chrm = body.master;
             if(!chrm) return;
 
-            int mamt = Run.instance.GetDifficultyScaledCost(body.GetBuffCount(pillageBuff));
+            float mamt = (float)Run.instance.GetDifficultyScaledCost(body.GetBuffCount(pillageBuff)) * amount;
+            if(!body.gameObject.TryGetComponent<PillageMoneyBuffer>(out var pmb))
+                pmb = body.gameObject.AddComponent<PillageMoneyBuffer>();
+            var bufferAmt = pmb.AddMoneyAndEmptyBuffer(Mathf.Max(mamt, 0f));
 
             if(Compat_ShareSuite.enabled && Compat_ShareSuite.MoneySharing())
-                Compat_ShareSuite.GiveMoney((uint)mamt);
+                Compat_ShareSuite.GiveMoney(bufferAmt);
             else
-                chrm.GiveMoney((uint)mamt);
+                chrm.GiveMoney(bufferAmt);
+        }
+    }
+    public class PillageMoneyBuffer : MonoBehaviour {
+        float _buffer = 0f;
+        public uint AddMoneyAndEmptyBuffer(float amount) {
+            _buffer += amount;
+            var totalToAdd = Mathf.FloorToInt(_buffer);
+            _buffer -= totalToAdd;
+            return (uint)Mathf.Max(totalToAdd, 0);
         }
     }
     public class PillageEmbryoHook : Embryo.EmbryoHook {
