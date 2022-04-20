@@ -91,14 +91,19 @@ namespace ThinkInvisible.ClassicItems {
             snowglobeControllerPrefab = ctrlPfb2.InstantiateClone("snowglobeControllerPrefab", true);
             UnityEngine.Object.Destroy(ctrlPfb2);
 
-            LanguageAPI.Add("EMBRYO_DESC_APPEND_CI_SNOWGLOBE", "\n<style=cStack>Beating Embryo: Double duration.</style>");
+            LanguageAPI.Add("EMBRYO_DESC_APPEND_SNOWGLOBE", "\n<style=cStack>Beating Embryo: Double duration.</style>");
+        }
+
+        public override void SetupBehavior() {
+            base.SetupBehavior();
+            Embryo.RegisterHook(this.equipmentDef, "EMBRYO_DESC_APPEND_SNOWGLOBE", () => "Snowglobe");
         }
 
         protected override bool PerformEquipmentAction(EquipmentSlot slot) {
             if(!slot.characterBody || !slot.characterBody.teamComponent) return false;
             var ctrlInst = UnityEngine.Object.Instantiate(snowglobeControllerPrefab, slot.characterBody.corePosition, Quaternion.identity);
             ctrlInst.GetComponent<SnowglobeController>().myTeam = slot.characterBody.teamComponent.teamIndex;
-            var boost = Embryo.CheckLastEmbryoProc(slot.characterBody) + 1;
+            var boost = Embryo.CheckLastEmbryoProc(slot.characterBody, equipmentDef) + 1;
             ctrlInst.GetComponent<SnowglobeController>().remainingTicks *= boost;
             ctrlInst.GetComponentInChildren<PostProcessDuration>().maxDuration *= boost;
             NetworkServer.Spawn(ctrlInst);
@@ -138,15 +143,5 @@ namespace ThinkInvisible.ClassicItems {
                 }
 			}
         }
-    }
-    public class SnowglobeEmbryoHook : Embryo.EmbryoHook {
-        public override EquipmentDef targetEquipment => Snowglobe.instance.equipmentDef;
-        public override string descriptionAppendToken => $"EMBRYO_DESC_APPEND_CI_SNOWGLOBE";
-        public override string configDisplayName => "Snowglobe";
-
-        //only here for lang override, will be handled in PerformEquipmentAction in module
-        protected override void InstallHooks() { }
-
-        protected override void UninstallHooks() { }
     }
 }

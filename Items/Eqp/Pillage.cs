@@ -42,6 +42,12 @@ namespace ThinkInvisible.ClassicItems {
             ContentAddition.AddBuffDef(pillageBuff);
         }
 
+        public override void SetupBehavior() {
+            base.SetupBehavior();
+
+            Embryo.RegisterHook(this.equipmentDef, "EMBRYO_DESC_APPEND_RETRIGGER", () => "PillagedGold");
+        }
+
         public override void Install() {
             base.Install();
             On.RoR2.GlobalEventManager.OnHitEnemy += On_GEMOnHitEnemy;
@@ -63,8 +69,8 @@ namespace ThinkInvisible.ClassicItems {
             var sbdy = slot.characterBody;
             if(!sbdy) return false;
             sbdy.ClearTimedBuffs(pillageBuff);
-            var boost = Embryo.CheckLastEmbryoProc(slot) + 1;
-            for(var i = 0; i < boost; i++)
+            var count = Embryo.CheckLastEmbryoProc(slot, equipmentDef) + 1;
+            for(var i = 0; i < count; i++)
                 sbdy.AddTimedBuff(pillageBuff, duration);
             return true;
         }
@@ -98,15 +104,5 @@ namespace ThinkInvisible.ClassicItems {
             _buffer -= totalToAdd;
             return (uint)Mathf.Max(totalToAdd, 0);
         }
-    }
-    public class PillageEmbryoHook : Embryo.EmbryoHook {
-        public override EquipmentDef targetEquipment => Pillage.instance.equipmentDef;
-        public override string descriptionAppendToken => $"EMBRYO_DESC_APPEND_RETRIGGER";
-        public override string configDisplayName => "PillagedGold";
-
-        //only here for lang override, will be handled in PerformEquipmentAction in module
-        protected override void InstallHooks() { }
-
-        protected override void UninstallHooks() { }
     }
 }

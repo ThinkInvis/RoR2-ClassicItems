@@ -27,7 +27,13 @@ namespace ThinkInvisible.ClassicItems {
         public override void SetupAttributes() {
             base.SetupAttributes();
 
-            LanguageAPI.Add("EMBRYO_DESC_APPEND_CI_SKELETONKEY", "\n<style=cStack>Beating Embryo: Double range.</style>");
+            LanguageAPI.Add("EMBRYO_DESC_APPEND_SKELETONKEY", "\n<style=cStack>Beating Embryo: Double range.</style>");
+        }
+
+        public override void SetupBehavior() {
+            base.SetupBehavior();
+
+            Embryo.RegisterHook(this.equipmentDef, "EMBRYO_DESC_APPEND_SKELETONKEY", () => "SkeletonKey");
         }
 
         protected override bool PerformEquipmentAction(EquipmentSlot slot) {
@@ -36,7 +42,7 @@ namespace ThinkInvisible.ClassicItems {
             var sphpos = slot.characterBody.transform.position;
             var sphrad = radius;
 
-            sphrad *= Embryo.CheckLastEmbryoProc(slot.characterBody) + 1;
+            sphrad *= Embryo.CheckLastEmbryoProc(slot.characterBody, equipmentDef) + 1;
 			Collider[] sphits = Physics.OverlapSphere(sphpos, sphrad, LayerIndex.defaultLayer.mask, QueryTriggerInteraction.Collide);
             bool foundAny = false;
             foreach(Collider c in sphits) {
@@ -53,15 +59,5 @@ namespace ThinkInvisible.ClassicItems {
             }
             return foundAny;
         }
-    }
-    public class SkeletonKeyEmbryoHook : Embryo.EmbryoHook {
-        public override EquipmentDef targetEquipment => SkeletonKey.instance.equipmentDef;
-        public override string descriptionAppendToken => $"EMBRYO_DESC_APPEND_CI_SKELETONKEY";
-        public override string configDisplayName => "SkeletonKey";
-
-        //only here for lang override, will be handled in PerformEquipmentAction in module
-        protected override void InstallHooks() { }
-
-        protected override void UninstallHooks() { }
     }
 }

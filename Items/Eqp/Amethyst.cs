@@ -18,20 +18,25 @@ namespace ThinkInvisible.ClassicItems {
         protected override bool PerformEquipmentAction(EquipmentSlot slot) {
             var sloc = slot.characterBody?.skillLocator;
             if(!sloc) return false;
-            sloc.ApplyAmmoPack();
+            int count = 1 + Embryo.CheckLastEmbryoProc(slot, equipmentDef);
+            for(var i = 0; i < count; i++)
+                sloc.ApplyAmmoPack();
             return true;
         }
 
         public Amethyst() {
             iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/amethyst_icon.png");
             modelResource = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/Prefabs/GiganticAmethyst.prefab");
-
-            new AmethystEmbryoHook();
         }
-    }
 
-    public class AmethystEmbryoHook : Embryo.SimpleRetriggerEmbryoHook {
-        public override EquipmentDef targetEquipment => Amethyst.instance.equipmentDef;
-        public override string configDisplayName => "GiganticAmethyst";
+        public override void RefreshPermanentLanguage() {
+            permanentGenericLanguageTokens.Add("EMBRYO_DESC_APPEND_AMETHYST", "\n<style=cStack>Beating Embryo: Double duration.</style>");
+            base.RefreshPermanentLanguage();
+        }
+
+        public override void SetupBehavior() {
+            base.SetupBehavior();
+            Embryo.RegisterHook(this.equipmentDef, "EMBRYO_DESC_APPEND_AMETHYST", () => "GiganticAmethyst");
+        }
     }
 }

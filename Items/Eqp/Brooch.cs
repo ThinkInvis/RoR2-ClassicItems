@@ -71,6 +71,8 @@ namespace ThinkInvisible.ClassicItems {
 
             pInt.cost = Mathf.CeilToInt(baseCost * (1f + extraCost));
             pInt.automaticallyScaleCostWithDifficulty = true;
+
+            Embryo.RegisterHook(this.equipmentDef, "EMBRYO_DESC_APPEND_RETRIGGER", () => "CaptainsBrooch");
         }
 
         public override void Install() {
@@ -99,7 +101,11 @@ namespace ThinkInvisible.ClassicItems {
         protected override bool PerformEquipmentAction(EquipmentSlot slot) {
             if(!slot.characterBody) return false;
             if(SceneCatalog.mostRecentSceneDef.baseSceneName == "bazaar") return false;
-            return TrySpawnChest(slot.characterBody.transform);
+            bool succeeded = false;
+            int count = 1 + Embryo.CheckLastEmbryoProc(slot, equipmentDef);
+            for(var i = 0; i < count; i++)
+                succeeded |= TrySpawnChest(slot.characterBody.transform);
+            return succeeded;
         }
 
         private bool TrySpawnChest(Transform trans) {
@@ -131,10 +137,6 @@ namespace ThinkInvisible.ClassicItems {
                 }
             } else return true;
         }
-    }
-    public class BroochEmbryoHook : Embryo.SimpleRetriggerEmbryoHook {
-        public override EquipmentDef targetEquipment => Brooch.instance.equipmentDef;
-        public override string configDisplayName => "CaptainsBrooch";
     }
     internal class CaptainsBroochDroppod:NetworkBehaviour {
         ShakeEmitter shkm;

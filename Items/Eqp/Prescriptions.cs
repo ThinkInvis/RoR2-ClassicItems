@@ -63,6 +63,12 @@ namespace ThinkInvisible.ClassicItems {
             ContentAddition.AddBuffDef(prescriptionsBuff);
         }
 
+        public override void SetupBehavior() {
+            base.SetupBehavior();
+
+            Embryo.RegisterHook(this.equipmentDef, "EMBRYO_DESC_APPEND_RETRIGGER", () => "Prescriptions");
+        }
+
         public override void Install() {
             base.Install();
             GetStatCoefficients += Evt_TILER2GetStatCoefficients;
@@ -84,20 +90,10 @@ namespace ThinkInvisible.ClassicItems {
             var sbdy = slot.characterBody;
             if(!sbdy) return false;
             sbdy.ClearTimedBuffs(prescriptionsBuff);
-            var boost = Embryo.CheckLastEmbryoProc(slot) + 1;
-            for(var i = 0; i < boost; i++)
+            var count = Embryo.CheckLastEmbryoProc(slot, equipmentDef) + 1;
+            for(var i = 0; i < count; i++)
                 sbdy.AddTimedBuff(prescriptionsBuff, duration);
             return true;
         }
-    }
-    public class PrescriptionsEmbryoHook : Embryo.EmbryoHook {
-        public override EquipmentDef targetEquipment => Prescriptions.instance.equipmentDef;
-        public override string descriptionAppendToken => $"EMBRYO_DESC_APPEND_RETRIGGER";
-        public override string configDisplayName => "Prescriptions";
-
-        //only here for lang override, will be handled in PerformEquipmentAction in module
-        protected override void InstallHooks() { }
-
-        protected override void UninstallHooks() { }
     }
 }
