@@ -71,13 +71,13 @@ namespace ThinkInvisible.ClassicItems {
 
         private void On_CMAddDeployable(On.RoR2.CharacterMaster.orig_AddDeployable orig, CharacterMaster self, Deployable dpl, DeployableSlot dpls) {
             orig(self, dpl, dpls);
-            if(inclDeploys && self.hasBody && NetworkServer.active && self.GetBody().TryGetComponent<LifeSavingsComponent>(out var cpt)) {
+            if(inclDeploys && NetworkServer.active && self.TryGetComponent<LifeSavingsComponent>(out var cpt)) {
                 cpt.ServerUpdateIcnt();
             }
         }
         private void On_CMRemoveDeployable(On.RoR2.CharacterMaster.orig_RemoveDeployable orig, CharacterMaster self, Deployable dpl) {
             orig(self, dpl);
-            if(inclDeploys && self.hasBody && NetworkServer.active && self.GetBody().TryGetComponent<LifeSavingsComponent>(out var cpt)) {
+            if(inclDeploys && NetworkServer.active && self.TryGetComponent<LifeSavingsComponent>(out var cpt)) {
                 cpt.ServerUpdateIcnt();
             }
         }
@@ -95,9 +95,12 @@ namespace ThinkInvisible.ClassicItems {
         }
 
         public void ServerUpdateIcnt() {
-            var body = this.gameObject.GetComponent<CharacterBody>();
-            icnt = LifeSavings.instance.GetCount(body);
-            if(LifeSavings.instance.inclDeploys && body.master) icnt += LifeSavings.instance.GetCountOnDeployables(body.master);
+            if(master.hasBody) {
+                var body = master.GetBody();
+                icnt = LifeSavings.instance.GetCount(body);
+            }
+            if(LifeSavings.instance.inclDeploys)
+                icnt += LifeSavings.instance.GetCountOnDeployables(master);
         }
 
         internal static float CalculateMoneyIncrease(int count) {
