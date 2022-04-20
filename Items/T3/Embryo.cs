@@ -150,9 +150,13 @@ namespace ThinkInvisible.ClassicItems {
             } catch(ReflectionTypeLoadException ex) { //handles missing soft dependencies
                 types = ex.Types;
             }
-            var filteredTypes = types.Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(typeof(EmbryoHook)));
+            var filteredTypes = types.Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(typeof(EmbryoHook)) && t != typeof(DependentEmbryoHook));
             foreach(Type type in filteredTypes) {
                 var newModule = (EmbryoHook)Activator.CreateInstance(type, nonPublic: true);
+                if(newModule.targetEquipment == null) {
+                    ClassicItemsPlugin._logger.LogError($"Cannot register internal EmbryoHook of type {type.Name} with null targetEquipment");
+                    continue;
+                }
                 Embryo.instance.allHooksInternal.Add(newModule);
                 Embryo.instance.hooksEnabled.Add(newModule, true);
                 Embryo.instance.hooksEnabledByDef.Add(newModule.targetEquipment, true);
