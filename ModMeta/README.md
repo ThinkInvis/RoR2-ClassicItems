@@ -62,7 +62,7 @@ For nostalgic purposes only. Here Be Dragons who hoard balance issues, because t
     </details>
 - Beating Embryo: "Equipment has a 30% chance to deal double the effect."
     - Has a config option to enable multiple stacks for x3, x4, etc.
-    - No support for mod-added equipment (yet).
+    - Supports mod-added equipment, but will not do anything by default; item mods have to specify what should happen.
 - Permafrost: "Chance to freeze enemies on hit."
 - Photon Jetpack: "No hands."
     - Provides flight while holding jump, using limited recharging fuel.
@@ -97,7 +97,6 @@ For nostalgic purposes only. Here Be Dragons who hoard balance issues, because t
 - Item models are a quick first pass -- improvements may be made.
     - Item displays may also happen at some point.
 - Stats are set close to RoR1's whenever possible. May eventually set up a config preset which balances items a little more carefully with respect to RoR2's existing content.
-- Beating Embryo is being rebuilt and currently has no support for other mods to add their own effects.
 - Beating Embryo has no effect on Lunar equipments (other than those added by mods). This is a design decision, but disabled-by-default effects are planned.
 - As of SotV, new characters, and some new skills for old characters, are missing Ancient Scepter skills.
 - See the GitHub repo for more!
@@ -114,6 +113,16 @@ For details and instructions on applying these, see: https://github.com/ThinkInv
 
 The 5 latest updates are listed below. For a full changelog, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/changelog.md
 (🌧︎: Involves an accepted GitHub Pull Request from the community. Thanks for your help!)
+
+**6.2.0**
+
+- Cross-mod support for the new version of Beating Embryo has been finalized! Check modding.md for instructions for developers.
+- Pillaged Gold amount per hit is now configurable.
+- Reworked Life Savings internal mechanics to hopefully attrite some very evasive bugs out of existence.
+- Implemented Risk Of Options support on ALL items/equipments, via new AutoConfig attributes in TILER2 7.
+- Removed some deprecated ItemStats and BetterUI support.
+- Updated for latest Risk of Rain 2 version.
+- Updated TILER2 dependency to 7.0.0.
 
 **6.1.2**
 
@@ -154,10 +163,3 @@ The 5 latest updates are listed below. For a full changelog, see: https://github
 	- This will be migrated to a standalone mod in the near future.
 - Fixed Barbed Wire, Snowglobe, et. al. not working on Void/Lunar enemies.
 - Updated TILER2 dependency to 6.0.2.
-
-**5.1.1**
-
-- Compatibility update for Risk of Rain 2 Expansion 1 (SotV).
-- Updated R2API dependency to 4.0.11.
-- Updated BepInEx dependency to 5.4.1902.
-- Updated TILER2 dependency to 5.0.3.

@@ -2,6 +2,16 @@
 
 (🌧︎: Involves an accepted GitHub Pull Request from the community. Thanks for your help!)
 
+**6.2.0**
+
+- Cross-mod support for the new version of Beating Embryo has been finalized! Check modding.md for instructions for developers.
+- Pillaged Gold amount per hit is now configurable.
+- Reworked Life Savings internal mechanics to hopefully attrite some very evasive bugs out of existence.
+- Implemented Risk Of Options support on ALL items/equipments, via new AutoConfig attributes in TILER2 7.
+- Removed some deprecated ItemStats and BetterUI support.
+- Updated for latest Risk of Rain 2 version.
+- Updated TILER2 dependency to 7.0.0.
+
 **6.1.2**
 
 - Fixed missing icon on Ancient Scepter. Again. For real this time I promise.
