@@ -33,7 +33,7 @@ namespace ThinkInvisible.ClassicItems {
         public override void SetupBehavior() {
             base.SetupBehavior();
 
-            Embryo.RegisterHook(this.equipmentDef, "EMBRYO_DESC_APPEND_SKELETONKEY", () => "SkeletonKey");
+            Embryo.RegisterHook(this.equipmentDef, "EMBRYO_DESC_APPEND_SKELETONKEY", () => "CI.SkeletonKey");
         }
 
         protected override bool PerformEquipmentAction(EquipmentSlot slot) {

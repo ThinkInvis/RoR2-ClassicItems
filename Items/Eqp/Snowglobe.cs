@@ -96,7 +96,7 @@ namespace ThinkInvisible.ClassicItems {
 
         public override void SetupBehavior() {
             base.SetupBehavior();
-            Embryo.RegisterHook(this.equipmentDef, "EMBRYO_DESC_APPEND_SNOWGLOBE", () => "Snowglobe");
+            Embryo.RegisterHook(this.equipmentDef, "EMBRYO_DESC_APPEND_SNOWGLOBE", () => "CI.Snowglobe");
         }
 
         protected override bool PerformEquipmentAction(EquipmentSlot slot) {

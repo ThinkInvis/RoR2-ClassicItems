@@ -66,7 +66,7 @@ namespace ThinkInvisible.ClassicItems {
         public override void SetupBehavior() {
             base.SetupBehavior();
 
-            Embryo.RegisterHook(this.equipmentDef, "EMBRYO_DESC_APPEND_RETRIGGER", () => "Prescriptions");
+            Embryo.RegisterHook(this.equipmentDef, "EMBRYO_DESC_APPEND_RETRIGGER", () => "CI.Prescriptions");
         }
 
         public override void Install() {

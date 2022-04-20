@@ -72,7 +72,7 @@ namespace ThinkInvisible.ClassicItems {
             pInt.cost = Mathf.CeilToInt(baseCost * (1f + extraCost));
             pInt.automaticallyScaleCostWithDifficulty = true;
 
-            Embryo.RegisterHook(this.equipmentDef, "EMBRYO_DESC_APPEND_RETRIGGER", () => "CaptainsBrooch");
+            Embryo.RegisterHook(this.equipmentDef, "EMBRYO_DESC_APPEND_RETRIGGER", () => "CI.CaptainsBrooch");
         }
 
         public override void Install() {

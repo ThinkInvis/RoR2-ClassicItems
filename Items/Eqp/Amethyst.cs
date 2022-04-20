@@ -36,7 +36,7 @@ namespace ThinkInvisible.ClassicItems {
 
         public override void SetupBehavior() {
             base.SetupBehavior();
-            Embryo.RegisterHook(this.equipmentDef, "EMBRYO_DESC_APPEND_AMETHYST", () => "GiganticAmethyst");
+            Embryo.RegisterHook(this.equipmentDef, "EMBRYO_DESC_APPEND_AMETHYST", () => "CI.GiganticAmethyst");
         }
     }
 }
