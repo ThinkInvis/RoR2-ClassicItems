@@ -39,11 +39,13 @@ namespace ThinkInvisible.ClassicItems {
                 if(Embryo.instance.enabled)
                     Install();
                 Embryo.instance.hooksEnabled[this] = true;
+                Embryo.instance.hooksEnabledByDef[this.targetEquipment] = true;
             }
             public void Disable() {
                 isEnabled = false;
                 Uninstall();
                 Embryo.instance.hooksEnabled[this] = false;
+                Embryo.instance.hooksEnabledByDef[this.targetEquipment] = false;
             }
 
             protected internal virtual void SetupConfig() { }
@@ -53,6 +55,43 @@ namespace ThinkInvisible.ClassicItems {
 
             protected abstract void InstallHooks();
             protected abstract void UninstallHooks();
+        }
+
+        public sealed class DependentEmbryoHook : EmbryoHook {
+            internal EquipmentDef _targetEquipment;
+            public override EquipmentDef targetEquipment => _targetEquipment;
+
+            internal string _descriptionAppendToken;
+            public override string descriptionAppendToken => _descriptionAppendToken;
+
+            internal Func<string> _configDisplayNameDelegate;
+            public override string configDisplayName => _configDisplayNameDelegate?.Invoke() ?? targetEquipment.nameToken;
+
+            internal Action _installHooksDelegate;
+            internal Action _uninstallHooksDelegate;
+            internal Action _setupConfigDelegate;
+            internal Action _setupAttributesDelegate;
+            internal Action<CharacterBody> _addComponentsDelegate;
+
+            protected override void InstallHooks() {
+                _installHooksDelegate?.Invoke();
+            }
+
+            protected override void UninstallHooks() {
+                _uninstallHooksDelegate?.Invoke();
+            }
+
+            protected internal override void AddComponents(CharacterBody body) {
+                _addComponentsDelegate?.Invoke(body);
+            }
+
+            protected internal override void SetupAttributes() {
+                _setupAttributesDelegate?.Invoke();
+            }
+
+            protected internal override void SetupConfig() {
+                _setupConfigDelegate?.Invoke();
+            }
         }
 
         public abstract class SimpleRetriggerEmbryoHook : EmbryoHook {
@@ -81,32 +120,70 @@ namespace ThinkInvisible.ClassicItems {
 		public override ItemTier itemTier => ItemTier.Tier3;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.EquipmentRelated});
 
+
+        [AutoConfigRoOSlider("{0:N0}%", 0f, 100f)]
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Percent chance of triggering an equipment twice. Stacks additively.", AutoConfigFlags.None, 0f, 100f)]
         public float procChance {get;private set;} = 30f;
 
+        [AutoConfigRoOCheckbox()]
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("If true, proc chance past 100% can triple-, quadruple-, etc.-proc.", AutoConfigFlags.None)]
         public bool canMultiproc { get; private set; } = true;
 
-        internal readonly List<EmbryoHook> allHooks = new List<EmbryoHook>();
+        internal readonly List<EmbryoHook> allHooksInternal = new List<EmbryoHook>();
 
         internal Dictionary<EmbryoHook, bool> hooksEnabled { get; } = new Dictionary<EmbryoHook, bool>();
+        internal Dictionary<EquipmentDef, bool> hooksEnabledByDef { get; } = new Dictionary<EquipmentDef, bool>();
 
         public Embryo() {
             iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/embryo_icon.png");
             modelResource = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/Prefabs/Embryo.prefab");
 
-            InitAllEmbryoHooksInMyAssembly();
+            InitAllInternalEmbryoHooks();
         }
 
-        public static void InitAllEmbryoHooksInMyAssembly()  {
+        internal static void InitAllInternalEmbryoHooks()  {
             var callingAssembly = Assembly.GetCallingAssembly();
-            foreach(Type type in callingAssembly.GetTypes().Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(typeof(EmbryoHook)))) {
-                var newModule = (EmbryoHook)Activator.CreateInstance(type, nonPublic: true);
-                Embryo.instance.allHooks.Add(newModule);
-                Embryo.instance.hooksEnabled.Add(newModule, true);
+            Type[] types = new Type[] { };
+            try {
+                types = callingAssembly.GetTypes();
+            } catch(ReflectionTypeLoadException ex) { //handles missing soft dependencies
+                types = ex.Types;
             }
+            var filteredTypes = types.Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(typeof(EmbryoHook)));
+            foreach(Type type in filteredTypes) {
+                var newModule = (EmbryoHook)Activator.CreateInstance(type, nonPublic: true);
+                Embryo.instance.allHooksInternal.Add(newModule);
+                Embryo.instance.hooksEnabled.Add(newModule, true);
+                Embryo.instance.hooksEnabledByDef.Add(newModule.targetEquipment, true);
+            }
+        }
+
+        ///<summary>Registers an equipment with a Beating Embryo enabled config and optionally applies a description append token + config display name (latter will otherwise use equipment name token). Provides optional delegates for all setup/install methods available to internal Embryo hooks.</summary>
+        public static void RegisterHook(EquipmentDef equipment, string descAppendToken = null, Func<string> configDisplayNameDelegate = null, Action installHooksDelegate = null, Action uninstallHooksDelegate = null, Action<CharacterBody> addComponentsDelegate = null, Action setupAttributesDelegate = null, Action setupConfigDelegate = null) {
+            if(equipment == null) {
+                ClassicItemsPlugin._logger.LogError("Embryo.RegisterHook: cannot register hook for null EquipmentDef. Stack trace as follows:");
+                ClassicItemsPlugin._logger.LogError(System.Environment.StackTrace);
+            }
+            if(Embryo.instance.allHooksInternal.Any(x => x.targetEquipment == equipment)) {
+                ClassicItemsPlugin._logger.LogError($"Embryo.RegisterHook: EquipmentDef {equipment} ({equipment.nameToken}) has already been registered. Stack trace as follows:");
+                ClassicItemsPlugin._logger.LogError(System.Environment.StackTrace);
+                return;
+            }
+            var newModule = new DependentEmbryoHook {
+                _targetEquipment = equipment,
+                _descriptionAppendToken = descAppendToken,
+                _configDisplayNameDelegate = configDisplayNameDelegate,
+                _installHooksDelegate = installHooksDelegate,
+                _uninstallHooksDelegate = uninstallHooksDelegate,
+                _addComponentsDelegate = addComponentsDelegate,
+                _setupAttributesDelegate = setupAttributesDelegate,
+                _setupConfigDelegate = setupConfigDelegate
+            };
+            Embryo.instance.allHooksInternal.Add(newModule);
+            Embryo.instance.hooksEnabled.Add(newModule, true);
+            Embryo.instance.hooksEnabledByDef.Add(newModule.targetEquipment, true);
         }
 
         public override void SetupConfig() {
@@ -116,7 +193,7 @@ namespace ThinkInvisible.ClassicItems {
         public override void SetupLate() {
             base.SetupLate();
 
-            foreach(var hook in allHooks) {
+            foreach(var hook in allHooksInternal) {
                 hook.SetupConfig();
             }
 
@@ -142,6 +219,10 @@ namespace ThinkInvisible.ClassicItems {
             return (boost, cpt);
         }
 
+        public static bool GetEmbryoEnabled(EquipmentDef def) {
+            return Embryo.instance.hooksEnabledByDef[def];
+        }
+
         public static int CheckLastEmbryoProc(CharacterBody body) {
             if(!body) return 0;
             var cpt = body.GetComponent<EmbryoTrackLastComponent>();
@@ -149,11 +230,19 @@ namespace ThinkInvisible.ClassicItems {
             return cpt.lastBoost;
         }
 
+        public static int CheckLastEmbryoProc(CharacterBody body, EquipmentDef def) {
+            return GetEmbryoEnabled(def) ? 0 : CheckLastEmbryoProc(body);
+        }
+
         public static int CheckLastEmbryoProc(EquipmentSlot slot) {
             if(!slot || !slot.characterBody) return 0;
             var cpt = slot.characterBody.GetComponent<EmbryoTrackLastComponent>();
             if(!cpt) return 0;
             return cpt.lastBoost;
+        }
+
+        public static int CheckLastEmbryoProc(EquipmentSlot slot, EquipmentDef def) {
+            return GetEmbryoEnabled(def) ? 0 : CheckLastEmbryoProc(slot);
         }
 
         private int _CheckEmbryoProc(CharacterBody body) {
@@ -183,7 +272,7 @@ namespace ThinkInvisible.ClassicItems {
         public override void SetupAttributes() {
             base.SetupAttributes();
 
-            foreach(var hook in allHooks)
+            foreach(var hook in allHooksInternal)
                 hook.SetupAttributes();
 
             LanguageAPI.Add("EMBRYO_DESC_APPEND_RETRIGGER", "\n<style=cStack>Beating Embryo: Activates twice simultaneously.</style>");
@@ -201,7 +290,7 @@ namespace ThinkInvisible.ClassicItems {
         public override void Install() {
             base.Install();
 
-            foreach(var hook in allHooks) {
+            foreach(var hook in allHooksInternal) {
                 if(hook.isEnabled)
                     hook.Install();
             }
@@ -216,7 +305,7 @@ namespace ThinkInvisible.ClassicItems {
         public override void Uninstall() {
             base.Uninstall();
 
-            foreach(var hook in allHooks) {
+            foreach(var hook in allHooksInternal) {
                 hook.Uninstall();
             }
 
@@ -240,7 +329,7 @@ namespace ThinkInvisible.ClassicItems {
                 string toAppend = null;
                 var edef = EquipmentCatalog.GetEquipmentDef(self.targetEquipmentSlot.equipmentIndex);
                 if(edef) {
-                    foreach(var hook in allHooks) {
+                    foreach(var hook in allHooksInternal) {
                         if(hook.targetEquipment == edef) {
                             toAppend = Language.GetString(hook.descriptionAppendToken);
                             break;
@@ -262,7 +351,7 @@ namespace ThinkInvisible.ClassicItems {
             var cpt = self.gameObject.GetComponent<EmbryoTrackLastComponent>();
             if(!cpt)
                 self.gameObject.AddComponent<EmbryoTrackLastComponent>();
-            foreach(var hook in allHooks) {
+            foreach(var hook in allHooksInternal) {
                 if(!hook.isEnabled) continue;
                 hook.AddComponents(self);
             }
