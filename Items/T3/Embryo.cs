@@ -201,6 +201,7 @@ namespace ThinkInvisible.ClassicItems {
             }
 
             Bind(typeof(Embryo).GetPropertyCached(nameof(hooksEnabled)), ClassicItemsPlugin.cfgFile, "ClassicItems", "Items.Embryo.SubEnable", new AutoConfigAttribute($"<AIC.DictKeyProp.{nameof(EmbryoHook.configDisplayName)}>", "If false, this equipment's Beating Embryo functionality will be disabled.", AutoConfigFlags.BindDict | AutoConfigFlags.PreventNetMismatch));
+            BindRoO(FindConfig(nameof(hooksEnabled)), new AutoConfigRoOCheckboxAttribute());
 
             ConfigEntryChanged += (sender, args) => {
                 if(args.target.boundProperty.Name == nameof(hooksEnabled)) {
