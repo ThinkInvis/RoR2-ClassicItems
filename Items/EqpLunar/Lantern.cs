@@ -20,7 +20,7 @@ namespace ThinkInvisible.ClassicItems {
 		[AutoConfig("Base-player-damage/sec applied by Safeguard Lantern.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float damage {get;private set;} = 0.2f;
 
-		[AutoConfigRoOSlider("{0:N0}", 0f, 1000f)]
+		[AutoConfigRoOSlider("{0:N0} m", 0f, 1000f)]
 		[AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
 		[AutoConfig("Radius of the Safeguard Lantern aura.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float range {get;private set;} = 25f;
