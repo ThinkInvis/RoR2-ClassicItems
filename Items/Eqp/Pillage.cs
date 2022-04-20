@@ -19,7 +19,7 @@ namespace ThinkInvisible.ClassicItems {
 
         public BuffDef pillageBuff {get;private set;}
         protected override string GetNameString(string langid = null) => displayName;
-        protected override string GetPickupString(string langid = null) => $"For {duration.ToString("N0")} seconds, hitting enemies cause them to drop gold.";
+        protected override string GetPickupString(string langid = null) => $"For {duration:N0} seconds, hitting enemies cause them to drop gold.";
         protected override string GetDescString(string langid = null) => $"While active, every hit <style=cIsUtility>drops {amount:N1} gold</style> (scales with difficulty). Lasts <style=cIsUtility>{duration:N0} seconds</style>.";
         protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
 
