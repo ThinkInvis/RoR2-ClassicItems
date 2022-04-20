@@ -220,7 +220,7 @@ namespace ThinkInvisible.ClassicItems {
         }
 
         public static bool GetEmbryoEnabled(EquipmentDef def) {
-            return Embryo.instance.hooksEnabledByDef[def];
+            return Embryo.instance.enabled && Embryo.instance.hooksEnabledByDef.ContainsKey(def) && Embryo.instance.hooksEnabledByDef[def];
         }
 
         public static int CheckLastEmbryoProc(CharacterBody body) {
