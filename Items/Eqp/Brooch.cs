@@ -16,14 +16,17 @@ namespace ThinkInvisible.ClassicItems {
 
         public override float cooldown {get;protected set;} = 135f;
 
+        [AutoConfigRoOSlider("{0:P0}", 0f, 10f)]
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Multiplier for additional cost of chests spawned by Captain's Brooch.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float extraCost {get;private set;} = 0.5f;
 
+        [AutoConfigRoOCheckbox()]
         [AutoConfig("If true, chests spawned by Captain's Brooch will immediately appear at the target position instead of falling nearby, and will not be destroyed after purchase.",
             AutoConfigFlags.PreventNetMismatch)]
         public bool safeMode {get;private set;} = false;
 
+        [AutoConfigRoOCheckbox()]
         [AutoConfig("If true, Captain's Brooch will spawn chests directly at the player's position if it can't find a suitable spot nearby. If false, it will fail to spawn the chest and refrain from using an equipment charge.")]
         public bool doFallbackSpawn {get;private set;} = false;
 

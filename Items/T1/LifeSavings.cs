@@ -13,18 +13,22 @@ namespace ThinkInvisible.ClassicItems {
         public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
 
+        [AutoConfigRoOSlider("${0:N1}", 0f, 1000f)]
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Money to add to players per second per Life Savings stack (without taking into account InvertCount).", AutoConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float gainPerSec {get;private set;} = 1f;
 
+        [AutoConfigRoOIntSlider("${0:N0}", 0, 100)]
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("With less than InvertCount stacks, number of stacks affects time per interval instead of multiplying money gained.", AutoConfigFlags.PreventNetMismatch, 0, int.MaxValue)]
         public int invertCount {get;private set;} = 3;
 
+        [AutoConfigRoOCheckbox()]
         [AutoConfig("If true, Life Savings stacks on deployables (e.g. Engineer turrets) will send money to their master.",
             AutoConfigFlags.PreventNetMismatch)]
         public bool inclDeploys {get;private set;} = false;
 
+        [AutoConfigRoOCheckbox()]
         [AutoConfig("If true, Life Savings will continue to work in areas where the run timer is paused (e.g. bazaar).",
             AutoConfigFlags.PreventNetMismatch)]
         public bool ignoreTimestop {get;private set;} = false;

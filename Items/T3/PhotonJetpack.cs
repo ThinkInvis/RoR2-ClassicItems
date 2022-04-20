@@ -13,27 +13,33 @@ namespace ThinkInvisible.ClassicItems {
         public override bool itemIsAIBlacklisted {get; protected set;} = true;
 
         public BuffDef photonFuelBuff {get;private set;}
-        
+
+        [AutoConfigRoOSlider("{0:N1} s", 0f, 10f)]
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Time in seconds that jump must be released before Photon Jetpack fuel begins recharging.",AutoConfigFlags.PreventNetMismatch,0f,float.MaxValue)]
         public float rchDelay {get;private set;} = 1.0f;
 
+        [AutoConfigRoOSlider("{0:N1} s", 0f, 10f)]
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Seconds of Photon Jetpack fuel recharged per second realtime.",AutoConfigFlags.PreventNetMismatch,0f,float.MaxValue)]
         public float rchRate {get;private set;} = 1.0f;
-        
+
+        [AutoConfigRoOSlider("{0:N1} s", 0f, 10f)]
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Seconds of Photon Jetpack fuel capacity at first stack.",AutoConfigFlags.PreventNetMismatch,0f,float.MaxValue)]
         public float baseFuel {get;private set;} = 1.6f;
-        
+
+        [AutoConfigRoOSlider("{0:N1} s", 0f, 10f)]
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Seconds of Photon Jetpack fuel capacity per additional stack.",AutoConfigFlags.PreventNetMismatch,0f,float.MaxValue)]
         public float stackFuel {get;private set;} = 1.6f;
-        
+
+        [AutoConfigRoOSlider("{0:N2}g", 0f, 10f)]
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Multiplier for gravity reduction while Photon Jetpack is active. Effectively the thrust provided by the jetpack -- 0 = no effect, 1 = anti-grav, 2 = negative gravity, etc.",AutoConfigFlags.PreventNetMismatch,0f,float.MaxValue)]
         public float gravMod {get;private set;} = 1.2f;
-        
+
+        [AutoConfigRoOSlider("{0:N2}g", 0f, 10f)]
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Added to Photon Jetpack's GravMod while the character is falling (negative vertical velocity) to assist in stopping falls.",AutoConfigFlags.PreventNetMismatch,0f,float.MaxValue)]
         public float fallBoost {get;private set;} = 2.0f;
@@ -45,6 +51,7 @@ namespace ThinkInvisible.ClassicItems {
             ConvertJumpsToFuel
         }
 
+        [AutoConfigRoOChoice()]
         [AutoConfig("What to do when both Photon Jetpack and extra jumps may be used.", AutoConfigFlags.PreventNetMismatch)]
         public ExtraJumpInteractionType extraJumpInteraction { get; private set; } = ExtraJumpInteractionType.UseJumpsFirst;
 

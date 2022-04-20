@@ -9,15 +9,18 @@ namespace ThinkInvisible.ClassicItems {
         public override string displayName => "Taser";
 		public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
-        
+
+        [AutoConfigRoOSlider("{0:N0}%", 0f, 100f)]
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Percent chance for Taser to proc.", AutoConfigFlags.None, 0f, 100f)]
         public float procChance {get;private set;} = 7f;
-        
+
+        [AutoConfigRoOSlider("{0:N1} s", 0f, 100f)]
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Duration of root applied by first Taser stack.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float procTime {get;private set;} = 1.5f;
-        
+
+        [AutoConfigRoOSlider("{0:N1} s", 0f, 100f)]
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Duration of root applied per additional Taser stack.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float stackTime {get;private set;} = 0.5f;

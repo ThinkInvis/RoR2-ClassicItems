@@ -36,18 +36,23 @@ namespace ThinkInvisible.ClassicItems {
             + $" <style=cStack>{(rerollExtras ? "Extra/unusable" : "Unusable (but NOT extra)")} pickups will reroll into other red items.</style>";
         protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
         
+        [AutoConfigRoOCheckbox()]
         [AutoConfig("If true, TR12-C Gauss Compact will recharge faster to match the additional stock.")]
         public bool engiTurretAdjustCooldown {get; private set;} = false;
 
+        [AutoConfigRoOCheckbox()]
         [AutoConfig("If true, TR58-C Carbonizer Mini will recharge faster to match the additional stock.")]
         public bool engiWalkerAdjustCooldown {get; private set;} = false;
         
+        [AutoConfigRoOCheckbox()]
         [AutoConfig("If true, any stacks picked up past the first will reroll to other red items. If false, this behavior will only be used for characters which cannot benefit from the item at all.")]
         public bool rerollExtras {get; private set;} = true;
         
+        [AutoConfigRoOCheckbox()]
         [AutoConfig("If true, Dragon's Breath will use significantly lighter particle effects and no dynamic lighting.", AutoConfigFlags.DeferForever)]
         public bool artiFlamePerformanceMode {get; private set;} = false;
 
+        [AutoConfigRoOCheckbox()]
         [AutoConfig("If true, other mods will be able to override default Ancient Scepter skills with their own.", AutoConfigFlags.DeferForever)]
         public bool allow3POverride { get; private set; } = true;
 
@@ -55,6 +60,7 @@ namespace ThinkInvisible.ClassicItems {
         public enum StridesInteractionMode {
             StridesTakesPrecedence, ScepterTakesPrecedence, ScepterRerolls
         }
+        [AutoConfigRoOChoice()]
         [AutoConfig("Changes what happens when a character whose Utility skill is affected by Ancient Scepter has both Ancient Scepter and Strides of Heresy at the same time.",
             AutoConfigFlags.DeferUntilNextStage | AutoConfigFlags.PreventNetMismatch)]
         public StridesInteractionMode stridesInteractionMode {get; private set;} = StridesInteractionMode.ScepterRerolls;

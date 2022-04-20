@@ -9,17 +9,21 @@ namespace ThinkInvisible.ClassicItems {
         public override string displayName => "Boxing Gloves";
 		public override ItemTier itemTier => ItemTier.Tier2;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
-        
+
+        [AutoConfigRoOSlider("{0:N0}%", 0f, 100f)]
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Percent chance for Boxing Gloves to proc; stacks multiplicatively.", AutoConfigFlags.None, 0f, 100f)]
         public float procChance {get;private set;} = 6f;
-        
+
+        [AutoConfigRoOSlider("{0:N1}", 0f, 1000f)]
         [AutoConfig("Multiplier for knockback force vs. grounded targets.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float procForceGrounded {get;private set;} = 90f;
 
+        [AutoConfigRoOSlider("{0:N1}", 0f, 1000f)]
         [AutoConfig("Multiplier for knockback force vs. flying targets.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float procForceFlying {get;private set;} = 30f;
         
+        [AutoConfigRoOCheckbox()]
         [AutoConfig("If false, Boxing Gloves will not proc on bosses.", AutoConfigFlags.None)]
         public bool affectBosses {get;private set;} = false;
 

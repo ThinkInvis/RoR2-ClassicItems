@@ -14,18 +14,22 @@ namespace ThinkInvisible.ClassicItems {
 		public override ItemTier itemTier => ItemTier.Tier2;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
 
+        [AutoConfigRoOSlider("{0:P1}", 0f, 100f)]
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Maximum multiplier to add to player damage.", AutoConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float damageBoost {get;private set;} = 0.4f;
 
+        [AutoConfigRoOIntSlider("${0:N0}", 0, 10000)]
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Gold required for maximum damage. Scales with difficulty level.", AutoConfigFlags.PreventNetMismatch, 0, int.MaxValue)]
         public int goldAmt {get;private set;} = 700;
-        
+
+        [AutoConfigRoOSlider("{0:P0}", 0f, 0.999f)]
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Inverse-exponential multiplier for reduced GoldAmt per stack (higher = more powerful).", AutoConfigFlags.PreventNetMismatch, 0f, 0.999f)]
         public float goldReduc {get;private set;} = 0.5f;
 
+        [AutoConfigRoOCheckbox()]
         [AutoConfig("If true, deployables (e.g. Engineer turrets) with Golden Gun will benefit from their master's money.",
             AutoConfigFlags.PreventNetMismatch)]
         public bool inclDeploys {get;private set;} = true;

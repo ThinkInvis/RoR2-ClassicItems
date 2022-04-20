@@ -12,20 +12,25 @@ namespace ThinkInvisible.ClassicItems {
     public class Snowglobe : Equipment<Snowglobe> {
         public override string displayName => "Snowglobe";
 
+        [AutoConfigRoOSlider("{0:N0}%", 0f, 100f)]
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Percent chance of freezing each individual enemy for every Snowglobe tick.", AutoConfigFlags.None, 0f, 100f)]
         public float procRate {get;private set;} = 30f;
 
+        [AutoConfigRoOIntSlider("{0:N0}", 0, 100)]
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Number of 1-second ticks of Snowglobe duration.", AutoConfigFlags.PreventNetMismatch, 0, int.MaxValue)]
         public int duration {get;private set;} = 8;
 
+        [AutoConfigRoOSlider("{0:N1} s", 0f, 10f)]
         [AutoConfig("Duration of freeze applied by Snowglobe.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float freezeTime {get;private set;} = 1.5f;
 
+        [AutoConfigRoOSlider("{0:N1} s", 0f, 10f)]
         [AutoConfig("Duration of slow applied by Snowglobe.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float slowTime {get;private set;} = 3.0f;
 
+        [AutoConfigRoOCheckbox()]
         [AutoConfig("If true, Snowglobe will slow targets even if they can't be frozen.")]
         public bool slowUnfreezable {get;private set;} = true;
 

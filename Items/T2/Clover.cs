@@ -11,43 +11,57 @@ namespace ThinkInvisible.ClassicItems {
 		public override ItemTier itemTier => ItemTier.Tier2;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
         public override bool itemIsAIBlacklisted {get; protected set;} = true;
-        
+
+        [AutoConfigRoOSlider("{0:P0}", 0f, 100f)]
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Percent chance for a Clover drop to happen at first stack -- as such, multiplicative with Rare/Uncommon chances.", AutoConfigFlags.None, 0f, 100f)]
         public float baseChance {get;private set;} = 4f;
-        
+
+        [AutoConfigRoOSlider("{0:P0}", 0f, 100f)]
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Percent chance for a Clover drop to happen per extra stack.", AutoConfigFlags.None, 0f, 100f)]
         public float stackChance {get;private set;} = 1.5f;
-        
+
+        [AutoConfigRoOSlider("{0:P0}", 0f, 100f)]
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Maximum percent chance for a Clover drop on elite kill.", AutoConfigFlags.None, 0f, 100f)]
         public float capChance {get;private set;} = 100f;
-        
+
+        [AutoConfigRoOSlider("{0:P0}", 0f, 100f)]
         [AutoConfig("Percent chance for a Clover drop to become Tier 2 at first stack (if it hasn't already become Tier 3).", AutoConfigFlags.None, 0f, 100f)]
         public float baseUnc {get;private set;} = 1f;
+
+        [AutoConfigRoOSlider("{0:P0}", 0f, 100f)]
         [AutoConfig("Percent chance for a Clover drop to become Tier 2 per extra stack.", AutoConfigFlags.None, 0f, 100f)]
         public float stackUnc {get;private set;} = 0.1f;
-        
+
+        [AutoConfigRoOSlider("{0:P0}", 0f, 100f)]
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Maximum percent chance for a Clover drop to become Tier 2.", AutoConfigFlags.None, 0f, 100f)]
         public float capUnc {get;private set;} = 25f;
-        
+
+        [AutoConfigRoOSlider("{0:P0}", 0f, 100f)]
         [AutoConfig("Percent chance for a Clover drop to become Tier 3 at first stack.", AutoConfigFlags.None, 0f, 100f)]
         public float baseRare {get;private set;} = 0.01f;
+
+        [AutoConfigRoOSlider("{0:P0}", 0f, 100f)]
         [AutoConfig("Percent chance for a Clover drop to become Tier 3 per extra stack.", AutoConfigFlags.None, 0f, 100f)]
         public float stackRare {get;private set;} = 0.001f;
-        
+
+        [AutoConfigRoOSlider("{0:P0}", 0f, 100f)]
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Maximum percent chance for a Clover drop to become Tier 3.", AutoConfigFlags.None, 0f, 100f)]
         public float capRare {get;private set;} = 1f;
 
+        [AutoConfigRoOSlider("{0:P0}", 0f, 100f)]
         [AutoConfig("Percent chance for a Tier 1 Clover drop to become Equipment instead.", AutoConfigFlags.None, 0f, 100f)]
         public float baseEqp {get;private set;} = 5f;
 
+        [AutoConfigRoOCheckbox()]
         [AutoConfig("If true, all clovers across all living players are counted towards item drops. If false, only the killer's items count.")]
         public bool globalStack {get;private set;} = true;
         
+        [AutoConfigRoOCheckbox()]
 		[AutoConfig("If true, deployables (e.g. Engineer turrets) with 56 Leaf Clover will count towards globalStack.")]
         public bool inclDeploys {get;private set;} = false;
 

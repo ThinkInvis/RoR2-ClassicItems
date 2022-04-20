@@ -9,10 +9,12 @@ namespace ThinkInvisible.ClassicItems {
     public class Pillage : Equipment<Pillage> {
         public override string displayName => "Pillaged Gold";
 
+        [AutoConfigRoOSlider("{0:N0} s", 0f, 100f)]
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Duration of the buff applied by Pillaged Gold.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float duration {get;private set;} = 14f;
 
+        [AutoConfigRoOSlider("${0:N1}", 0f, 100f)]
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Money per hit provided during Pillaged Gold effect.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float amount { get; private set; } = 1f;

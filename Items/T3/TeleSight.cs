@@ -12,19 +12,23 @@ namespace ThinkInvisible.ClassicItems {
 		public override ItemTier itemTier => ItemTier.Tier3;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
         public override bool itemIsAIBlacklisted {get; protected set;} = true;
-        
+
+        [AutoConfigRoOSlider("{0:N1}%", 0f, 100f)]
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Base percent chance of triggering Telescopic Sight on hit. Affected by proc coefficient.",AutoConfigFlags.None,0f,100f)]
         public float procChance {get;private set;} = 1f;
-        
+
+        [AutoConfigRoOSlider("{0:N1}%", 0f, 100f)]
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Added to ProcChance per extra stack of Telescopic Sight.",AutoConfigFlags.None,0f,100f)]
         public float stackChance {get;private set;} = 0.5f;
-        
+
+        [AutoConfigRoOSlider("{0:N1}%", 0f, 100f)]
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Maximum allowed ProcChance for Telescopic Sight.",AutoConfigFlags.None,0f,100f)]
         public float capChance {get;private set;} = 3f;
 
+        [AutoConfigRoOCheckbox()]
         [AutoConfig("If true, Telescopic Sight will not trigger on bosses.")]
         public bool bossImmunity {get;private set;} = false;
 

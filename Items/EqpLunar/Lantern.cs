@@ -10,14 +10,17 @@ namespace ThinkInvisible.ClassicItems {
     public class Lantern : Equipment<Lantern> {
         public override string displayName => "Safeguard Lantern";
 
+		[AutoConfigRoOSlider("{0:N1} s", 0f, 100f)]
 		[AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Duration of the Safeguard Lantern effect.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float duration {get;private set;} = 10f;
 
+		[AutoConfigRoOSlider("{0:P0}", 0f, 10f)]
 		[AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
 		[AutoConfig("Base-player-damage/sec applied by Safeguard Lantern.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float damage {get;private set;} = 0.2f;
 
+		[AutoConfigRoOSlider("{0:N0}", 0f, 1000f)]
 		[AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
 		[AutoConfig("Radius of the Safeguard Lantern aura.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float range {get;private set;} = 25f;

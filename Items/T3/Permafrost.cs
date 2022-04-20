@@ -10,19 +10,23 @@ namespace ThinkInvisible.ClassicItems {
 		public override ItemTier itemTier => ItemTier.Tier3;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
         public override bool itemIsAIBlacklisted {get; protected set;} = true;
-        
+
+        [AutoConfigRoOSlider("{0:N0}%", 0f, 100f)]
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Percent chance of triggering Permafrost on hit. Affected by proc coefficient; stacks hyperbolically.", AutoConfigFlags.None, 0f, 100f)]
         public float procChance {get;private set;} = 6f;
 
+        [AutoConfigRoOSlider("{0:N1} s", 0f, 10f)]
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Duration of freeze applied by Permafrost.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float freezeTime {get;private set;} = 1.5f;
-        
+
+        [AutoConfigRoOSlider("{0:N1} s", 0f, 10f)]
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Duration of slow applied by Permafrost.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float slowTime {get;private set;} = 3.0f;
 
+        [AutoConfigRoOCheckbox()]
         [AutoConfig("If true, Permafrost will slow targets even if they can't be frozen.")]
         public bool slowUnfreezable {get;private set;} = true;
         

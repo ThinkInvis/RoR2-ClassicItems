@@ -13,15 +13,18 @@ namespace ThinkInvisible.ClassicItems {
         public override string displayName => "The Hit List";
 		public override ItemTier itemTier => ItemTier.Tier3;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
-        
+
+        [AutoConfigRoOSlider("{0:N1} s", 0f, 300f)]
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Time per batch of marked enemies.",AutoConfigFlags.None,0f,float.MaxValue)]
         public float cooldown {get;private set;} = 10f;
-        
+
+        [AutoConfigRoOSlider("{0:N2}", 0f, 10f)]
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage | AutoConfigUpdateActionTypes.InvalidateStats)]
         [AutoConfig("Additive bonus to base damage per marked enemy killed.",AutoConfigFlags.PreventNetMismatch,0f,float.MaxValue)]
         public float procDamage {get;private set;} = 0.5f;
-        
+
+        [AutoConfigRoOSlider("{0:N1}", 0f, 1000f)]
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage | AutoConfigUpdateActionTypes.InvalidateStats)]
         [AutoConfig("Maximum damage bonus from The Hit List.",AutoConfigFlags.PreventNetMismatch,0f,float.MaxValue)]
         public float maxDamage {get;private set;} = 20f;

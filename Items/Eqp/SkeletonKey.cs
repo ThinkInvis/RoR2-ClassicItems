@@ -8,6 +8,7 @@ namespace ThinkInvisible.ClassicItems {
     public class SkeletonKey : Equipment<SkeletonKey> {
         public override string displayName => "Skeleton Key";
 
+        [AutoConfigRoOSlider("{0:N1} m", 0f, 100f)]
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Radius around the user to search for chests to open when using Skeleton Key.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float radius {get;private set;} = 50f;

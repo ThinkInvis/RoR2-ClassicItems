@@ -11,15 +11,18 @@ namespace ThinkInvisible.ClassicItems {
         public override string displayName => "Spikestrip";
 		public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
-        
+
+        [AutoConfigRoOSlider("{0:N1} m", 0f, 100f)]
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("AoE radius for Spikestrip.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float baseRadius {get; private set;} = 5f;
-        
+
+        [AutoConfigRoOSlider("{0:N1} s", 0f, 100f)]
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("AoE duration for the first stack of Spikestrip, in seconds.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float baseDuration {get; private set;} = 2f;
-        
+
+        [AutoConfigRoOSlider("{0:N1} s", 0f, 100f)]
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("AoE duration per additional stack of Spikestrip, in seconds.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float stackDuration {get; private set;} = 1f;

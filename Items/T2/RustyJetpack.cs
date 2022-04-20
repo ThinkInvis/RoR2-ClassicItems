@@ -10,11 +10,13 @@ namespace ThinkInvisible.ClassicItems {
         public override string displayName => "Rusty Jetpack";
 		public override ItemTier itemTier => ItemTier.Tier2;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Utility});
-        
+
+        [AutoConfigRoOSlider("{0:P0}", 0f, 0.999f)]
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
         [AutoConfig("Multiplier for gravity reduction (0.0 = no effect, 1.0 = full anti-grav).", AutoConfigFlags.PreventNetMismatch, 0f, 0.999f)]
         public float gravMod {get;private set;} = 0.5f;
-        
+
+        [AutoConfigRoOSlider("{0:N1}", 0f, 10f)]
         [AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage | AutoConfigUpdateActionTypes.InvalidateStats)]
         [AutoConfig("Amount added to jump power per stack.", AutoConfigFlags.PreventNetMismatch, 0f, float.MaxValue)]
         public float jumpMult {get;private set;} = 0.1f;

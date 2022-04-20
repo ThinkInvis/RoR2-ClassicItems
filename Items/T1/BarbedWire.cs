@@ -14,25 +14,31 @@ namespace ThinkInvisible.ClassicItems {
 		public override ItemTier itemTier => ItemTier.Tier1;
 		public override ReadOnlyCollection<ItemTag> itemTags => new ReadOnlyCollection<ItemTag>(new[]{ItemTag.Damage});
 
+		[AutoConfigRoOSlider("{0:N1} m", 0f, 100f)]
 		[AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
 		[AutoConfig("AoE radius for the first stack of Barbed Wire.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float baseRadius {get; private set;} = 5f;
 
+		[AutoConfigRoOSlider("{0:N1} m", 0f, 100f)]
 		[AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
 		[AutoConfig("AoE radius to add per additional stack of Barbed Wire.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float stackRadius {get; private set;} = 1f;
 
+		[AutoConfigRoOSlider("{0:P0}", 0f, 10f)]
 		[AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
 		[AutoConfig("AoE damage/sec (as fraction of owner base damage) for the first stack of Barbed Wire.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float baseDmg {get; private set;} = 0.5f;
 
+		[AutoConfigRoOSlider("{0:P0}", 0f, 10f)]
 		[AutoConfigUpdateActions(AutoConfigUpdateActionTypes.InvalidateLanguage)]
 		[AutoConfig("AoE damage/sec (as fraction of owner base damage) per additional stack of Barbed Wire.", AutoConfigFlags.None, 0f, float.MaxValue)]
         public float stackDmg {get; private set;} = 0.15f;
 
+		[AutoConfigRoOCheckbox()]
 		[AutoConfig("If true, Barbed Wire only affects one target at most. If false, Barbed Wire affects every target in range.")]
 		public bool oneOnly {get; private set;} = true;
 
+		[AutoConfigRoOCheckbox()]
 		[AutoConfig("If true, deployables (e.g. Engineer turrets) with Barbed Wire will benefit from their master's damage. Deployables usually have 0 damage stat by default, and will not otherwise be able to use Barbed Wire.")]
         public bool inclDeploys {get;private set;} = true;
 
