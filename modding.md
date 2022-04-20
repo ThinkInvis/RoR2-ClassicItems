@@ -15,5 +15,19 @@ See [this source file](Compat/ShareSuite.cs) for a partial example.
 
 The following public members of ClassicItems are explicitly intended to help increase compatibility with other mods.
 
-- `public bool ThinkInvisible.ClassicItems.Embryo.instance.CheckLastEmbryoProc(CharacterBody body -OR- EquipmentSlot slot)`: At the start of `EquipmentSlot.PerformEquipmentAction`, a single roll for Beating Embryo procs will be performed and its value stored on the EquipmentSlot. This method returns whatever the value of that roll was. Equal to 0 if no proc, 1+ if a proc occurred and the equipment effect should be doubled. Values above 1 may occur when multi-stacking is enabled in the config; it is recommended to implement linear stacking in this case (activate or increase effects by 2x, 3x, 4x, etc.).
+#### Beating Embryo
+
+- `public void ThinkInvisible. ClassicItems.Embryo.RegisterHook(EquipmentDef def, string descAppendToken = null, Func<string> configDisplayNameDelegate = null, Action installHooksDelegate = null, Action uninstallHooksDelegate = null, Action<CharacterBody> addComponentsDelegate = null, Action setupAttributesDelegate = null, Action setupConfigDelegate = null)`
+	- Registers an equipment with a Beating Embryo enabled config.
+	- Optionally applies a description append token + config display name (latter will otherwise use equipment name token). Description append token will appear when a player with Beating Embryo mouses over a supported equipment in inventory.
+	- Provides optional delegates for all setup/install methods available to internal Embryo hooks.
+- `public bool ThinkInvisible.ClassicItems.Embryo.CheckLastEmbryoProc(CharacterBody body -OR- EquipmentSlot slot, optional EquipmentDef def)`
+	- At the start of `EquipmentSlot.PerformEquipmentAction`, a single roll for Beating Embryo procs will be performed and its value stored on the EquipmentSlot. This method returns whatever the value of that roll was.
+	- Equal to 0 if no proc, 1+ if a proc occurred and the equipment effect should be doubled. Values above 1 may occur when multi-stacking is enabled in the config; it is recommended to implement linear stacking in this case (activate or increase effects by 2x, 3x, 4x, etc.).
+	- If an EquipmentDef is provided, will return 0 if Beating Embryo is disabled globally, disabled for that EquipmentDef, or does not support that EquipmentDef. This argument should be provided whenever possible.
+- `public void ThinkInvisible.ClassicItems.Embryo.GetEmbryoEnabled(EquipmentDef def)`
+	- Returns true if Beating Embryo is enabled and has an enabled hook for a specific EquipmentDef.
+
+#### Ancient Scepter
+
 - `public bool ThinkInvisible.ClassicItems.Scepter.instance.RegisterScepterSkill(SkillDef replacingDef, string targetBodyName, SkillSlot targetSlot, int targetVariant)`: Add a SkillDef to the library of skill replacers for when an Ancient Scepter is obtained. Returns true on success.
