@@ -27,12 +27,6 @@ namespace ThinkInvisible.ClassicItems {
 
         public override void SetupBehavior() {
             base.SetupBehavior();
-
-            if(Compat_ItemStats.enabled) {
-				Compat_ItemStats.CreateItemStatDef(itemDef,
-					((count,inv,master)=>{return moneyMult*count;},
-					(value,inv,master)=>{return $"Money Bonus: {Pct(value, 1)}";}));
-			}
         }
 
         public override void Install() {

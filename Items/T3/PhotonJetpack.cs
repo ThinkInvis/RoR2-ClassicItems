@@ -81,16 +81,6 @@ namespace ThinkInvisible.ClassicItems {
 
         public override void SetupBehavior() {
             base.SetupBehavior();
-
-            if(Compat_ItemStats.enabled) {
-                Compat_ItemStats.CreateItemStatDef(itemDef,
-                    ((count, inv, master) => {
-                        return baseFuel + (count - 1) * stackFuel +
-                        ((extraJumpInteraction == ExtraJumpInteractionType.ConvertJumpsToFuel && master.hasBody)
-                        ? ((master.GetBody().maxJumpCount - 1) * jumpFuel) : 0);},
-                    (value, inv, master) => { return $"Fuel: {value:N1} s"; }
-                ));
-            }
         }
 
         public override void Install() {

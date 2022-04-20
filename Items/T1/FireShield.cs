@@ -48,15 +48,6 @@ namespace ThinkInvisible.ClassicItems {
 
         public override void SetupBehavior() {
             base.SetupBehavior();
-
-            if(Compat_ItemStats.enabled) {
-                Compat_ItemStats.CreateItemStatDef(itemDef,
-                    ((count, inv, master) => {
-                        return baseDmg + (count - 1) * stackDmg;
-                    },
-                    (value, inv, master) => { return $"Fire Blast Damage: {Pct(value, 1)}"; }
-                ));
-            }
         }
 
         public override void Install() {

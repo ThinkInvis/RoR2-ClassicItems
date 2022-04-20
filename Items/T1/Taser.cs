@@ -39,16 +39,6 @@ namespace ThinkInvisible.ClassicItems {
 
         public override void SetupBehavior() {
             base.SetupBehavior();
-
-            if(Compat_ItemStats.enabled) {
-                Compat_ItemStats.CreateItemStatDef(itemDef,
-                    ((count, inv, master) => { return procTime + (count - 1) * stackTime; },
-                    (value, inv, master) => { return $"Duration: {value:N1} s"; }
-                ));
-            }
-
-            if(Compat_BetterUI.enabled)
-                Compat_BetterUI.AddEffect(itemDef, procChance, null, Compat_BetterUI.ChanceFormatter, Compat_BetterUI.NoStacking);
         }
 
         public override void Install() {

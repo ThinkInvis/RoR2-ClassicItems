@@ -26,13 +26,6 @@ namespace ThinkInvisible.ClassicItems {
 
         public override void SetupBehavior() {
             base.SetupBehavior();
-
-            if(Compat_ItemStats.enabled) {
-                Compat_ItemStats.CreateItemStatDef(itemDef,
-                    ((count, inv, master) => { return addRegen * count; },
-                    (value, inv, master) => { return $"Regen Bonus: {value:N1} HP/s"; }
-                ));
-            }
         }
 
         public override void Install() {

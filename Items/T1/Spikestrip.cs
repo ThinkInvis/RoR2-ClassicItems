@@ -68,13 +68,6 @@ namespace ThinkInvisible.ClassicItems {
 
         public override void SetupBehavior() {
             base.SetupBehavior();
-
-            if(Compat_ItemStats.enabled) {
-                Compat_ItemStats.CreateItemStatDef(itemDef,
-                    ((count, inv, master) => { return baseDuration + (count - 1) * stackDuration; },
-                    (value, inv, master) => { return $"Duration: {value:N1} s"; }
-                ));
-            }
         }
 
         public override void Install() {

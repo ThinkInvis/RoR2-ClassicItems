@@ -68,48 +68,6 @@ namespace ThinkInvisible.ClassicItems {
 
         public override void SetupBehavior() {
             base.SetupBehavior();
-			if(Compat_ItemStats.enabled) {
-				Compat_ItemStats.CreateItemStatDef(itemDef,
-					((count,inv,master)=>{
-                        float numberOfClovers = 0;
-                        if(globalStack)
-                            foreach(CharacterMaster chrm in AliveList()) {
-			                    if(!inclDeploys && chrm.GetComponent<Deployable>()) continue;
-                                numberOfClovers += chrm?.inventory?.GetItemCount(catalogIndex) ?? 0;
-                            }
-                        else
-                            numberOfClovers += count;
-                        return Math.Min(baseChance + (numberOfClovers-1) * stackChance, capChance);
-                    },
-					(value,inv,master)=>{return $"Drop Chance: {Pct(value,1,1f)}";}),
-                    
-					((count,inv,master)=>{
-                        float numberOfClovers = 0;
-                        if(globalStack)
-                            foreach(CharacterMaster chrm in AliveList()) {
-			                    if(!inclDeploys && chrm.GetComponent<Deployable>()) continue;
-                                numberOfClovers += chrm?.inventory?.GetItemCount(catalogIndex) ?? 0;
-                            }
-                        else
-                            numberOfClovers += count;
-                        return Math.Min(baseUnc + (numberOfClovers-1) * stackUnc, capUnc);
-                    },
-					(value,inv,master)=>{return $"T2 Upgrade Chance: {Pct(value,2,1f)}";}),
-                    
-					((count,inv,master)=>{
-                        float numberOfClovers = 0;
-                        if(globalStack)
-                            foreach(CharacterMaster chrm in AliveList()) {
-			                    if(!inclDeploys && chrm.GetComponent<Deployable>()) continue;
-                                numberOfClovers += chrm?.inventory?.GetItemCount(catalogIndex) ?? 0;
-                            }
-                        else
-                            numberOfClovers += count;
-                        return Math.Min(baseRare + (numberOfClovers-1) * stackRare, capRare);
-                    },
-					(value,inv,master)=>{return $"T3 Upgrade Chance: {Pct(value,3,1f)}";})
-                    );
-			}
         }
 
         public override void Install() {

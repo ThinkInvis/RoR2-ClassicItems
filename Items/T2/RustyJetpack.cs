@@ -31,12 +31,6 @@ namespace ThinkInvisible.ClassicItems {
 
         public override void SetupBehavior() {
             base.SetupBehavior();
-
-			if(Compat_ItemStats.enabled) {
-				Compat_ItemStats.CreateItemStatDef(itemDef,
-					((count,inv,master)=>{return jumpMult*count;},
-					(value,inv,master)=>{return $"Jump Power: +{value:N1}";}));
-			}
         }
         
         public override void Install() {

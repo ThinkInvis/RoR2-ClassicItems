@@ -45,17 +45,6 @@ namespace ThinkInvisible.ClassicItems {
 
         public override void SetupBehavior() {
             base.SetupBehavior();
-            if(Compat_ItemStats.enabled) {
-				Compat_ItemStats.CreateItemStatDef(itemDef,
-					((count,inv,master)=>{return Mathf.Min(procChance+stackChance*(count-1), capChance);},
-					(value,inv,master)=>{return $"Instakill Chance: {Pct(value, 1, 1f)}";}));
-            }
-
-            if(Compat_BetterUI.enabled)
-                Compat_BetterUI.AddEffect(itemDef, procChance, stackChance, Compat_BetterUI.ChanceFormatter, Compat_BetterUI.LinearStacking,
-                    (value, extraStackValue, procCoefficient) => {
-                        return Mathf.CeilToInt((capChance - value * procCoefficient) / (extraStackValue * procCoefficient)) + 1;
-                    });
         }
 
         public override void Install() {

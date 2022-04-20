@@ -57,14 +57,6 @@ namespace ThinkInvisible.ClassicItems {
 
         public override void SetupBehavior() {
             base.SetupBehavior();
-            if(Compat_ItemStats.enabled) {
-                Compat_ItemStats.CreateItemStatDef(itemDef,
-                    ((count, inv, master) => {
-                        return Run.instance.GetDifficultyScaledCost(goldAmt) * Mathf.Pow(goldReduc, count - 1);
-                    },
-                    (value, inv, master) => { return $"Full Damage Cost: ${value:N0}"; }
-                ));
-            }
         }
 
         public override void Install() {

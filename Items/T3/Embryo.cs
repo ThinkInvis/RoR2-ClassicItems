@@ -191,13 +191,6 @@ namespace ThinkInvisible.ClassicItems {
 
         public override void SetupBehavior() {
             base.SetupBehavior();
-
-            if(Compat_ItemStats.enabled) {
-                Compat_ItemStats.CreateItemStatDef(itemDef,
-                    ((count, inv, master) => { return procChance * count; },
-                    (value, inv, master) => { return $"Proc Chance: {Pct(value, 1, 1)}"; }
-                ));
-            }
         }
 
         protected override string GetNameString(string langid = null) => displayName;        

@@ -52,13 +52,6 @@ namespace ThinkInvisible.ClassicItems {
 
         public override void SetupBehavior() {
             base.SetupBehavior();
-
-            if(Compat_ItemStats.enabled) {
-                Compat_ItemStats.CreateItemStatDef(itemDef,
-                    ((count, inv, master) => { return critAdd * count; },
-                    (value, inv, master) => { return $"Crit Chance Per Shrine Fail: {Pct(value, 1, 1)}"; }
-                ));
-            }
         }
 
         public override void Install() {

@@ -78,12 +78,6 @@ namespace ThinkInvisible.ClassicItems {
 
         public override void SetupBehavior() {
             base.SetupBehavior();
-            if(Compat_ItemStats.enabled) {
-                Compat_ItemStats.CreateItemStatDef(itemDef,
-                    ((count, inv, master) => { return Mathf.Max(baseCD * Mathf.Pow(1f - stackCDreduc, count - 1), baseDuration); },
-                    (value, inv, master) => { return $"Buff Interval: {value:N1} s"; }
-                ));
-            }
         }
 
         public override void Install() {
