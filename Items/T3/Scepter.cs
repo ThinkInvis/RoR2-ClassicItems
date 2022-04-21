@@ -201,7 +201,6 @@ namespace ThinkInvisible.ClassicItems {
         private class ScepterReplacer {
             public string bodyName;
             public SkillSlot slotIndex;
-            public int variantIndex;
             public SkillDef targetDef;
             public SkillDef replDef;
         }
@@ -221,18 +220,20 @@ namespace ThinkInvisible.ClassicItems {
             var existing = scepterReplacers.Find(x => x.bodyName == targetBodyName && (x.slotIndex != targetSlot || x.targetDef == targetVariantDef));
             if(existing != null) {
                 if(allow3POverride) {
-                    ClassicItemsPlugin._logger.LogDebug($"{targetBodyName}/{targetSlot}/{targetVariantDef.skillNameToken}: overriding existing replacer {existing.replDef.skillNameToken} with {replacingDef.skillNameToken}");
+                    ClassicItemsPlugin._logger.LogMessage($"{targetBodyName}/{targetSlot}/{targetVariantDef.skillNameToken}: overriding existing replacer {existing.replDef.skillNameToken} with {replacingDef.skillNameToken}");
                     scepterReplacers.Remove(existing);
                 } else {
                     ClassicItemsPlugin._logger.LogError($"A scepter skill already exists for {targetBodyName}/{targetSlot}/{targetVariantDef.skillNameToken}; can't add multiple for different slots nor for the same variant (attemping to add {replacingDef.skillNameToken})");
                     return false;
                 }
             }
+            ClassicItemsPlugin._logger.LogDebug($"{targetBodyName}/{targetSlot}/{targetVariantDef.skillNameToken}: Added override to {replacingDef.skillNameToken}");
             scepterReplacers.Add(new ScepterReplacer { bodyName = targetBodyName, slotIndex = targetSlot, targetDef = targetVariantDef, replDef = replacingDef });
             scepterSlots[targetBodyName] = targetSlot;
             return true;
         }
 
+        [Obsolete("Use SkillDef targetVariantDef override.")]
         public bool RegisterScepterSkill(SkillDef replacingDef, string targetBodyName, SkillSlot targetSlot, int targetVariant) {
             if(replacingDef == null) {
                 ClassicItemsPlugin._logger.LogError("Can't register a null scepter skill");
@@ -242,18 +243,16 @@ namespace ThinkInvisible.ClassicItems {
                 ClassicItemsPlugin._logger.LogError($"Can't register scepter skill {replacingDef.skillNameToken} to negative variant index");
                 return false;
             }
-            var existing = scepterReplacers.Find(x => x.bodyName == targetBodyName && (x.slotIndex != targetSlot || x.variantIndex == targetVariant));
-            if(existing != null) {
-                if(allow3POverride) {
-                    ClassicItemsPlugin._logger.LogDebug($"{targetBodyName}/{targetSlot}/{targetVariant}: overriding existing replacer {existing.replDef.skillNameToken} with {replacingDef.skillNameToken}");
-                    scepterReplacers.Remove(existing);
-                } else {
-                    ClassicItemsPlugin._logger.LogError($"A scepter skill already exists for {targetBodyName}/{targetSlot}/{targetVariant}; can't add multiple for different slots nor for the same variant (attemping to add {replacingDef.skillNameToken})");
-                    return false;
-                }
-            }
-            scepterReplacers.Add(new ScepterReplacer {bodyName = targetBodyName, slotIndex = targetSlot, variantIndex = targetVariant, replDef = replacingDef});
-            scepterSlots[targetBodyName] = targetSlot;
+
+            BodyCatalog.availability.CallWhenAvailable(() => {
+                var targetBodyPrefab = BodyCatalog.FindBodyPrefab(targetBodyName);
+                var skillLoc = targetBodyPrefab.GetComponent<SkillLocator>();
+                var targetSkill = skillLoc.GetSkill(targetSlot);
+                var targetVariantDef = targetSkill.skillFamily.variants[targetVariant].skillDef;
+
+                RegisterScepterSkill(replacingDef, targetBodyName, targetSlot, targetVariantDef);
+            });
+
             return true;
         }
 
@@ -290,24 +289,27 @@ namespace ThinkInvisible.ClassicItems {
                 if(repl.Count > 0) {
                     SkillSlot targetSlot = scepterSlots[bodyName];
                     if(targetSlot == SkillSlot.Utility && stridesInteractionMode == StridesInteractionMode.ScepterRerolls && hasStrides) return false;
-                    var targetSkill = self.skillLocator.GetSkill(targetSlot);
-                    if(!targetSkill) return false;
-                    var targetSlotIndex = self.skillLocator.GetSkillSlotIndex(targetSkill);
-                    var targetVariant = self.master.loadout.bodyLoadoutManager.GetSkillVariant(self.bodyIndex, targetSlotIndex);
+                    var currentSkillInTargetSlot = self.skillLocator.GetSkill(targetSlot);
+                    if(!currentSkillInTargetSlot) return false;
+                    var targetSlotLoadoutIndex = self.skillLocator.GetSkillSlotIndex(currentSkillInTargetSlot);
+                    var equippedLoadoutVariantIndex = self.master.loadout.bodyLoadoutManager.GetSkillVariant(self.bodyIndex, targetSlotLoadoutIndex);
+                    var targetFamily = currentSkillInTargetSlot.skillFamily;
+                    var equippedLoadoutVariant = targetFamily.variants[equippedLoadoutVariantIndex];
+
                     var replVar = repl.Find(x => {
-                        if(x.targetDef != null)
-                            return x.targetDef == targetSkill.skillDef;
-                        else
-                            return x.variantIndex == targetVariant;
+                        if(x.targetDef == null) return false;
+                        return x.targetDef != null && x.targetDef == equippedLoadoutVariant.skillDef;
                     });
+
                     if(replVar == null) return false;
+
                     if(!forceOff && GetCount(self) > 0) {
                         if(stridesInteractionMode == StridesInteractionMode.ScepterTakesPrecedence && hasStrides) {
                             self.skillLocator.utility.UnsetSkillOverride(self, CharacterBody.CommonAssets.lunarUtilityReplacementSkillDef, GenericSkill.SkillOverridePriority.Replacement);
                         }
-                        targetSkill.SetSkillOverride(self, replVar.replDef, GenericSkill.SkillOverridePriority.Upgrade);
+                        currentSkillInTargetSlot.SetSkillOverride(self, replVar.replDef, GenericSkill.SkillOverridePriority.Upgrade);
                     } else {
-                        targetSkill.UnsetSkillOverride(self, replVar.replDef, GenericSkill.SkillOverridePriority.Upgrade);
+                        currentSkillInTargetSlot.UnsetSkillOverride(self, replVar.replDef, GenericSkill.SkillOverridePriority.Upgrade);
                         if(stridesInteractionMode == StridesInteractionMode.ScepterTakesPrecedence && hasStrides) {
                             self.skillLocator.utility.SetSkillOverride(self, CharacterBody.CommonAssets.lunarUtilityReplacementSkillDef, GenericSkill.SkillOverridePriority.Replacement);
                         }
