@@ -2,6 +2,12 @@
 
 (🌧︎: Involves an accepted GitHub Pull Request from the community. Thanks for your help!)
 
+**6.2.2**
+
+- Added a new override to Ancient Scepter mod registration method that takes a target SkillDef instead of a variant index.
+    - This is now the preferred way to target skills for replacement. Targeting by VariantIndex is deprecated and may be removed in the future if a suitable replacement for internal use on vanilla skills is found.
+- Scepter skill replacer for Commando grenade now only intercepts the ThrowGrenade entity state for its behavior (and not any other entity state inheriting from it).
+
 **6.2.1**
 
 - Fixed Hit List internal tally item being tier 1 instead of tierless.

@@ -30,4 +30,4 @@ The following public members of ClassicItems are explicitly intended to help inc
 
 #### Ancient Scepter
 
-- `public bool ThinkInvisible.ClassicItems.Scepter.instance.RegisterScepterSkill(SkillDef replacingDef, string targetBodyName, SkillSlot targetSlot, int targetVariant)`: Add a SkillDef to the library of skill replacers for when an Ancient Scepter is obtained. Returns true on success.
+- `public bool ThinkInvisible.ClassicItems.Scepter.instance.RegisterScepterSkill(SkillDef replacingDef, string targetBodyName, SkillSlot targetSlot, SkillDef targetVariantDef -or- int targetVariant)`: Add a SkillDef to the library of skill replacers for when an Ancient Scepter is obtained. Returns true on success. TargetVariant int exists only to support vanilla skills and may be deprecated in future.

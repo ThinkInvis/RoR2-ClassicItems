@@ -114,6 +114,12 @@ For details and instructions on applying these, see: https://github.com/ThinkInv
 The 5 latest updates are listed below. For a full changelog, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/changelog.md
 (🌧︎: Involves an accepted GitHub Pull Request from the community. Thanks for your help!)
 
+**6.2.2**
+
+- Added a new override to Ancient Scepter mod registration method that takes a target SkillDef instead of a variant index.
+    - This is now the preferred way to target skills for replacement. Targeting by VariantIndex is deprecated and may be removed in the future if a suitable replacement for internal use on vanilla skills is found.
+- Scepter skill replacer for Commando grenade now only intercepts the ThrowGrenade entity state for its behavior (and not any other entity state inheriting from it).
+
 **6.2.1**
 
 - Fixed Hit List internal tally item being tier 1 instead of tierless.
@@ -145,13 +151,3 @@ The 5 latest updates are listed below. For a full changelog, see: https://github
 **6.1.1**
 
 - Fixed Embryo LifestealOnHit hook causing rampant NRE spam.
-
-**6.1.0**
-
-- Reimplemented Beating Embryo for internal items. Beating Embryo is no longer force-disabled.
-    - API for adding functionality to other mods' items is not yet restored.
-- Fixed missing icon on Ancient Scepter.
-- Ancient Scepter now has a config option to allow other mods to override its default skill replacers (enabled by default).
-- Internal AssetBundle is now exposed for other mods to reference.
-- Migrated GatherEnemies util method to TILER2.
-- Updated TILER2 dependency to 6.1.2.
