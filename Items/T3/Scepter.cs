@@ -202,11 +202,36 @@ namespace ThinkInvisible.ClassicItems {
             public string bodyName;
             public SkillSlot slotIndex;
             public int variantIndex;
+            public SkillDef targetDef;
             public SkillDef replDef;
         }
 
         private readonly List<ScepterReplacer> scepterReplacers = new List<ScepterReplacer>();
         private readonly Dictionary<string, SkillSlot> scepterSlots = new Dictionary<string, SkillSlot>();
+
+        public bool RegisterScepterSkill(SkillDef replacingDef, string targetBodyName, SkillSlot targetSlot, SkillDef targetVariantDef) {
+            if(replacingDef == null) {
+                ClassicItemsPlugin._logger.LogError("Can't register a null scepter skill");
+                return false;
+            }
+            if(targetVariantDef == null) {
+                ClassicItemsPlugin._logger.LogError($"Can't register scepter skill {replacingDef.skillNameToken} to null target variant");
+                return false;
+            }
+            var existing = scepterReplacers.Find(x => x.bodyName == targetBodyName && (x.slotIndex != targetSlot || x.targetDef == targetVariantDef));
+            if(existing != null) {
+                if(allow3POverride) {
+                    ClassicItemsPlugin._logger.LogDebug($"{targetBodyName}/{targetSlot}/{targetVariantDef.skillNameToken}: overriding existing replacer {existing.replDef.skillNameToken} with {replacingDef.skillNameToken}");
+                    scepterReplacers.Remove(existing);
+                } else {
+                    ClassicItemsPlugin._logger.LogError($"A scepter skill already exists for {targetBodyName}/{targetSlot}/{targetVariantDef.skillNameToken}; can't add multiple for different slots nor for the same variant (attemping to add {replacingDef.skillNameToken})");
+                    return false;
+                }
+            }
+            scepterReplacers.Add(new ScepterReplacer { bodyName = targetBodyName, slotIndex = targetSlot, targetDef = targetVariantDef, replDef = replacingDef });
+            scepterSlots[targetBodyName] = targetSlot;
+            return true;
+        }
 
         public bool RegisterScepterSkill(SkillDef replacingDef, string targetBodyName, SkillSlot targetSlot, int targetVariant) {
             if(replacingDef == null) {
@@ -269,7 +294,12 @@ namespace ThinkInvisible.ClassicItems {
                     if(!targetSkill) return false;
                     var targetSlotIndex = self.skillLocator.GetSkillSlotIndex(targetSkill);
                     var targetVariant = self.master.loadout.bodyLoadoutManager.GetSkillVariant(self.bodyIndex, targetSlotIndex);
-                    var replVar = repl.Find(x => x.variantIndex == targetVariant);
+                    var replVar = repl.Find(x => {
+                        if(x.targetDef != null)
+                            return x.targetDef == targetSkill.skillDef;
+                        else
+                            return x.variantIndex == targetVariant;
+                    });
                     if(replVar == null) return false;
                     if(!forceOff && GetCount(self) > 0) {
                         if(stridesInteractionMode == StridesInteractionMode.ScepterTakesPrecedence && hasStrides) {
