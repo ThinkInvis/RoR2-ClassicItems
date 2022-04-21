@@ -2,6 +2,11 @@
 
 (🌧︎: Involves an accepted GitHub Pull Request from the community. Thanks for your help!)
 
+**6.2.1**
+
+- Fixed Hit List internal tally item being tier 1 instead of tierless.
+- Updated TILER2 dependency to 7.0.1.
+
 **6.2.0**
 
 - Cross-mod support for the new version of Beating Embryo has been finalized! Check modding.md for instructions for developers.

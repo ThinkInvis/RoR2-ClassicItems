@@ -114,6 +114,11 @@ For details and instructions on applying these, see: https://github.com/ThinkInv
 The 5 latest updates are listed below. For a full changelog, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/changelog.md
 (🌧︎: Involves an accepted GitHub Pull Request from the community. Thanks for your help!)
 
+**6.2.1**
+
+- Fixed Hit List internal tally item being tier 1 instead of tierless.
+- Updated TILER2 dependency to 7.0.1.
+
 **6.2.0**
 
 - Cross-mod support for the new version of Beating Embryo has been finalized! Check modding.md for instructions for developers.
@@ -150,16 +155,3 @@ The 5 latest updates are listed below. For a full changelog, see: https://github
 - Internal AssetBundle is now exposed for other mods to reference.
 - Migrated GatherEnemies util method to TILER2.
 - Updated TILER2 dependency to 6.1.2.
-
-**6.0.0**
-
-- Item models!
-	- We got 'em!
-	- They're not very good, but we got 'em!
-- Removed Headstompers.
-	- These were too close in functionality to the H3AD-5T v2.
-	- Also, I really didn't want to model a boot.
-- Removed the trading card item model override feature.
-	- This will be migrated to a standalone mod in the near future.
-- Fixed Barbed Wire, Snowglobe, et. al. not working on Void/Lunar enemies.
-- Updated TILER2 dependency to 6.0.2.
