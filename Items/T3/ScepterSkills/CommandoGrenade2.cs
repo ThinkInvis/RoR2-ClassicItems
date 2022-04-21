@@ -54,7 +54,7 @@ namespace ThinkInvisible.ClassicItems {
 
         private void On_FireFMJFire(On.EntityStates.GenericProjectileBaseState.orig_FireProjectile orig, EntityStates.GenericProjectileBaseState self) {
             var cc = self.outer.commonComponents;
-            bool isBoosted = self is ThrowGrenade
+            bool isBoosted = self.GetType() == typeof(ThrowGrenade)
                 && Util.HasEffectiveAuthority(self.outer.networkIdentity)
                 && Scepter.instance.GetCount(cc.characterBody) > 0;
             if(isBoosted) self.projectilePrefab = projReplacer;
