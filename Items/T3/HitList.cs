@@ -65,7 +65,7 @@ namespace ThinkInvisible.ClassicItems {
             hitListTally = ScriptableObject.CreateInstance<ItemDef>();
             hitListTally.hidden = true;
             hitListTally.name = modInfo.shortIdentifier + "INTERNALTally";
-            hitListTally.tier = ItemTier.NoTier;
+            hitListTally.deprecatedTier = ItemTier.NoTier;
             hitListTally.canRemove = false;
             hitListTally.nameToken = "";
             hitListTally.pickupToken = "";
