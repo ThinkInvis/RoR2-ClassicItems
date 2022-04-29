@@ -114,6 +114,12 @@ For details and instructions on applying these, see: https://github.com/ThinkInv
 The 5 latest updates are listed below. For a full changelog, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/changelog.md
 (🌧︎: Involves an accepted GitHub Pull Request from the community. Thanks for your help!)
 
+**7.0.0**
+
+- BREAKING CHANGES:
+	- The deprecated signature for Scepter.RegisterScepterSkill that takes an int VariantIndex has been removed due to instability. You must now provide a target SkillDef instead.
+- Fixed Beating Embryo partial proc chance being 1/100 the intended amount while multiproc is enabled.
+
 **6.2.2**
 
 - Added a new override to Ancient Scepter mod registration method that takes a target SkillDef instead of a variant index.
@@ -147,7 +153,3 @@ The 5 latest updates are listed below. For a full changelog, see: https://github
 		- Should improve mod compatibility.
 - Updated R2API dependency to 4.3.5.
 - Updated TILER2 dependency to 6.2.0.
-
-**6.1.1**
-
-- Fixed Embryo LifestealOnHit hook causing rampant NRE spam.

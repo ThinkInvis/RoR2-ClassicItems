@@ -2,6 +2,12 @@
 
 (🌧︎: Involves an accepted GitHub Pull Request from the community. Thanks for your help!)
 
+**7.0.0**
+
+- BREAKING CHANGES:
+	- The deprecated signature for Scepter.RegisterScepterSkill that takes an int VariantIndex has been removed due to instability. You must now provide a target SkillDef instead.
+- Fixed Beating Embryo partial proc chance being 1/100 the intended amount while multiproc is enabled.
+
 **6.2.2**
 
 - Added a new override to Ancient Scepter mod registration method that takes a target SkillDef instead of a variant index.
