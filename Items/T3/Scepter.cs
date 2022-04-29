@@ -21,7 +21,7 @@ namespace ThinkInvisible.ClassicItems {
         internal virtual void UnloadBehavior() { }
         public abstract string targetBody {get;}
         public abstract SkillSlot targetSlot {get;}
-        public abstract int targetVariantIndex {get;}
+        public abstract SkillDef targetVariantDef {get;}
     }
 
     public class Scepter : Item<Scepter> {
@@ -116,7 +116,7 @@ namespace ThinkInvisible.ClassicItems {
 
             foreach(var skill in skills) {
                 skill.SetupAttributes();
-                RegisterScepterSkill(skill.myDef, skill.targetBody, skill.targetSlot, skill.targetVariantIndex);
+                RegisterScepterSkill(skill.myDef, skill.targetBody, skill.targetSlot, skill.targetVariantDef);
             }
         }
 
@@ -230,29 +230,6 @@ namespace ThinkInvisible.ClassicItems {
             ClassicItemsPlugin._logger.LogDebug($"{targetBodyName}/{targetSlot}/{targetVariantDef.skillNameToken}: Added override to {replacingDef.skillNameToken}");
             scepterReplacers.Add(new ScepterReplacer { bodyName = targetBodyName, slotIndex = targetSlot, targetDef = targetVariantDef, replDef = replacingDef });
             scepterSlots[targetBodyName] = targetSlot;
-            return true;
-        }
-
-        [Obsolete("Use SkillDef targetVariantDef override.")]
-        public bool RegisterScepterSkill(SkillDef replacingDef, string targetBodyName, SkillSlot targetSlot, int targetVariant) {
-            if(replacingDef == null) {
-                ClassicItemsPlugin._logger.LogError("Can't register a null scepter skill");
-                return false;
-            }
-            if(targetVariant < 0) {
-                ClassicItemsPlugin._logger.LogError($"Can't register scepter skill {replacingDef.skillNameToken} to negative variant index");
-                return false;
-            }
-
-            BodyCatalog.availability.CallWhenAvailable(() => {
-                var targetBodyPrefab = BodyCatalog.FindBodyPrefab(targetBodyName);
-                var skillLoc = targetBodyPrefab.GetComponent<SkillLocator>();
-                var targetSkill = skillLoc.GetSkill(targetSlot);
-                var targetVariantDef = targetSkill.skillFamily.variants[targetVariant].skillDef;
-
-                RegisterScepterSkill(replacingDef, targetBodyName, targetSlot, targetVariantDef);
-            });
-
             return true;
         }
 

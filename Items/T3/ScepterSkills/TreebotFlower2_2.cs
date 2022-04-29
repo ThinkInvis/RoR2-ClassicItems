@@ -16,15 +16,14 @@ namespace ThinkInvisible.ClassicItems {
         
         public override string targetBody => "TreebotBody";
         public override SkillSlot targetSlot => SkillSlot.Special;
-        public override int targetVariantIndex => 1;
+        public override SkillDef targetVariantDef => LegacyResourcesAPI.Load<SkillDef>("skilldefs/treebotbody/TreebotBodyFireFlower2");
 
         internal override void SetupAttributes() {
-            var oldDef = LegacyResourcesAPI.Load<SkillDef>("skilldefs/treebotbody/TreebotBodyFireFlower2");
-            myDef = CloneSkillDef(oldDef);
+            myDef = CloneSkillDef(targetVariantDef);
 
             var nametoken = "CLASSICITEMS_SCEPTREEBOT_FLOWER2NAME";
             newDescToken = "CLASSICITEMS_SCEPTREEBOT_FLOWER2DESC";
-            oldDescToken = oldDef.skillDescriptionToken;
+            oldDescToken = targetVariantDef.skillDescriptionToken;
             var namestr = "Chaotic Growth";
             LanguageAPI.Add(nametoken, namestr);
 

@@ -22,15 +22,14 @@ namespace ThinkInvisible.ClassicItems {
 
         public override string targetBody => "CaptainBody";
         public override SkillSlot targetSlot => SkillSlot.Utility;
-        public override int targetVariantIndex => 1;
+        public override SkillDef targetVariantDef => LegacyResourcesAPI.Load<SkillDef>("skilldefs/captainbody/PrepAirstrikeAlt");
 
         internal override void SetupAttributes() {
-            var oldDef = LegacyResourcesAPI.Load<SkillDef>("skilldefs/captainbody/PrepAirstrikeAlt");
-            myDef = CloneSkillDef(oldDef);
+            myDef = CloneSkillDef(targetVariantDef);
 
             var nametoken = "CLASSICITEMS_SCEPCAPTAIN_AIRSTRIKEALTNAME";
             newDescToken = "CLASSICITEMS_SCEPCAPTAIN_AIRSTRIKEALTDESC";
-            oldDescToken = oldDef.skillDescriptionToken;
+            oldDescToken = targetVariantDef.skillDescriptionToken;
             var namestr = "Colony Drop";
             LanguageAPI.Add(nametoken, namestr);
 

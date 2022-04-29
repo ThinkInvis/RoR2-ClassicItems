@@ -15,15 +15,14 @@ namespace ThinkInvisible.ClassicItems {
 
         public override string targetBody => "CommandoBody";
         public override SkillSlot targetSlot => SkillSlot.Special;
-        public override int targetVariantIndex => 0;
+        public override SkillDef targetVariantDef => LegacyResourcesAPI.Load<SkillDef>("skilldefs/commandobody/CommandoBodyBarrage");
 
         internal override void SetupAttributes() {
-            var oldDef = LegacyResourcesAPI.Load<SkillDef>("skilldefs/commandobody/CommandoBodyBarrage");
-            myDef = CloneSkillDef(oldDef);
+            myDef = CloneSkillDef(targetVariantDef);
 
             var nametoken = "CLASSICITEMS_SCEPCOMMANDO_BARRAGENAME";
             newDescToken = "CLASSICITEMS_SCEPCOMMANDO_BARRAGEDESC";
-            oldDescToken = oldDef.skillDescriptionToken;
+            oldDescToken = targetVariantDef.skillDescriptionToken;
             var namestr = "Death Blossom";
             LanguageAPI.Add(nametoken, namestr);
             //TODO: fire auto-aim bullets at every enemy in range

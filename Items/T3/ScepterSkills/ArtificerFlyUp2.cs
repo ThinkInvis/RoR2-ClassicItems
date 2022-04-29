@@ -15,15 +15,14 @@ namespace ThinkInvisible.ClassicItems {
         
         public override string targetBody => "MageBody";
         public override SkillSlot targetSlot => SkillSlot.Special;
-        public override int targetVariantIndex => 1;
+        public override SkillDef targetVariantDef => LegacyResourcesAPI.Load<SkillDef>("skilldefs/magebody/MageBodyFlyUp");
 
         internal override void SetupAttributes() {
-            var oldDef = LegacyResourcesAPI.Load<SkillDef>("skilldefs/magebody/MageBodyFlyUp");
-            myDef = CloneSkillDef(oldDef);
+            myDef = CloneSkillDef(targetVariantDef);
 
             var nametoken = "CLASSICITEMS_SCEPMAGE_FLYUPNAME";
             newDescToken = "CLASSICITEMS_SCEPMAGE_FLYUPDESC";
-            oldDescToken = oldDef.skillDescriptionToken;
+            oldDescToken = targetVariantDef.skillDescriptionToken;
             var namestr = "Antimatter Surge";
             LanguageAPI.Add(nametoken, namestr);
 

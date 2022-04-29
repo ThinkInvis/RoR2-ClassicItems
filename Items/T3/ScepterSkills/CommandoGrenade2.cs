@@ -17,15 +17,14 @@ namespace ThinkInvisible.ClassicItems {
         
         public override string targetBody => "CommandoBody";
         public override SkillSlot targetSlot => SkillSlot.Special;
-        public override int targetVariantIndex => 1;
+        public override SkillDef targetVariantDef => LegacyResourcesAPI.Load<SkillDef>("skilldefs/commandobody/ThrowGrenade");
 
         internal override void SetupAttributes() {
-            var oldDef = LegacyResourcesAPI.Load<SkillDef>("skilldefs/commandobody/ThrowGrenade");
-            myDef = CloneSkillDef(oldDef);
+            myDef = CloneSkillDef(targetVariantDef);
 
             var nametoken = "CLASSICITEMS_SCEPCOMMANDO_GRENADENAME";
             newDescToken = "CLASSICITEMS_SCEPCOMMANDO_GRENADEDESC";
-            oldDescToken = oldDef.skillDescriptionToken;
+            oldDescToken = targetVariantDef.skillDescriptionToken;
             var namestr = "Carpet Bomb";
             LanguageAPI.Add(nametoken, namestr);
             

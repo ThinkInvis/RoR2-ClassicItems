@@ -14,15 +14,14 @@ namespace ThinkInvisible.ClassicItems {
         
         public override string targetBody => "MercBody";
         public override SkillSlot targetSlot => SkillSlot.Special;
-        public override int targetVariantIndex => 1;
+        public override SkillDef targetVariantDef => LegacyResourcesAPI.Load<SkillDef>("skilldefs/mercbody/MercBodyEvisProjectile");
 
         internal override void SetupAttributes() {
-            var oldDef = LegacyResourcesAPI.Load<SkillDef>("skilldefs/mercbody/MercBodyEvisProjectile");
-            myDef = CloneSkillDef(oldDef);
+            myDef = CloneSkillDef(targetVariantDef);
 
             var nametoken = "CLASSICITEMS_SCEPMERC_EVISPROJNAME";
             newDescToken = "CLASSICITEMS_SCEPMERC_EVISPROJDESC";
-            oldDescToken = oldDef.skillDescriptionToken;
+            oldDescToken = targetVariantDef.skillDescriptionToken;
             var namestr = "Gale-Force";
             LanguageAPI.Add(nametoken, namestr);
             

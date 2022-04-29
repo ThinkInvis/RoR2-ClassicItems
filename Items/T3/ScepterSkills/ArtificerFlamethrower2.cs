@@ -19,15 +19,14 @@ namespace ThinkInvisible.ClassicItems {
 
         public override string targetBody => "MageBody";
         public override SkillSlot targetSlot => SkillSlot.Special;
-        public override int targetVariantIndex => 0;
+        public override SkillDef targetVariantDef => LegacyResourcesAPI.Load<SkillDef>("skilldefs/magebody/MageBodyFlamethrower");
 
         internal override void SetupAttributes() {
-            var oldDef = LegacyResourcesAPI.Load<SkillDef>("skilldefs/magebody/MageBodyFlamethrower");
-            myDef = CloneSkillDef(oldDef);
+            myDef = CloneSkillDef(targetVariantDef);
 
             var nametoken = "CLASSICITEMS_SCEPMAGE_FLAMETHROWERNAME";
             newDescToken = "CLASSICITEMS_SCEPMAGE_FLAMETHROWERDESC";
-            oldDescToken = oldDef.skillDescriptionToken;
+            oldDescToken = targetVariantDef.skillDescriptionToken;
             var namestr = "Dragon's Breath";
             LanguageAPI.Add(nametoken, namestr);
 

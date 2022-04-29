@@ -17,15 +17,14 @@ namespace ThinkInvisible.ClassicItems {
         
         public override string targetBody => "HuntressBody";
         public override SkillSlot targetSlot => SkillSlot.Special;
-        public override int targetVariantIndex => 0;
+        public override SkillDef targetVariantDef => LegacyResourcesAPI.Load<SkillDef>("skilldefs/huntressbody/HuntressBodyArrowRain");
 
         internal override void SetupAttributes() {
-            var oldDef = LegacyResourcesAPI.Load<SkillDef>("skilldefs/huntressbody/HuntressBodyArrowRain");
-            myDef = CloneSkillDef(oldDef);
+            myDef = CloneSkillDef(targetVariantDef);
 
             var nametoken = "CLASSICITEMS_SCEPHUNTRESS_RAINNAME";
             newDescToken = "CLASSICITEMS_SCEPHUNTRESS_RAINDESC";
-            oldDescToken = oldDef.skillDescriptionToken;
+            oldDescToken = targetVariantDef.skillDescriptionToken;
             var namestr = "Burning Rain";
             LanguageAPI.Add(nametoken, namestr);
 

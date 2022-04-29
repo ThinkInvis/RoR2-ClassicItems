@@ -20,15 +20,14 @@ namespace ThinkInvisible.ClassicItems {
 		
         public override string targetBody => "CrocoBody";
         public override SkillSlot targetSlot => SkillSlot.Special;
-        public override int targetVariantIndex => 0;
+        public override SkillDef targetVariantDef => LegacyResourcesAPI.Load<SkillDef>("skilldefs/crocobody/CrocoDisease");
 
-        internal override void SetupAttributes() {
-            var oldDef = LegacyResourcesAPI.Load<SkillDef>("skilldefs/crocobody/CrocoDisease");
-            myDef = CloneSkillDef(oldDef);
+		internal override void SetupAttributes() {
+            myDef = CloneSkillDef(targetVariantDef);
 
             var nametoken = "CLASSICITEMS_SCEPCROCO_DISEASENAME";
             newDescToken = "CLASSICITEMS_SCEPCROCO_DISEASEDESC";
-			oldDescToken = oldDef.skillDescriptionToken;
+			oldDescToken = targetVariantDef.skillDescriptionToken;
             var namestr = "Plague";
             LanguageAPI.Add(nametoken, namestr);
 

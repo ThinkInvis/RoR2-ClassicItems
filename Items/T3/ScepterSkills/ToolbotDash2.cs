@@ -14,15 +14,14 @@ namespace ThinkInvisible.ClassicItems {
         
         public override string targetBody => "ToolbotBody";
         public override SkillSlot targetSlot => SkillSlot.Utility;
-        public override int targetVariantIndex => 0;
+        public override SkillDef targetVariantDef => LegacyResourcesAPI.Load<SkillDef>("skilldefs/toolbotbody/ToolbotBodyToolbotDash");
 
         internal override void SetupAttributes() {
-            var oldDef = LegacyResourcesAPI.Load<SkillDef>("skilldefs/toolbotbody/ToolbotBodyToolbotDash");
-            myDef = CloneSkillDef(oldDef);
+            myDef = CloneSkillDef(targetVariantDef);
 
             var nametoken = "CLASSICITEMS_SCEPTOOLBOT_DASHNAME";
             newDescToken = "CLASSICITEMS_SCEPTOOLBOT_DASHDESC";
-            oldDescToken = oldDef.skillDescriptionToken;
+            oldDescToken = targetVariantDef.skillDescriptionToken;
             var namestr = "Breach Mode";
             LanguageAPI.Add(nametoken, namestr);
 

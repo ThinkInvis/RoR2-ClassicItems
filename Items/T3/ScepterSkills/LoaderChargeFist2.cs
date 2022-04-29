@@ -15,15 +15,14 @@ namespace ThinkInvisible.ClassicItems {
         
         public override string targetBody => "LoaderBody";
         public override SkillSlot targetSlot => SkillSlot.Utility;
-        public override int targetVariantIndex => 0;
+        public override SkillDef targetVariantDef => LegacyResourcesAPI.Load<SkillDef>("skilldefs/loaderbody/ChargeFist");
 
         internal override void SetupAttributes() {
-            var oldDef = LegacyResourcesAPI.Load<SkillDef>("skilldefs/loaderbody/ChargeFist");
-            myDef = CloneSkillDef(oldDef);
+            myDef = CloneSkillDef(targetVariantDef);
 
             var nametoken = "CLASSICITEMS_SCEPLOADER_CHARGEFISTNAME";
             newDescToken = "CLASSICITEMS_SCEPLOADER_CHARGEFISTDESC";
-            oldDescToken = oldDef.skillDescriptionToken;
+            oldDescToken = targetVariantDef.skillDescriptionToken;
             var namestr = "Megaton Punch";
             LanguageAPI.Add(nametoken, namestr);
 

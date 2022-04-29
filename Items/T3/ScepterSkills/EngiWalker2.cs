@@ -15,15 +15,14 @@ namespace ThinkInvisible.ClassicItems {
         
         public override string targetBody => "EngiBody";
         public override SkillSlot targetSlot => SkillSlot.Special;
-        public override int targetVariantIndex => 1;
+        public override SkillDef targetVariantDef => LegacyResourcesAPI.Load<SkillDef>("skilldefs/engibody/EngiBodyPlaceWalkerTurret");
 
         internal override void SetupAttributes() {
-            oldDef = LegacyResourcesAPI.Load<SkillDef>("skilldefs/engibody/EngiBodyPlaceWalkerTurret");
-            myDef = CloneSkillDef(oldDef);
+            myDef = CloneSkillDef(targetVariantDef);
 
             var nametoken = "CLASSICITEMS_SCEPENGI_WALKERNAME";
             newDescToken = "CLASSICITEMS_SCEPENGI_WALKERDESC";
-            oldDescToken = oldDef.skillDescriptionToken;
+            oldDescToken = targetVariantDef.skillDescriptionToken;
             var namestr = "TR58-C Carbonizer Mini";
             LanguageAPI.Add(nametoken, namestr);
             
