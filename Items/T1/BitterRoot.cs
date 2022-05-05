@@ -30,7 +30,7 @@ namespace ThinkInvisible.ClassicItems {
             desc += $", up to a <style=cIsHealing>maximum</style> of <style=cIsHealing>+{Pct(healthCap)}</style>.";
             return desc;
         }
-        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetLoreString(string langid = null) => "Order: Bitter Root\n\nTracking Number: 552***********\nEstimated Delivery: 6/4/2056\nShipping Method: Standard\nShipping Address: 103 110th, Northlake, Mars\nShipping Details:\n\nBiggest. Ginseng. Root. Ever.\n\nNot really, but it's pretty freakin' huge. You can boil it or sun dry it, whatever you want. I'll be curious to see if your cancer research actually pans out; sounds like voodoo magic to me, herbal medicine, but if the natives say it works, it works.";
 
         public BitterRoot() {
             iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/bitterroot_icon.png");

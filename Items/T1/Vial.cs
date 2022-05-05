@@ -18,7 +18,7 @@ namespace ThinkInvisible.ClassicItems {
         protected override string GetNameString(string langid = null) => displayName;        
         protected override string GetPickupString(string langid = null) => "Increased health regeneration.";        
         protected override string GetDescString(string langid = null) => "Increases <style=cIsHealing>health regen by +" + addRegen.ToString("N1") + "/s</style> <style=cStack>(+" + addRegen.ToString("N1") + "/s per stack)</style>.";        
-        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetLoreString(string langid = null) => "Order: Mysterious Vial\n\nTracking Number: 733***********\nEstimated Delivery: 03/06/2056\nShipping Method: Standard/Fragile\nShipping Address: Sheridan S., 4000 15th Ave, UNITED STATES, Earth\nShipping Details:\n\nApply to skin for a rapidly acting gel that contains both antiseptics and an agent to encourage protein synthesis!\n\nSmall wounds applied with our gel should heal within a maximum of 5 hours, while broken bones and torn ligaments may take a few weeks.\n\nNOTE: Side effects may include itching, rashes, bleeding, sensitivity of skin, dry patches, permanent scarring, misaligned bone regrowth, rotting of the..";
 
         public Vial() {
             iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/vial_icon.png");

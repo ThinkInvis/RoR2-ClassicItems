@@ -44,7 +44,7 @@ namespace ThinkInvisible.ClassicItems {
             desc += $" damage to enemies within <style=cIsDamage>{baseRadius:N0} m</style>.";
             return desc;
         }
-        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetLoreString(string langid = null) => "Order: Fire Shield\n\nTracking Number: 729***********\nEstimated Delivery: 6/06/2056\nShipping Method: Standard\nShipping Address: Soloman, -, Backwaters, Mars\nShipping Details:\n\nThe thing is only half-done, but it will do the job. The flux-chains are very unstable, resulting in a large explosion when struck. PLEASE handle with care!";
 
         public FireShield() {
             iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/fireshield_icon.png");
