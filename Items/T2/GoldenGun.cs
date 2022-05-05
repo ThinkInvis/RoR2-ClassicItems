@@ -40,7 +40,7 @@ namespace ThinkInvisible.ClassicItems {
         protected override string GetNameString(string langid = null) => displayName;
         protected override string GetPickupString(string langid = null) => "More gold, more damage.";
         protected override string GetDescString(string langid = null) => "Deal <style=cIsDamage>bonus damage</style> based on your <style=cIsUtility>money</style>, up to <style=cIsDamage>" + Pct(damageBoost) + "</style> at <style=cIsUtility>$" + goldAmt.ToString("N0") + "</style> <style=cStack>(cost increases with difficulty, -" + Pct(goldReduc) + " per stack)</style>.";
-        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetLoreString(string langid = null) => "Order: Golden Gun\n\nTracking Number: 149***********\nEstimated Delivery: 12/19/1974\nShipping Method: Priority\nShipping Address: James B., ??\nShipping Details:\n\nWas this supposed to.. intimidate me? I do like its look, however; perhaps I'll set it above my fireplace.";
 
         public GoldenGun() {
             iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/goldengun_icon.png");
