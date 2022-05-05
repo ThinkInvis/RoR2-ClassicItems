@@ -33,7 +33,7 @@ namespace ThinkInvisible.ClassicItems {
         protected override string GetNameString(string langid = null) => displayName;
         protected override string GetPickupString(string langid = null) => "Chance to fear enemies when attacked.";
         protected override string GetDescString(string langid = null) => "<style=cDeath>When hit for more than " + Pct(healthThreshold) + " max health</style> <style=cStack>(/2 per stack)</style>, <style=cIsUtility>fear enemies</style> within <style=cIsUtility>" + radius.ToString("N0") + " m</style> for <style=cIsUtility>" + duration.ToString("N1") + " seconds</style>. <style=cIsUtility>Feared enemies will run out of melee</style>, <style=cDeath>but that won't stop them from performing ranged attacks</style>.";
-        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetLoreString(string langid = null) => "Order: Old Box\n\nTracking Number: 361***********\nEstimated Delivery: 5/4/2056\nShipping Method: High Priority/Fragile\nShipping Address: Breezy Drive, Middle-land, Mars\nShipping Details:\n\nMusty, saggy, loose box. You can see it was used a lot already. Its bad shape honestly makes it scarier; you never know when the stupid thing pops out again.\nSometimes it sits in there for days!";
 
         public OldBox() {
             iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/oldbox_icon.png");
