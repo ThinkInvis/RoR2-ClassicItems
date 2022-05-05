@@ -44,7 +44,7 @@ namespace ThinkInvisible.ClassicItems {
             desc += $". Lasts <style=cIsDamage>{duration:N0} seconds</style>.";
             return desc;
         }
-        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetLoreString(string langid = null) => "Order: Prescriptions\n\nTracking Number: 817***********\nEstimated Delivery: 1/18/2056\nShipping Method: Volatile\nShipping Address: JusticeCenter, Science Dept., Venus\nShipping Details:\n\nAre these pills legal? No. Are these pills helpful? Yes. Do pigs fly? No.\nVan-Ex increases strength and muscle mass in only 24 hours! Proven by science!\nMake sure to take only 2 every 8 hours, max! Otherwise you may find yourself dead!";
 
         public Prescriptions() {
             iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/prescriptions_icon.png");

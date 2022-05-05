@@ -23,7 +23,7 @@ namespace ThinkInvisible.ClassicItems {
         protected override string GetNameString(string langid = null) => displayName;
         protected override string GetPickupString(string langid = null) => $"For {duration:N0} seconds, hitting enemies cause them to drop gold.";
         protected override string GetDescString(string langid = null) => $"While active, every hit <style=cIsUtility>drops {amount:N1} gold</style> (scales with difficulty). Lasts <style=cIsUtility>{duration:N0} seconds</style>.";
-        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetLoreString(string langid = null) => "Order: Pillaged Gold\n\nTracking Number: 815***********\nEstimated Delivery: 08/8/2056\nShipping Method: Volatile\nShipping Address: Crisis Street, 2008, Mars\nShipping Details:\n\nYar! All yer enemies be a source of swag for ye, hear me true. Open the bag, facing o'er direction cutthroats, and all the gold will beck out of their britches, and into ye hand.\n\nI sent this across the galactic seas fer your offer; ye'll better look in yar deepest depths for a wise trade.";
 
         public Pillage() {
             iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/pillage_icon.png");

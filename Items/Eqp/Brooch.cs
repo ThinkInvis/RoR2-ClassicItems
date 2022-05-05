@@ -34,7 +34,7 @@ namespace ThinkInvisible.ClassicItems {
         protected override string GetNameString(string langid = null) => displayName;        
         protected override string GetPickupString(string langid = null) => "One man's wreckage is another man's treasure.";        
         protected override string GetDescString(string langid = null) => "Calls down a <style=cIsUtility>low-tier item chest</style> which <style=cIsUtility>costs " + Pct(extraCost) + " more than usual</style>.";        
-        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetLoreString(string langid = null) => "Order: Captain's Brooch\n\nTracking Number: 625***********\nEstimated Delivery: 9/12/2056\nShipping Method: Volatile\nShipping Address: Box 1, The Lusty Lad, Venus\nShipping Details:\n\nThe brooch has been passed down for many generations in my family, signifying the new captain of Contact Light. I'll actually be personally delivering this back to my home, so mark it as high priority.\n..hmm? There is a very small button on the back. Pressing it seems to do nothing...";
 
         private bool ILFailed = false;
 

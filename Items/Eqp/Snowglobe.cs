@@ -40,7 +40,7 @@ namespace ThinkInvisible.ClassicItems {
         protected override string GetDescString(string langid = null) => "Summon a snowstorm that" +
             $" <style=cIsUtility>{(procRate > 0f ? "freezes" : "slows")}</style> monsters at a <style=cIsUtility>{Pct(procRate, 1, 1)}/second chance " +
             $"over {duration:N0} seconds</style>.";
-        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetLoreString(string langid = null) => "Order: Snowglobe\n\nTracking Number: 809***********\nEstimated Delivery: 11/25/2056\nShipping Method: Volatile\nShipping Address: 3rd Igloo, Tundra Zone, Neptune\nShipping Details:\n\nHere you go honey, I got you a snowglobe! Do you see what's in it? Yeah, it's based off of your favorite video game! I hope you'll love it, I put a lot of effort into it. Cheers!";
 
         public Snowglobe() {
             iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/snowglobe_icon.png");
