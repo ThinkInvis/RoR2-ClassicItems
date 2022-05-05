@@ -41,7 +41,7 @@ namespace ThinkInvisible.ClassicItems {
 			desc += ". <style=cIsUtility>Feared enemies will run out of melee</style>, <style=cDeath>but that won't stop them from performing ranged attacks</style>.";
 			return desc;
 		}
-        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetLoreString(string langid = null) => "Order: Safeguard Lantern\n\nTracking Number: 820***********\nEstimated Delivery: 5/20/2056\nShipping Method: Volatile\nShipping Address: The Watch, Camp 1, Mars\nShipping Details:\n\nProtects you on the darkest nights. Don't stand too close; some claim to see terrors in the flame. Me? I just see hope.";
 
 		public Lantern() {
 			iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/lantern_icon.png");
