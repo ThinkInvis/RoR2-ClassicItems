@@ -34,7 +34,7 @@ namespace ThinkInvisible.ClassicItems {
         protected override string GetPickupString(string langid = null) => "Upgrades one of your skills.";
         protected override string GetDescString(string langid = null) => "While held, one of your selected character's <style=cIsUtility>skills</style> <style=cStack>(unique per character)</style> becomes a <style=cIsUtility>more powerful version</style>."
             + $" <style=cStack>{(rerollExtras ? "Extra/unusable" : "Unusable (but NOT extra)")} pickups will reroll into other red items.</style>";
-        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetLoreString(string langid = null) => "Order: Ancient Scepter\n\nTracking Number: 836***********\nEstimated Delivery: 1/30/1142\nShipping Method: High Priority\nShipping Address: 99th Floor, Crumbling Tower, Venus\nShipping Details:\n\nA glowing scepter, with a name engraved in the handle. I can't read what it says; I was hoping you could decipher it. It must have some magical powers; look how impressive it is! It's much better than your Lance of Legends, that's for sure.\nAnd before you ask, yes, the handle is designed to be hard to hold. Culls the weak.";
         
         [AutoConfigRoOCheckbox()]
         [AutoConfig("If true, TR12-C Gauss Compact will recharge faster to match the additional stock.")]

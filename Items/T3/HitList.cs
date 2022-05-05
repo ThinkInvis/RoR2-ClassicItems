@@ -32,7 +32,7 @@ namespace ThinkInvisible.ClassicItems {
         protected override string GetNameString(string langid = null) => displayName;
         protected override string GetPickupString(string langid = null) => "Killing marked enemies permanently increases damage.";
         protected override string GetDescString(string langid = null) => "Every <style=cIsUtility>" + cooldown.ToString("N0") + " seconds</style>, <style=cIsUtility>1</style> <style=cStack>(+1 per stack)</style> random enemy will be <style=cIsUtility>marked</style> for the same duration. Killing <style=cIsUtility>marked</style> enemies gives you <style=cIsDamage>+" + procDamage.ToString("N1") + " permanent base damage</style> <style=cStack>(up to a maximum of " + maxDamage.ToString("N1") + ")</style>.";
-        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetLoreString(string langid = null) => "Order: The Hit List\n\nTracking Number: 400***********\nEstimated Delivery: 11/14/2057\nShipping Method: High Priority/Fragile\nShipping Address: St Johns, Cluster 6, Venus\nShipping Details:\n\nDon't forget..  don't forget what they did..\n-A.Bn\n-Fr.Ntn\n-[CLEARED]\n-[CLEARED]\n-Random wildlife\n-[CLEARED]\n-Grvnkmpn\n-[CLEARED]";
 
         public ItemDef hitListTally {get; private set;}
         public BuffDef markDebuff {get; private set;}

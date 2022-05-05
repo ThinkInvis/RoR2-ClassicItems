@@ -40,7 +40,7 @@ namespace ThinkInvisible.ClassicItems {
             desc += " chance to <style=cIsDamage>instantly kill</style> an enemy. Affected by proc coefficient.";
             return desc;
         }
-        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetLoreString(string langid = null) => "Order: Telescopic Sight\n\nTracking Number: 601***********\nEstimated Delivery: 4/20/2056\nShipping Method: High Priority/Fragile\nShipping Address: Royal Drive, Bubble Station, Mars\nShipping Details:\n\nCan be used for both night and day shooting, and comes with infrared attachments and built-in distance finder.\n\n...And please, actually use the scope. We are all impressed you can hit a target without it, but I'm tired of watching your videos. Spinning while firing is also a great way to lose your license.";
 
         public TeleSight() {
             iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/telesight_icon.png");

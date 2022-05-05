@@ -290,7 +290,7 @@ namespace ThinkInvisible.ClassicItems {
         protected override string GetNameString(string langid = null) => displayName;        
         protected override string GetPickupString(string langid = null) => $"Equipment has a {Pct(procChance, 0, 1)} chance to deal double the effect.";        
         protected override string GetDescString(string langid = null) => "Upon activating an equipment, adds a <style=cIsUtility>" + Pct(procChance, 0, 1) + "</style> <style=cStack>(+" + Pct(procChance, 0, 1) + " per stack)</style> chance to <style=cIsUtility>double its effects somehow</style>.";        
-        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetLoreString(string langid = null) => "Order: Beating Embryo\n\nTracking Number: 212***********\nEstimated Delivery: 07/04/2056\nShipping Method: Biological/Extremely Fragile\nShipping Address: Carolyn Williams, Rare/Extinct, Study Center, Venus\nShipping Details:\n\nAh. We seem to have found a.. hive of sorts. Without its caretaker, however, most of the eggs seemed to have died off. Must have been caused by our previous specimen. KEEP IT REFRIGERATED. You do not want this.. beating embryo.. hatching in your care.\nGod knows what will happen.";
 
         public override void Install() {
             base.Install();
