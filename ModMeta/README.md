@@ -114,6 +114,14 @@ For details and instructions on applying these, see: https://github.com/ThinkInv
 The 5 latest updates are listed below. For a full changelog, see: https://github.com/ThinkInvis/RoR2-ClassicItems/blob/master/changelog.md
 (🌧︎: Involves an accepted GitHub Pull Request from the community. Thanks for your help!)
 
+**7.1.0**
+
+- 🌧︎ Ported lore entries from RoR1 for ALL items/equipments.
+- Made Golden Gun more resilient w.r.t. mod compatibility, but less responsive.
+	- Now applies damage buff to CharacterBody stat instead of directly to damage dealt; only does so when the display buff count changes for performance reasons, so there's a small amount of granularity.
+- Possible fix for Life Savings ShareSuite compat which may cause different issues in multiplayer.
+- Removed debug code, including item spawning and an unfinished item that was only present in debug builds. Should have no user-facing effect.
+
 **7.0.0**
 
 - BREAKING CHANGES:
@@ -140,16 +148,3 @@ The 5 latest updates are listed below. For a full changelog, see: https://github
 - Removed some deprecated ItemStats and BetterUI support.
 - Updated for latest Risk of Rain 2 version.
 - Updated TILER2 dependency to 7.0.0.
-
-**6.1.2**
-
-- Fixed missing icon on Ancient Scepter. Again. For real this time I promise.
-- Beating Embryo:
-	- Fixed guaranteed proc count calculation being 100x the intended value.
-	- Fixed unclosed style tag in every single tooltip append. To any HTML developers affected by this: I'm so sorry.
-	- Fixed tooltip appends causing language tokens to display instead of the language they point to.
-	- Tooltip appends are now applied dynamically when tooltip text is retrieved, instead of overriding language tokens.
-		- This extra tooltip text describing how Beating Embryo works on a specific equipment will now only appear if you have a Beating Embryo.
-		- Should improve mod compatibility.
-- Updated R2API dependency to 4.3.5.
-- Updated TILER2 dependency to 6.2.0.

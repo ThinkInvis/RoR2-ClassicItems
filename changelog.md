@@ -2,6 +2,16 @@
 
 (🌧︎: Involves an accepted GitHub Pull Request from the community. Thanks for your help!)
 
+**7.1.0**
+
+- 🌧︎ Ported lore entries from RoR1 for ALL items/equipments.
+- Made Golden Gun more resilient w.r.t. mod compatibility, but less responsive.
+	- Now applies damage buff to CharacterBody stat instead of directly to damage dealt; only does so when the display buff count changes for performance reasons, so there's a small amount of granularity.
+- Possible fix for Life Savings ShareSuite compat which may cause different issues in multiplayer.
+- Removed debug code, including item spawning and an unfinished item that was only present in debug builds. Should have no user-facing effect.
+- Updated R2API dependency to 4.3.21.
+- Updated TILER2 dependency to 7.1.0.
+
 **7.0.0**
 
 - BREAKING CHANGES:

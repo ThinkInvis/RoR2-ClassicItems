@@ -26,7 +26,7 @@ namespace ThinkInvisible.ClassicItems {
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     [R2APISubmoduleDependency(nameof(ItemAPI), nameof(LanguageAPI), nameof(PrefabAPI), nameof(LoadoutAPI), nameof(RecalculateStatsAPI))]
     public class ClassicItemsPlugin:BaseUnityPlugin {
-        public const string ModVer = "7.0.0";
+        public const string ModVer = "7.1.0";
         public const string ModName = "ClassicItems";
         public const string ModGuid = "com.ThinkInvisible.ClassicItems";
 
