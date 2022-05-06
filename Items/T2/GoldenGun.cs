@@ -33,8 +33,6 @@ namespace ThinkInvisible.ClassicItems {
         [AutoConfig("If true, deployables (e.g. Engineer turrets) with Golden Gun will benefit from their master's money.",
             AutoConfigFlags.PreventNetMismatch)]
         public bool inclDeploys {get;private set;} = true;
-
-        private bool ilFailed = false;
         
         public BuffDef goldenGunBuff {get;private set;}
         protected override string GetNameString(string langid = null) => displayName;
@@ -65,19 +63,33 @@ namespace ThinkInvisible.ClassicItems {
 
         public override void Install() {
             base.Install();
-            IL.RoR2.HealthComponent.TakeDamage += IL_CBTakeDamage;
-            if(ilFailed) IL.RoR2.HealthComponent.TakeDamage -= IL_CBTakeDamage;
-            else {
-                On.RoR2.CharacterBody.FixedUpdate += On_CBFixedUpdate;
-                On.RoR2.CharacterBody.OnInventoryChanged += On_CBInventoryChanged;
-            }
+            On.RoR2.CharacterBody.FixedUpdate += On_CBFixedUpdate;
+            On.RoR2.CharacterBody.OnInventoryChanged += On_CBInventoryChanged;
+            RecalculateStatsAPI.GetStatCoefficients += RecalculateStatsAPI_GetStatCoefficients;
         }
 
         public override void Uninstall() {
             base.Uninstall();
-            IL.RoR2.HealthComponent.TakeDamage -= IL_CBTakeDamage;
             On.RoR2.CharacterBody.FixedUpdate -= On_CBFixedUpdate;
             On.RoR2.CharacterBody.OnInventoryChanged -= On_CBInventoryChanged;
+            RecalculateStatsAPI.GetStatCoefficients -= RecalculateStatsAPI_GetStatCoefficients;
+        }
+
+
+        private void RecalculateStatsAPI_GetStatCoefficients(CharacterBody sender, RecalculateStatsAPI.StatHookEventArgs args) {
+            if(!sender || !sender.master) return;
+            var cpt = sender.GetComponent<GoldenGunComponent>();
+            if(cpt) {
+                var icnt = GetCount(sender.master.inventory);
+                if(icnt == 0) return;
+                var moneyFac = sender.master.money;
+                if(inclDeploys) {
+                    var dplc = sender.master.GetComponent<Deployable>();
+                    if(dplc) moneyFac += dplc.ownerMaster.money;
+                }
+                var moneyCoef = moneyFac / (Run.instance.GetDifficultyScaledCost(goldAmt) * Mathf.Pow(goldReduc, icnt - 1));
+                args.damageMultAdd += Mathf.Lerp(0, damageBoost, moneyCoef);
+            }
         }
 
         private void On_CBInventoryChanged(On.RoR2.CharacterBody.orig_OnInventoryChanged orig, CharacterBody self) {
@@ -113,54 +125,9 @@ namespace ThinkInvisible.ClassicItems {
             int tgtBuffStacks = (cpt.cachedIcnt<1) ? 0 : Mathf.Clamp(Mathf.FloorToInt(cpt.cachedMoney / (Run.instance.GetDifficultyScaledCost(goldAmt) * Mathf.Pow(goldReduc, cpt.cachedIcnt - 1)) * 100f), 0, 100);
                 
             int currBuffStacks = cb.GetBuffCount(goldenGunBuff);
-            if(tgtBuffStacks != currBuffStacks)
+            if(tgtBuffStacks != currBuffStacks) {
                 cb.SetBuffCount(goldenGunBuff.buffIndex, tgtBuffStacks);
-        }
-
-        private void IL_CBTakeDamage(ILContext il) {
-            var c = new ILCursor(il);
-
-            bool ILFound;
-
-            int locDmg = -1;
-            ILFound = c.TryGotoNext(
-                x=>x.MatchLdarg(1),
-                x=>x.MatchLdfld<DamageInfo>("damage"),
-                x=>x.MatchStloc(out locDmg));
-            
-            if(!ILFound) {
-                ilFailed = true;
-                ClassicItemsPlugin._logger.LogError("Failed to apply Golden Gun IL patch (damage var read), item will not work; target instructions not found");
-                return;
-            }
-
-            int locChrm = -1;
-            ILFound = c.TryGotoNext(
-                x=>x.MatchLdloc(out locChrm),
-                x=>x.MatchCallOrCallvirt<CharacterMaster>("get_inventory"),
-                x=>x.MatchLdsfld("RoR2.RoR2Content/Items", "Crowbar"))
-            && c.TryGotoPrev(MoveType.After,
-                x=>x.OpCode == OpCodes.Brfalse);
-
-            if(ILFound) {
-                c.Emit(OpCodes.Ldloc, locChrm);
-                c.Emit(OpCodes.Ldloc, locDmg);
-                c.EmitDelegate<Func<CharacterMaster,float,float>>((chrm, origdmg) => {
-                    var icnt = GetCount(chrm.inventory);
-                    if(icnt == 0) return origdmg;
-                    var moneyFac = chrm.money;
-                    if(inclDeploys) {
-                        var dplc = chrm.GetComponent<Deployable>();
-                        if(dplc) moneyFac += dplc.ownerMaster.money;
-                    }
-                    var moneyCoef = moneyFac / (Run.instance.GetDifficultyScaledCost(goldAmt) * Mathf.Pow(goldReduc, icnt - 1));
-                    return origdmg * (1 + Mathf.Lerp(0,damageBoost,moneyCoef));
-                });
-                c.Emit(OpCodes.Stloc, locDmg);
-            } else {
-                ilFailed = true;
-                ClassicItemsPlugin._logger.LogError("Failed to apply Golden Gun IL patch (damage var write), item will not work; target instructions not found");
-                return;
+                cb.MarkAllStatsDirty();
             }
         }
     }
