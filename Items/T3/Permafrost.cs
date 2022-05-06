@@ -33,7 +33,7 @@ namespace ThinkInvisible.ClassicItems {
         protected override string GetNameString(string langid = null) => displayName;
         protected override string GetPickupString(string langid = null) => "Chance to freeze enemies on hit.";
         protected override string GetDescString(string langid = null) => "<style=cIsUtility>" + Pct(procChance,1,1) + "</style> <style=cStack>(+" + Pct(procChance,1,1) + " per stack, hyperbolic)</style> chance to <style=cIsUtility>freeze and slow</style> an enemy (" + freezeTime.ToString("N1") + "s and " + slowTime.ToString("N1") + "s respectively). Affected by proc coefficient.";
-        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetLoreString(string langid = null) => "Order: Permafrost\n\nTracking Number: 581***********\nEstimated Delivery: 4/17/2056\nShipping Method: High Priority/Fragile\nShipping Address: 10681, Frozen Valley, Pluto\nShipping Details:\n\nThe core of this ice cube is VERY VERY close to absolute zero, much closer than anything we made in the lab before. Test it! TEST! This will lead to HUGE breakthroughs in superconductor technology.";
 
         public Permafrost() {
             iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/permafrost_icon.png");

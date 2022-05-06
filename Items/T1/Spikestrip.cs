@@ -36,7 +36,7 @@ namespace ThinkInvisible.ClassicItems {
             desc += ".";
             return desc;
         }
-        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetLoreString(string langid = null) => "Order: Spikestrip\n\nTracking Number: 599***********\nEstimated Delivery: 1/18/2056\nShipping Method: Standard\nShipping Address: D300, Enf. Station, Jupiter\nShipping Details:\n\nHey bud! Do you remember... summer of 2032, was it? The night with Alicia? Well, um, remember when we got waay too drunk and broke into the police station? Well, I still have those spikestrips from then. Haha, good times, right?\n\nThe doctors say I don't have much time left. Since you're in the force now and all, I felt obligated to return it to you! Haha. So.. yeah. Hope you're doing well. It's been lonely here without you.";
 
         public Spikestrip() {
             iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/spikestrip_icon.png");

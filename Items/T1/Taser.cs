@@ -33,7 +33,7 @@ namespace ThinkInvisible.ClassicItems {
             desc += ".";
             return desc;
         }
-        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetLoreString(string langid = null) => "Order: Taser\n\nTracking Number: 717***********\nEstimated Delivery: 11/14/2056\nShipping Method: Standard\nShipping Address: 94123 Bldg. 201, Fort Mason\nShipping Details:\n\nYou say you can fix 'em? These tasers are very very faulty; got a few of my officers hurt they did. They fire, but the don't do nothin' like, 99% of the time! My department is running low on money, so I expect a good deal for these!";
 
         public Taser() {
             iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/taser_icon.png");

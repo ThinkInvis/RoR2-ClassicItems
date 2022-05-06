@@ -73,7 +73,7 @@ namespace ThinkInvisible.ClassicItems {
             desc += "COMBINED FOR ALL PLAYERS, up to " + Pct(capChance, 1, 1) + ")</style> to <style=cIsUtility>drop items</style> when <style=cIsDamage>killed</style>. <style=cStack>(Further stacks increase uncommon/rare chance up to " + Pct(capUnc, 2, 1) + " and " + Pct(capRare, 3, 1) + ", respectively.)</style>";
             return desc;
         }
-        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetLoreString(string langid = null) => "Order: 56 Leaf Clover\n\nTracking Number: 600***********\nEstimated Delivery: 12/24/2056\nShipping Method: Priority\nShipping Address: 777, Lucky Drop, Earth\nShipping Details:\n\nA FIFTY-FREAKIN-SIX leaf clover! It was sent to me from a fan, picked from the top of Mount Drummond. It lived through the mountain fire; imagine that! I'm keeping it in observation to make sure it doesn't wilt; this is a once in a lifetime specimen! Think of all the elixirs we could make.. I may use a few of them myself and go hit the lottery!";
 
         public Clover() {
             iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/clover_icon.png");

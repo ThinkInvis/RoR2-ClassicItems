@@ -30,7 +30,7 @@ namespace ThinkInvisible.ClassicItems {
         protected override string GetNameString(string langid = null) => displayName;
         protected override string GetPickupString(string langid = null) => "Hitting enemies have a " + Pct(procChance,0,1) + " chance to knock them back.";
         protected override string GetDescString(string langid = null) => "<style=cIsUtility>" + Pct(procChance,0,1) + "</style> <style=cStack>(+"+Pct(procChance,0,1)+" per stack, multiplicative)</style> chance to <style=cIsUtility>knock back</style> an enemy <style=cIsDamage>based on fraction of health removed</style>.";
-        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetLoreString(string langid = null) => "Order: Boxing Gloves\n\nTracking Number: 362***********\nEstimated Delivery: 7/7/2056\nShipping Method: Standard\nShipping Address: O.B.-GYM, Slam Station, Venus\nShipping Details:\n\nThese should work fine for the kids you're training. A bit musty, though. It'll make your trainees hit like a pro, ha!";
 
         public BoxingGloves() {
             iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/boxinggloves_icon.png");

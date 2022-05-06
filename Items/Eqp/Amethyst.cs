@@ -13,7 +13,7 @@ namespace ThinkInvisible.ClassicItems {
         protected override string GetNameString(string langid = null) => displayName;
         protected override string GetPickupString(string langid = null) => "Resets all your cooldowns.";
         protected override string GetDescString(string langid = null) => "Immediately <style=cIsUtility>restores 1 charge each</style> to <style=cIsUtility>all</style> of your <style=cIsUtility>skills</style>.";
-        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetLoreString(string langid = null) => "Order: Gigantic Amethyst\n\nTracking Number: 802***********\nEstimated Delivery: 5/11/2056\nShipping Method: Volatile\nShipping Address: Greivenkamp, 5th Houston St., Prism Tower, Earth\nShipping Details:\n\nUsed for focus lasers, I assume. Anyways, this is the biggest one I could find ANYWHERE. Outside of the Crown Amethyst of Venus, which I obviously can't get you, this is the best for your purposes. You'll be able to reach AMAZING quality with this; good luck!";
 
         protected override bool PerformEquipmentAction(EquipmentSlot slot) {
             var sloc = slot.characterBody?.skillLocator;

@@ -36,7 +36,7 @@ namespace ThinkInvisible.ClassicItems {
         protected override string GetNameString(string langid = null) => displayName;
         protected override string GetPickupString(string langid = null) => "Earn gold over time.";
         protected override string GetDescString(string langid = null) => "Generates <style=cIsUtility>$" + gainPerSec.ToString("N0") + "</style> <style=cStack>(+$" + gainPerSec.ToString("N0") + " per stack)</style> every second. <style=cStack>Generates less below " + invertCount.ToString("N0") + " stacks.</style>";
-        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetLoreString(string langid = null) => "Order: Life Savings\n\nTracking Number: 235***********\nEstimated Delivery: 02/22/2056\nShipping Method: Standard\nShipping Address: moms house\nShipping Details:\n\nhi im billy and heer is money for mom thanks";
 
         public LifeSavings() {
             iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/lifesavings_icon.png");

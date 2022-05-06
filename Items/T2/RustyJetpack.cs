@@ -24,7 +24,7 @@ namespace ThinkInvisible.ClassicItems {
         protected override string GetNameString(string langid = null) => displayName;        
         protected override string GetPickupString(string langid = null) => "Increase jump height and reduce gravity.";        
         protected override string GetDescString(string langid = null) => "<style=cIsUtility>Reduces gravity</style> by <style=cIsUtility>" + Pct(gravMod) + "</style> while <style=cIsUtility>holding jump</style>. Increases <style=cIsUtility>jump power</style> by <style=cIsUtility>" + Pct(jumpMult) + "</style> <style=cStack>(+" + Pct(jumpMult)  + " per stack, linear)</style>.";        
-        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetLoreString(string langid = null) => "Order: Rusty Jetpack\n\nTracking Number: 761***********\nEstimated Delivery: 01/01/2056\nShipping Method: Priority\nShipping Address: Fun Center, 2105, NE Taurus\nShipping Details:\n\nSorry, it seems to be broken. It only works for a split second; maybe I'll send you a fully working jetpack in a few months? Should work well enough for the carnival!\n\nMake sure to keep the kiddos away from the bottom; it shoots out quite a jet. Can make for fun obstacle challenges.";
 
         public RustyJetpack() {
             iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/rustyjetpack_icon.png");

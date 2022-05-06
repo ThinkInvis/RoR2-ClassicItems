@@ -68,7 +68,7 @@ namespace ThinkInvisible.ClassicItems {
                 else if(i4) spawnList = Run.instance.availableTier2DropList;
                 else if(i5) spawnList = Run.instance.availableTier3DropList;
                 else if(i6) spawnList = Run.instance.availableEquipmentDropList;
-                else spawnList = Run.instance.availableLunarDropList;
+                else spawnList = Run.instance.availableLunarItemDropList;
 
                 PickupDropletController.CreatePickupDroplet(spawnList[Run.instance.spawnRng.RangeInt(0,spawnList.Count)], trans.position, new Vector3(0f, -5f, 0f));
             }

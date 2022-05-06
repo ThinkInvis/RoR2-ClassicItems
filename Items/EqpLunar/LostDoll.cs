@@ -37,7 +37,7 @@ namespace ThinkInvisible.ClassicItems {
 
             return desc;
         }
-        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetLoreString(string langid = null) => "Order: Lost Doll\n\nTracking Number: 812***********\nEstimated Delivery: 2/12/2056\nShipping Method: Volatile/Military\nShipping Address: Tibb Station, Box Unknown, Venus\nShipping Details:\n\nGet this out of my house. Please. Just take it.\n\nSince I've recieved this god-forsaken thing, my husband has fallen down the stairs and broke his neck, my son got hit by a bus, and my daughter has drowned in the bathtub.\nAnd.. oh god.. I swear it moves around the house. I've tried leaving it locked in a safe, and it will be out the next day. It won't burn. Cutting it has resulted in the amputation of both my arms.\n\nPlease..";
 
         public LostDoll() {
             iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/lostdoll_icon.png");

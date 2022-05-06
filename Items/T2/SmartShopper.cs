@@ -19,7 +19,7 @@ namespace ThinkInvisible.ClassicItems {
         protected override string GetNameString(string langid = null) => displayName;
         protected override string GetPickupString(string langid = null) => "Enemies drop extra gold.";
         protected override string GetDescString(string langid = null) => "Gain <style=cIsUtility>+" + Pct(moneyMult) + "</style> <style=cStack>(+" + Pct(moneyMult) + " per stack, linear)</style> <style=cIsUtility>money</style> from <style=cIsDamage>killing enemies</style>.";
-        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetLoreString(string langid = null) => "Order: Smart Shopper\n\nTracking Number: 769***********\nEstimated Delivery: 12/24/1962\nShipping Method: Priority\nShipping Address: 200 West Street, City of Gold, Earth\nShipping Details:\n\nHoney! HONEY! Look! I /told/ you I still had enough left over! Yeah, weird huh? I swear the last $5 I used was the last one I had in my purse, but then when I looked again, I still had a bit left over. Strange, huh?\n\nMaybe it's black magic, haha! Honey?";
 
         public SmartShopper() {
             iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/smartshopper_icon.png");

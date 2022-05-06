@@ -35,8 +35,7 @@ namespace ThinkInvisible.ClassicItems {
         protected override string GetNameString(string langid = null) => displayName;
         protected override string GetPickupString(string langid = null) => "Gain increased crit chance on failing a shrine. Removed on succeeding a shrine.";
         protected override string GetDescString(string langid = null) => "Increases <style=cIsDamage>crit chance</style> by <style=cIsDamage>" + Pct(critAdd, 0, 1) + "</style> <style=cStack>(+" + Pct(critAdd, 0, 1) + " per stack, linear)</style> for up to <style=cIsUtility>" + stackCap + "</style> consecutive <style=cIsUtility>chance shrine failures</style>. <style=cIsDamage>Resets to 0</style> on any <style=cIsUtility>chance shrine success</style>.";
-        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
-
+        protected override string GetLoreString(string langid = null) => "Order: Snake Eyes\n\nTracking Number: 723***********\nEstimated Delivery: 1/1/2056\nShipping Method: Standard\nShipping Address: 1843, GMG Services, Venus\nShipping Details:\n\nYou dirty ---------er. You KNEW I had to win to pay off my debts. Are you in with the casinos? Of course you are; a snake like you would. A dice that's loaded for SNAKE EYES. CUTE MOVE, ---------er.\n\nI'm comin' for you, ----."
         public SnakeEyes() {
             iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/snakeeyes_icon.png");
             modelResource = ClassicItemsPlugin.resources.LoadAsset<GameObject>("Assets/ClassicItems/Prefabs/SnakeEyes.prefab");

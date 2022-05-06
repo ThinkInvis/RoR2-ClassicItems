@@ -53,7 +53,7 @@ namespace ThinkInvisible.ClassicItems {
 			desc += ".";
 			return desc;
 		}
-        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetLoreString(string langid = null) => "Order: Barbed Wire\n\nTracking Number: 192***********\nEstimated Delivery: 04/29/2056\nShipping Method: Standard\nShipping Address: D. Sherman, NLTS Way\nShipping Details:\n\nGreat big bundle of barbed wire! Should help you... 'catch fish'? Not sure what use barbed wire is for catching fish, but all the power to ya!\nShould have about 500 ft included. The safety layer dissolves in water, so simply drop it on your tub and it's ready to roll.\n\nDisclaimer: I, or my company, am not responsible for any bodily harm delivered to...";
 
 		public BarbedWire() {
 			iconResource = ClassicItemsPlugin.resources.LoadAsset<Sprite>("Assets/ClassicItems/Textures/ClassicIcons/barbedwire_icon.png");

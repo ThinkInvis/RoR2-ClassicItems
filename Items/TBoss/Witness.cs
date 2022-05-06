@@ -34,7 +34,7 @@ namespace ThinkInvisible.ClassicItems {
         protected override string GetNameString(string langid = null) => displayName;        
         protected override string GetPickupString(string langid = null) => "The Worm's eye seems to still see.. watching.. rewarding..";        
         protected override string GetDescString(string langid = null) => "<style=cDeath>On kill</style>: Grants a <style=cIsDamage>firetrail</style>, <style=cIsUtility>" + Pct(baseSpeed) + " movement speed</style> <style=cStack>(+" + Pct(stackSpeed) + " per stack)</style>, and <style=cIsDamage>+" + damage.ToString("N1") + " damage</style> for " + baseDuration.ToString("N0") + " <style=cStack>(+" + stackDuration.ToString("N0") + " per stack)</style>.";        
-        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetLoreString(string langid = null) => "Order: Burning Witness\n\nTracking Number: 194***********\nEstimated Delivery: --\nShipping Method: Field-Found\nShipping Address: Central Core, Lock Box 52, Sun\nShipping Details:\n\nFound by killing a.. giant magma worm.  Yes, you read that correctly.\nAfter it died, its body lay dormant but its eyes seem to still look around, watching. Removal of the eye showed that it may be a parasite that attaches to the worm itself; the worm grants it protection, while the eye gives it the vision it needs.";
 
         public Witness() {}
 

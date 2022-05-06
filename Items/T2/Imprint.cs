@@ -46,7 +46,7 @@ namespace ThinkInvisible.ClassicItems {
         protected override string GetNameString(string langid = null) => displayName;
         protected override string GetPickupString(string langid = null) => "Hatch a strange creature who drops buffs periodically.";
         protected override string GetDescString(string langid = null) => "Every <style=cIsUtility>" + baseCD.ToString("N0") + " seconds</style> <style=cStack>(-" + Pct(stackCDreduc) + " per stack, minimum of " + baseDuration.ToString("N0") + " seconds)</style>, gain <style=cIsHealing>+" + Pct(regenMod) + " health regen</style> OR <style=cIsUtility>+" + Pct(speedMod) + " move speed</style> OR <style=cIsDamage>+" + Pct(attackMod) + " attack speed</style> for <style=cIsUtility>" + baseDuration.ToString("N0") + " seconds</style>.";
-        protected override string GetLoreString(string langid = null) => "A relic of times long past (ClassicItems mod)";
+        protected override string GetLoreString(string langid = null) => "Order: Filial Imprinting\n\nTracking Number: 940***********\nEstimated Delivery: 4/14/2056\nShipping Method: Priority\nShipping Address: Row E, Mutation Hold, Earth\nShipping Details:\n\nYou didn't tell me the roe was FERTILIZED. Good lord! Anyways, one of the suckers actually hatched, and have been nothing but friendly to me. Filial imprinting, perhaps.\n\nI quite like the little guy. He's almost dog-like in how affectionate he is to me. I.. have begun to care a lot about the thing. I've been feeding him nutapples and he seems to enjoy it, but I doubt that's very nutritious. Suggestions?";
         
         public BuffDef attackBuff {get; private set;}
         public BuffDef speedBuff {get; private set;}
