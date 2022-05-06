@@ -26,11 +26,7 @@ namespace ThinkInvisible.ClassicItems {
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     [R2APISubmoduleDependency(nameof(ItemAPI), nameof(LanguageAPI), nameof(PrefabAPI), nameof(LoadoutAPI), nameof(RecalculateStatsAPI))]
     public class ClassicItemsPlugin:BaseUnityPlugin {
-        public const string ModVer =
-            #if DEBUG
-                "0." +
-            #endif
-            "7.0.0";
+        public const string ModVer = "7.0.0";
         public const string ModName = "ClassicItems";
         public const string ModGuid = "com.ThinkInvisible.ClassicItems";
 
@@ -57,10 +53,6 @@ namespace ThinkInvisible.ClassicItems {
             _logger = Logger;
 
             Logger.LogDebug("Performing plugin setup:");
-
-            #if DEBUG
-            Logger.LogWarning("Running test build with debug enabled! If you're seeing this after downloading the mod from Thunderstore, please panic.");
-            #endif
 
             Logger.LogDebug("Loading assets...");
             using(var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("ClassicItems.classicitems_assets")) {
