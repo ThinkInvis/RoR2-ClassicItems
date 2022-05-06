@@ -117,8 +117,7 @@ namespace ThinkInvisible.ClassicItems {
             if(moneyBuffer >= 1.0f && !SceneExitController.isRunning && (LifeSavings.instance.ignoreTimestop || !Run.instance.isRunStopwatchPaused)){
                 if(Compat_ShareSuite.enabled && Compat_ShareSuite.MoneySharing())
                     Compat_ShareSuite.GiveMoney((uint)Math.Floor(moneyBuffer));
-                else
-                    master.GiveMoney((uint)Math.Floor(moneyBuffer));
+                master.GiveMoney((uint)Math.Floor(moneyBuffer));
                 moneyBuffer %= 1.0f;
             }
         }
