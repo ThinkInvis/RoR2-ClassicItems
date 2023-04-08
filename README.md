@@ -1,3 +1,5 @@
+### DEPRECATED: Development on this project has been halted in favor of more original projects (e.g. Tinker's Satchel). Recommended alternative: [Lost In Transit](https://thunderstore.io/package/LostInTransitTeam/LostInTransit/)
+
 # ClassicItems
 
 A mod for Risk of Rain 2. Built with BepInEx and R2API.
